@@ -17,5 +17,14 @@
 #include <stdlib.h>
 
 
+class GameObj {
+public:
+    GameObj() = delete; //Can't call default constructor
+    GameObj(const GameObj &) = delete; //Can't call copy constructor
+    
+private:
+    
+};
+
 
 #endif /* GameObj_h */

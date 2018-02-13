@@ -20,6 +20,10 @@
 		9E10D5C42032430800F0F724 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5C32032430800F0F724 /* libglfw3.a */; };
 		9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5C620324B8D00F0F724 /* GLFW_Init.cpp */; };
 		9E10D5CB2032CC0100F0F724 /* GameObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5C92032CC0100F0F724 /* GameObj.cpp */; };
+		9E10D5D72032CEDC00F0F724 /* SimpleObjLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5CF2032CEDA00F0F724 /* SimpleObjLoader.cpp */; };
+		9E10D5D82032CEDC00F0F724 /* NGon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5D12032CEDB00F0F724 /* NGon.cpp */; };
+		9E10D5D92032CEDC00F0F724 /* ShaderWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5D22032CEDB00F0F724 /* ShaderWrapper.cpp */; };
+		9E10D5DA2032CEDC00F0F724 /* Quaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5D42032CEDB00F0F724 /* Quaternion.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -56,6 +60,14 @@
 		9E10D5C720324B8D00F0F724 /* GLFW_Init.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLFW_Init.h; sourceTree = "<group>"; };
 		9E10D5C92032CC0100F0F724 /* GameObj.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameObj.cpp; sourceTree = "<group>"; };
 		9E10D5CA2032CC0100F0F724 /* GameObj.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameObj.h; sourceTree = "<group>"; };
+		9E10D5CF2032CEDA00F0F724 /* SimpleObjLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleObjLoader.cpp; sourceTree = "<group>"; };
+		9E10D5D02032CEDA00F0F724 /* SimpleObjLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleObjLoader.h; sourceTree = "<group>"; };
+		9E10D5D12032CEDB00F0F724 /* NGon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NGon.cpp; sourceTree = "<group>"; };
+		9E10D5D22032CEDB00F0F724 /* ShaderWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderWrapper.cpp; sourceTree = "<group>"; };
+		9E10D5D32032CEDB00F0F724 /* ShaderWrapper1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderWrapper1.h; sourceTree = "<group>"; };
+		9E10D5D42032CEDB00F0F724 /* Quaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Quaternion.cpp; sourceTree = "<group>"; };
+		9E10D5D52032CEDB00F0F724 /* NGon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NGon.h; sourceTree = "<group>"; };
+		9E10D5D62032CEDC00F0F724 /* Quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quaternion.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +217,14 @@
 		9E10D5CE2032CD6E00F0F724 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				9E10D5D12032CEDB00F0F724 /* NGon.cpp */,
+				9E10D5D52032CEDB00F0F724 /* NGon.h */,
+				9E10D5D42032CEDB00F0F724 /* Quaternion.cpp */,
+				9E10D5D62032CEDC00F0F724 /* Quaternion.h */,
+				9E10D5D22032CEDB00F0F724 /* ShaderWrapper.cpp */,
+				9E10D5D32032CEDB00F0F724 /* ShaderWrapper1.h */,
+				9E10D5CF2032CEDA00F0F724 /* SimpleObjLoader.cpp */,
+				9E10D5D02032CEDA00F0F724 /* SimpleObjLoader.h */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -266,8 +286,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E10D5D72032CEDC00F0F724 /* SimpleObjLoader.cpp in Sources */,
 				9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */,
 				9E10D5CB2032CC0100F0F724 /* GameObj.cpp in Sources */,
+				9E10D5D82032CEDC00F0F724 /* NGon.cpp in Sources */,
+				9E10D5D92032CEDC00F0F724 /* ShaderWrapper.cpp in Sources */,
+				9E10D5DA2032CEDC00F0F724 /* Quaternion.cpp in Sources */,
 				9E10D59A203234CC00F0F724 /* main.cpp in Sources */,
 				9E10D5B4203237BB00F0F724 /* glad.c in Sources */,
 			);
