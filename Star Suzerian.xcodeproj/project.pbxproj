@@ -8,13 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		9E10D59A203234CC00F0F724 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D599203234CC00F0F724 /* main.cpp */; };
+		9E10D5A22032362600F0F724 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5A12032362600F0F724 /* CoreVideo.framework */; };
+		9E10D5A42032366700F0F724 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5A32032366600F0F724 /* IOKit.framework */; };
+		9E10D5A62032367800F0F724 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5A52032367700F0F724 /* Cocoa.framework */; };
+		9E10D5A82032368600F0F724 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5A72032368600F0F724 /* GLUT.framework */; };
+		9E10D5AA203236A700F0F724 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5A9203236A700F0F724 /* OpenGL.framework */; };
+		9E10D5B4203237BB00F0F724 /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5B3203237BB00F0F724 /* glad.c */; };
+		9E10D5B72032390900F0F724 /* libIrrXML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5B62032390900F0F724 /* libIrrXML.a */; };
+		9E10D5BA20323CD200F0F724 /* assimp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5B920323CD200F0F724 /* assimp.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		9E10D5C02032410600F0F724 /* libGLEW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5BF2032410600F0F724 /* libGLEW.a */; };
+		9E10D5C42032430800F0F724 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5C32032430800F0F724 /* libglfw3.a */; };
+		9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5C620324B8D00F0F724 /* GLFW_Init.cpp */; };
+		9E10D5CB2032CC0100F0F724 /* GameObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5C92032CC0100F0F724 /* GameObj.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		9E10D594203234CC00F0F724 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
+			dstPath = /usr/share/man/man1;
 			dstSubfolderSpec = 0;
 			files = (
 			);
@@ -25,6 +37,25 @@
 /* Begin PBXFileReference section */
 		9E10D596203234CC00F0F724 /* Star Suzerian */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Star Suzerian"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E10D599203234CC00F0F724 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		9E10D5A12032362600F0F724 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		9E10D5A32032366600F0F724 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		9E10D5A52032367700F0F724 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		9E10D5A72032368600F0F724 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		9E10D5A9203236A700F0F724 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		9E10D5AB2032377300F0F724 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
+		9E10D5AF203237BB00F0F724 /* khrplatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = khrplatform.h; sourceTree = "<group>"; };
+		9E10D5B1203237BB00F0F724 /* glad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glad.h; sourceTree = "<group>"; };
+		9E10D5B3203237BB00F0F724 /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glad.c; sourceTree = "<group>"; };
+		9E10D5B5203237CE00F0F724 /* ProjectSetup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectSetup.h; sourceTree = "<group>"; };
+		9E10D5B62032390900F0F724 /* libIrrXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libIrrXML.a; sourceTree = "<group>"; };
+		9E10D5B920323CD200F0F724 /* assimp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = assimp.framework; sourceTree = "<group>"; };
+		9E10D5BF2032410600F0F724 /* libGLEW.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGLEW.a; sourceTree = "<group>"; };
+		9E10D5C12032424100F0F724 /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glfw3.h; sourceTree = "<group>"; };
+		9E10D5C32032430800F0F724 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libglfw3.a; sourceTree = "<group>"; };
+		9E10D5C620324B8D00F0F724 /* GLFW_Init.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GLFW_Init.cpp; sourceTree = "<group>"; };
+		9E10D5C720324B8D00F0F724 /* GLFW_Init.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLFW_Init.h; sourceTree = "<group>"; };
+		9E10D5C92032CC0100F0F724 /* GameObj.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameObj.cpp; sourceTree = "<group>"; };
+		9E10D5CA2032CC0100F0F724 /* GameObj.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameObj.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +63,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E10D5AA203236A700F0F724 /* OpenGL.framework in Frameworks */,
+				9E10D5A82032368600F0F724 /* GLUT.framework in Frameworks */,
+				9E10D5C02032410600F0F724 /* libGLEW.a in Frameworks */,
+				9E10D5BA20323CD200F0F724 /* assimp.framework in Frameworks */,
+				9E10D5A62032367800F0F724 /* Cocoa.framework in Frameworks */,
+				9E10D5B72032390900F0F724 /* libIrrXML.a in Frameworks */,
+				9E10D5A42032366700F0F724 /* IOKit.framework in Frameworks */,
+				9E10D5A22032362600F0F724 /* CoreVideo.framework in Frameworks */,
+				9E10D5C42032430800F0F724 /* libglfw3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,7 +81,13 @@
 		9E10D58D203234CC00F0F724 = {
 			isa = PBXGroup;
 			children = (
-				9E10D598203234CC00F0F724 /* Star Suzerian */,
+				9E10D5CD2032CD4F00F0F724 /* ObjFiles */,
+				9E10D5CC2032CD3600F0F724 /* Shaders */,
+				9E10D5C5203243BA00F0F724 /* Setup */,
+				9E10D5CE2032CD6E00F0F724 /* Utility */,
+				9E10D5C22032427500F0F724 /* Third Party Code */,
+				9E10D598203234CC00F0F724 /* Star Suzerian Code */,
+				9E10D5A02032362600F0F724 /* Frameworks */,
 				9E10D597203234CC00F0F724 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,12 +100,113 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		9E10D598203234CC00F0F724 /* Star Suzerian */ = {
+		9E10D598203234CC00F0F724 /* Star Suzerian Code */ = {
 			isa = PBXGroup;
 			children = (
 				9E10D599203234CC00F0F724 /* main.cpp */,
+				9E10D5C92032CC0100F0F724 /* GameObj.cpp */,
+				9E10D5CA2032CC0100F0F724 /* GameObj.h */,
 			);
-			path = "Star Suzerian";
+			path = "Star Suzerian Code";
+			sourceTree = "<group>";
+		};
+		9E10D5A02032362600F0F724 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9E10D5C32032430800F0F724 /* libglfw3.a */,
+				9E10D5BF2032410600F0F724 /* libGLEW.a */,
+				9E10D5B920323CD200F0F724 /* assimp.framework */,
+				9E10D5B62032390900F0F724 /* libIrrXML.a */,
+				9E10D5AC203237BB00F0F724 /* glad */,
+				9E10D5A9203236A700F0F724 /* OpenGL.framework */,
+				9E10D5A72032368600F0F724 /* GLUT.framework */,
+				9E10D5A52032367700F0F724 /* Cocoa.framework */,
+				9E10D5A32032366600F0F724 /* IOKit.framework */,
+				9E10D5A12032362600F0F724 /* CoreVideo.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9E10D5AC203237BB00F0F724 /* glad */ = {
+			isa = PBXGroup;
+			children = (
+				9E10D5AD203237BB00F0F724 /* include */,
+				9E10D5B2203237BB00F0F724 /* src */,
+			);
+			path = glad;
+			sourceTree = "<group>";
+		};
+		9E10D5AD203237BB00F0F724 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				9E10D5AE203237BB00F0F724 /* KHR */,
+				9E10D5B0203237BB00F0F724 /* glad */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		9E10D5AE203237BB00F0F724 /* KHR */ = {
+			isa = PBXGroup;
+			children = (
+				9E10D5AF203237BB00F0F724 /* khrplatform.h */,
+			);
+			path = KHR;
+			sourceTree = "<group>";
+		};
+		9E10D5B0203237BB00F0F724 /* glad */ = {
+			isa = PBXGroup;
+			children = (
+				9E10D5B1203237BB00F0F724 /* glad.h */,
+			);
+			path = glad;
+			sourceTree = "<group>";
+		};
+		9E10D5B2203237BB00F0F724 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				9E10D5B3203237BB00F0F724 /* glad.c */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		9E10D5C22032427500F0F724 /* Third Party Code */ = {
+			isa = PBXGroup;
+			children = (
+				9E10D5AB2032377300F0F724 /* stb_image.h */,
+				9E10D5C12032424100F0F724 /* glfw3.h */,
+			);
+			path = "Third Party Code";
+			sourceTree = "<group>";
+		};
+		9E10D5C5203243BA00F0F724 /* Setup */ = {
+			isa = PBXGroup;
+			children = (
+				9E10D5B5203237CE00F0F724 /* ProjectSetup.h */,
+				9E10D5C620324B8D00F0F724 /* GLFW_Init.cpp */,
+				9E10D5C720324B8D00F0F724 /* GLFW_Init.h */,
+			);
+			path = Setup;
+			sourceTree = "<group>";
+		};
+		9E10D5CC2032CD3600F0F724 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
+		9E10D5CD2032CD4F00F0F724 /* ObjFiles */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ObjFiles;
+			sourceTree = "<group>";
+		};
+		9E10D5CE2032CD6E00F0F724 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utility;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,7 +266,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */,
+				9E10D5CB2032CC0100F0F724 /* GameObj.cpp in Sources */,
 				9E10D59A203234CC00F0F724 /* main.cpp in Sources */,
+				9E10D5B4203237BB00F0F724 /* glad.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +383,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -241,6 +399,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
