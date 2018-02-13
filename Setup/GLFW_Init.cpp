@@ -16,7 +16,7 @@
 //} Monitors;
 
 //Do window setup routines and return a struct representing information on detected monitors
-Monitors GLFW_Init::initialize() {
+MonitorData GLFW_Init::initialize() {
     std::cout << "    Loading GLFW...";
     glfwInit();
     std::cout << "DONE!  GLFW version: " << glfwGetVersionString() << std::endl;
@@ -67,7 +67,7 @@ Monitors GLFW_Init::initialize() {
         std::cout << "WARNING! VSYNC INTERVAL IS SET TO A NON-STANDARD VALUE AND MAY RESULT IN UNDEFINED BEHAVIOR\n";
     }
     
-    std::cout << "Window initialization complete" << std::endl;
+    std::cout << "Window Initialization Complete" << std::endl;
     
     //Detect number of monitors connected:
     std::cout << std::endl << "Detecting Displays: " << std::endl;
@@ -85,60 +85,75 @@ Monitors GLFW_Init::initialize() {
         
         std::cout << std::endl << "    Window Context is ready to open on this display" << std::endl;
         
-        this->mWindow = glfwCreateWindow(this->width, this->height, "Star Suzerian", monitors[this->defaultMonitor], nullptr);
+        this->mWindow = glfwCreateWindow(this->width, this->height, NAME_OF_GAME,
+                                         monitors[this->defaultMonitor], nullptr);
     }
     //If specified display is not connected, try opening on the first non-primary display detected
     else if (this->connectedDisplayCount >= 2) {
         detectDisplayResolution(1, this->width, this->height, this->refreshRate);
         std::cout << "    Window will open on display: " << 2 << std::endl;
+        this->defaultMonitor = 1;
         std::cout << "    Resolution of this Display: " << this->width << "x" << this->height << std::endl;
         std::cout << "    Display Refresh Rate: " << this->refreshRate << std::endl;
         
         std::cout << std::endl << "    Window Context is ready to open on this display" << std::endl;
         
-        this->mWindow = glfwCreateWindow(this->width, this->height, "Star Suzerian", monitors[1], nullptr);
+        this->mWindow = glfwCreateWindow(this->width, this->height, NAME_OF_GAME,
+                                         monitors[1], nullptr);
     }
     //If all that fails, open on the primary display
     else {
         detectDisplayResolution(0, this->width, this->height, this->refreshRate);
         std::cout << "    Window will open on display: " << 1 << std::endl;
+        this->defaultMonitor = 0;
         std::cout << "    Resolution of this Display: " << this->width << "x" << this->height << std::endl;
         std::cout << "    Display Refresh Rate: " << this->refreshRate << std::endl;
         
         std::cout << std::endl << "    Window Context is ready to open on this display" << std::endl;
         
-        this->mWindow = glfwCreateWindow(this->width, this->height, "Star Suzerian", glfwGetPrimaryMonitor(), nullptr);
+        this->mWindow = glfwCreateWindow(this->width, this->height, NAME_OF_GAME,
+                                         glfwGetPrimaryMonitor(), nullptr);
     }
     }
     else { //Open windowed
         std::cout << "    Window Context is ready to open in Windowed Mode" << std::endl;
-        mWindow = glfwCreateWindow(1670, 960, "OpenGL", nullptr, nullptr); //Open as window
+        mWindow = glfwCreateWindow(1670, 960, NAME_OF_GAME, nullptr, nullptr); //Open as window
+        this->defaultMonitor = 0;
     }
     
     if (mWindow == nullptr) {
-         fprintf(stderr, "Failed to Create OpenGL Context");
+        fprintf(stderr, "Failed to Create OpenGL Context");
         this->contextIsValid = false;
+        //return nullptr;
     }
-    
-    glfwMakeContextCurrent(mWindow);
-//    gladLoadGL();
-//    fprintf(stderr, "OpenGL %s\n", glGetString(GL_VERSION));
-    
+    else {
+        glfwMakeContextCurrent(mWindow);
+        //gladLoadGL(); //I call the gladLoadGL stuff in main, since it is not part of GLFW
+        //fprintf(stderr, "OpenGL %s\n", glGetString(GL_VERSION));
+    }
     return generateDetectedMonitorsStruct();
 }
 
-
-
 //Creates a struct from the members of this class
-Monitors GLFW_Init::generateDetectedMonitorsStruct() {
-    Monitors displayDetectionResults;
+MonitorData GLFW_Init::generateDetectedMonitorsStruct() {
+    MonitorData displayDetectionResults; //Create struct to be returned
+    //Set integers
+    displayDetectionResults.numDetected = this->connectedDisplayCount;
+    displayDetectionResults.activeMonitorNum = this->defaultMonitor;
+    displayDetectionResults.width = this->width;
+    displayDetectionResults.height = this->height;
+    displayDetectionResults.refreshRate = this->refreshRate;
+    //Set monitor pointers
+    displayDetectionResults.monitorArray = this->monitors;
+    displayDetectionResults.activeMonitor = this->mWindow;
+    
+    displayDetectionResults.validContext = this->contextIsValid;
     
     return displayDetectionResults;
 }
 
-
 //Detects the resolution of the active display
-void GLFW_Init::detectDisplayResolution(int displayNum, int& width, int& height, int & refreshRate) {
+void GLFW_Init::detectDisplayResolution(int displayNum, int& width, int& height, int& refreshRate) {
     const GLFWvidmode * mode = nullptr;
     if (displayNum == 0) {
         mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -153,7 +168,8 @@ void GLFW_Init::detectDisplayResolution(int displayNum, int& width, int& height,
         refreshRate = mode->refreshRate;
     }
     else {
-        std::cout << "\nOh No! GLFW encountered an error while communicating with your display!" << std::endl;
+        std::cout << "\nOh No! GLFW encountered an error while communicating with your display!" << std::endl << "Error is due to: UNABLE TO RETRIEVE MONITOR VIDEO MODE INFORMATION. TRY A DIFFERENT MONITOR" << std::endl;
+        this->contextIsValid = false;
     }
 }
 

@@ -13,12 +13,14 @@
 
 const int DEFAULT_AA_SAMPLES = 4;
 
-typedef struct Monitors {
+static const char * NAME_OF_GAME = "Star Suzerian";
+
+typedef struct MonitorData {
     int numDetected, activeMonitorNum, width, height, refreshRate;
     GLFWmonitor** monitorArray;
     GLFWwindow* activeMonitor;
     bool validContext;
-} Monitors;
+} MonitorData;
 
 class GLFW_Init {
 private:
@@ -32,14 +34,7 @@ private:
     int defaultMonitor;
     int width, height, refreshRate;
     
-    Monitors generateDetectedMonitorsStruct();
-    
-    void detectDisplayResolution(int displayNum, int& width, int& height, int& refreshRate);
-    
-//    typedef struct Resolution {
-//        int width;
-//        int height;
-//    } Resolution;
+    MonitorData generateDetectedMonitorsStruct();  //Private function to be called to generate the return struct of monitor data at the end of initialize().
     
 public:
     GLFW_Init() {
@@ -54,6 +49,7 @@ public:
         vSyncInterval = 1; //Should only be 0 or 1;
         openFullScreen = true;
         defaultMonitor = 1;
+        contextIsValid = true;
     }
     
     GLFW_Init(int aaSamples, bool useVSync) {
@@ -69,6 +65,7 @@ public:
         else          { vSyncInterval = 0; }
         openFullScreen = true;
         defaultMonitor = 1;
+        contextIsValid = true;
     }
     
     //Allow for a different context version to be specified at construction
@@ -84,14 +81,17 @@ public:
         vSyncInterval = 1; //Should only be 0 or 1;
         openFullScreen = true;
         defaultMonitor = 1;
+        contextIsValid = true;
     }
     
     void openWindowed() {this->openFullScreen = false;}
     void setDefaultMonitor(int monitorNumber) {this->defaultMonitor = monitorNumber;}
     
-    Monitors initialize(); //Sets up the window
+    MonitorData initialize(); //Sets up the window
     void terminate(); //Ends the window
     
+    //Here is a public function for detecting information about a connected display (undefined behavior if displayNum is not a connected display)
+    void detectDisplayResolution(int displayNum, int& width, int& height, int& refreshRate);
     
     //Ideas of stuff to add:
     //    Have it so if holding down 'w' key when program opens, program opens in windowed mode.

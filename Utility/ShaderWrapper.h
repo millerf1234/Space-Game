@@ -1,9 +1,7 @@
 //
 //  ShaderWrapper.hpp
-//  OpenGLSetupTestWithSTB
 //
 //  Created by Forrest Miller on 1/29/18.
-//  Copyright © 2018 Forrest Miller. All rights reserved.
 //
 
 #ifndef ShaderWrapper_h

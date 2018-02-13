@@ -16,7 +16,7 @@
 //
 //  Created by Forrest Miller on 1/16/18.
 //  Copyright © 2018 Forrest Miller. Not released under any liscense, because I
-//  have not debugged this that much, and therefor should not be used for any reason
+//  have not debugged this that much, and therefor this should not be used for any reason
 //  by anyone.
 //
 //  (version history)

@@ -69,7 +69,7 @@ public:
     
     SimpleObjLoader() = delete; //Can't create a loader without a destination
     
-    //SimpleObjLoader() {;} //uncooment this and comment above if want to allow construction without file location
+    //SimpleObjLoader() {;} //uncomment this line and comment above line if want to allow construction without file location
     
     SimpleObjLoader(std::string fileLocation) {
         this->filePath = fileLocation;
@@ -80,7 +80,7 @@ public:
 //        positions[model.positions][3];    // XYZ
 //        texels[model.texels][2];          // UV
 //        normals[model.normals][3];        // XYZ
-//        faces[model.faces][9];              // PTN PTN PTN
+//        faces[model.faces][9];              // PTN PTN PTN //'PTN' is 'pos, texture, normal'
         
         //Use dynamic memory
         positions = new float*[model.positions];
@@ -93,7 +93,7 @@ public:
             texels[i] = new float[2];
         }
        
-        normals = new float*[model.normals];
+        normals = new float*[model.normals]; //Make normal an array of pointers to float (i.e. an array of float arrays)
         for (int i = 0; i < model.normals; ++i) {
             normals[i] = new float[3];
         }
