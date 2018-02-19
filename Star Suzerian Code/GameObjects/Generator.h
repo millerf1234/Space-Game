@@ -29,9 +29,13 @@
 #include <assimp/Importer.hpp> //Gives access to the aiVector3D
 #include "glad.h" //For GL types and functions
 #include "GameParameters.h"
+#include "PlayerData.h"
+#include "WeaponData.h"
 
 
 constexpr int FILEPATH_BUFFER = 512;
+
+enum InstanceExpansionType {PLAYERDATA, WEAPONDATA, NOEXTRADATA};
 
 //Here is a typedef for an instance of what was generated
 typedef struct Instance {
@@ -45,10 +49,19 @@ public:
     
     //One constructor to give this instance an ID number
     Instance() {;}
-    Instance(int id) {this->identifierNumber = id;}
+    Instance(int id) {this->identifierNumber = id;
+        this->instanceExpansionData = nullptr;
+    }
     
     //One function attached to getID()
     int getID() const {return this->identifierNumber;}
+    
+    void * instanceExpansionData;
+    
+//    typedef union instanceExpansionData {
+//        PlayerData * pData; //Contains data for a player object
+//        WeaponData * wData; //Contains data for a weapon object
+//    } instanceExpansionData;
 } Instance;
 
 typedef struct InitializationTemplate{
@@ -82,6 +95,7 @@ typedef struct InitializationTemplate{
     std::string normalAttribName;
     std::string colAttribName;
     
+    InstanceExpansionType typeDataRequired;
 //
     InitializationTemplate() { //Constructor
         //Set all bools to false
@@ -91,6 +105,7 @@ typedef struct InitializationTemplate{
         elements = nullptr;
         numVerts = numElems = 0;
         vert2 = vert3 = vert2tex2 = vert2col3tex2 = vert3tex2 = vert3tex3 = vert2norml2tex2 = vert3norml3tex3 = vert3tex3norml3 = vert3norml3tex2 = false;
+        typeDataRequired = InstanceExpansionType::NOEXTRADATA;
         //Set all pointers to nullptr
        // modelFilePath = textureFilePath = vertShaderPath = tesslShaderPath = geomShaderPath = fragShaderPath = vertAttribName = texAttribName = normalAttribName = colAttribName = nullptr;
     }
@@ -148,6 +163,9 @@ public:
     bool /* hasVbo(), hasEbo(),*/ hasVerts(), hasElems(), hasShader(), hasTexture(), hasModel(), readyToGenerate();
     bool wasInitialized;
     
+    InstanceExpansionType currentExpansionType;
+    
+    void setSpecialization(InstanceExpansionType expansionType);
     
     //--------------------
     // Instance Controls

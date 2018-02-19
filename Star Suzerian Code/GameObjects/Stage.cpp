@@ -41,8 +41,8 @@ void Stage::setStageInitFormat(int textureToLoadInParameterArray) {
    // stageInitFormat->textureFilePath = (char *) BACKGROUND_TEXTURE_IMAGES[textureToLoadInParameterArray];
     //stageInitFormat->textureFilePath[FILEPATH_BUFFER] = backgroundTextFP.c_str();
     stageInitFormat->textureFilePath = backgroundTextureFP;
-    stageInitFormat->vertShaderPath = BACKGROUND_VERT_SHADER;
-    stageInitFormat->fragShaderPath = BACKGROUND_FRAG_SHADER;
+    stageInitFormat->vertShaderPath = BACKGROUND_VERT;
+    stageInitFormat->fragShaderPath = BACKGROUND_FRAG;
     
     stageInitFormat->hasVert = true;
     stageInitFormat->hasFrag = true;

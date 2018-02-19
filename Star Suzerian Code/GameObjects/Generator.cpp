@@ -47,6 +47,9 @@ Generator::Generator() {
     this->instances = nullptr;
     this->activeInstances = 0;
     
+    currentExpansionType = InstanceExpansionType::NOEXTRADATA; //No extra data by default
+    
+    
     
 }
 Generator::~Generator() { //Delete any memory being claimed by this generator
@@ -82,6 +85,18 @@ Generator::~Generator() { //Delete any memory being claimed by this generator
         delete this->vertexData;
         this->vertexData = nullptr;
     }
+    
+    if (this->activeInstances > 0 && this->instances != nullptr) {
+        for (int i = 0; i < activeInstances; ++i) {
+           // if (instances[i] != nullptr) {
+                if (instances[i].instanceExpansionData != nullptr) {
+                    delete instances[i].instanceExpansionData;
+                    instances[i].instanceExpansionData = nullptr;
+                }
+           // }
+        }
+    }
+    delete [] instances; //Delete the array of instances
 }
 
 void Generator::initializeFromTemplate(const InitializationTemplate& t) {
@@ -195,6 +210,23 @@ void Generator::doUpkeep() {
     }
 }
 
+void Generator::setSpecialization(InstanceExpansionType expansionType) {
+    if (this->activeInstances > 0) {
+        std::cout  << " \nDEBUG::OOPS! Unable to set expansion type once instances have been generated!";
+        return;
+    }
+    if (this->currentExpansionType != NOEXTRADATA) {
+        std::cout << "\nDEBUG::OOPS! SpecializationExpansion type has already been set for this generator, unable to change once set!\n";
+        return;
+    }
+    if (expansionType == InstanceExpansionType::PLAYERDATA) {
+        this->currentExpansionType = expansionType;
+    }
+    else if (expansionType == InstanceExpansionType::WEAPONDATA) {
+        this->currentExpansionType = expansionType;
+    }
+}
+
 void Generator::generateSingle() {
     if (!this->readyToGenerate()) {
         std::cout << "\nDEBUG::Oops! It looks like you are not yet ready to generate objects of this type!\n";
@@ -224,6 +256,21 @@ void Generator::generateSingle() {
     this->instances[newInstanceIndex].thetaX = 0.0f;
     this->instances[newInstanceIndex].thetaY = 0.0f;
     this->instances[newInstanceIndex].thetaZ = 0.0f;
+    
+    //Set up the specialized Instance bits
+    if (this->currentExpansionType != NOEXTRADATA) {
+        switch (currentExpansionType) {
+            case PLAYERDATA:
+                this->instances[newInstanceIndex].instanceExpansionData = (void *) new PlayerData(activeInstances);
+                break;
+            case WEAPONDATA:
+                this->instances[newInstanceIndex].instanceExpansionData = (void *) new WeaponData;
+                break;
+        }
+    }
+    else {
+        this->instances[newInstanceIndex].instanceExpansionData = nullptr;
+    }
 }
 
 

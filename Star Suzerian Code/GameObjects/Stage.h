@@ -33,7 +33,7 @@ private:
     InitializationTemplate * stageInitFormat; //Contains information on how a stage should be constructed
     
     //void setStageInitFormat(); //Function that generates the stageInitFormat
-    void setStageInitFormat(int textureToLoadInParameterArray);
+    void setStageInitFormat(int indexOfTextureToLoad);
 public:
     //Fields
     Generator * generator;

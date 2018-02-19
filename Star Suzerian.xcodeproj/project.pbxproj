@@ -47,6 +47,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9E0754E2203AD1F1009B6215 /* Galaxy_history_revealed_by_the_Hubble_Space_Telescope_(GOODS-ERS2).jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Galaxy_history_revealed_by_the_Hubble_Space_Telescope_(GOODS-ERS2).jpg"; sourceTree = "<group>"; };
+		9E0754E3203AD391009B6215 /* playership.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playership.frag; sourceTree = "<group>"; };
+		9E0754E4203AD3A4009B6215 /* playership.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playership.vert; sourceTree = "<group>"; };
+		9E0754E6203AD3C8009B6215 /* engineEffect.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = engineEffect.vert; sourceTree = "<group>"; };
+		9E0754E7203AD3F1009B6215 /* engineEffect.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = engineEffect.frag; sourceTree = "<group>"; };
+		9E0754E8203AD6D9009B6215 /* playershipLine.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playershipLine.frag; sourceTree = "<group>"; };
+		9E0754E9203ADFFE009B6215 /* PlayerData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerData.h; sourceTree = "<group>"; };
+		9E0754EA203AE00D009B6215 /* WeaponData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponData.h; sourceTree = "<group>"; };
 		9E10D596203234CC00F0F724 /* Star Suzerian */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Star Suzerian"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E10D599203234CC00F0F724 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		9E10D5A12032362600F0F724 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -89,7 +97,6 @@
 		9E10D5E92035485000F0F724 /* Object.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
 		9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectGenerator.cpp; sourceTree = "<group>"; };
 		9E10D5ED20360AE500F0F724 /* ObjectGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectGenerator.h; sourceTree = "<group>"; };
-		9E158BD1203AA1310045BB30 /* Antarctica copy.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Antarctica copy.jpg"; sourceTree = "<group>"; };
 		9ED7720F2036B3D600D569A4 /* Cool_Picture_of_the_moon_915_609.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cool_Picture_of_the_moon_915_609.jpg; path = "../../../../../../../../Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Cool_Picture_of_the_moon_915_609.jpg"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9ED772102036B3D600D569A4 /* Cool_Picture_of_the_moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Cool_Picture_of_the_moon.jpg; sourceTree = "<group>"; };
 		9ED772112036B3D600D569A4 /* CalibrationPicture_915_609.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = CalibrationPicture_915_609.jpg; sourceTree = "<group>"; };
@@ -124,6 +131,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9E0754E5203AD3AE009B6215 /* PlayerShip */ = {
+			isa = PBXGroup;
+			children = (
+				9E0754E8203AD6D9009B6215 /* playershipLine.frag */,
+				9E0754E3203AD391009B6215 /* playership.frag */,
+				9E0754E4203AD3A4009B6215 /* playership.vert */,
+				9E0754E6203AD3C8009B6215 /* engineEffect.vert */,
+				9E0754E7203AD3F1009B6215 /* engineEffect.frag */,
+			);
+			path = PlayerShip;
+			sourceTree = "<group>";
+		};
 		9E10D58D203234CC00F0F724 = {
 			isa = PBXGroup;
 			children = (
@@ -242,6 +261,7 @@
 		9E10D5CC2032CD3600F0F724 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				9E0754E5203AD3AE009B6215 /* PlayerShip */,
 				9ED772152036EBD500D569A4 /* background.vert */,
 				9ED772162036EBE700D569A4 /* background.frag */,
 				9ED7721E203A2D7C00D569A4 /* debug.vert */,
@@ -285,6 +305,8 @@
 				9ED77218203930F100D569A4 /* Generator.h */,
 				9ED7721B2039516500D569A4 /* Stage.cpp */,
 				9ED7721C2039516500D569A4 /* Stage.h */,
+				9E0754E9203ADFFE009B6215 /* PlayerData.h */,
+				9E0754EA203AE00D009B6215 /* WeaponData.h */,
 			);
 			path = GameObjects;
 			sourceTree = "<group>";
@@ -292,7 +314,7 @@
 		9ED7720E2036B32F00D569A4 /* ShaderImages */ = {
 			isa = PBXGroup;
 			children = (
-				9E158BD1203AA1310045BB30 /* Antarctica copy.jpg */,
+				9E0754E2203AD1F1009B6215 /* Galaxy_history_revealed_by_the_Hubble_Space_Telescope_(GOODS-ERS2).jpg */,
 				9ED7720F2036B3D600D569A4 /* Cool_Picture_of_the_moon_915_609.jpg */,
 				9ED772102036B3D600D569A4 /* Cool_Picture_of_the_moon.jpg */,
 				9ED772112036B3D600D569A4 /* CalibrationPicture_915_609.jpg */,
