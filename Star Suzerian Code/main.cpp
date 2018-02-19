@@ -6,9 +6,7 @@
 #include <cmath>
 
 #include "GLFW_Init.h"
-#include "GameObj.h" //A wrapper to run the game inside of
-
-const int DEFAULT_MONITOR = 1; //0 for primary display, 1 for secondary display, 2-inf for additional displays
+#include "Game.h" //A wrapper to run the game inside of
 
 int main(int argc, const char * argv[]) { //Add command line arg to open in windowed mode?
     
@@ -34,21 +32,20 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     std::cout << std::endl << std::endl << "Launching Game..." << std::endl;
     
     std::cout << "    Generating a new instance of the game..." << std::endl;
-    GameObj Game(detectedDisplayInfo); //Create an instance of the game and tell
+    Game Game(detectedDisplayInfo); //Create an instance of the game and tell
     //the instance about all the monitor setup that has been done thus far.
     std::cout << "Done\n    Loading game object data...";
     Game.loadGameObjects();
     std::cout << "Done\n    Loading shaders...";
-    Game.loadShaders();
+   // Game.loadShaders();
     std::cout << "Done\n    Loading textures...";
-    Game.loadTextures();
+    //Game.loadTextures();
     std::cout << "Done\n" << std::endl;
     std::cout << "Game Launched." << std::endl << std::endl;
    
     
     //Game.playIntroMovie(); //Implement later
     
-   
     
     Game.launch(); //Launch will return only once the game is ready
     // to no longer be running

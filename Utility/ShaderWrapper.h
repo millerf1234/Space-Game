@@ -13,6 +13,8 @@
 
 //#include "ProjectSetup.h"
 
+const static int MAX_SHADERS = 75; //Just an arbitrary value
+
 class ShaderWrapper {
 private:
     
@@ -42,7 +44,7 @@ private:
     
 public:
     //Enum for vertexLayoutFormats
-    enum vertLayoutFormat{VERT2, VERT3, VERT2TEXEL2, VERT3TEXEL2, VERT3TEXEL3, VERT2NORMAL2TEXEL2, VERT3NORMAL3TEXEL3, VERT3TEXEL3NORMAL3, VERT3NORMAL3TEXEL2};
+    enum vertLayoutFormat{VERT2, VERT3, VERT2TEXEL2, VERT2COLOR3TEXEL2, VERT3TEXEL2, VERT3TEXEL3, VERT2NORMAL2TEXEL2, VERT3NORMAL3TEXEL3, VERT3TEXEL3NORMAL3, VERT3NORMAL3TEXEL2};
     
     ShaderWrapper();
     ShaderWrapper(const ShaderWrapper&) = delete;
@@ -53,7 +55,8 @@ public:
     ShaderWrapper operator=(const ShaderWrapper&) = delete;
     
     //Add a function that handles uniforms
-    
+    void setVAOExternally(GLuint);
+    bool vaoWasSetExternally;
     
     GLuint * vertexShader;
     GLuint * geometryShader;
@@ -129,7 +132,7 @@ public:
     bool link();
     
     bool specifyVertexLayout(vertLayoutFormat);
-    bool specifyVertexLayout(vertLayoutFormat, GLuint vertData, GLuint elemData);
+    bool specifyVertexLayout(vertLayoutFormat, GLuint& vertData, GLuint& elemData);
     void turnOffVertexLayout(vertLayoutFormat);
     
     void use() {

@@ -19,11 +19,19 @@
 		9E10D5C02032410600F0F724 /* libGLEW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5BF2032410600F0F724 /* libGLEW.a */; };
 		9E10D5C42032430800F0F724 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5C32032430800F0F724 /* libglfw3.a */; };
 		9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5C620324B8D00F0F724 /* GLFW_Init.cpp */; };
-		9E10D5CB2032CC0100F0F724 /* GameObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5C92032CC0100F0F724 /* GameObj.cpp */; };
+		9E10D5CB2032CC0100F0F724 /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5C92032CC0100F0F724 /* Game.cpp */; };
 		9E10D5D72032CEDC00F0F724 /* SimpleObjLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5CF2032CEDA00F0F724 /* SimpleObjLoader.cpp */; };
 		9E10D5D82032CEDC00F0F724 /* NGon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5D12032CEDB00F0F724 /* NGon.cpp */; };
 		9E10D5D92032CEDC00F0F724 /* ShaderWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5D22032CEDB00F0F724 /* ShaderWrapper.cpp */; };
 		9E10D5DA2032CEDC00F0F724 /* Quaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5D42032CEDB00F0F724 /* Quaternion.cpp */; };
+		9E10D5DF20338E4600F0F724 /* GameShaders.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5DD20338E4600F0F724 /* GameShaders.cpp */; };
+		9E10D5E320338FF000F0F724 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E120338FF000F0F724 /* Player.cpp */; };
+		9E10D5E62034BEBD00F0F724 /* Background.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E42034BEBD00F0F724 /* Background.cpp */; };
+		9E10D5EA2035485000F0F724 /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E82035485000F0F724 /* Object.cpp */; };
+		9E10D5EE20360AE500F0F724 /* ObjectGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */; };
+		9ED772142036CE1600D569A4 /* TextureWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED772122036CE1600D569A4 /* TextureWrapper.cpp */; };
+		9ED77219203930F200D569A4 /* Generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED77217203930F100D569A4 /* Generator.cpp */; };
+		9ED7721D2039516500D569A4 /* Stage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED7721B2039516500D569A4 /* Stage.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -58,8 +66,8 @@
 		9E10D5C32032430800F0F724 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libglfw3.a; sourceTree = "<group>"; };
 		9E10D5C620324B8D00F0F724 /* GLFW_Init.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GLFW_Init.cpp; sourceTree = "<group>"; };
 		9E10D5C720324B8D00F0F724 /* GLFW_Init.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLFW_Init.h; sourceTree = "<group>"; };
-		9E10D5C92032CC0100F0F724 /* GameObj.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameObj.cpp; sourceTree = "<group>"; };
-		9E10D5CA2032CC0100F0F724 /* GameObj.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameObj.h; sourceTree = "<group>"; };
+		9E10D5C92032CC0100F0F724 /* Game.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Game.cpp; sourceTree = "<group>"; };
+		9E10D5CA2032CC0100F0F724 /* Game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
 		9E10D5CF2032CEDA00F0F724 /* SimpleObjLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleObjLoader.cpp; sourceTree = "<group>"; };
 		9E10D5D02032CEDA00F0F724 /* SimpleObjLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleObjLoader.h; sourceTree = "<group>"; };
 		9E10D5D12032CEDB00F0F724 /* NGon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NGon.cpp; sourceTree = "<group>"; };
@@ -68,6 +76,32 @@
 		9E10D5D42032CEDB00F0F724 /* Quaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Quaternion.cpp; sourceTree = "<group>"; };
 		9E10D5D52032CEDB00F0F724 /* NGon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NGon.h; sourceTree = "<group>"; };
 		9E10D5D62032CEDC00F0F724 /* Quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quaternion.h; sourceTree = "<group>"; };
+		9E10D5DB2033823200F0F724 /* Rocket.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rocket.obj; sourceTree = "<group>"; };
+		9E10D5DC2033826300F0F724 /* space_ship2.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = space_ship2.obj; sourceTree = "<group>"; };
+		9E10D5DD20338E4600F0F724 /* GameShaders.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameShaders.cpp; sourceTree = "<group>"; };
+		9E10D5DE20338E4600F0F724 /* GameShaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameShaders.h; sourceTree = "<group>"; };
+		9E10D5E120338FF000F0F724 /* Player.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
+		9E10D5E220338FF000F0F724 /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
+		9E10D5E42034BEBD00F0F724 /* Background.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Background.cpp; sourceTree = "<group>"; };
+		9E10D5E52034BEBD00F0F724 /* Background.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Background.h; sourceTree = "<group>"; };
+		9E10D5E72034BF5E00F0F724 /* GameParameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GameParameters.h; path = Setup/GameParameters.h; sourceTree = SOURCE_ROOT; };
+		9E10D5E82035485000F0F724 /* Object.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Object.cpp; sourceTree = "<group>"; };
+		9E10D5E92035485000F0F724 /* Object.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
+		9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectGenerator.cpp; sourceTree = "<group>"; };
+		9E10D5ED20360AE500F0F724 /* ObjectGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectGenerator.h; sourceTree = "<group>"; };
+		9E158BD1203AA1310045BB30 /* Antarctica copy.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Antarctica copy.jpg"; sourceTree = "<group>"; };
+		9ED7720F2036B3D600D569A4 /* Cool_Picture_of_the_moon_915_609.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cool_Picture_of_the_moon_915_609.jpg; path = "../../../../../../../../Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Cool_Picture_of_the_moon_915_609.jpg"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9ED772102036B3D600D569A4 /* Cool_Picture_of_the_moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Cool_Picture_of_the_moon.jpg; sourceTree = "<group>"; };
+		9ED772112036B3D600D569A4 /* CalibrationPicture_915_609.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = CalibrationPicture_915_609.jpg; sourceTree = "<group>"; };
+		9ED772122036CE1600D569A4 /* TextureWrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TextureWrapper.cpp; sourceTree = "<group>"; };
+		9ED772132036CE1600D569A4 /* TextureWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureWrapper.h; sourceTree = "<group>"; };
+		9ED772152036EBD500D569A4 /* background.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = background.vert; sourceTree = "<group>"; };
+		9ED772162036EBE700D569A4 /* background.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = background.frag; sourceTree = "<group>"; };
+		9ED77217203930F100D569A4 /* Generator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Generator.cpp; sourceTree = "<group>"; };
+		9ED77218203930F100D569A4 /* Generator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Generator.h; sourceTree = "<group>"; };
+		9ED7721B2039516500D569A4 /* Stage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Stage.cpp; sourceTree = "<group>"; };
+		9ED7721C2039516500D569A4 /* Stage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Stage.h; sourceTree = "<group>"; };
+		9ED7721E203A2D7C00D569A4 /* debug.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = debug.vert; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +127,7 @@
 		9E10D58D203234CC00F0F724 = {
 			isa = PBXGroup;
 			children = (
+				9ED7720E2036B32F00D569A4 /* ShaderImages */,
 				9E10D5CD2032CD4F00F0F724 /* ObjFiles */,
 				9E10D5CC2032CD3600F0F724 /* Shaders */,
 				9E10D5C5203243BA00F0F724 /* Setup */,
@@ -115,9 +150,12 @@
 		9E10D598203234CC00F0F724 /* Star Suzerian Code */ = {
 			isa = PBXGroup;
 			children = (
+				9E10D5E020338FD000F0F724 /* GameObjects */,
 				9E10D599203234CC00F0F724 /* main.cpp */,
-				9E10D5C92032CC0100F0F724 /* GameObj.cpp */,
-				9E10D5CA2032CC0100F0F724 /* GameObj.h */,
+				9E10D5C92032CC0100F0F724 /* Game.cpp */,
+				9E10D5CA2032CC0100F0F724 /* Game.h */,
+				9E10D5DD20338E4600F0F724 /* GameShaders.cpp */,
+				9E10D5DE20338E4600F0F724 /* GameShaders.h */,
 			);
 			path = "Star Suzerian Code";
 			sourceTree = "<group>";
@@ -196,6 +234,7 @@
 				9E10D5B5203237CE00F0F724 /* ProjectSetup.h */,
 				9E10D5C620324B8D00F0F724 /* GLFW_Init.cpp */,
 				9E10D5C720324B8D00F0F724 /* GLFW_Init.h */,
+				9E10D5E72034BF5E00F0F724 /* GameParameters.h */,
 			);
 			path = Setup;
 			sourceTree = "<group>";
@@ -203,6 +242,9 @@
 		9E10D5CC2032CD3600F0F724 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				9ED772152036EBD500D569A4 /* background.vert */,
+				9ED772162036EBE700D569A4 /* background.frag */,
+				9ED7721E203A2D7C00D569A4 /* debug.vert */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -210,6 +252,8 @@
 		9E10D5CD2032CD4F00F0F724 /* ObjFiles */ = {
 			isa = PBXGroup;
 			children = (
+				9E10D5DC2033826300F0F724 /* space_ship2.obj */,
+				9E10D5DB2033823200F0F724 /* Rocket.obj */,
 			);
 			path = ObjFiles;
 			sourceTree = "<group>";
@@ -225,8 +269,48 @@
 				9E10D5D32032CEDB00F0F724 /* ShaderWrapper.h */,
 				9E10D5CF2032CEDA00F0F724 /* SimpleObjLoader.cpp */,
 				9E10D5D02032CEDA00F0F724 /* SimpleObjLoader.h */,
+				9ED772122036CE1600D569A4 /* TextureWrapper.cpp */,
+				9ED772132036CE1600D569A4 /* TextureWrapper.h */,
 			);
 			path = Utility;
+			sourceTree = "<group>";
+		};
+		9E10D5E020338FD000F0F724 /* GameObjects */ = {
+			isa = PBXGroup;
+			children = (
+				9ED7721A20394CD000D569A4 /* OldStyleObjectGeneration */,
+				9E10D5E220338FF000F0F724 /* Player.h */,
+				9E10D5E120338FF000F0F724 /* Player.cpp */,
+				9ED77217203930F100D569A4 /* Generator.cpp */,
+				9ED77218203930F100D569A4 /* Generator.h */,
+				9ED7721B2039516500D569A4 /* Stage.cpp */,
+				9ED7721C2039516500D569A4 /* Stage.h */,
+			);
+			path = GameObjects;
+			sourceTree = "<group>";
+		};
+		9ED7720E2036B32F00D569A4 /* ShaderImages */ = {
+			isa = PBXGroup;
+			children = (
+				9E158BD1203AA1310045BB30 /* Antarctica copy.jpg */,
+				9ED7720F2036B3D600D569A4 /* Cool_Picture_of_the_moon_915_609.jpg */,
+				9ED772102036B3D600D569A4 /* Cool_Picture_of_the_moon.jpg */,
+				9ED772112036B3D600D569A4 /* CalibrationPicture_915_609.jpg */,
+			);
+			path = ShaderImages;
+			sourceTree = "<group>";
+		};
+		9ED7721A20394CD000D569A4 /* OldStyleObjectGeneration */ = {
+			isa = PBXGroup;
+			children = (
+				9E10D5ED20360AE500F0F724 /* ObjectGenerator.h */,
+				9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */,
+				9E10D5E92035485000F0F724 /* Object.h */,
+				9E10D5E82035485000F0F724 /* Object.cpp */,
+				9E10D5E52034BEBD00F0F724 /* Background.h */,
+				9E10D5E42034BEBD00F0F724 /* Background.cpp */,
+			);
+			path = OldStyleObjectGeneration;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -286,14 +370,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9ED77219203930F200D569A4 /* Generator.cpp in Sources */,
 				9E10D5D72032CEDC00F0F724 /* SimpleObjLoader.cpp in Sources */,
+				9E10D5EE20360AE500F0F724 /* ObjectGenerator.cpp in Sources */,
+				9E10D5DF20338E4600F0F724 /* GameShaders.cpp in Sources */,
+				9E10D5EA2035485000F0F724 /* Object.cpp in Sources */,
 				9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */,
-				9E10D5CB2032CC0100F0F724 /* GameObj.cpp in Sources */,
+				9E10D5CB2032CC0100F0F724 /* Game.cpp in Sources */,
+				9E10D5E320338FF000F0F724 /* Player.cpp in Sources */,
+				9ED772142036CE1600D569A4 /* TextureWrapper.cpp in Sources */,
 				9E10D5D82032CEDC00F0F724 /* NGon.cpp in Sources */,
 				9E10D5D92032CEDC00F0F724 /* ShaderWrapper.cpp in Sources */,
 				9E10D5DA2032CEDC00F0F724 /* Quaternion.cpp in Sources */,
 				9E10D59A203234CC00F0F724 /* main.cpp in Sources */,
 				9E10D5B4203237BB00F0F724 /* glad.c in Sources */,
+				9ED7721D2039516500D569A4 /* Stage.cpp in Sources */,
+				9E10D5E62034BEBD00F0F724 /* Background.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,13 +7,11 @@
 
 #include "GLFW_Init.h"
 
-//For reference: (This is data to be returned by initialize)
-//typedef struct Monitors {
-//    int numDetected, activeMonitorNum, width, height, refreshRate;
-//    GLFWmonitor** monitorArray;
-//    GLFWwindow* activeMonitor;
-//    bool validContext;
-//} Monitors;
+//Note that in GLFW3.h these are defined, might want to make the curser invisible when game launches...
+// #define GLFW_CURSOR_NORMAL          0x00034001
+//#define GLFW_CURSOR_HIDDEN          0x00034002
+//#define GLFW_CURSOR_DISABLED        0x00034003
+
 
 //Do window setup routines and return a struct representing information on detected monitors
 MonitorData GLFW_Init::initialize() {
@@ -67,6 +65,15 @@ MonitorData GLFW_Init::initialize() {
         std::cout << "WARNING! VSYNC INTERVAL IS SET TO A NON-STANDARD VALUE AND MAY RESULT IN UNDEFINED BEHAVIOR\n";
     }
     
+    
+    std::cout << "    Configuring macOS specific window hints..." << std::endl;
+    //Note that macOS specific window hints are just ignored if run on platforms
+    //other than macOS
+//    glfwWindowHint(, GL_TRUE);//Allows access to a bigger framebuffer for retina displays
+//    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+//    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+    
+    
     std::cout << "Window Initialization Complete" << std::endl;
     
     //Detect number of monitors connected:
@@ -80,10 +87,11 @@ MonitorData GLFW_Init::initialize() {
     if (this->connectedDisplayCount >= this->defaultMonitor+1) { //If the desired default display is connected
         detectDisplayResolution(this->defaultMonitor, this->width, this->height, this->refreshRate);
         std::cout << "    Window will open on display: " << this->defaultMonitor+1 << std::endl;
+        std::cout << "    Name of Display: " << glfwGetMonitorName( monitors[this->defaultMonitor]) << std::endl;
         std::cout << "    Resolution of this Display: " << this->width << "x" << this->height << std::endl;
         std::cout << "    Display Refresh Rate: " << this->refreshRate << std::endl;
         
-        std::cout << std::endl << "    Window Context is ready to open on this display" << std::endl;
+        std::cout << "Window Context is ready to open on this Display" << std::endl;
         
         this->mWindow = glfwCreateWindow(this->width, this->height, NAME_OF_GAME,
                                          monitors[this->defaultMonitor], nullptr);
@@ -93,10 +101,11 @@ MonitorData GLFW_Init::initialize() {
         detectDisplayResolution(1, this->width, this->height, this->refreshRate);
         std::cout << "    Window will open on display: " << 2 << std::endl;
         this->defaultMonitor = 1;
+        std::cout << "    Name of Display: " << glfwGetMonitorName( monitors[this->defaultMonitor]) << std::endl;
         std::cout << "    Resolution of this Display: " << this->width << "x" << this->height << std::endl;
         std::cout << "    Display Refresh Rate: " << this->refreshRate << std::endl;
         
-        std::cout << std::endl << "    Window Context is ready to open on this display" << std::endl;
+        std::cout << "Window Context is ready to open on this Display" << std::endl;
         
         this->mWindow = glfwCreateWindow(this->width, this->height, NAME_OF_GAME,
                                          monitors[1], nullptr);
@@ -106,10 +115,11 @@ MonitorData GLFW_Init::initialize() {
         detectDisplayResolution(0, this->width, this->height, this->refreshRate);
         std::cout << "    Window will open on display: " << 1 << std::endl;
         this->defaultMonitor = 0;
+       std::cout << "    Name of Display: " << glfwGetMonitorName( monitors[this->defaultMonitor]) << std::endl;
         std::cout << "    Resolution of this Display: " << this->width << "x" << this->height << std::endl;
         std::cout << "    Display Refresh Rate: " << this->refreshRate << std::endl;
         
-        std::cout << std::endl << "    Window Context is ready to open on this display" << std::endl;
+        std::cout << "Window Context is ready to open on this Display" << std::endl;
         
         this->mWindow = glfwCreateWindow(this->width, this->height, NAME_OF_GAME,
                                          glfwGetPrimaryMonitor(), nullptr);
@@ -127,6 +137,13 @@ MonitorData GLFW_Init::initialize() {
         //return nullptr;
     }
     else {
+        // NEW EDIT (ALSO FM ON 2/18/2018): It turns out that moving glfwMakeContextCurrent(mWindow) is
+        //                                  required to open the GL at all, so lesson learned, leave
+        //          `                       glfwMakeContextCurrent(mWindow) here.
+        //EDIT (FM - 2/18/2018): I'm going to move MakeContextCurrent closer to
+        //                       where rendring actually begins (i.e. right
+        //                       before game loop)
+        //
         glfwMakeContextCurrent(mWindow);
         //gladLoadGL(); //I call the gladLoadGL stuff in main, since it is not part of GLFW
         //fprintf(stderr, "OpenGL %s\n", glGetString(GL_VERSION));
@@ -149,7 +166,7 @@ MonitorData GLFW_Init::generateDetectedMonitorsStruct() {
     
     displayDetectionResults.validContext = this->contextIsValid;
     
-    return displayDetectionResults;
+    return displayDetectionResults; //This struct winds up getting copied a lot
 }
 
 //Detects the resolution of the active display

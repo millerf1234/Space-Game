@@ -26,11 +26,14 @@ ShaderWrapper::ShaderWrapper() {
     this->tesselationShader = nullptr;
     this->programID = nullptr;
     
+    this->VAO = nullptr;
+    
     this->posAttrib = nullptr;
     this->colAttrib = nullptr;
     this->texAttrib = nullptr;
     this->normAttrib = nullptr;
     
+    vaoWasSetExternally = false;
 }
 
 ShaderWrapper::~ShaderWrapper() {
@@ -217,11 +220,13 @@ bool ShaderWrapper::link() {
     //Attach Geometry shader if there is one
     if (this->hasGeom) {
         //DO the work to attach the geom shader
+        std::cout << "OOPS! Attaching geomtry shaders hasn't been implemented yet!\n";
     }
     
     //Attach Tesselation shader if there is one
     if (this->hasTessl) {
         //DO the work to attach the tesselation shader
+        std::cout << "OOPS! Attaching tessl shaders hasn't been implemented yet!\n";
     }
     
     //Attach Frag shader
@@ -317,15 +322,29 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf) {
     return true;
 }
 
-bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint vertData, GLuint elemData) {
+void ShaderWrapper::setVAOExternally(GLuint value) {
+    if (this->VAO != nullptr) {
+        delete this->VAO;
+        this->VAO = nullptr;
+    }
+    this->VAO = new GLuint;
+    
+    *(this->VAO) = value;
+    vaoWasSetExternally = true;
+}
+
+bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, GLuint& elemData) {
     if (!this->isLinked) {
         std::cout << "\nError! Need to finish the link step before specifing vertex layout format!\n";
         return false;
     }
     
-    this->VAO = new GLuint;
-    glGenVertexArrays(1, this->VAO);
-    glBindVertexArray(*(this->VAO));
+    if (!(this->vaoWasSetExternally)) { //Generate a VAO for this shader
+        this->VAO = new GLuint;
+        glGenVertexArrays(1, this->VAO);
+        glBindVertexArray(*(this->VAO));
+    }
+   
     
     glBindBuffer(GL_ARRAY_BUFFER, vertData);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elemData);
@@ -352,10 +371,41 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint vertData, G
         *(this->texAttrib) = glGetAttribLocation(*programID, this->textureAttribName);
         glEnableVertexAttribArray(*(this->posAttrib));
         std::cout << "\nposAttrib is " << *(this->posAttrib) << std::endl;
-        glVertexAttribPointer(*(this->posAttrib), 5, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
+//        glVertexAttribPointer(*(this->posAttrib), 5, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
+        glVertexAttribPointer(*(this->posAttrib), 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
         glEnableVertexAttribArray(*(this->texAttrib));
-        std::cout << "\ntexAttrib is " << *(this->posAttrib) << std::endl;
-        glVertexAttribPointer(*(this->texAttrib), 5, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)) );
+        std::cout << "\ntexAttrib is " << *(this->texAttrib) << std::endl;
+        //glVertexAttribPointer(*(this->texAttrib), 5, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)) );
+        glVertexAttribPointer(*(this->texAttrib), 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)) );
+    }
+    
+    else if (vlf == VERT2COLOR3TEXEL2) { //2 vertices, RGB color and 2 Texel coords
+        //glBindVertexArray(*(this->VAO));
+        std::cout << "\n\nDEBUG STATEMENT: USING VERTEX ATTRIB FORMAT VERT2COLOR3TEXEL2";
+        this->posAttrib = new GLint;
+        this->colAttrib = new GLint;
+        this->texAttrib = new GLint;
+        *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
+        *(this->colAttrib) = glGetAttribLocation(*programID, this->colorAttribName);
+        *(this->texAttrib) = glGetAttribLocation(*programID, this->textureAttribName);
+        
+        //Let GPU know how the vertex coordinates are layed out (first 2 values)
+        glEnableVertexAttribArray(*(this->posAttrib));
+        glVertexAttribPointer(*(this->posAttrib), 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0);
+        std::cout << "\nDEBUG STATEMENT: Vertex Attrib was assigned: " << *(this->posAttrib);
+        
+        //Let GPU know how the color rgb values are layed out (next 3 values)
+        glEnableVertexAttribArray(*(this->colAttrib));
+        glVertexAttribPointer(*(this->colAttrib), 3, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(2 * sizeof(GLfloat)));
+        std::cout << "\nDEBUG STATEMENT: Color Attrib was assigned: " << *(this->colAttrib);
+        
+        //Let GPU know how the texture sampling (u/v) coordinates are laid out (last 2 values)
+        //The GPU interpolates between these values,
+        glEnableVertexAttribArray(*(this->texAttrib));
+        glVertexAttribPointer(*(this->texAttrib), 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(5*sizeof(float)) );
+        std::cout << "\nDEBUG STATEMENT: Tex Attrib was assigned: " << *(this->texAttrib);
+        std::cout << std::endl << std::endl;
+        
     }
     
     else {

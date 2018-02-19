@@ -47,8 +47,8 @@
 
 // Reference: https://github.com/nothings/stb/blob/master/stb_image.h#L4
 // To use stb_image, add this in *one* C++ source file.
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+//#define STB_IMAGE_IMPLEMENTATION
+//#include "stb_image.h" //Have it so that any class that needs stb_image includes this file in their .cpp file (and not their headder file)
 
 //NOTE THAT WIDTH AND HEIGHT ARE NOW BEING DETECTED WITHIN GLFW_Init
 //const int mWidth = 1670; // or 1920

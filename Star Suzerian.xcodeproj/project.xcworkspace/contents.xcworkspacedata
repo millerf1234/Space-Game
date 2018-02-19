@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:../ShaderImages/Antarctica.jpg">
+   </FileRef>
+   <FileRef
       location = "self:Star Suzerian.xcodeproj">
    </FileRef>
 </Workspace>

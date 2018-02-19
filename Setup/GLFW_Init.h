@@ -9,11 +9,10 @@
 #define GLFW_Init_h
 
 #include "glfw3.h"
+#include "GameParameters.h"
 #include <iostream>
 
-const int DEFAULT_AA_SAMPLES = 4;
-
-static const char * NAME_OF_GAME = "Star Suzerian";
+//See line 2623 in glfw3.h to see how to make window do alt+tab?
 
 typedef struct MonitorData {
     int numDetected, activeMonitorNum, width, height, refreshRate;
@@ -43,10 +42,15 @@ public:
         monitors = nullptr;
         mWindow = nullptr;
         resizeable = forwardCompatible = true;
-        contextVersionMajor = 4;
-        contextVersionMinor = 1; //version 4.1 is the default version
+        contextVersionMajor = DEFAULT_OPENGL_VERSION_MAJOR;
+        contextVersionMinor = DEFAULT_OPENGL_VERSION_MINOR; //version 4.1 is the default version
         aaSamples = DEFAULT_AA_SAMPLES;
-        vSyncInterval = 1; //Should only be 0 or 1;
+        if (USE_VSYNC) {
+            vSyncInterval = 1; //Should only be 0 or 1;
+        }
+        else {
+            vSyncInterval = 0;
+        }
         openFullScreen = true;
         defaultMonitor = 1;
         contextIsValid = true;
@@ -58,8 +62,8 @@ public:
         monitors = nullptr;
         mWindow = nullptr;
         resizeable = forwardCompatible = true;
-        contextVersionMajor = 4;
-        contextVersionMinor = 1; //version 4.1 is the default version
+        contextVersionMajor = DEFAULT_OPENGL_VERSION_MAJOR;
+        contextVersionMinor = DEFAULT_OPENGL_VERSION_MINOR; //version 4.1 is the default version
         this->aaSamples = aaSamples;
         if (useVSync) { vSyncInterval = 1; } //Should only be 0 or 1;
         else          { vSyncInterval = 0; }
@@ -78,7 +82,12 @@ public:
         this->contextVersionMajor = contextVersionMajor;
         this->contextVersionMinor = contextVersionMinor;
         aaSamples = DEFAULT_AA_SAMPLES;
-        vSyncInterval = 1; //Should only be 0 or 1;
+        if (USE_VSYNC) {
+            vSyncInterval = 1; //Should only be 0 or 1;
+        }
+        else {
+            vSyncInterval = 0;
+        }
         openFullScreen = true;
         defaultMonitor = 1;
         contextIsValid = true;
