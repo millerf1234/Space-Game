@@ -5,53 +5,38 @@
 
 #include "Generator.h"
 
-////For reference
-//class Generator{
-//private:
-//    static int nextObjID; //The ID for the next generated object (is static so each object gets own unique ID)
-//    int activeInstances; //Number of active instances of this object
-//protected:
-//    //-------------------
-//    //Fields
-//    //-------------------
-//    //Master Copy of Object's necessary data:
-//    GLfloat * vertices; //Object's vertice data
-//    GLuint vbo, ebo, *elements; //Track this objects vertices and elements on GPU with trackers vbo and ebo, and also elements contains the order to draw vertices
-//    int numberOfVertices, numberOfElements; //Size of the arrays 'vertices' and 'elements'
-//
-//    //Textures and Shaders
-//    ShaderWrapper * shaderArray;
-//    TextWrapr * textureArray;
-//    SimpleObjLoader * vertexData;
-//    int shaderArraySize, textureArraySize;
-//
-//    //Instance data
-//    int instanceCount;
+//Set static variable
+int Generator::nextObjID = 1; //Starts out at 1
 
-////Set static variable
-int Generator::nextObjID = 1; //Starts out at 0
-
-
-    //-------------------
-    // Constructor and Destructor
-    //-------------------
+//-------------------
+// Constructor and Destructor
+//-------------------
 Generator::Generator() {
     this->wasInitialized = false; //Set bool member to false
     this->vertices = nullptr;
     this->elements = nullptr;
     //Set all ints to 0
-    this->vbo = this->ebo = this->numberOfVertices = this->numberOfElements = this->shaderArraySize = this->textureArraySize = 0;
+    this->vbo = 0;
+    this->ebo = 0;
+    this->numberOfVertices = 0;
+    this->numberOfElements = 0;
+    this->shaderArraySize = 0;
+    this->textureArraySize = 0;
+    //Set pointers to nullptr
     this->shaderArray = nullptr;
     this->textureArray = nullptr;
     this->vertexData = nullptr;
     this->instances = nullptr;
     this->activeInstances = 0;
     
-    currentExpansionType = InstanceExpansionType::NOEXTRADATA; //No extra data by default
+    //Set specialization type for this generator
+    specialization  = specializationType::NOSPECIALIZATION; //No extra data by default
     
     
-    
+    this->drawTriangles = true;
+    this->drawLines = false;
 }
+//Destructor
 Generator::~Generator() { //Delete any memory being claimed by this generator
     if (this->vertices != nullptr) {
         delete this->vertices;
@@ -89,10 +74,10 @@ Generator::~Generator() { //Delete any memory being claimed by this generator
     if (this->activeInstances > 0 && this->instances != nullptr) {
         for (int i = 0; i < activeInstances; ++i) {
            // if (instances[i] != nullptr) {
-                if (instances[i].instanceExpansionData != nullptr) {
-                    delete instances[i].instanceExpansionData;
-                    instances[i].instanceExpansionData = nullptr;
-                }
+//                if (instances[i].instanceExpansionData != nullptr) {
+//                    delete instances[i].instanceExpansionData;
+//                    instances[i].instanceExpansionData = nullptr;
+//                }
            // }
         }
     }
@@ -128,30 +113,30 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         //Load vertices
         for (int i = 0; i < t.numVerts; ++i) {
             this->vertices[i] = t.vertices[i];
-            this->stackVertices[i] = t.vertices[i];
+            //this->stackVertices[i] = t.vertices[i]; //For debug
             std::cout << vertices[i] << " ";
         }
         //Load Element array
         for (int i = 0; i < t.numElems; ++i) {
             this->elements[i] = t.elements[i];
-            this->stackElements[i] = t.elements[i];
+            //this->stackElements[i] = t.elements[i]; //For debug
         }
     }
     else {
-        //load model from filepath...
+        //Load from SimpleObjLoader
         
         //Might want to delete the objLoader once I have all of the data from it
     }
      //Buffer the data
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    std::cout << std::endl << "DEBUG:: sizeof(stackVertices) is: " << sizeof(stackVertices) << std::endl;
+    //std::cout << std::endl << "DEBUG:: sizeof(stackVertices) is: " << sizeof(stackVertices) << std::endl;
     
     //Note that sizeof() behaves differently between Stack and Heap memory
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices, vertices, GL_STREAM_DRAW);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements, elements, GL_STREAM_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(stackVertices), stackVertices, GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(stackElements), stackElements, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices, vertices, GL_STREAM_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements, elements, GL_STREAM_DRAW);
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(stackVertices), stackVertices, GL_STATIC_DRAW);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(stackElements), stackElements, GL_STATIC_DRAW);
     
     //load shader
     this->shaderArraySize = 1;
@@ -194,9 +179,9 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
     ulocXTrans = glGetUniformLocation(shaderID, "xTrans");
     ulocYTrans = glGetUniformLocation(shaderID, "zTrans");
     ulocZTrans = glGetUniformLocation(shaderID, "zTrans");
-    ulocXTrans = glGetUniformLocation(shaderID, "xTrans");
-    ulocYTrans = glGetUniformLocation(shaderID, "yTrans");
-    ulocZTrans = glGetUniformLocation(shaderID, "zTrans");
+    ulocThetaX = glGetUniformLocation(shaderID, "thetaX");
+    ulocThetaY = glGetUniformLocation(shaderID, "thetaY");
+    ulocThetaZ = glGetUniformLocation(shaderID, "thetaZ");
    
      //GLint ulocTime, ulocZoom, ulocXTrans, ulocYTrans, ulocZTrans, ulocThetaX, ulocThetaY, ulocThethaZ;
     glBindVertexArray(0);
@@ -210,20 +195,22 @@ void Generator::doUpkeep() {
     }
 }
 
-void Generator::setSpecialization(InstanceExpansionType expansionType) {
+void Generator::setSpecialization(specializationType expansionType) {
+    //Don't change specialization type if instances have already been generated
     if (this->activeInstances > 0) {
         std::cout  << " \nDEBUG::OOPS! Unable to set expansion type once instances have been generated!";
         return;
     }
-    if (this->currentExpansionType != NOEXTRADATA) {
+    //Don't change specialization type if a specialization type has already been specified
+    if (this->specialization != NOSPECIALIZATION) {
         std::cout << "\nDEBUG::OOPS! SpecializationExpansion type has already been set for this generator, unable to change once set!\n";
         return;
     }
-    if (expansionType == InstanceExpansionType::PLAYERDATA) {
-        this->currentExpansionType = expansionType;
+    if (expansionType == specializationType::PLAYER) {
+        this->specialization = expansionType;
     }
-    else if (expansionType == InstanceExpansionType::WEAPONDATA) {
-        this->currentExpansionType = expansionType;
+    else if (expansionType == specializationType::WEAPON) {
+        this->specialization  = expansionType;
     }
 }
 
@@ -251,26 +238,26 @@ void Generator::generateSingle() {
     
     //Set up the rest of the new instance
     this->instances[newInstanceIndex].position = aiVector3D(0.0f, 0.0f, 0.0f);
-    this->instances[newInstanceIndex].zoom = 0.0f;
+    this->instances[newInstanceIndex].zoom = 3.5f; //Higher zoom means farther from camera
     this->instances[newInstanceIndex].timeAlive = 0.0f;
     this->instances[newInstanceIndex].thetaX = 0.0f;
     this->instances[newInstanceIndex].thetaY = 0.0f;
     this->instances[newInstanceIndex].thetaZ = 0.0f;
     
     //Set up the specialized Instance bits
-    if (this->currentExpansionType != NOEXTRADATA) {
-        switch (currentExpansionType) {
-            case PLAYERDATA:
-                this->instances[newInstanceIndex].instanceExpansionData = (void *) new PlayerData(activeInstances);
-                break;
-            case WEAPONDATA:
-                this->instances[newInstanceIndex].instanceExpansionData = (void *) new WeaponData;
-                break;
-        }
-    }
-    else {
-        this->instances[newInstanceIndex].instanceExpansionData = nullptr;
-    }
+//    if (this->currentExpansionType != NOEXTRADATA) {
+//        switch (currentExpansionType) {
+//            case PLAYERDATA:
+//                this->instances[newInstanceIndex].instanceExpansionData = (void *) new PlayerData(activeInstances);
+//                break;
+//            case WEAPONDATA:
+//                this->instances[newInstanceIndex].instanceExpansionData = (void *) new WeaponData;
+//                break;
+//        }
+//    }
+//    else {
+//        this->instances[newInstanceIndex].instanceExpansionData = nullptr;
+//    }
 }
 
 
@@ -325,10 +312,16 @@ glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements + 100, e
         glUniform1f(ulocThetaY, instances[i].thetaY);
         glUniform1f(ulocThetaZ, instances[i].thetaZ);
         
-        glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        if (drawTriangles) {
+            glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
+        }
+        else if (drawLines) {
+            glDrawElements(GL_LINES, this->numberOfElements, GL_UNSIGNED_INT, 0);
+        }
+        else {
+            glDrawElements(GL_POINTS, this->numberOfElements, GL_UNSIGNED_INT, 0);
+        }
     }
-    
 }
 
 

@@ -23,12 +23,16 @@ TextWrapr::TextWrapr(const std::string & imageFilePath) {
     
     //Might want to add the option to customize these shader parameters later on down the line:
     //            WRAPPING
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
     //           FILTERING
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     //           MIPMAP GENERATION
     glGenerateMipmap(GL_TEXTURE_2D);
     
@@ -98,9 +102,11 @@ void TextWrapr::deactivate() {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void TextWrapr::fixTexture915x609(TextureWrapper * tData) {
+//I wrote this function to fix a texture that is 915x609 pixels, so it gets most
+//of the image lined up. It still isn't perfect.
+void TextWrapr::fixTexture915x609(TextureWrapper * tData) { 
     if (tData == nullptr) { //If the data is a nullptr, don't try to do anything with it
-        std::cout << "\nDEBUG: OOPS! fixTexture915x609 was given a nullptr to fix!" << std::endl;
+        std::cout << "\nDEBUG: OOPS! fixTexture915x609 was given a nullptr to fix! This is most likely\ndue to an error in the TextureWrapper class!" << std::endl;
         return; //Leave function
     }
     else if (tData->image == nullptr) {
@@ -112,10 +118,12 @@ void TextWrapr::fixTexture915x609(TextureWrapper * tData) {
         // (I came up with this after a few hours of experimentation)
         int w = tData->w;
         int h = tData->h;
-        if (w == 915 && h == 609) {
-            std::vector<unsigned char>::iterator it;
-            int lineFixerCounter = 3;
-            for (int i = 0 ; i < w*h * 3 ; ++i) {
+        //lineFixerCounter is used to realign shifted edge-case pixels
+        int lineFixerCounter = 3; //Start counter at 3 (for Red Green Blue for each pixel)
+        if (w == 915 && h == 609) { //Check width and height to make sure before running
+            std::vector<unsigned char>::iterator it; //it will iterate through the actual image data.
+            for (int i = 0 ; i < w*h * 3 ; ++i) { //For each data point in the image
+                //if the first pixel data slot from i is the last pixel from the end of the row
                 if ((i+1) == (w-1)*3) {
                     it = tData->image->begin() + i+7;
                     //tData->image->insert(it, '\xfe');
@@ -139,6 +147,9 @@ void TextWrapr::fixTexture915x609(TextureWrapper * tData) {
                     tData->image->insert(it, *(it+3));
                 }
                 //Aha! I have discovered a pattern that almost almost works
+                //At this point there is a noticeable line in the image due to
+                //pixels having been shifted, so need a special counter to try to
+                //remove the line
                 if ((i+1) == (914-1) * 3 * lineFixerCounter) {
                     if (lineFixerCounter < 10) {
                         lineFixerCounter++;

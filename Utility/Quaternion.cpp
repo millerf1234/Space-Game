@@ -1,6 +1,6 @@
 //
 //  Quaternion.cpp
-//  OpenGLSetupTestWithSTB
+//  OpenGLSetupTestWithSTB_Image
 //
 //  Created by Forrest Miller on 1/16/18.
 //

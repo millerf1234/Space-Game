@@ -22,6 +22,7 @@
 #include "Quaternion.h" //Used for doing rotations
 #include "Object.h" //Abstract base class for any in-game objects
 //#include "Background.h"
+#include "GameEntityManager.h"
 #include "Stage.h" //I replaced Background.h with Stage.h
 #include "GameParameters.h" //Get gameplay-affecting constants
 static const char * INDENT = "        ";
@@ -60,13 +61,13 @@ private:
     int numberOfLevels; //Number of levels
     Stage ** levels; //An array of pointers to level
     
+    std::vector<GameEntityManager *> gEntities;
     bool shadersReady, texturesReady, objectGeneratorsReady;
     
     //Private Member Functions
     void draw();
     void processUserInput();
     void doGameLogic(); //Handle collisions and whatnot (upkeep)
-    
 
     void doZoomIn(unsigned long long framesToHold); //The most important function
 };

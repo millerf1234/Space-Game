@@ -1,6 +1,7 @@
 //  This is a file that just contains constants which affect all of the game parameters.
 //  GameParameters.h
 //
+//  Edited continuously up through 2/20/2018 as needed with added functionality
 //  Created by Forrest Miller on 2/14/18.
 //
 
@@ -9,6 +10,15 @@
 
 //Put all this in a namespace?
 #include <string>
+
+//-----------------------------------------------------------------------------
+// ZOOM-IN PARAMETERS
+// (Most Important!!!  Edit With Care!!!)
+//-----------------------------------------------------------------------------
+static constexpr int FRAMES_TO_HOLD = 500;
+static constexpr float STARTING_ZOOM = 50.0f;
+static constexpr float ENDING_ZOOM = 5.0f; //This is probably way to large a change
+
 
 //-----------------------------------------------------------------------------
 //   GAME PARAMETERS
@@ -49,7 +59,6 @@ static constexpr float PLAYER_THREE_BLUE = 0.25f; //Blue amount
 
 static constexpr short MAX_PLAYERS = 2; //Shouldn't be set higher than 2... really don't do it....
 
-
 static const int DEFAULT_AA_SAMPLES = 4; //This is for global anti-aliasing done by GLFW
 static const bool USE_VSYNC = true; //Should VSync be off/on
 static const int DEFAULT_MONITOR = 1; //The primary monitor is 0, so 1 will be the next monitor after the primary monitor
@@ -85,7 +94,7 @@ const std::string PLAYERSHIP_ENGINE_FRAG = "/Users/forrestmiller/Desktop/xcode_t
 
 
 //-----------------------------------------------------------------------------
-//   Texture Image Locations (preferably JPEGs that are 915 x 609)
+//   Texture Image Locations (preferably JPEGs that are 915 x 609)    //see: http://img-resize.com/   to resize images
 //-----------------------------------------------------------------------------
 static constexpr int NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD = 1; //Increase this as more backgrounds are added
 
@@ -97,13 +106,26 @@ static constexpr int LEVEL_TO_LOAD = 1; //The level to load (Note I index valye 
 // Hubble shot of the galaxy. Huge resolution! Has not been fixed to display properly
 // from:
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Galaxy_history_revealed_by_the_Hubble_Space_Telescope_(GOODS-ERS2).jpg";
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/HubbleGalaxyHistory_915_609.jpg"; //I fixed to display properly, but it's sorta distorted now
 
 
 // Picture of the moon. Picture is the correct dimensions to be fixed to display properly.
 static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Cool_Picture_of_the_moon_915_609.jpg";
 
+//
+////Picture of pluto:
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Pluto_4000_4000_JPEG.jpeg";
+
+
+//Picture of antartica:
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Antarticata.jpg";
+
+//Another test picture:
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Mibra_mine.jpg";
+
+
 //  Just the calibration Picture I used to fix the 915x609 resolution textures for them to display (usually) correctly.
-//    "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/CalibrationPicture_915_609.jpg",
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/CalibrationPicture_915_609.jpg";
 
 
 #endif /* GameParameters_h */

@@ -23,7 +23,8 @@
 //  1.00 (February 11, 2018)   Been using this class for almost a full month now
 //       and it seems to be working as intended, so probably safe to say this
 //       class is ready enough for version 1.0. Never implemented the functions
-//       that take in a full array of vertices.
+//       that take in a full array of vertices. Still haven't fully tested the
+//       matrix-returning functions.
 //  0.91 Added ability to convert Quaternion into a 3x3 rotaton matrix (aiMatrix3x3) 1/24/2018
 //  0.9 Have everything working except the rotation functions that take in arrays of vertices  1/23/2018
 //  0.2 Added functionality to covert between this and aiQuaternion 1/20/2018
@@ -36,7 +37,7 @@
 #include "glad.h"
 #include <assimp/Importer.hpp> //Gives access to the aiVector3D
 #include <cmath>
-#include <sstream>
+//#include <sstream> //
 
 #include <iostream> //For debug, can remove eventually
 
@@ -103,9 +104,9 @@ public:
     float getTheta() const {return this->theta;}
     float getRealPart() const {return this->real;} //i.e. float getRealPart() {return cos(theta / 2.0);}
     
-    aiQuaternion to_aiQuaternion() const; //Haven't tested this extensivly yet
+    aiQuaternion to_aiQuaternion() const; //Haven't tested this function extensivly yet
     
-    aiMatrix3x3 toRotationMatrix() const;
+    aiMatrix3x3 toRotationMatrix() const; //Nor has this one been tested that much
     
     float geti() const {return i;}
     float getj() const {return j;}

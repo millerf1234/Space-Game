@@ -1,7 +1,12 @@
 //  Generator.h
 //
+//
+//
+//
+//
+//
 //  This is a redone version of my first ObjectGeneration class. I want to have there
-//  be a more distinct difference between an object and an objectGenerator.
+//  be a more distinct difference between an object (now called 'instance') and an objectGenerator.
 //
 //
 //  Here is the header I had written for ObjectGenerator:
@@ -31,41 +36,15 @@
 #include "GameParameters.h"
 #include "PlayerData.h"
 #include "WeaponData.h"
+#include "Instance.h"
 
 
 constexpr int FILEPATH_BUFFER = 512;
 
-enum InstanceExpansionType {PLAYERDATA, WEAPONDATA, NOEXTRADATA};
-
-//Here is a typedef for an instance of what was generated
-typedef struct Instance {
-public:
-    int identifierNumber; //Unique number attached to each instance of any object
-    aiVector3D position;
-    float zoom;
-    float thetaX, thetaY, thetaZ; //Euler Rotation Angles
-    //collisionBox
-    float timeAlive;
-    
-    //One constructor to give this instance an ID number
-    Instance() {;}
-    Instance(int id) {this->identifierNumber = id;
-        this->instanceExpansionData = nullptr;
-    }
-    
-    //One function attached to getID()
-    int getID() const {return this->identifierNumber;}
-    
-    void * instanceExpansionData;
-    
-//    typedef union instanceExpansionData {
-//        PlayerData * pData; //Contains data for a player object
-//        WeaponData * wData; //Contains data for a weapon object
-//    } instanceExpansionData;
-} Instance;
+enum specializationType {PLAYER, WEAPON, NOSPECIALIZATION};
 
 typedef struct InitializationTemplate{
-    //Hold filepaths
+    //Hold filepaths (turns out I instead use strings instead of char *)
 //    char modelFilePath[FILEPATH_BUFFER];
 //    char textureFilePath[FILEPATH_BUFFER];
 //    char vertShaderPath[FILEPATH_BUFFER];
@@ -77,7 +56,7 @@ typedef struct InitializationTemplate{
     GLfloat * vertices;
     int numVerts, numElems;
     GLuint * elements;
-    bool vert2, vert3, vert2tex2, vert2col3tex2, vert3tex2, vert3tex3, vert2norml2tex2, vert3norml3tex3, vert3tex3norml3, vert3norml3tex2;
+    bool vert2, vert3, vert2tex2, vert2col3tex2, vert3tex2, vert3tex3, vert3norml3, vert2norml2tex2, vert3norml3tex3, vert3tex3norml3, vert3norml3tex2;
 //    char * vertAttribName[FILEPATH_BUFFER];
 //    char * texAttribName[FILEPATH_BUFFER];
 //    char * normalAttribName[FILEPATH_BUFFER];
@@ -95,7 +74,7 @@ typedef struct InitializationTemplate{
     std::string normalAttribName;
     std::string colAttribName;
     
-    InstanceExpansionType typeDataRequired;
+    specializationType typeDataRequired;
 //
     InitializationTemplate() { //Constructor
         //Set all bools to false
@@ -104,15 +83,12 @@ typedef struct InitializationTemplate{
         vertices = nullptr;
         elements = nullptr;
         numVerts = numElems = 0;
-        vert2 = vert3 = vert2tex2 = vert2col3tex2 = vert3tex2 = vert3tex3 = vert2norml2tex2 = vert3norml3tex3 = vert3tex3norml3 = vert3norml3tex2 = false;
-        typeDataRequired = InstanceExpansionType::NOEXTRADATA;
+        vert2 = vert3 = vert2tex2 = vert2col3tex2 = vert3tex2 = vert3tex3 = vert3norml3 = vert2norml2tex2 = vert3norml3tex3 = vert3tex3norml3 = vert3norml3tex2 = false;
+        typeDataRequired = specializationType::NOSPECIALIZATION;
         //Set all pointers to nullptr
        // modelFilePath = textureFilePath = vertShaderPath = tesslShaderPath = geomShaderPath = fragShaderPath = vertAttribName = texAttribName = normalAttribName = colAttribName = nullptr;
     }
-    
-    
 } InitializationTemplate;
-
 
 class Generator{
 private:
@@ -127,14 +103,16 @@ protected:
     GLuint vbo, ebo, /*tex,*/ *elements; //Track this objects vertices and elements on GPU with trackers vbo and ebo, and also elements contains the order to draw vertices
     int numberOfVertices, numberOfElements; //Size of the arrays 'vertices' and 'elements'
     
-    GLfloat stackVertices[1000];
-    GLuint stackElements[500];
+    //GLfloat stackVertices[1000]; //These 2 were just for debug testing,
+    //GLuint stackElements[500];
     
     //Textures and Shaders
     ShaderWrapper ** shaderArray;
     TextWrapr ** textureArray;
     SimpleObjLoader * vertexData;
     int shaderArraySize, textureArraySize;
+    
+    bool drawTriangles, drawLines;
     
     //Instance data
     //int instanceCount; //Redundant with activeInstances
@@ -163,9 +141,10 @@ public:
     bool /* hasVbo(), hasEbo(),*/ hasVerts(), hasElems(), hasShader(), hasTexture(), hasModel(), readyToGenerate();
     bool wasInitialized;
     
-    InstanceExpansionType currentExpansionType;
     
-    void setSpecialization(InstanceExpansionType expansionType);
+    specializationType specialization ;
+    
+    void setSpecialization(specializationType expansionType);
     
     //--------------------
     // Instance Controls
@@ -176,9 +155,11 @@ public:
     void processUserInput();
     int getInstanceCount() const {return this->activeInstances;}
     void drawInstances();
-    Instance * getArrayOfInstances();
+    void convertTrianglesIntoLines();
+    void convertLinesIntoTriangles(); //Need a way to toggle shaders?
+    Instance * getArrayOfInstances() {return instances;}
     
-    
+    void removeInstance(const int & instantID); 
     
 };
 

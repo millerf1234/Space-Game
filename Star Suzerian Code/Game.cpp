@@ -4,6 +4,7 @@
 //
 //  Created by Forrest Miller on 2/12/18.
 
+#define MAX_GAME_ENTITIES 100000
 
 #include "Game.h"
 
@@ -19,6 +20,8 @@ Game::Game(MonitorData & mPtr) {
     counter = 0.0f; //Set game clock to 0
     
     this->mWindow = mPtr.activeMonitor;
+    
+    
 }
 
 //Destructor (basically does a 'delete x' for every 'new x' that was called in the constructor)
@@ -54,24 +57,32 @@ Game::~Game() { //std::cout << "\nDEBUG::Game destructor was called...\n";
         delete [] this->levels;
         this->levels = nullptr;
     }
+    
 }
 
 void Game::playIntroMovie() {  }
 
 void Game::loadGameObjects() {
+    std::cout << std::endl << INDENT << "Loading Stages...\n";
+    for (int i = 0; i < NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD; ++i) {
+        gEntities.push_back(new Stage);
+        std::cout << INDENT << "    Level " << i+1 << " loaded..." << std::endl;
+    }
+    
+    
     //std::cout << std::endl << INDENT <<  "Loading background...\n";
     //this->background = new BackGroundGenerator;
     
-    std::cout << std::endl << INDENT << "Loading Stages...\n";
-    this->levels = new Stage* [NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD]; //Create an array of pointer to stage
-    for (int i = 0; i < NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD; ++i) {
-        this->levels[i] = new Stage(i);
-        std::cout << INDENT << "    Level " << i+1 << " loaded..." << std::endl;
-    }
-    //initializeFromTemplate should be called by Stage constructor
-    //this->levels[0]->generator->initializeFromTemplate(<#const InitializationTemplate &#>)
-    //Generate a first level
-    levels[0]->generator->generateSingle();
+    //std::cout << std::endl << INDENT << "Loading Stages...\n";
+    //this->levels = new Stage* [NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD]; //Create an array of pointer to stage
+//    for (int i = 0; i < NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD; ++i) {
+//        //this->levels[i] = new Stage(i);
+//        std::cout << INDENT << "    Level " << i+1 << " loaded..." << std::endl;
+//    }
+    ////initializeFromTemplate should be called by Stage constructor
+    ////this->levels[0]->generator->initializeFromTemplate(<#const InitializationTemplate &#>)
+    ////Generate a first level
+    //levels[0]->generator->generateSingle();
     
     
     //void Game::loadShaders() {  }
@@ -103,14 +114,23 @@ bool Game::launch() {
         //}
         
         //Logic () //Includes Upkeep and collision detection and everything else
-        levels[0]->generator->doUpkeep();
+        //In logic, do:
+        std::vector<GameEntityManager*>::iterator it2 = gEntities.begin();
+        for (; it2 < gEntities.end(); ++it2) {
+            (*it2)->doUpkeep();
+        }
+        //levels[0]->generator->doUpkeep();
+        
         
         //Draw() {
         //Draw background
         /// this->background
         //...
-        levels[0]->generator->drawInstances();
-        
+        //levels[0]->generator->drawInstances();
+        std::vector<GameEntityManager*>::iterator it = gEntities.begin();
+        for ( ; it < gEntities.end(); ++it) {
+            (*it)->drawInstances();
+        }
         
         glBindVertexArray(0); //Vertex attribute array
         glUseProgram(0);

@@ -3,8 +3,9 @@
 
 #version 400 core
 
-in vec2 texCoord3D;
-in vec3 position3D;
+//in vec3 texCoord;
+in vec3 norml;
+in vec3 position;
 //in vec3 colr;
 
 
