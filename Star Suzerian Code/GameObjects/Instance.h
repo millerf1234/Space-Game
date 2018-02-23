@@ -15,8 +15,9 @@
 enum InstanceType {PLAYERINSTANCE, WEAPONINSTANCE, ENEMYINSTANCE, SCENEINSTANCE, BASIC};
 
 //Here is a typedef for an instance of what was generated
-typedef struct Instance {
-//public:
+//typedef struct Instance {
+class Instance{
+public:
     int identifierNumber; //Unique number attached to each instance of any object
     //These are all basically just values to give the GPU for each instance
     aiVector3D position;
@@ -32,6 +33,38 @@ typedef struct Instance {
     
     //One function attached to getID()
     int getID() const {return this->identifierNumber;}
+};
+//} Instance;
+
+//typedef struct PlayerInstance : public Instance {
+class PlayerInstance : public Instance {
+public:
+    float health;
+    float shields;
+    float energy;
+    float fuel;
+    int playerNumber;
+    int rocketCount;
+    int maxRockets;
     
-} Instance;
+    //Color information
+    float red;
+    float green;
+    float blue;
+    
+    PlayerInstance(int playerNumber) {
+        this->playerNumber = playerNumber;
+        health = STARTING_PLAYER_HEALTH;
+        shields = STARTING_PLAYER_SHIELDS;
+        energy = STARTING_PLAYER_ENERGY;
+        fuel = STARTING_PLAYER_FUEL;
+        rocketCount = STARTING_PLAYER_ROCKETS;
+        maxRockets = STARTING_PLAYER_ROCKET_COUNT_MAX;
+        red = green = blue = 0.75f; //Setting all 3 equal will give a shade of gray
+    }
+};
+//} PlayerInstance;
+
+
+
 #endif /* Instance_h */

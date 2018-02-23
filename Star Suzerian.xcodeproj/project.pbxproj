@@ -26,7 +26,6 @@
 		9E10D5D82032CEDC00F0F724 /* NGon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5D12032CEDB00F0F724 /* NGon.cpp */; };
 		9E10D5D92032CEDC00F0F724 /* ShaderWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5D22032CEDB00F0F724 /* ShaderWrapper.cpp */; };
 		9E10D5DA2032CEDC00F0F724 /* Quaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5D42032CEDB00F0F724 /* Quaternion.cpp */; };
-		9E10D5DF20338E4600F0F724 /* GameShaders.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5DD20338E4600F0F724 /* GameShaders.cpp */; };
 		9E10D5E320338FF000F0F724 /* PlayerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E120338FF000F0F724 /* PlayerManager.cpp */; };
 		9E10D5E62034BEBD00F0F724 /* Background.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E42034BEBD00F0F724 /* Background.cpp */; };
 		9E10D5EA2035485000F0F724 /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E82035485000F0F724 /* Object.cpp */; };
@@ -63,7 +62,6 @@
 		9E0754F0203B8B58009B6215 /* QuickHull.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QuickHull.h; sourceTree = "<group>"; };
 		9E0754F3203B9BE5009B6215 /* Instance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Instance.h; sourceTree = "<group>"; };
 		9E0754F5203B9E4E009B6215 /* Mibra_mine.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Mibra_mine.jpg; sourceTree = "<group>"; };
-		9E0754F7203CFBB1009B6215 /* Pluto_4000_4000_JPEG.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Pluto_4000_4000_JPEG.jpeg; sourceTree = "<group>"; };
 		9E0754F8203CFCDC009B6215 /* Antarticata.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Antarticata.jpg; sourceTree = "<group>"; };
 		9E0754F9203CFDFD009B6215 /* HubbleGalaxyHistory_915_609.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = HubbleGalaxyHistory_915_609.jpg; sourceTree = "<group>"; };
 		9E0754FA203D0EC2009B6215 /* ID_008.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ID_008.jpg; sourceTree = "<group>"; };
@@ -98,8 +96,6 @@
 		9E10D5D62032CEDC00F0F724 /* Quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quaternion.h; sourceTree = "<group>"; };
 		9E10D5DB2033823200F0F724 /* Rocket.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rocket.obj; sourceTree = "<group>"; };
 		9E10D5DC2033826300F0F724 /* space_ship2.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = space_ship2.obj; sourceTree = "<group>"; };
-		9E10D5DD20338E4600F0F724 /* GameShaders.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameShaders.cpp; sourceTree = "<group>"; };
-		9E10D5DE20338E4600F0F724 /* GameShaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameShaders.h; sourceTree = "<group>"; };
 		9E10D5E120338FF000F0F724 /* PlayerManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerManager.cpp; sourceTree = "<group>"; };
 		9E10D5E220338FF000F0F724 /* PlayerManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerManager.h; sourceTree = "<group>"; };
 		9E10D5E42034BEBD00F0F724 /* Background.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Background.cpp; sourceTree = "<group>"; };
@@ -202,8 +198,6 @@
 				9E10D599203234CC00F0F724 /* main.cpp */,
 				9E10D5C92032CC0100F0F724 /* Game.cpp */,
 				9E10D5CA2032CC0100F0F724 /* Game.h */,
-				9E10D5DD20338E4600F0F724 /* GameShaders.cpp */,
-				9E10D5DE20338E4600F0F724 /* GameShaders.h */,
 			);
 			path = "Star Suzerian Code";
 			sourceTree = "<group>";
@@ -350,7 +344,6 @@
 				9ED7720F2036B3D600D569A4 /* Cool_Picture_of_the_moon_915_609.jpg */,
 				9ED772112036B3D600D569A4 /* CalibrationPicture_915_609.jpg */,
 				9E0754F5203B9E4E009B6215 /* Mibra_mine.jpg */,
-				9E0754F7203CFBB1009B6215 /* Pluto_4000_4000_JPEG.jpeg */,
 				9E0754F8203CFCDC009B6215 /* Antarticata.jpg */,
 				9E0754FA203D0EC2009B6215 /* ID_008.jpg */,
 			);
@@ -432,7 +425,6 @@
 				9ED77219203930F200D569A4 /* Generator.cpp in Sources */,
 				9E10D5D72032CEDC00F0F724 /* SimpleObjLoader.cpp in Sources */,
 				9E10D5EE20360AE500F0F724 /* ObjectGenerator.cpp in Sources */,
-				9E10D5DF20338E4600F0F724 /* GameShaders.cpp in Sources */,
 				9E0754ED203B892C009B6215 /* GameEntityManager.cpp in Sources */,
 				9E10D5EA2035485000F0F724 /* Object.cpp in Sources */,
 				9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */,

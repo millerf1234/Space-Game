@@ -1,9 +1,11 @@
 //  Generator.h
 //
+//  I have rewritten/repurposed this class several times, and as a result it is a
+//  bit of a mess. This class also does a lot of the behind-the-scenes work for the
+//  game, so it is used a lot. At some point, this class ideally will be rewritten
 //
-//
-//
-//
+// *********************************************************************************
+//  Old comment headders:
 //
 //  This is a redone version of my first ObjectGeneration class. I want to have there
 //  be a more distinct difference between an object (now called 'instance') and an objectGenerator.
@@ -28,39 +30,32 @@
 #define Generator_h
 
 #include <iostream>
+#include <assimp/Importer.hpp> //Gives access to the aiVector3D
+#include <vector>
+
 #include "ShaderWrapper.h" //Contains class that provides interface for shaders
 #include "SimpleObjLoader.h" //Contains class that handles '.obj' files
 #include "TextureWrapper.h" //Contains struct that handles textures
-#include <assimp/Importer.hpp> //Gives access to the aiVector3D
 #include "glad.h" //For GL types and functions
 #include "GameParameters.h"
-#include "PlayerData.h"
-#include "WeaponData.h"
+//#include "PlayerData.h"
+//#include "WeaponData.h"
+//#include "PlayerManager.h" //lots of circular includes I got. Oh well...
 #include "Instance.h"
 
+//constexpr int FILEPATH_BUFFER = 512;
 
-constexpr int FILEPATH_BUFFER = 512;
 
 enum specializationType {PLAYER, WEAPON, NOSPECIALIZATION};
 
 typedef struct InitializationTemplate{
-    //Hold filepaths (turns out I instead use strings instead of char *)
-//    char modelFilePath[FILEPATH_BUFFER];
-//    char textureFilePath[FILEPATH_BUFFER];
-//    char vertShaderPath[FILEPATH_BUFFER];
-//    char tesslShaderPath[FILEPATH_BUFFER];
-//    char geomShaderPath[FILEPATH_BUFFER];
-//    char fragShaderPath[FILEPATH_BUFFER];
     bool hasVert, hasTessl, hasFrag, hasGeom;
     bool hasVertsAlreadyLoaded;
+    bool hasTexture;
     GLfloat * vertices;
     int numVerts, numElems;
     GLuint * elements;
     bool vert2, vert3, vert2tex2, vert2col3tex2, vert3tex2, vert3tex3, vert3norml3, vert2norml2tex2, vert3norml3tex3, vert3tex3norml3, vert3norml3tex2;
-//    char * vertAttribName[FILEPATH_BUFFER];
-//    char * texAttribName[FILEPATH_BUFFER];
-//    char * normalAttribName[FILEPATH_BUFFER];
-//    char * colAttribName[FILEPATH_BUFFER];
     
     std::string modelFilePath;
     std::string textureFilePath;
@@ -73,13 +68,13 @@ typedef struct InitializationTemplate{
     std::string texAttribName;
     std::string normalAttribName;
     std::string colAttribName;
-    
     specializationType typeDataRequired;
-//
-    InitializationTemplate() { //Constructor
+    //Constructor
+    InitializationTemplate() {
         //Set all bools to false
         hasVert = hasTessl = hasFrag = hasGeom = false;
         hasVertsAlreadyLoaded = false;
+        hasTexture = false;
         vertices = nullptr;
         elements = nullptr;
         numVerts = numElems = 0;
@@ -90,17 +85,21 @@ typedef struct InitializationTemplate{
     }
 } InitializationTemplate;
 
+
 class Generator{
 private:
     static int nextObjID; //The ID for the next generated object (is static so each object gets own unique ID)
     int activeInstances; //Number of active instances of this object
+    
 protected:
     //-------------------
     //Fields
     //-------------------
     //Master Copy of Object's necessary data:
+public: //temporary for debug
     GLfloat * vertices; //Object's vertice data
     GLuint vbo, ebo, /*tex,*/ *elements; //Track this objects vertices and elements on GPU with trackers vbo and ebo, and also elements contains the order to draw vertices
+protected: //temporary for debug
     int numberOfVertices, numberOfElements; //Size of the arrays 'vertices' and 'elements'
     
     //GLfloat stackVertices[1000]; //These 2 were just for debug testing,
@@ -117,6 +116,7 @@ protected:
     //Instance data
     //int instanceCount; //Redundant with activeInstances
     Instance * instances;
+    std::vector<int> instancesCreatedByThisGenerator; //A vector of instance IDs
     
     //Uniform location variables
     GLint ulocTime, ulocZoom, ulocXTrans, ulocYTrans, ulocZTrans, ulocThetaX, ulocThetaY, ulocThetaZ;
@@ -141,16 +141,14 @@ public:
     bool /* hasVbo(), hasEbo(),*/ hasVerts(), hasElems(), hasShader(), hasTexture(), hasModel(), readyToGenerate();
     bool wasInitialized;
     
-    
     specializationType specialization ;
-    
     void setSpecialization(specializationType expansionType);
     
     //--------------------
     // Instance Controls
     //--------------------
     void generateSingle(); //Create a single new instance
-    void generate(int numberToGenerate); //Create a number of new instance
+    //void generate(int numberToGenerate); //Create a number of new instance
     void doUpkeep();
     void processUserInput();
     int getInstanceCount() const {return this->activeInstances;}
@@ -160,7 +158,7 @@ public:
     Instance * getArrayOfInstances() {return instances;}
     
     void removeInstance(const int & instantID); 
-    
+    void removeInstance(Instance *);
 };
 
 #endif /* Generator_h */

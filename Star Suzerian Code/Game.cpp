@@ -44,7 +44,9 @@ Game::~Game() { //std::cout << "\nDEBUG::Game destructor was called...\n";
 //        delete this->background;
 //        this->background = nullptr;
 //    }
-    //Delete levels
+    
+    //Not sure if this next part should be removed or not?
+/*    //Delete levels
     if (this->levels != nullptr) {
         //Delete each level
         for (int i = 0; i < this->numberOfLevels; ++i) {
@@ -56,8 +58,21 @@ Game::~Game() { //std::cout << "\nDEBUG::Game destructor was called...\n";
         //Delete the array of levels
         delete [] this->levels;
         this->levels = nullptr;
+    } */
+ 
+    //Delete game entities in the gameEntityManager array
+    std::vector<GameEntityManager *>::iterator iter;
+    for (iter = gEntities.begin(); iter != gEntities.end(); ++iter) {
+        if (*iter != nullptr) {
+            delete (*iter);
+            (*iter) = nullptr;
+        }
     }
-    
+    //Gotta delete the pointer at the end of the vector as well
+//    if (*iter != nullptr) {
+//        delete (*iter);
+//        (*iter) = nullptr;
+//    }
 }
 
 void Game::playIntroMovie() {  }
@@ -68,6 +83,10 @@ void Game::loadGameObjects() {
         gEntities.push_back(new Stage);
         std::cout << INDENT << "    Level " << i+1 << " loaded..." << std::endl;
     }
+    
+    std::cout << std::endl << INDENT << "Loading PlayerModels...\n";
+    gEntities.push_back(new PlayerManager);
+    
     
     
     //std::cout << std::endl << INDENT <<  "Loading background...\n";

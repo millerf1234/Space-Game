@@ -34,11 +34,11 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     std::cout << "    Generating a new instance of the game..." << std::endl;
     Game Game(detectedDisplayInfo); //Create an instance of the game and tell
     //the instance about all the monitor setup that has been done thus far.
-    std::cout << "Done\n    Loading game object data...";
+    std::cout << "Done\n    Loading Models...";
     Game.loadGameObjects();
-    std::cout << "Done\n    Loading shaders...";
+    std::cout << "Done\n    Loading Shaders...";
    // Game.loadShaders();
-    std::cout << "Done\n    Loading textures...";
+    std::cout << "Done\n    Loading Textures...";
     //Game.loadTextures();
     std::cout << "Done\n" << std::endl;
     std::cout << "Game Launched." << std::endl << std::endl;

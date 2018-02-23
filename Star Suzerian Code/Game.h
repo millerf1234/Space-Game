@@ -23,6 +23,7 @@
 #include "Object.h" //Abstract base class for any in-game objects
 //#include "Background.h"
 #include "GameEntityManager.h"
+#include "PlayerManager.h"
 #include "Stage.h" //I replaced Background.h with Stage.h
 #include "GameParameters.h" //Get gameplay-affecting constants
 static const char * INDENT = "        ";

@@ -23,17 +23,6 @@ Stage::Stage() : GameEntityManager() {
 }
 
 Stage::~Stage() {
-    if (this->initTemplate != nullptr) {
-        delete this->initTemplate;
-        this->initTemplate = nullptr;
-    }
-//    if (this->generator->getInstanceCount() > 1) {
-//        this->geneerator->removeInstance(this->)
-//    }
-    if (this->generator != nullptr) {
-        delete this->generator;
-        this->generator = nullptr;
-    }
     if (this->initTemplate->hasVertsAlreadyLoaded) {
         //Then delete heap data that was used
         if (this->initTemplate->vertices != nullptr) {
@@ -45,6 +34,18 @@ Stage::~Stage() {
             initTemplate->elements = nullptr;
         }
     }
+    if (this->initTemplate != nullptr) {
+        delete this->initTemplate;
+        this->initTemplate = nullptr;
+    }
+//    if (this->generator->getInstanceCount() > 1) {
+//        this->geneerator->removeInstance(this->)
+//    }
+    if (this->generator != nullptr) {
+        delete this->generator;
+        this->generator = nullptr;
+    }
+   
 }
 
 void Stage::doUpkeep() {
@@ -79,6 +80,7 @@ void Stage::initializeFromTemplate() {
 }
 
 void Stage::generateInitializationTemplate() {
+    initTemplate->hasTexture = true; //Since the background will have a texture
     initTemplate->textureFilePath = backgroundTextureFP;
     initTemplate->vertShaderPath = BACKGROUND_VERT;
     initTemplate->fragShaderPath = BACKGROUND_FRAG;
@@ -113,6 +115,8 @@ void Stage::generateInitializationTemplate() {
     }
 }
 
+
+//  OLDE STAGE CODE:
 //
 //Stage::Stage(int textureToLoadInParameterArray ) {
 //    stageInitFormat = nullptr;

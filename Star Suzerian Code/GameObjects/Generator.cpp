@@ -39,12 +39,12 @@ Generator::Generator() {
 //Destructor
 Generator::~Generator() { //Delete any memory being claimed by this generator
     if (this->vertices != nullptr) {
-        delete this->vertices;
+        delete [] this->vertices;
         this->vertices = nullptr;
     }
     if (this->elements != nullptr) {
-        delete this->vertices;
-        this->vertices = nullptr;
+        delete [] this->elements;
+        this->elements = nullptr;
     }
     if (this->shaderArray != nullptr) {
         for (int i = 0; i < this->shaderArraySize; ++i) {
@@ -73,6 +73,7 @@ Generator::~Generator() { //Delete any memory being claimed by this generator
     
     if (this->activeInstances > 0 && this->instances != nullptr) {
         for (int i = 0; i < activeInstances; ++i) {
+            
            // if (instances[i] != nullptr) {
 //                if (instances[i].instanceExpansionData != nullptr) {
 //                    delete instances[i].instanceExpansionData;
@@ -91,7 +92,7 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
     }
     this->wasInitialized = true;
     
-    //Create a throw-away VAO
+    //Create a throw-away VAO (actually this VAO winds up getting used anyways) (see vaoWasSetExternally)
     GLuint tempVAO;
     glGenVertexArrays(1, &tempVAO);
     glBindVertexArray(tempVAO);
@@ -114,7 +115,7 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         for (int i = 0; i < t.numVerts; ++i) {
             this->vertices[i] = t.vertices[i];
             //this->stackVertices[i] = t.vertices[i]; //For debug
-            std::cout << vertices[i] << " ";
+           // std::cout << vertices[i] << " "; //FOR DEBUG!
         }
         //Load Element array
         for (int i = 0; i < t.numElems; ++i) {
@@ -122,12 +123,67 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
             //this->stackElements[i] = t.elements[i]; //For debug
         }
     }
-    else {
-        //Load from SimpleObjLoader
-        
+    else {  //Load from SimpleObjLoader
+        //Data to load will depend on the vertex format:
+        if (t.vert3 || t.vert3tex2 || t.vert3tex3 || t.vert3norml3 || t.vert3norml3tex2 || t.vert3norml3tex3) {
+            //            //Load Elements from face data
+            int faceCounter = 0;
+            this->vertexData = new SimpleObjLoader((char *)t.modelFilePath.c_str());
+            //Copy over elements
+            this->elements = new GLuint[vertexData->model.faces*3];
+            for (int i = 0; i < vertexData->model.faces * 3; i += 3) {
+                this->elements[i] = vertexData->faces[faceCounter][0] - 1;
+                this->elements[i+1] = vertexData->faces[faceCounter][3] - 1;
+                this->elements[i+2] = vertexData->faces[faceCounter][6] - 1;
+                ++faceCounter;
+            }
+            this->numberOfElements = vertexData->model.faces * 3;
+            //Load vertices
+            if (t.vert3) { //This is easy, just copy the position data right over
+                vertices = new GLfloat [vertexData->model.positions*3];
+                int vertPosCounter = 0;
+                for (int i = 0; i < vertexData->model.positions; ++i) {
+                    vertices[vertPosCounter] = vertexData->positions[i][0];
+                    vertices[vertPosCounter + 1] = vertexData->positions[i][1];
+                    vertices[vertPosCounter + 2] = vertexData->positions[i][2];
+                    vertPosCounter += 3;
+                }
+                this->numberOfVertices = vertexData->model.positions*3;
+            }
+            
+            //NOTE ON vert3Normal3: This format does not work the way I thought it would. It looks like doing normals on faces with drawElements might not work at all. Might need to rethink how to send normal data to GPU?
+            //else if (t.vert3norml3) {
+            //    vertices = new GLfloat [(vertexData->model.positions + vertexData->model.normals) * 3];
+            //    int vertPosCounter = 0;
+            //    //for (int i = 0; i < vertexData->model.positions + vertexData->model.normals; ++i) {
+            //    for (int i = 0; i < vertexData->model.positions; ++i) {
+            //        vertices[vertPosCounter] = vertexData->positions[i][0];
+            //        vertices[vertPosCounter + 1] = vertexData->positions[i][1];
+            //        vertices[vertPosCounter + 2] = vertexData->positions[i][2];
+            //        vertPosCounter += 6;
+            //    }
+            //    //Load normals into vertex data array
+            //    vertPosCounter = 3;
+            //    for (int i = 0; i < vertexData->model.normals; ++i) {
+            //        vertices[vertPosCounter] = vertexData->normals[i][0];
+            //        vertices[vertPosCounter + 1] = vertexData->normals[i][1];
+            //        vertices[vertPosCounter + 2] = vertexData->normals[i][2];
+            //        vertPosCounter += 6;
+            //    }
+            //}
+            else {
+                std::cout << "\nDEBUG::OOPS! That format not yet implemented in generator's objLoader code!\n";
+            }
+        }
+        else {
+            std::cout << "\nDEBUG::OOPS! That format not yet implemented in generator's objLoader code";
+            std::cout << std::endl;
+        }
         //Might want to delete the objLoader once I have all of the data from it
+        //this->numberOfVertices = (vertexData->model.positions + vertexData->model.normals) * 3;
+        //this->numberOfElements = vertexData->model.faces;
     }
-     //Buffer the data
+    //Buffer the data
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     //std::cout << std::endl << "DEBUG:: sizeof(stackVertices) is: " << sizeof(stackVertices) << std::endl;
@@ -147,14 +203,26 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
     this->shaderArray[0]->attachFrag((char *)t.fragShaderPath.c_str());
     
     this->shaderArray[0]->link();
-    this->shaderArray[0]->setVertexAttribName((char *)t.vertAttribName.c_str());
-    this->shaderArray[0]->setColorAttribName((char *)t.colAttribName.c_str());
-    this->shaderArray[0]->setTextureAttribName((char *)t.texAttribName.c_str());
-    
-    this->shaderArray[0]->setVAOExternally(tempVAO);
-    
-    if (t.vert2col3tex2) {
-//        this->shaderArray[0]->specifyVertexLayout(ShaderWrapper::VERT2COLOR3TEXEL2, vbo, ebo);
+    if (t.vert3) {
+        this->shaderArray[0]->setVertexAttribName((char *)t.vertAttribName.c_str());
+        this->shaderArray[0]->setVAOExternally(tempVAO);
+        this->shaderArray[0]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
+    }
+    else if (t.vert3norml3) {
+        this->shaderArray[0]->setVertexAttribName((char *)t.vertAttribName.c_str());
+        this->shaderArray[0]->setNormalAttribName((char *)t.normalAttribName.c_str());
+        this->shaderArray[0]->setVAOExternally(tempVAO);
+        this->shaderArray[0]->specifyVertexLayout(ShaderWrapper::VERT3NORML3, vbo, ebo);
+    }
+    else if (t.vert2col3tex2) {
+        this->shaderArray[0]->setVertexAttribName((char *)t.vertAttribName.c_str());
+        this->shaderArray[0]->setColorAttribName((char *)t.colAttribName.c_str());
+        this->shaderArray[0]->setTextureAttribName((char *)t.texAttribName.c_str());
+        
+        this->shaderArray[0]->setVAOExternally(tempVAO);
+        
+        
+        //this->shaderArray[0]->specifyVertexLayout(ShaderWrapper::VERT2COLOR3TEXEL2, vbo, ebo);
         this->shaderArray[0]->specifyVertexLayout(ShaderWrapper::VERT2COLOR3TEXEL2, vbo, ebo);
     }
     //else if (other formats) {...}
@@ -162,15 +230,15 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         std::cout << "\n\nOOps this format hasn't been implemented yet in Generator!\n";
     }
     
-    
-    //load texture data
-    //tex = 0; //These 2 lines are done inside textureWrapper
-    //glGenTextures(1, &tex);
-    this->textureArraySize = 1; //1 texture for now...
-    this->textureArray = new TextureWrapper * [textureArraySize];
-    this->textureArray[0] = new TextureWrapper((char *)backgroundTextureFP.c_str());
-    //this->tex =
-
+    if (t.hasTexture) {
+        //load texture data
+        //tex = 0; //These 2 lines are done inside textureWrapper
+        //glGenTextures(1, &tex);
+        this->textureArraySize = 1; //1 texture for now...
+        this->textureArray = new TextureWrapper * [textureArraySize];
+        this->textureArray[0] = new TextureWrapper((char *)backgroundTextureFP.c_str());
+        //this->tex = //Not needed?
+    }
     
     //Set uniform locations in the shader program
     GLuint shaderID = shaderArray[0]->getID();
@@ -235,6 +303,7 @@ void Generator::generateSingle() {
     int newInstanceIndex = activeInstances - 1;
     //Give the new instance a new ID number
     instances[newInstanceIndex].identifierNumber = nextObjID++;
+    instancesCreatedByThisGenerator.push_back(instances[newInstanceIndex].identifierNumber);
     
     //Set up the rest of the new instance
     this->instances[newInstanceIndex].position = aiVector3D(0.0f, 0.0f, 0.0f);
@@ -295,12 +364,12 @@ glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements + 100, e
    // glUinform1f
     
     for (int i = 0; i < activeInstances; ++i) {
-        //DEBUG:
-        for (int i = 0; i < 28; ++i) {
-            //printf("%3.2f ", vertices[i]);
-            //std::cout << vertices[i] << " ";
-            //if (i%7 == 6) {std::cout << std::endl;}
-        }
+//        //DEBUG:
+//        for (int i = 0; i < 28; ++i) {
+//            //printf("%3.2f ", vertices[i]);
+//            //std::cout << vertices[i] << " ";
+//            //if (i%7 == 6) {std::cout << std::endl;}
+//        }
         
         //Set Uniforms for this instance
         glUniform1f(ulocTime, instances[i].timeAlive);
@@ -312,16 +381,115 @@ glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements + 100, e
         glUniform1f(ulocThetaY, instances[i].thetaY);
         glUniform1f(ulocThetaZ, instances[i].thetaZ);
         
-        if (drawTriangles) {
-            glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
+        if (specialization == specializationType::PLAYER) { //Do extra stuff required for players
+            PlayerInstance * p1 = dynamic_cast<PlayerInstance*>(&instances[0]);
+            std::cout << "\nDEBUG::CHECK TO SEE IF P1 is nullptr: " << p1 << std::endl;
+            
+            if (MAX_PLAYERS >= 2) {
+                PlayerInstance* p2 = dynamic_cast<PlayerInstance*>(&instances[1]);
+            }
         }
-        else if (drawLines) {
-            glDrawElements(GL_LINES, this->numberOfElements, GL_UNSIGNED_INT, 0);
+        else if (specialization == specializationType::WEAPON) {
+            
+        }
+        else if (specialization == specializationType::NOSPECIALIZATION) {
+            if (drawTriangles) {
+                glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
+            }
+            else if (drawLines) {
+                glDrawElements(GL_LINES, this->numberOfElements * 2, GL_UNSIGNED_INT, 0);
+            }
+            else {
+                glDrawElements(GL_POINTS, this->numberOfElements, GL_UNSIGNED_INT, 0);
+            }
         }
         else {
-            glDrawElements(GL_POINTS, this->numberOfElements, GL_UNSIGNED_INT, 0);
+            std::cout << "\nDEBUG::ERROR(sorta)! Generator's drawInstances command was called with an unrecognized (or just\ncurrently unimplemented) type! Please implement this type!\n\n";
         }
     }
+}
+
+//Note that this function will not be efficient if called in a loop to delete a bunch of instances
+void Generator::removeInstance(const int & instantID) {
+    //Check to make sure instanceID matches an instance generated by this generator
+    std::vector<int>::iterator iter;
+    iter = find (instancesCreatedByThisGenerator.begin(), instancesCreatedByThisGenerator.end(), instantID);
+    if (iter == instancesCreatedByThisGenerator.end()) { //If iterator reached the end
+        if ((*iter) != instantID) { //if the end value is not equal to the instanceID
+            std::cout << "\n    DEBUG::OOPS! removeInstance called for instance with id # ";
+            std::cout << instantID << " but that instance was not found\nwithin this generator!";
+            std::cout << std::endl;
+            return;
+        }
+        //else instance is the final value in the vector, so just remove the final value from the array
+        --activeInstances; //Decrement the number of active instances by 1
+        Instance * temp = new Instance[activeInstances];
+        for (int i = 0; i < activeInstances - 1; ++i) {
+            temp[i] = this->instances[i];
+        }
+        delete [] this->instances;
+        this->instances = temp; //Set instances to temp
+    }
+    //else the instance is located in the array somewhere besides the end
+    bool found = false; //Need 'found' to keep array indexes lined up
+    Instance * temp = new Instance[activeInstances];
+    for (int i = 0; i < activeInstances; ++i) {
+        if (instances[i].getID() == instantID) {
+            found = true;
+            //DEBUG:
+            std::cout << "\nDEBUG::Deleted intance #" << instantID << std::endl;
+        }
+        else if (found) {
+            temp[i] = instances[i+1];
+        }
+        else {
+            temp[i] = instances[i];
+        }
+    }
+    --activeInstances;
+    delete [] this->instances; //delete the old instance array
+    this->instances = temp; //set instance array to the new array
+}
+
+void Generator::removeInstance(Instance * instPtr) {
+    removeInstance(instPtr->getID());
+}
+
+void Generator::convertTrianglesIntoLines() {
+    int elemtsPos = 0;
+    GLuint temp[this->numberOfElements * 9];
+    for (int i = 0; i < numberOfElements*3*2; i+=6) {
+        //if elements is:
+        //   1   2    3
+        //   4   5    6
+        //we want the new elements to be
+        //  1 2    2 3   3 1
+        //  4 5    5 6   6 4
+        temp[i] = elements[elemtsPos];
+        temp[i+1] = elements[elemtsPos+1];
+        temp[i+2] = elements[elemtsPos+1];
+        temp[i+3] = elements[elemtsPos+2];
+        temp[i+4] = elements[elemtsPos+2];
+        temp[i+5] = elements[elemtsPos];
+        elemtsPos += 3;
+    }
+    this->elements = temp;
+    drawLines = true;
+    drawTriangles = false;
+}
+
+void Generator::convertLinesIntoTriangles() {
+    int elemtsPos = 0;
+    GLuint temp[this->numberOfElements * 9];
+    for (int i = 0; i < numberOfElements; i+=3) {
+        temp[i] = elements[elemtsPos];
+        temp[i+1] = elements[elemtsPos + 1];
+        temp[i+2] = elements[elemtsPos + 3];
+        elemtsPos += 6;
+    }
+    this->elements = temp;
+    drawTriangles = true;
+    drawLines = false;
 }
 
 

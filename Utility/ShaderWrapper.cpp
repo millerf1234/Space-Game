@@ -378,7 +378,24 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
         //glVertexAttribPointer(*(this->texAttrib), 5, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)) );
         glVertexAttribPointer(*(this->texAttrib), 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)) );
     }
-    
+    else if (vlf == VERT3NORML3) {
+        this->posAttrib = new GLint;
+        this->normAttrib = new GLint;
+        *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
+        *(this->normAttrib) = glGetAttribLocation(*programID, this->normalAttribName);
+        std::cout << "\n\nDEBUG STATEMENT:NORMAL ATTRIB NAME IS: " << this->normalAttribName;
+        
+        //Let GPU know how the data in vertices is laid-out
+        //Position data:
+        glEnableVertexAttribArray(*(this->posAttrib));
+        glVertexAttribPointer(*(this->posAttrib), 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), 0);
+        std::cout << "\nDEBUG STATEMENT: Vertex Attrib was assigned: " << *(this->posAttrib);
+        //Normal vector data:
+        glEnableVertexAttribArray(*(this->normAttrib));
+        glVertexAttribPointer(*(this->normAttrib), 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3 * sizeof(GLfloat)));
+        std::cout << "\nDEBUG STATEMENT: Normal Attrib was assigned: " << *(this->normAttrib);
+        
+    }
     else if (vlf == VERT2COLOR3TEXEL2) { //2 vertices, RGB color and 2 Texel coords
         //glBindVertexArray(*(this->VAO));
         std::cout << "\n\nDEBUG STATEMENT: USING VERTEX ATTRIB FORMAT VERT2COLOR3TEXEL2";

@@ -11,10 +11,9 @@
 #include "GameParameters.h"
 #include "Generator.h"
 
-
 class GameEntityManager {
 protected:
-    static std::shared_ptr<Generator> sharedGenerator;
+    //static std::shared_ptr<Generator *> sharedGenerator;
     Generator * generator;
     InitializationTemplate * initTemplate;
     specializationType specType;
@@ -31,10 +30,10 @@ public:
     virtual void handleInput() {;}
     virtual void drawInstances() {;}
     
-    virtual void deleteInstance(const int& instID);
-    virtual void deleteInstance(Instance *);
-    virtual void removeOldestInstance();
-    virtual void removeNewestInstance();
+//    virtual void deleteInstance(const int& instID);
+//    virtual void deleteInstance(Instance *);
+//    virtual void removeOldestInstance();
+//    virtual void removeNewestInstance();
     
     GameEntityManager() {
         requiresUserInput = false;

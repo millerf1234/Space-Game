@@ -1,3 +1,6 @@
+//  I wound up changing things again, so really now this is actually a class that
+//  manages a player-controlled entity
+//
 //  Abstract Base Class for a user-controlled player (PSYCH!)
 //  Actually just a class that can be controlled by a human player.
 //  Player.h
@@ -13,46 +16,33 @@
 #include "Generator.h"
 #include "GameParameters.h"
 #include "GameEntityManager.h"
+#include "Instance.h"
 
-typedef struct PlayerInstance : public Instance {
-    float health;
-    float shields;
-    float energy;
-    float fuel;
-    int playerNumber;
-    int rocketCount;
-    int maxRockets;
-    PlayerInstance(int playerNumber) {
-        this->playerNumber = playerNumber;
-        health = STARTING_PLAYER_HEALTH;
-        shields = STARTING_PLAYER_SHIELDS;
-        energy = STARTING_PLAYER_ENERGY;
-        fuel = STARTING_PLAYER_FUEL;
-        rocketCount = STARTING_PLAYER_ROCKETS;
-        maxRockets = STARTING_PLAYER_ROCKET_COUNT_MAX;
-    }
-    
-    
-//    typedef struct PlayerData {
-//        float health;
-//        float shields;
-//        float energy;
-//        float fuel;
-//        int playerNumber;
-//        int rocketCount;
-//        int maxRockets;
-//        PlayerData(int playerNumber) {
-//            this->playerNumber = playerNumber;
-//            health = STARTING_PLAYER_HEALTH;
-//            shields = STARTING_PLAYER_SHIELDS;
-//            energy = STARTING_PLAYER_ENERGY;
-//            rocketCount = STARTING_PLAYER_ROCKETS;
-//            maxRockets = STARTING_PLAYER_ROCKET_COUNT_MAX;
-//        }
-//        
-//    } PlayerData;
-} PlayerInstance;
-
+//typedef struct PlayerInstance : public Instance {
+//    float health;
+//    float shields;
+//    float energy;
+//    float fuel;
+//    int playerNumber;
+//    int rocketCount;
+//    int maxRockets;
+//    
+//    //Color information
+//    float red;
+//    float green;
+//    float blue;
+//    
+//    PlayerInstance(int playerNumber) {
+//        this->playerNumber = playerNumber;
+//        health = STARTING_PLAYER_HEALTH;
+//        shields = STARTING_PLAYER_SHIELDS;
+//        energy = STARTING_PLAYER_ENERGY;
+//        fuel = STARTING_PLAYER_FUEL;
+//        rocketCount = STARTING_PLAYER_ROCKETS;
+//        maxRockets = STARTING_PLAYER_ROCKET_COUNT_MAX;
+//        red = green = blue = 0.75f; //Setting all 3 equal will give a shade of gray
+//    }
+//} PlayerInstance;
 
 //This is a manager class that manages the active player instances
 class PlayerManager : public GameEntityManager {

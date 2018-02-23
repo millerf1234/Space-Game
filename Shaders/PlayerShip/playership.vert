@@ -3,26 +3,23 @@
 
 #version 400 core
 
-//in vec3 texCoord;
-in vec3 norml;
-in vec3 position;
-//in vec3 colr;
+
+layout(location = 0) in vec3 position;
+//layout(location = 1) in vec3 norml;
 
 
+uniform float time;
+uniform float zoom;
+uniform float xTrans;
+uniform float yTrans;
+uniform float zTrans;
+uniform float thetaX;
+uniform float thetaY;
+uniform float thetaZ;
 
-//uniform float theta; //I added this
 
-
-uniform float time3D;
-uniform float tex3D;
-//uniform float theta;
-uniform float zoom3D;
-uniform float xCoor3D;
-uniform float yCoor3D;
-
-out vec3 pos3D;
-//out vec3 COLR;
-out vec2 TexCoor3D;
+out vec3 pos;
+out vec3 normal;
 
 //degrees to radians
 float dg2Rad(float degrees) {
@@ -43,64 +40,41 @@ mat3 aspectRatioMatrix = mat3(1.0f,       0.0f     , 0.0f,
                               0.0f,       0.0f     , 1.0f );
 
 mat3 rotationMatrixX = mat3(    1.0f  ,       0.0f         ,       0.0f         ,
-                            0.0f  , cos(dg2Rad(90.0f)) , -sin(dg2Rad(90.0f)),  //was 18.0f
-                            0.0f  , sin(dg2Rad(90.0f)) ,  cos(dg2Rad(90.0f)));
+                                0.0f  , cos(dg2Rad(90.0f)) , -sin(dg2Rad(90.0f)),  //was 18.0f
+                                0.0f  , sin(dg2Rad(90.0f)) ,  cos(dg2Rad(90.0f)));
+
+mat3 rotationMatrixZ = mat3(    cos(thetaZ), -sin(thetaZ),  0.0f,
+                                sin(thetaZ),  cos(thetaZ),  0.0f,
+                                    0.0f    ,     0.0f   ,  1.0f);
+
+mat3 rotationMatrixY = mat3(cos(thetaY), 0.0f, -sin(thetaY),
+                                0.0f   , 1.0f,      0.0f   ,
+                            sin(thetaY), 0.0f,  cos(thetaY));
+
 
 void main()
 {
-    pos3D = position3D;
-    //COLR = colr;
-    TexCoor3D = texCoord3D;
-    // gl_Position = vec4(position.x+0.7*sin(exp(position.y)+time*0.05 + 0.05 *cos(time * 4)),
-    //                (1.0+0.3*sin(10.0*position.y))*position.y+0.6*cos(exp(position.x)+time*0.04), 0.0, 1.0);
-    
-    //mat3 rotationMatrix = mat3(-sin(time*0.3), cos(time*0.6), 0.0, cos(time*0.3), sin(time*0.6), 0.0, 0.0, 0.0, 1.0);
-    // mat3 rotationMatrix = mat3(-sin(theta), cos(theta), 0.0, cos(theta), sin(theta), 0.0, 0.0, 0.0, 1.0);
+    pos = position;
+    //normal = norml;
+    //normal = position; //I wrote this line after realizing normals don't work the way I thought/hoped they would work
     
     
-    //    mat3 aspectRatioMatrix = mat3(1.0f, 0.0, 0.0, 0.0, 1670.0f/970.0f, 0.0f, 0.0, 0.0, 1.0f);
-    //
-    //    mat3 rotationMatrixZ = mat3(cos(thetaZ), -sin(thetaZ), 0.0,
-    //                                sin(thetaZ), cos(thetaZ),  0.0,
-    //                                0.0,         0.0,  1.0);
-    //
-    //    mat3 rotationMatrixY = mat3(cos(thetaY), 0.0, -sin(thetaY),
-    //                                0.0    , 1.0,      0.0    ,
-    //                                sin(thetaY), 0.0,  cos(thetaY));
-    //
-    //    mat3 rotationMatrixX = mat3(    1.0  ,      0.0    ,     0.0     ,
-    //                                0.0  , cos(thetaX) , -sin(thetaX),
-    //                                0.0  , sin(thetaX) ,  cos(thetaX) );
-    //
-    //
-    //    mat3 dialationMatrix = mat3(1.0 + iStretch,       0.0        ,      0.0       ,   //Column 1
-    //                                0.0       ,  1.0 + jStretch  ,      0.0       ,   //Column 2
-    //                                0.0       ,       0.0        , 1.0 + kStretch) ; //Column 3
-    //
-    //    vec3 translation = vec3(xPos, yPos, 0.0);
-    //
+    //Rotate, translate, aspect ratio?  or a different order?
     
+    //Rotate:
+    pos = rotationMatrixX * pos;
+    normal = rotationMatrixX * normal;
+    pos = rotationMatrixY * pos;
+    normal = rotationMatrixY * normal;
+    pos = rotationMatrixZ * pos;
+    normal = rotationMatrixZ * normal;
     
-    //
-    ////////    mat3 rotationMatrix = mat3(cos(theta), -sin(theta), 0.0f,
-    ////////                               sin(theta), cos(theta),  0.0f,
-    ////////                               0.0f   ,     0.0f  ,  1.0f );
-    //gl_Position = vec4(position.x, position.y, sin(time), 1.0 + 0.2*cos(time));
+    //translate:
+    pos += xTrans;
+    pos += yTrans;
+    pos += zTrans;
     
-    
-    //vec3 temp = vec3( aspectRatioMatrix * rotationMatrix * vec3(position.x, position.y, 0));
-    //vec3 temp = vec3(aspectRatioMatrix * pos);
-    //pos3D = aspectRatioMatrix * (pos3D + vec3(xCoor3D, yCoor3D, 0.0f));
-    pos3D = pos3D + vec3(0.0f, -1.75f /* * sin(time3D)*/, 0.0f); //Shift model to bottom part of screen
-    // pos3D = aspectRatioMatrix * rotationMatrixX * pos3D;
-    pos3D = aspectRatioMatrix * pos3D;
-    
-    //gl_Position = vec4(temp + vec3(xCoor, yCoor, 0.0f), 1.0 + zoom);
-    
-    gl_Position = vec4(pos3D, 40.5f + zoom3D);
-    
-    //gl_Position = vec4(position.x, position.y, 0.0, 1);
-    
-    //gl_PointSize = 10 + sin(time);
+    //Aspect ratio
+    pos = aspectRatioMatrix * pos;
+    gl_Position = vec4(pos, zoom);
 }
-

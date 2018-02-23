@@ -11,34 +11,37 @@ PlayerManager::PlayerManager() : GameEntityManager() {
     this->generator = new Generator;
     this->hasGenerator = true;
     this->hasCollision = true;
+    this->requiresUserInput = true; //Player controlled characters require user input
+    //Set specialization type
     this->specType = specializationType::PLAYER;
+    this->generator->specialization = specializationType::PLAYER;
+    
     
     //Set-up the initialization template
     this->generateInitializationTemplate();
     //Initialize the generator from the initialization template
     this->initializeFromTemplate();
-    
 }
 
 PlayerManager::~PlayerManager() {
     if (this->initTemplate != nullptr) {
+        if (this->initTemplate->hasVertsAlreadyLoaded) {
+            //Then delete heap data that was used
+            if (this->initTemplate->vertices != nullptr) {
+                delete [] initTemplate->vertices;
+                initTemplate->vertices = nullptr;
+            }
+            if (initTemplate->elements != nullptr) {
+                delete [] initTemplate->elements;
+                initTemplate->elements = nullptr;
+            }
+        }
         delete this->initTemplate;
         this->initTemplate = nullptr;
     }
     if (this->generator != nullptr) {
         delete this->generator;
         this->generator = nullptr;
-    }
-    if (this->initTemplate->hasVertsAlreadyLoaded) {
-        //Then delete heap data that was used
-        if (this->initTemplate->vertices != nullptr) {
-            delete [] initTemplate->vertices;
-            initTemplate->vertices = nullptr;
-        }
-        if (initTemplate->elements != nullptr) {
-            delete [] initTemplate->elements;
-            initTemplate->elements = nullptr;
-        }
     }
 }
 
@@ -51,6 +54,7 @@ void PlayerManager::handleInput() {
 }
 
 void PlayerManager::drawInstances() {
+    
     generator->drawInstances();
 }
 
@@ -59,6 +63,30 @@ void PlayerManager::initializeFromTemplate() {
     for (int i = 0; i < MAX_PLAYERS; ++i) {
         generator->generateSingle();
     }
+    //I'm going to be super risky and do static_cast, because I know that these Instance *'s are to PlayerInstances. for more information, see: https://stackoverflow.com/questions/28002/regular-cast-vs-static-cast-vs-dynamic-cast
+    Instance * players = generator->getArrayOfInstances();
+    if (MAX_PLAYERS < 2) {
+        std::cout << "\nDEBUG::GAME WILL BE PLAYED WITH A SINGLE PLAYER\n";
+        
+        players->zoom = 40.5f;
+        
+    }
+    else if (MAX_PLAYERS < 3) {
+        std::cout << "\nDEBUG::GAME WILL BE PLAYED WITH 2 PLAYERS. LOADED 2 PLAYERS!\n";
+        players[0].zoom = 40.5f;
+        players[1].zoom = 40.5f;
+    }
+    else {
+        std::cout << "\n\n!!!! OOOPS!!! THIS NUMBER OF PLAYERS IS NOT YET SUPPORTED!\nTO ADD CODE TO SUPPORT MORE PLAYERS, SEE WHERE THIS MESSAGE IS PRINTED\nIN \"PLAYERMANAGER::INITIALIZE_FROM_TEMPLATE\"";
+    }
+    //std::cout << "\n\nFirst 30 vertices are: \n";
+    //for (int i = 0; i < 30; ++i) {
+    //    std::cout << "vert[" << i << "] = " << generator->vertices[i] << std::endl;
+    //}
+    //std::cout << "\n\nFirst 30 elements are: \n";
+    //for (int i = 0; i < 30; ++i) {
+    //    std::cout << "elem[" << i << "] = " << generator->elements[i] << std::endl;
+    //}
 }
 
 void PlayerManager::generateInitializationTemplate() {
@@ -68,43 +96,16 @@ void PlayerManager::generateInitializationTemplate() {
     initTemplate->hasFrag = true;
     
     initTemplate->vertAttribName = "position";
-    initTemplate->normalAttribName = "norml";
     
-    initTemplate->vert3norml3;
+    //If doing format vert3normal3 (NOTE: DON"T DO THIS FORMAT) then uncomment these lines:
+    //initTemplate->normalAttribName = "norml";
+    //initTemplate->vert3norml3 = true;
     
-    /*
-     initTemplate->textureFilePath = backgroundTextureFP;
-     initTemplate->vertShaderPath = BACKGROUND_VERT;
-     initTemplate->fragShaderPath = BACKGROUND_FRAG;
-     
-     initTemplate->hasVert = true;
-     initTemplate->hasFrag = true;
-     
-     initTemplate->vertAttribName = "position";
-     initTemplate->colAttribName = "colr";
-     initTemplate->texAttribName = "texCoord";
-     
-     //Set format of vertex data
-     initTemplate->vert2col3tex2 = true;
-     
-     //Since backgrounds will not be loading from a model, set them up to load directly from
-     //provided data
-     initTemplate->hasVertsAlreadyLoaded = true;
-     //Load vert data directly into struct to be loaded into generator
-     initTemplate->numVerts = STAGE_VERTS_SIZE;
-     initTemplate->vertices = new GLfloat[STAGE_VERTS_SIZE];
-     //Load the element data into the struct that will be used to initalize generator
-     initTemplate->numElems = STAGE_ELEMENTCOUNT;
-     initTemplate->elements = new GLuint[STAGE_ELEMENTCOUNT];
-     
-     //Copy vertex data
-     for (int i = 0; i < initTemplate->numVerts; ++i) {
-     initTemplate->vertices[i] = STAGE_VERTS[i];
-     }
-     //Copy element data too
-     for (int i = 0; i < initTemplate->numElems; ++i) {
-     initTemplate->elements[i] = STAGE_ELEMENTS[i];
-     }
-     
-     */
+    //If doing format vert3, then do this:
+    initTemplate->vert3 = true;
+    
+    //Player models will be loading from an obj file, so set this to false
+    initTemplate->hasVertsAlreadyLoaded = false;
+    initTemplate->modelFilePath = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ObjFiles/space_ship2.obj";
+    
 }
