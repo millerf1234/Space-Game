@@ -16,7 +16,9 @@ uniform float zTrans;
 uniform float thetaX;
 uniform float thetaY;
 uniform float thetaZ;
-
+uniform float red;
+uniform float green;
+uniform float blue;
 
 out vec3 pos;
 out vec3 normal;
@@ -40,8 +42,11 @@ mat3 aspectRatioMatrix = mat3(1.0f,       0.0f     , 0.0f,
                               0.0f,       0.0f     , 1.0f );
 
 mat3 rotationMatrixX = mat3(    1.0f  ,       0.0f         ,       0.0f         ,
-                                0.0f  , cos(dg2Rad(90.0f)) , -sin(dg2Rad(90.0f)),  //was 18.0f
-                                0.0f  , sin(dg2Rad(90.0f)) ,  cos(dg2Rad(90.0f)));
+                               //0.0f  , cos(dg2Rad(90.0f)) , -sin(dg2Rad(90.0f)),  //was 18.0f
+                               //0.0f  , sin(dg2Rad(90.0f)) ,  cos(dg2Rad(90.0f)));
+                                0.0f  ,    cos(thetaX)     ,   -sin(thetaX)     ,
+                                0.0f  ,    sin(thetaX)     ,    cos(thetaX)     );
+                            
 
 mat3 rotationMatrixZ = mat3(    cos(thetaZ), -sin(thetaZ),  0.0f,
                                 sin(thetaZ),  cos(thetaZ),  0.0f,
@@ -64,10 +69,10 @@ void main()
     //Rotate:
     pos = rotationMatrixX * pos;
     normal = rotationMatrixX * normal;
-    pos = rotationMatrixY * pos;
-    normal = rotationMatrixY * normal;
     pos = rotationMatrixZ * pos;
     normal = rotationMatrixZ * normal;
+    pos = rotationMatrixY * pos;
+    normal = rotationMatrixY * normal;
     
     //translate:
     pos += xTrans;

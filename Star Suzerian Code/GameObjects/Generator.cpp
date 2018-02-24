@@ -1,4 +1,4 @@
-//  Implementation for the Generator class
+ //  Implementation for the Generator class
 //  Generator.cpp
 //  Created by Forrest Miller on 2/17/18.
 
@@ -32,6 +32,13 @@ Generator::Generator() {
     //Set specialization type for this generator
     specialization  = specializationType::NOSPECIALIZATION; //No extra data by default
     
+    //Set special uniform location variables to -1 (their default not_found code)
+    ulocRed = ulocGreen = ulocBlue = -1;
+    ulocRedLine = ulocGreenLine = ulocBlueLine = -1;
+    ulocTimeLine = ulocZoomLine = ulocXTransLine = ulocYTransLine = ulocZTransLine = ulocThetaXLine = ulocThetaYLine = ulocThetaZLine = -1;
+    ulocTimeEngine = ulocZoomEngine = ulocXTransEngine = ulocYTransEngine = ulocZTransEngine = ulocThetaXEngine = ulocThetaYEngine = ulocThetaZEngine = -1;
+    ulocTimeEngineSide = ulocZoomEngineSide = ulocXTransEngineSide = ulocYTransEngineSide = ulocZTransEngineSide = ulocThetaXEngineSide = ulocThetaYEngineSide = ulocThetaZEngineSide = -1;
+    ulocPDamage = ulocPHealthMax = -1;
     
     this->drawTriangles = true;
     this->drawLines = false;
@@ -73,16 +80,17 @@ Generator::~Generator() { //Delete any memory being claimed by this generator
     
     if (this->activeInstances > 0 && this->instances != nullptr) {
         for (int i = 0; i < activeInstances; ++i) {
-            
-           // if (instances[i] != nullptr) {
-//                if (instances[i].instanceExpansionData != nullptr) {
-//                    delete instances[i].instanceExpansionData;
-//                    instances[i].instanceExpansionData = nullptr;
-//                }
-           // }
+            if (instances[i] != nullptr) {
+                delete instances[i];
+                instances[i] = nullptr;
+            }
+            // if (instances[i].instanceExpansionData != nullptr) {
+            //     delete instances[i].instanceExpansionData;
+            //     instances[i].instanceExpansionData = nullptr;
+            // }
         }
+        delete [] instances; //Delete the array of instances
     }
-    delete [] instances; //Delete the array of instances
 }
 
 void Generator::initializeFromTemplate(const InitializationTemplate& t) {
@@ -91,6 +99,7 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         return;
     }
     this->wasInitialized = true;
+    this->specialization = t.typeDataRequired;
     
     //Create a throw-away VAO (actually this VAO winds up getting used anyways) (see vaoWasSetExternally)
     GLuint tempVAO;
@@ -109,8 +118,8 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         this->vertexData = nullptr; //Make sure vertex data is nullptr
         this->vertices = new GLfloat[t.numVerts];
         this->numberOfVertices = t.numVerts;
-        this->numberOfElements = t.numElems;
         this->elements = new GLuint[t.numElems];
+        this->numberOfElements = t.numElems;
         //Load vertices
         for (int i = 0; i < t.numVerts; ++i) {
             this->vertices[i] = t.vertices[i];
@@ -129,15 +138,20 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
             //            //Load Elements from face data
             int faceCounter = 0;
             this->vertexData = new SimpleObjLoader((char *)t.modelFilePath.c_str());
-            //Copy over elements
-            this->elements = new GLuint[vertexData->model.faces*3];
+            //Copy over elements first (NOTE: Elements are independent of vertex format)
+            this->elements = new GLuint[vertexData->model.faces*3*2];
             for (int i = 0; i < vertexData->model.faces * 3; i += 3) {
                 this->elements[i] = vertexData->faces[faceCounter][0] - 1;
                 this->elements[i+1] = vertexData->faces[faceCounter][3] - 1;
                 this->elements[i+2] = vertexData->faces[faceCounter][6] - 1;
                 ++faceCounter;
+                //debug::
+                if (i < 30) {
+                    std::cout << "\nElements[" << i << " to " << i+2  << "] were set to " << elements[i] << " " << elements[i+1] << " " << elements[i+2];
+                }
             }
             this->numberOfElements = vertexData->model.faces * 3;
+            
             //Load vertices
             if (t.vert3) { //This is easy, just copy the position data right over
                 vertices = new GLfloat [vertexData->model.positions*3];
@@ -239,17 +253,145 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         this->textureArray[0] = new TextureWrapper((char *)backgroundTextureFP.c_str());
         //this->tex = //Not needed?
     }
+    GLuint shaderID = -1; //Declare this outside the for loop so I can reuse it later
     
-    //Set uniform locations in the shader program
-    GLuint shaderID = shaderArray[0]->getID();
-    ulocTime = glGetUniformLocation(shaderID, "time");
-    ulocZoom = glGetUniformLocation(shaderID, "zoom");
-    ulocXTrans = glGetUniformLocation(shaderID, "xTrans");
-    ulocYTrans = glGetUniformLocation(shaderID, "zTrans");
-    ulocZTrans = glGetUniformLocation(shaderID, "zTrans");
-    ulocThetaX = glGetUniformLocation(shaderID, "thetaX");
-    ulocThetaY = glGetUniformLocation(shaderID, "thetaY");
-    ulocThetaZ = glGetUniformLocation(shaderID, "thetaZ");
+    //Set uniform locations in the shader program  (NOTE THAT OPENGL WILL NOT GET LOCATION FOR UNUSED UNIFORMS!!!)
+    for (int i = 0; i < this->shaderArraySize; ++i) { //I am assuming all shaders will have these uniforms in common (it's fine it they don't, get uniform location will just return -1 for invalid location)
+        shaderID = shaderArray[i]->getID();
+        ulocTime = glGetUniformLocation(shaderID, "time");
+        ulocZoom = glGetUniformLocation(shaderID, "zoom");
+        ulocXTrans = glGetUniformLocation(shaderID, "xTrans");
+        ulocYTrans = glGetUniformLocation(shaderID, "yTrans");
+        ulocZTrans = glGetUniformLocation(shaderID, "zTrans");
+        ulocThetaX = glGetUniformLocation(shaderID, "thetaX");
+        ulocThetaY = glGetUniformLocation(shaderID, "thetaY");
+        ulocThetaZ = glGetUniformLocation(shaderID, "thetaZ");
+    }
+    
+    //Set type-specific uniform location
+    if (this->specialization == STAGE) {
+        //Currently STAGE has no unique uniforms that need to be set.
+    }
+    else if (this->specialization == PLAYER) {
+        //Set the uniform locations for PLAYER
+        ulocRed = glGetUniformLocation(shaderID, "red");
+        ulocGreen = glGetUniformLocation(shaderID, "green");
+        ulocBlue = glGetUniformLocation(shaderID, "blue");
+        ulocPDamage = glGetUniformLocation(shaderID, "damage");
+        ulocPHealthMax = glGetUniformLocation(shaderID, "maxHealth");
+        
+        std::cout << "\nDEBUG:\n        ulocRed = " << ulocRed;
+        std::cout << "\n        ulocGreen = " << ulocGreen;
+        std::cout << "\n        ulocBlue = " << ulocBlue;
+        std::cout << "\n        ulocPDamage = " << ulocPDamage;
+        std::cout << "\n        ulocPHealthMax = " << ulocPHealthMax;
+        
+        //(I realize what I am doing here in this next bit of code is very sloppy, inadvisiable and may cause many headaches down the road. Sorry in advance)
+        
+        //Add extra shaders for the engine effects to ShaderArray
+        std::cout << "\nDEBUG::Creating extra shaders required for PLAYER..." << std::endl;
+        this->shaderArraySize = 4;
+        ShaderWrapper ** temp = new ShaderWrapper * [shaderArraySize];
+        temp[0] = this->shaderArray[0]; //ShaderArray was set to size 1, so need to make it bigger
+        delete [] this->shaderArray;
+        this->shaderArray = temp;
+        this->shaderArray[1] = new ShaderWrapper;
+        this->shaderArray[2] = new ShaderWrapper;
+        this->shaderArray[3] = new ShaderWrapper;
+
+        //Set up the Line Shader:
+        std::cout << "    Creating outline shader...\n";
+//        this->shaderArray[1] = new ShaderWrapper;
+        this->shaderArray[1]->attachVert((char *)PLAYERSHIP_LINE_VERT.c_str());
+        this->shaderArray[1]->attachFrag((char *)PLAYERSHIP_LINE_FRAG.c_str());
+        
+        this->shaderArray[1]->link();
+        this->shaderArray[1]->setVertexAttribName((char *)t.vertAttribName.c_str()); //Use same name as body shader name
+        this->shaderArray[1]->setVAOExternally(tempVAO); //this way the shaders share the same VAO
+        this->shaderArray[1]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
+        //set uniforms for the line shader:
+        shaderID = shaderArray[1]->getID();
+        ulocRedLine = glGetUniformLocation(shaderID, "red");
+        ulocGreenLine = glGetUniformLocation(shaderID, "green");
+        ulocBlueLine = glGetUniformLocation(shaderID, "blue");
+        ulocTimeLine = glGetUniformLocation(shaderID, "time");
+        ulocZoomLine = glGetUniformLocation(shaderID, "zoom");
+        ulocXTransLine = glGetUniformLocation(shaderID, "xTrans");
+        ulocYTransLine = glGetUniformLocation(shaderID, "yTrans");
+        ulocZTransLine = glGetUniformLocation(shaderID, "zTrans");
+        ulocThetaXLine = glGetUniformLocation(shaderID, "thetaX");
+        ulocThetaYLine = glGetUniformLocation(shaderID, "thetaY");
+        ulocThetaZLine = glGetUniformLocation(shaderID, "thetaZ");
+        
+        std::cout << "    DEBUG::PlayerLineColorLocations: \n";
+        std::cout << "ulocRedLine = " << ulocRedLine << std::endl;
+        std::cout << "ulocGreenLine = " << ulocGreenLine << std::endl;
+        std::cout << "ulocBlueLine = " << ulocBlueLine << std::endl;
+
+        
+        if (shaderArray[1]->checkIfReady()) {
+            std::cout << "\n       Outline shader ready!\n";
+        }
+        else {
+            std::cout << "\n      OOPS! For some reason Outline shader is showing not ready...\n";
+        }
+        //Set up the main engine shader
+//        this->shaderArray[2] = new ShaderWrapper;
+        std::cout << "    Creating Main engine shader...\n";
+        this->shaderArray[2]->attachVert((char *)PLAYERSHIP_ENGINE_VERT.c_str());
+        this->shaderArray[2]->attachFrag((char *)PLAYERSHIP_ENGINE_FRAG.c_str());
+        
+        this->shaderArray[2]->link();
+        this->shaderArray[2]->setVertexAttribName((char *) "enginePos");
+        this->shaderArray[2]->setVAOExternally(tempVAO);
+        this->shaderArray[2]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
+        //Set uniforms for the main engine
+        shaderID = shaderArray[2]->getID();
+        ulocTimeEngine = glGetUniformLocation(shaderID, "time");
+        ulocZoomEngine = glGetUniformLocation(shaderID, "zoom");
+        ulocXTransEngine = glGetUniformLocation(shaderID, "xTrans");
+        ulocYTransEngine = glGetUniformLocation(shaderID, "yTrans");
+        ulocZTransEngine = glGetUniformLocation(shaderID, "zTrans");
+        ulocThetaXEngine = glGetUniformLocation(shaderID, "thetaX");
+        ulocThetaYEngine = glGetUniformLocation(shaderID, "thetaY");
+        ulocThetaZEngine = glGetUniformLocation(shaderID, "thetaZ");
+        if (shaderArray[2]->checkIfReady()) {
+            std::cout << "\n       Main Engine shader ready!\n";
+        }
+        else {
+            std::cout << "\n      OOPS! For some reason Main Engine shader is showing not ready...\n";
+        }
+        
+        std::cout << "    Creating Side engine shader...\n";
+        //        this->shaderArray[3] = new ShaderWrapper;
+        this->shaderArray[3]->attachVert((char *)PLAYERSHIP_ENGINE_VERT.c_str());
+        this->shaderArray[3]->attachFrag((char *)PLAYERSHIP_ENGINE_FRAG.c_str());
+        
+        this->shaderArray[3]->link();
+        this->shaderArray[3]->setVertexAttribName((char *) "enginePos");
+        this->shaderArray[3]->setVAOExternally(tempVAO);
+        this->shaderArray[3]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
+        shaderID = shaderArray[3]->getID();
+        ulocTimeEngineSide = glGetUniformLocation(shaderID, "time");
+        ulocZoomEngineSide = glGetUniformLocation(shaderID, "zoom");
+        ulocXTransEngineSide = glGetUniformLocation(shaderID, "xTrans");
+        ulocYTransEngineSide = glGetUniformLocation(shaderID, "yTrans");
+        ulocZTransEngineSide = glGetUniformLocation(shaderID, "zTrans");
+        ulocThetaXEngineSide = glGetUniformLocation(shaderID, "thetaX");
+        ulocThetaYEngineSide = glGetUniformLocation(shaderID, "thetaY");
+        ulocThetaZEngineSide = glGetUniformLocation(shaderID, "thetaZ");
+        
+        if (shaderArray[3]->checkIfReady()) {
+            std::cout << "\n       Side Engine shader ready!\n";
+        }
+        else {
+            std::cout << "\n      OOPS! For some reason Side Engine shader is showing not ready...\n";
+        }
+        std::cout << "\nAll shaders for Player finished building!\n";
+    }
+    else if (this->specialization == WEAPON) {
+        //Set the uniform locations for WEAPON
+    }
    
      //GLint ulocTime, ulocZoom, ulocXTrans, ulocYTrans, ulocZTrans, ulocThetaX, ulocThetaY, ulocThethaZ;
     glBindVertexArray(0);
@@ -259,27 +401,43 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
 void Generator::doUpkeep() {
     if (instances == nullptr) {return;}
     for (int i = 0; i < activeInstances; ++i) {
-        instances[i].timeAlive += TIME_TICK_RATE;
+        instances[i]->timeAlive += TIME_TICK_RATE;
     }
 }
 
 void Generator::setSpecialization(specializationType expansionType) {
-    //Don't change specialization type if instances have already been generated
-    if (this->activeInstances > 0) {
-        std::cout  << " \nDEBUG::OOPS! Unable to set expansion type once instances have been generated!";
-        return;
-    }
-    //Don't change specialization type if a specialization type has already been specified
-    if (this->specialization != NOSPECIALIZATION) {
-        std::cout << "\nDEBUG::OOPS! SpecializationExpansion type has already been set for this generator, unable to change once set!\n";
-        return;
-    }
-    if (expansionType == specializationType::PLAYER) {
-        this->specialization = expansionType;
-    }
-    else if (expansionType == specializationType::WEAPON) {
-        this->specialization  = expansionType;
-    }
+    //I now set an expansion type within the initializerTemplate, so the generator knows its type much earlier on in its setup process. As such, I moved the glGetUniformLocation calls to be all next to each other near the end of the function initializeFromTemplate(). So the generic calls are made first then uniform locations are set based off the type, which is known since it was given as part of the intializer template.
+    //TL,DR: This function's functionality has been moved to within initializeFromTemplate()
+//    //Don't change specialization type if instances have already been generated
+//    if (this->activeInstances > 0) {
+//        std::cout << "\nDEBUG::OOPS! Unable to set expansion type once instances have been generated!";
+//        return;
+//    }
+//    //Don't change specialization type if a specialization type has already been specified
+//    if (this->specialization != NOSPECIALIZATION) {
+//        std::cout << "\nDEBUG::OOPS! SpecializationExpansion type has already been set for this generator, unable to change once set!\n";
+//        return;
+//    }
+//    if (expansionType == specializationType::PLAYER) {
+//        //Set the Uniform Locations for the player type
+//        this->specialization = expansionType;
+//        GLuint shaderID = shaderArray[0]->getID();
+//        ulocRed = glGetUniformLocation(shaderID, "red");
+//        ulocGreen = glGetUniformLocation(shaderID, "green");
+//        ulocBlue = glGetUniformLocation(shaderID, "blue");
+//
+//        std::cout << "\nDEBUG:\n        ulocRed = " << ulocRed;
+//        std::cout << "\n        ulocGreen = " << ulocGreen;
+//        std::cout << "\n        ulocBlue = " << ulocBlue;
+//
+//        //Add another shader for Engine Shaders? Or just have the template passed to generator know to
+//        //create multiple shaders. Both will work...
+//
+//    }
+//    else if (expansionType == specializationType::WEAPON) {
+//        //Set the Uniform Locations for the player type
+//        this->specialization  = expansionType;
+//    }
 }
 
 void Generator::generateSingle() {
@@ -289,29 +447,52 @@ void Generator::generateSingle() {
     }
     ++activeInstances;
     if (this->instances == nullptr) { //If this is the first instance
-        this->instances = new Instance[activeInstances];
+        this->instances = new Instance*[activeInstances];
     }
     else { //Else Need to make a new array of instances that's 1 larger than before
-        Instance * temp = new Instance[activeInstances];
+        Instance ** temp = new Instance*[activeInstances];
         for (int i = 0; i < activeInstances - 1; ++i) {
-            temp[i] = this->instances[i];
+            temp[i] = (this->instances[i]);
         }
         delete [] this->instances;
         this->instances = temp; //Set instances to temp
     }
     
     int newInstanceIndex = activeInstances - 1;
-    //Give the new instance a new ID number
-    instances[newInstanceIndex].identifierNumber = nextObjID++;
-    instancesCreatedByThisGenerator.push_back(instances[newInstanceIndex].identifierNumber);
+    //Create an instance based off generator type (note that special types will have their values set correctly by their constructors (at least in theory they will)
+    if (specialization == specializationType::PLAYER) {//Generate a player instance
+        instances[newInstanceIndex] = new PlayerInstance(nextObjID);
+        instances[newInstanceIndex]->type = PLAYERINSTANCE;
+        instances[newInstanceIndex]->identifierNumber = (nextObjID); //Not sure why this isn;t getting set...
+        ++nextObjID;
+    }
+    else if (specialization == specializationType::WEAPON) {//Generate a weapon instance
+        instances[newInstanceIndex] = new WeaponInstance;
+        instances[newInstanceIndex]->identifierNumber = nextObjID++;
+    }
+    else if (specialization == specializationType::STAGE) {
+        instances[newInstanceIndex] = new Instance;
+        instances[newInstanceIndex]->identifierNumber = nextObjID++;
+    }
+    else if (specialization == specializationType::NOSPECIALIZATION) {
+        instances[newInstanceIndex] = new Instance; //Just a generic instance
+        instances[newInstanceIndex]->identifierNumber = nextObjID++;
+    }
+    
+    else {
+        std::cout << "\nDEBUG::ERROR!! Attempting to generate a new type of instance that wasn't\nrecognized by the generator when function \"generateSingle\" was called!" << std::endl;
+        return;
+    }
+    //Keep track of all identifier numbers that are in use and were created by this generator
+    instancesCreatedByThisGenerator.push_back(instances[newInstanceIndex]->identifierNumber);
     
     //Set up the rest of the new instance
-    this->instances[newInstanceIndex].position = aiVector3D(0.0f, 0.0f, 0.0f);
-    this->instances[newInstanceIndex].zoom = 3.5f; //Higher zoom means farther from camera
-    this->instances[newInstanceIndex].timeAlive = 0.0f;
-    this->instances[newInstanceIndex].thetaX = 0.0f;
-    this->instances[newInstanceIndex].thetaY = 0.0f;
-    this->instances[newInstanceIndex].thetaZ = 0.0f;
+    this->instances[newInstanceIndex]->position = aiVector3D(0.0f, 0.0f, 0.0f);
+    this->instances[newInstanceIndex]->zoom = 3.5f; //Higher zoom means farther from camera
+    this->instances[newInstanceIndex]->timeAlive = 0.0f;
+    this->instances[newInstanceIndex]->thetaX = 0.0f;
+    this->instances[newInstanceIndex]->thetaY = 0.0f;
+    this->instances[newInstanceIndex]->thetaZ = 0.0f;
     
     //Set up the specialized Instance bits
 //    if (this->currentExpansionType != NOEXTRADATA) {
@@ -332,19 +513,19 @@ void Generator::generateSingle() {
 
 void Generator::drawInstances() {
     if (!wasInitialized || this->activeInstances == 0) {return;}
-    //Turn on shader effect
-    this->shaderArray[0]->use();
-    if (this->hasTexture()){
-        this->textureArray[0]->activate();
-    }
+    //Turn on shader effect (actually turn it on inside the loop
+//    this->shaderArray[0]->use();
+//    if (this->hasTexture()){
+//        this->textureArray[0]->activate();
+//    }
     
    // glGetActiveAttrib;
     //this->textureArray[0]->tex[0] = 0; //This might fix it? No, I had 2 different tex's
    // glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureArray[0]->tex[0], 0); //Might need to do this?
     
     
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+//    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     
 //    GLfloat tempVerts[2000];
 //    GLfloat tempElements[2000];
@@ -358,8 +539,10 @@ void Generator::drawInstances() {
 //
 //    glBufferData(GL_ARRAY_BUFFER, sizeof(tempVerts), tempVerts, GL_STREAM_DRAW);
 //    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tempElements), tempElements, GL_STREAM_DRAW);
-glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices + 100, this->vertices, GL_STATIC_DRAW);
-glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements + 100, elements, GL_STATIC_DRAW);
+
+    
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices + 100, this->vertices, GL_STATIC_DRAW);
+//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements + 100, elements, GL_STATIC_DRAW);
     
    // glUinform1f
     
@@ -370,27 +553,96 @@ glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements + 100, e
 //            //std::cout << vertices[i] << " ";
 //            //if (i%7 == 6) {std::cout << std::endl;}
 //        }
+        this->shaderArray[0]->use();
+        if (this->hasTexture()){
+            this->textureArray[0]->activate();
+        }
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices + 100, this->vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements + 100, elements, GL_STATIC_DRAW);
         
         //Set Uniforms for this instance
-        glUniform1f(ulocTime, instances[i].timeAlive);
-        glUniform1f(ulocZoom, instances[i].zoom);
-        glUniform1f(ulocXTrans, instances[i].position.x);
-        glUniform1f(ulocYTrans, instances[i].position.y);
-        glUniform1f(ulocZTrans, instances[i].position.z);
-        glUniform1f(ulocThetaX, instances[i].thetaX);
-        glUniform1f(ulocThetaY, instances[i].thetaY);
-        glUniform1f(ulocThetaZ, instances[i].thetaZ);
+        glUniform1f(ulocTime, instances[i]->timeAlive);
+        glUniform1f(ulocZoom, instances[i]->zoom);
+        glUniform1f(ulocXTrans, instances[i]->position.x);
+        glUniform1f(ulocYTrans, instances[i]->position.y);
+        glUniform1f(ulocZTrans, instances[i]->position.z);
+        glUniform1f(ulocThetaX, instances[i]->thetaX);
+        glUniform1f(ulocThetaY, instances[i]->thetaY);
+        glUniform1f(ulocThetaZ, instances[i]->thetaZ);
         
-        if (specialization == specializationType::PLAYER) { //Do extra stuff required for players
-            PlayerInstance * p1 = dynamic_cast<PlayerInstance*>(&instances[0]);
-            std::cout << "\nDEBUG::CHECK TO SEE IF P1 is nullptr: " << p1 << std::endl;
+        if (specialization == specializationType::PLAYER) { //Do extra stuff required for drawing the player models
+            PlayerInstance * player = static_cast<PlayerInstance*>(instances[i]);
+            //For debug (back when i was doing dynamic_cast still):
+            //std::cout << "\nDEBUG::CHECK TO SEE IF player is nullptr: " << player << std::endl;
+            glUniform1f(ulocRed, player->red);
+            glUniform1f(ulocGreen, player->green);
+            glUniform1f(ulocBlue, player->blue);
+            //Draw the player body (using shader in shadderArray[0]
+            glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
             
-            if (MAX_PLAYERS >= 2) {
-                PlayerInstance* p2 = dynamic_cast<PlayerInstance*>(&instances[1]);
-            }
+            //Draw Lines
+            shaderArray[1]->use();
+            glUniform1f(ulocTimeLine, instances[i]->timeAlive);
+            glUniform1f(ulocZoomLine, instances[i]->zoom);
+            glUniform1f(ulocXTransLine, instances[i]->position.x);
+            glUniform1f(ulocYTransLine, instances[i]->position.y);
+            glUniform1f(ulocZTransLine, instances[i]->position.z);
+            glUniform1f(ulocThetaXLine, instances[i]->thetaX);
+            glUniform1f(ulocThetaYLine, instances[i]->thetaY);
+            glUniform1f(ulocThetaZLine, instances[i]->thetaZ);
+            glUniform1f(ulocRedLine, player->red * PLAYER_LINE_COLOR_BOOST_FACTOR);
+            glUniform1f(ulocGreenLine, player->green * PLAYER_LINE_COLOR_BOOST_FACTOR);
+            glUniform1f(ulocBlueLine, player->blue * PLAYER_LINE_COLOR_BOOST_FACTOR);
+            
+            //Debug code:
+//            for (int i = 0; i < 18; ++i) {
+//                std::cout << "\nElements[" << i << "] = " << elements[i];
+//            }
+            convertTrianglesIntoLines(); //This line NOT debug code
+//            std::cout << "\nConverting...";
+//            for (int i = 0; i < 36; ++i) {
+//                std::cout << "\nElements[" << i << "] = " << elements[i];
+//            }
+//            std::cout << std::endl << std::endl;
+            //std::cout << "\n    DEBUG::sizeof(elements) = " << sizeof(elements) << std::endl;
+            //End debug code
+            
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements * 2, elements, GL_STREAM_DRAW);
+            //glBufferData(GL_ARRAY_BUFFER, numberOfVertices, vertices, GL_STREAM_DRAW);
+            
+            glad_glEnable(GL_DEPTH_CLAMP); //Gets read of near/far plane culling (but not top/bottom plane, if this makes sense)
+            glad_glEnable(GL_DITHER); //Does something
+            glad_glEnable(GL_LINE_SMOOTH); //Makes the lines smooth
+            glad_glEnable(GL_MULTISAMPLE); //Turns on additional anti-aliasing
+            //Draw the lines:
+             glDrawElements(GL_LINES, this->numberOfElements*2, GL_UNSIGNED_INT, 0);
+            
+            //Now convert the lines back into triangles:
+            convertLinesIntoTriangles();
+            glad_glDisable(GL_DITHER); //Does something
+            glad_glDisable(GL_LINE_SMOOTH); //Makes the lines smooth
+            glad_glDisable(GL_MULTISAMPLE); //Turns on additional anti-aliasing (though I don't really see a difference)
+            glad_glDisable(GL_DEPTH_CLAMP);
+            
+            
+            //Draw main engine
+             glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements * 2, elements, GL_STREAM_DRAW);
+            //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+            
+            
+            //Draw side ENgines
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements * 2, elements, GL_STREAM_DRAW);
+            //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+            
+            
         }
         else if (specialization == specializationType::WEAPON) {
-            
+            //Do the weapon drawing stuff
+        }
+        else if (specialization == specializationType::STAGE) {
+            glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
         }
         else if (specialization == specializationType::NOSPECIALIZATION) {
             if (drawTriangles) {
@@ -404,7 +656,7 @@ glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements + 100, e
             }
         }
         else {
-            std::cout << "\nDEBUG::ERROR(sorta)! Generator's drawInstances command was called with an unrecognized (or just\ncurrently unimplemented) type! Please implement this type!\n\n";
+            std::cout << "\nDEBUG::ERROR(sorta)! Generator's drawInstances command was called with an unrecognized (or just\ncurrently unimplemented) type! Please implement this type or fix error!\n\n";
         }
     }
 }
@@ -415,31 +667,35 @@ void Generator::removeInstance(const int & instantID) {
     std::vector<int>::iterator iter;
     iter = find (instancesCreatedByThisGenerator.begin(), instancesCreatedByThisGenerator.end(), instantID);
     if (iter == instancesCreatedByThisGenerator.end()) { //If iterator reached the end
-        if ((*iter) != instantID) { //if the end value is not equal to the instanceID
-            std::cout << "\n    DEBUG::OOPS! removeInstance called for instance with id # ";
-            std::cout << instantID << " but that instance was not found\nwithin this generator!";
-            std::cout << std::endl;
-            return;
-        }
-        //else instance is the final value in the vector, so just remove the final value from the array
-        --activeInstances; //Decrement the number of active instances by 1
-        Instance * temp = new Instance[activeInstances];
-        for (int i = 0; i < activeInstances - 1; ++i) {
-            temp[i] = this->instances[i];
-        }
-        delete [] this->instances;
-        this->instances = temp; //Set instances to temp
+        //if ((*iter) != instantID) { //if the end value is not equal to the instanceID
+        std::cout << "\n    DEBUG::OOPS! removeInstance called for instance with id # ";
+        std::cout << instantID << " but that instance was not found\nwithin this generator!";
+        std::cout << std::endl;
+        return;
+        //}
+        //IT TURNS OUT THAT VECTOR.END() is the element past the last element in the vector
+//        //else instance is the final value in the vector, so just remove the final value from the array
+//        --activeInstances; //Decrement the number of active instances by 1
+//        Instance ** temp = new Instance*[activeInstances];
+//        for (int i = 0; i < activeInstances - 1; ++i) {
+//            temp[i] = this->instances[i];
+//        }
+//        delete [] this->instances;
+//        this->instances = temp; //Set instances to temp
     }
     //else the instance is located in the array somewhere besides the end
     bool found = false; //Need 'found' to keep array indexes lined up
-    Instance * temp = new Instance[activeInstances];
+    Instance ** temp = new Instance*[activeInstances];
     for (int i = 0; i < activeInstances; ++i) {
-        if (instances[i].getID() == instantID) {
+        if (instances[i] != nullptr && instances[i]->getID() == instantID) {
             found = true;
+            //delete the instance that is being removed:
+            delete instances[i];
+            instances[i] = nullptr;
             //DEBUG:
             std::cout << "\nDEBUG::Deleted intance #" << instantID << std::endl;
         }
-        else if (found) {
+        else if (found) { //If we already deleted the instance, then just move the rest of the array over
             temp[i] = instances[i+1];
         }
         else {
@@ -457,8 +713,8 @@ void Generator::removeInstance(Instance * instPtr) {
 
 void Generator::convertTrianglesIntoLines() {
     int elemtsPos = 0;
-    GLuint temp[this->numberOfElements * 9];
-    for (int i = 0; i < numberOfElements*3*2; i+=6) {
+    GLuint * temp = new GLuint[this->numberOfElements * 9];
+    for (int i = 0; i < numberOfElements*2; i+=6) {
         //if elements is:
         //   1   2    3
         //   4   5    6
@@ -473,23 +729,29 @@ void Generator::convertTrianglesIntoLines() {
         temp[i+5] = elements[elemtsPos];
         elemtsPos += 3;
     }
-    this->elements = temp;
+    delete [] this->elements;
+    this->elements = temp; //move pointer to head of array 'elements' to the new heap data
     drawLines = true;
     drawTriangles = false;
+    //Notice in next line that we are buffering (about) double the number of indicies
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements * 2 + 100, elements, GL_STATIC_DRAW);
 }
 
 void Generator::convertLinesIntoTriangles() {
     int elemtsPos = 0;
-    GLuint temp[this->numberOfElements * 9];
+    //GLuint temp[this->numberOfElements * 9]; //Stack memory here was causing my bug
+    GLuint * temp = new GLuint[this->numberOfElements * 9];
     for (int i = 0; i < numberOfElements; i+=3) {
-        temp[i] = elements[elemtsPos];
-        temp[i+1] = elements[elemtsPos + 1];
-        temp[i+2] = elements[elemtsPos + 3];
+        temp[i] = elements[elemtsPos]; //Vert 1
+        temp[i+1] = elements[elemtsPos + 1]; //Vert 2
+        temp[i+2] = elements[elemtsPos + 3]; //Vert 3
         elemtsPos += 6;
     }
-    this->elements = temp;
+    delete [] this->elements;
+    this->elements = temp; //move pointer to head of array 'elements' to the new heap data
     drawTriangles = true;
     drawLines = false;
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements + 100, elements, GL_STATIC_DRAW);
 }
 
 

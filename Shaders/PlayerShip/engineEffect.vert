@@ -7,8 +7,17 @@
 in vec3 enginePos;
 //in vec2 engineTxtr;
 
-uniform float zoom;
 uniform float time;
+uniform float zoom;
+uniform float xTrans;
+uniform float yTrans;
+uniform float zTrans;
+uniform float thetaX;
+uniform float thetaY;
+uniform float thetaZ;
+uniform float red; //These uniforms are unique to player:
+uniform float green;
+uniform float blue;
 
 out vec3 enginePosition;
 //out vec2 engineTex;

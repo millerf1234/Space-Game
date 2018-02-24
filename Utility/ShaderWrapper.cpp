@@ -251,19 +251,23 @@ bool ShaderWrapper::link() {
     //Delete shaders once they are linked
     if (vertexShader != nullptr) { //These nullptr checks aren't necessary but might as well, just to guarentee no issues down the road
         glDeleteShader(*vertexShader);
+        vertexShader = nullptr;
     }
     if (this->hasGeom) {
         if (this->geometryShader != nullptr) {
             glDeleteShader(*geometryShader);
+            geometryShader = nullptr;
         }
     }
     if (this->hasTessl) {
         if (this->tesselationShader != nullptr) {
             glDeleteShader(*tesselationShader);
+            tesselationShader = nullptr;
         }
     }
     if (fragmentShader != nullptr) {
         glDeleteShader(*fragmentShader);
+        fragmentShader = nullptr;
     }
     
     
@@ -398,7 +402,7 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
     }
     else if (vlf == VERT2COLOR3TEXEL2) { //2 vertices, RGB color and 2 Texel coords
         //glBindVertexArray(*(this->VAO));
-        std::cout << "\n\nDEBUG STATEMENT: USING VERTEX ATTRIB FORMAT VERT2COLOR3TEXEL2";
+        //std::cout << "\nDEBUG STATEMENT: USING VERTEX ATTRIB FORMAT VERT2COLOR3TEXEL2";
         this->posAttrib = new GLint;
         this->colAttrib = new GLint;
         this->texAttrib = new GLint;
@@ -409,7 +413,7 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
         //Let GPU know how the vertex coordinates are layed out (first 2 values)
         glEnableVertexAttribArray(*(this->posAttrib));
         glVertexAttribPointer(*(this->posAttrib), 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0);
-        std::cout << "\nDEBUG STATEMENT: Vertex Attrib was assigned: " << *(this->posAttrib);
+        std::cout << "DEBUG STATEMENT: Vertex Attrib was assigned: " << *(this->posAttrib);
         
         //Let GPU know how the color rgb values are layed out (next 3 values)
         glEnableVertexAttribArray(*(this->colAttrib));
@@ -427,16 +431,15 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
     
     else {
         std::cout << "\nOops! Due to Programmer lazyness, the vertex layout format you specified has not yet been implemented." << std::endl;
+        return false;
     }
     
     // glEnableVertexAttribArray(posAttrib3DLine);
-    
     
     this->vertLayoutSet = true;
     this->isReady = true;
     return true;
 }
-
 
 void ShaderWrapper::turnOffVertexLayout(vertLayoutFormat vlf) {
     std::cout << "Warning! Don't call this function because it should never be ";

@@ -52,6 +52,9 @@ public:
     float green;
     float blue;
     
+    //Movement information
+    bool accelerate, decelerate, turnLeft, turnRight, rollLeft, rollRight, shoot;
+    
     PlayerInstance(int playerNumber) {
         this->playerNumber = playerNumber;
         health = STARTING_PLAYER_HEALTH;
@@ -65,6 +68,10 @@ public:
 };
 //} PlayerInstance;
 
+class WeaponInstance : public Instance {
+public:
+    
+};
 
 
 #endif /* Instance_h */

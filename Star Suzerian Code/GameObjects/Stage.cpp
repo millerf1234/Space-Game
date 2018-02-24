@@ -45,15 +45,15 @@ Stage::~Stage() {
         delete this->generator;
         this->generator = nullptr;
     }
-   
 }
 
 void Stage::doUpkeep() {
     generator->doUpkeep();
     //Make background start distant and get bigger
-    Instance * tmp = generator->getArrayOfInstances();
+    Instance ** tmpPtr = generator->getArrayOfInstances();
+    Instance * tmp = *tmpPtr; //this is a lazy quick fix for now. getArrayOfInstances used to just return ptrs to Instance, but now returns ptr to ptr to instance
     for (int i = 0; i < generator->getInstanceCount(); ++i) {
-        tmp->zoom -= 0.0003f; //-= 0.0003f seems like a good speed...
+        tmp->zoom -= 0.0001f * (TIME_TICK_RATE / 0.01f); //-= 0.0003f seems like a good speed...
         //OOOOOH I'm multipling by time alive, thats why it speeds up...
 //        if (tmp->zoom < 100.0f) {
 //            tmp->zoom -= -.0001f * tmp->timeAlive;
@@ -64,7 +64,7 @@ void Stage::doUpkeep() {
 //        else if (tmp->zoom < 3.0f) {
 //            tmp->zoom -=
 //        }
-        if (tmp->zoom < 1.3f) {tmp->zoom = 1.3f;}
+        if (tmp->zoom < 1.3f) {tmp->zoom = 1.3f;} //Put a limit on closeness of zooming in
     }
 }
 
@@ -94,6 +94,8 @@ void Stage::generateInitializationTemplate() {
     
     //Set format of vertex data
     initTemplate->vert2col3tex2 = true;
+    
+    initTemplate->typeDataRequired = specializationType::STAGE;
     
     //Since backgrounds will not be loading from a model, set them up to load directly from
     //provided data

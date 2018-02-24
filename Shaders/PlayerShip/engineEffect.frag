@@ -4,6 +4,16 @@ in vec3 enginePosition;
 //in vec2 engineTex;
 
 uniform float time;
+uniform float zoom;
+uniform float xTrans;
+uniform float yTrans;
+uniform float zTrans;
+uniform float thetaX;
+uniform float thetaY;
+uniform float thetaZ;
+uniform float red; //These uniforms are unique to player:
+uniform float green;
+uniform float blue;
 
 out vec4 color;
 

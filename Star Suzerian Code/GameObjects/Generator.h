@@ -45,8 +45,10 @@
 
 //constexpr int FILEPATH_BUFFER = 512;
 
-
-enum specializationType {PLAYER, WEAPON, NOSPECIALIZATION};
+//Note:
+//InstanceType is assigned to individual instances to identify them
+//specializationType is assigned to a GameEntityManager-derived class
+enum specializationType {PLAYER, WEAPON, STAGE, NOSPECIALIZATION};
 
 typedef struct InitializationTemplate{
     bool hasVert, hasTessl, hasFrag, hasGeom;
@@ -115,11 +117,20 @@ protected: //temporary for debug
     
     //Instance data
     //int instanceCount; //Redundant with activeInstances
-    Instance * instances;
+    Instance ** instances;
     std::vector<int> instancesCreatedByThisGenerator; //A vector of instance IDs
     
     //Uniform location variables
     GLint ulocTime, ulocZoom, ulocXTrans, ulocYTrans, ulocZTrans, ulocThetaX, ulocThetaY, ulocThetaZ;
+    
+    //Player uniform locations:
+    GLint ulocRed, ulocGreen, ulocBlue; //Uniform locations for PLAYER rgb (color)
+    GLint ulocRedLine, ulocGreenLine, ulocBlueLine;
+    GLint ulocTimeLine, ulocZoomLine, ulocXTransLine, ulocYTransLine, ulocZTransLine, ulocThetaXLine, ulocThetaYLine, ulocThetaZLine;
+    GLint ulocTimeEngine, ulocZoomEngine, ulocXTransEngine, ulocYTransEngine, ulocZTransEngine, ulocThetaXEngine, ulocThetaYEngine, ulocThetaZEngine;
+     GLint ulocTimeEngineSide, ulocZoomEngineSide, ulocXTransEngineSide, ulocYTransEngineSide, ulocZTransEngineSide, ulocThetaXEngineSide, ulocThetaYEngineSide, ulocThetaZEngineSide;
+    GLint ulocPDamage, ulocPHealthMax;
+    //Weapon uniform locations:
     
 public:
     //-------------------
@@ -155,7 +166,7 @@ public:
     void drawInstances();
     void convertTrianglesIntoLines();
     void convertLinesIntoTriangles(); //Need a way to toggle shaders?
-    Instance * getArrayOfInstances() {return instances;}
+    Instance ** getArrayOfInstances() {return instances;}
     
     void removeInstance(const int & instantID); 
     void removeInstance(Instance *);

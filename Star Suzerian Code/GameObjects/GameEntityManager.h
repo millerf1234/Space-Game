@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include "GameParameters.h"
 #include "Generator.h"
+#include "GLFW_Init.h"
 
 class GameEntityManager {
 protected:
@@ -28,6 +29,7 @@ public:
     
     virtual void doUpkeep() {;}
     virtual void handleInput() {;}
+    virtual void handleInput(GLFWwindow* activeMonitor) {;}
     virtual void drawInstances() {;}
     
 //    virtual void deleteInstance(const int& instID);

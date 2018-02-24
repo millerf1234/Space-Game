@@ -1,14 +1,21 @@
 
 #version 400 core
+
+in vec3 pos;
+uniform float time;
+uniform float zoom;
+uniform float xTrans;
+uniform float yTrans;
+uniform float zTrans;
+uniform float thetaX;
+uniform float thetaY;
+uniform float thetaZ;
+uniform float red; //These uniforms are unique to player:
+uniform float green;
+uniform float blue;
 out vec4 color;
 
-uniform float time3D;
-//uniform sampler3D tex3D;
-uniform sampler2D tex3D;
 
-in vec3 pos3D;
-//in vec3 COLR;
-in vec2 TexCoor3D;
 
 //A fragment is like what I called my GridElem struct, in that it knows its position and its color and is like a pixel
 
@@ -18,7 +25,9 @@ in vec2 TexCoor3D;
 
 void main() {
     //Orangeish/Yellowish/Redish lines
-    color = vec4(1.0f, 0.65f, 0.0f /* + 0.4f*sin(time3D / 5.0f)*/, 1.0f);
+    //color = vec4(1.0f, 0.65f, 0.0f /* + 0.4f*sin(time3D / 5.0f)*/, 1.0f);
+    
+    color = vec4(red, green, blue, 1.0f);
     
     //Blue lines:
     //color = vec4(0.2f, 0.2f, 0.8f, 1.0f);

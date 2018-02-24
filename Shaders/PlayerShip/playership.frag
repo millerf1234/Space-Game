@@ -11,19 +11,21 @@ uniform float zTrans;
 uniform float thetaX;
 uniform float thetaY;
 uniform float thetaZ;
+uniform float red; //These uniforms are unique to player:
+uniform float green;
+uniform float blue;
 
-//These uniforms are unique to player:
-float red;
-float green;
-float blue;
+uniform float damage;  //My idea here is to make the player's ship blink faster the closer damage is to
+uniform float maxHealth; //the players maxHealth
 
 out vec4 color;
 
 //test ambientCol:
-vec3 ambientCol = vec3(0.15f, 0.25f, 0.25f);
-//vec3 ambientCol = vec3(red - 0.2f, green - 0.2f, blue - 0.2f);
+//vec3 ambientCol = vec3(0.15f, 0.25f, 0.25f);
+vec3 ambientCol = vec3(red - 0.2f, green - 0.2f, blue - 0.2f);
 
-vec3 lightCol = vec3(0.95f, 0.95f, 0.75f);  //ffc877
+//vec3 lightCol = vec3(0.95f, 0.95f, 0.75f);  //ffc877
+vec3 lightCol = vec3(red, green, blue);
 vec3 lightPos = vec3(1.0f, 0.0f, -0.5f);
 //vec3 eyePos = vec3(0.0f, 2.0f * sin(time / 2.0f + 3.1415f), -1.0f + 2.0f*sin(time));
 vec3 eyePos = vec3(0.0f, -2.5f, 2.0f);
@@ -34,10 +36,14 @@ vec3 Ks = vec3(0.6f, 0.3f, 0.05f);
 
 float shiny = 0.5f;
 
+//Set normal to this sin function that will make ship blink faster the more damage it has taken
+vec3 N = vec3(0.0f, 0.0f, sin(time * 50.0f /* * damage/maxHealth*/)); //No blinking when damage is 0, full blinking when damage == maxHealth
+
 void main() {
     
     vec3 P = pos;
-    vec3 N = normal;
+    //vec3 N = normal; //I do normal outside the loop, moving normal is what makes ship blink
+    //vec3 N = vec3(0.0f, 0.0f, sin(time * 15.0f));
     vec3 V = normalize(eyePos - P);
     vec3 L = normalize(lightPos - P);
     vec3 H = normalize(L + V);

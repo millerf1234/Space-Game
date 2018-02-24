@@ -29,11 +29,10 @@ static constexpr GLfloat STAGE_VERTS[] = {
 };
 
 static constexpr int STAGE_ELEMENTCOUNT = 2*3;
-static constexpr GLuint STAGE_ELEMENTS[] {  //               t1 ___    /|
-    0, 1, 2, //Triangle 1 (top-left, top-right, lower-right)   |  /   / |     (Oops these are not right)
-    2, 3, 0  //Triangle 2 (lower-right, lower-left, top-left)  | /   /__| t2
-}; //                                                          |/
-
+static constexpr GLuint STAGE_ELEMENTS[] {  //                 t1 ___    /|
+    0, 1, 2, //Triangle 1 (top-left, top-right, lower-right)     |  /   / | (Oops these are not correct)
+    2, 3, 0  //Triangle 2 (lower-right, lower-left, top-left)    | /   /__| t2
+}; //                                                            |/
 
 
 class Stage : public GameEntityManager {

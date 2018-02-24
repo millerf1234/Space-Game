@@ -19,7 +19,7 @@ Game::Game(MonitorData & mPtr) {
     this->numberOfLevels = 0; //Start with 0 levels
     counter = 0.0f; //Set game clock to 0
     
-    this->mWindow = mPtr.activeMonitor;
+    this->mWindow = mPtr.activeMonitor; //Set window to the active window 
     
     
 }
@@ -78,12 +78,13 @@ Game::~Game() { //std::cout << "\nDEBUG::Game destructor was called...\n";
 void Game::playIntroMovie() {  }
 
 void Game::loadGameObjects() {
+    //Load the stages first
     std::cout << std::endl << INDENT << "Loading Stages...\n";
     for (int i = 0; i < NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD; ++i) {
         gEntities.push_back(new Stage);
         std::cout << INDENT << "    Level " << i+1 << " loaded..." << std::endl;
     }
-    
+    //Then load all parts required for a PLAYER object
     std::cout << std::endl << INDENT << "Loading PlayerModels...\n";
     gEntities.push_back(new PlayerManager);
     
@@ -131,6 +132,12 @@ bool Game::launch() {
             glfwSetWindowShouldClose(mWindow, true);
         }
         //}
+        
+        //I went with a decentralized design (probably a mistake) where input reading is very decentralized
+        std::vector<GameEntityManager*>::iterator it3 = gEntities.begin(); //I guess I could just reuse the same iterator... Oh well
+        for (; it3 < gEntities.end(); ++it3) {
+            (*it3)->handleInput(mWindow);
+        }
         
         //Logic () //Includes Upkeep and collision detection and everything else
         //In logic, do:

@@ -131,6 +131,8 @@ public:
     
     bool link();
     
+    bool checkIfReady() const {return this->isReady;}
+    
     bool specifyVertexLayout(vertLayoutFormat);
     bool specifyVertexLayout(vertLayoutFormat, GLuint& vertData, GLuint& elemData);
     void turnOffVertexLayout(vertLayoutFormat);

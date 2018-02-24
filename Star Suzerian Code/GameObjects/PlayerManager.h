@@ -12,11 +12,16 @@
 #define Player_h
 
 #include <stdio.h>
+//I use these next 2 to implement the pause functionality
+#include <chrono> //c++11 to get nano time accuratly
+#include <thread> //Used for thisThread::sleepFor() //(Bringing this whole thing is seems kinda overkill)
+
 #include "Object.h"
 #include "Generator.h"
 #include "GameParameters.h"
 #include "GameEntityManager.h"
 #include "Instance.h"
+//#include "GLFW_Init.h"
 
 //typedef struct PlayerInstance : public Instance {
 //    float health;
@@ -52,7 +57,8 @@ public:
     //void addPlayer(struct controlBindings); //Add a public function like this?
     
     virtual void doUpkeep() override;
-    virtual void handleInput() override;
+    //virtual void handleInput() override;
+    virtual void handleInput(GLFWwindow*) override;
     virtual void drawInstances() override;
     
 protected:
