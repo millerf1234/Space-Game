@@ -65,6 +65,8 @@ protected:
     virtual void initializeFromTemplate() override;
 private:
     void generateInitializationTemplate();
+    void processInput();
+    
 };
 
 ////For reference:

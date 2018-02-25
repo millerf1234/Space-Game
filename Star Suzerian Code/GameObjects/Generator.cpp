@@ -39,6 +39,7 @@ Generator::Generator() {
     ulocTimeEngine = ulocZoomEngine = ulocXTransEngine = ulocYTransEngine = ulocZTransEngine = ulocThetaXEngine = ulocThetaYEngine = ulocThetaZEngine = -1;
     ulocTimeEngineSide = ulocZoomEngineSide = ulocXTransEngineSide = ulocYTransEngineSide = ulocZTransEngineSide = ulocThetaXEngineSide = ulocThetaYEngineSide = ulocThetaZEngineSide = -1;
     ulocPDamage = ulocPHealthMax = -1;
+    ulocPlayerRoll = ulocPlayerRollLine = ulocPlayerRollEngineSide = -1;
     
     this->drawTriangles = true;
     this->drawLines = false;
@@ -54,6 +55,9 @@ Generator::~Generator() { //Delete any memory being claimed by this generator
         this->elements = nullptr;
     }
     if (this->shaderArray != nullptr) {
+        if (PRINT_DEBUG_MESSAGES) {
+            std::cout << "DEBUG::Deleting " << shaderArraySize << " shaders from the ShaderArray.\n";
+        }
         for (int i = 0; i < this->shaderArraySize; ++i) {
             if (shaderArray[i] != nullptr) {
                 delete shaderArray[i];
@@ -124,7 +128,7 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         for (int i = 0; i < t.numVerts; ++i) {
             this->vertices[i] = t.vertices[i];
             //this->stackVertices[i] = t.vertices[i]; //For debug
-           // std::cout << vertices[i] << " "; //FOR DEBUG!
+            // std::cout << vertices[i] << " "; //FOR DEBUG!
         }
         //Load Element array
         for (int i = 0; i < t.numElems; ++i) {
@@ -135,21 +139,27 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
     else {  //Load from SimpleObjLoader
         //Data to load will depend on the vertex format:
         if (t.vert3 || t.vert3tex2 || t.vert3tex3 || t.vert3norml3 || t.vert3norml3tex2 || t.vert3norml3tex3) {
-            //            //Load Elements from face data
-            int faceCounter = 0;
-            this->vertexData = new SimpleObjLoader((char *)t.modelFilePath.c_str());
+            //Load Elements from face data
+            int faceCounter = 0; //This counter is used inside loop to extract data from objLoader
+            this->vertexData = new SimpleObjLoader((char *)t.modelFilePath.c_str()); //Create the objLoader object
+            
             //Copy over elements first (NOTE: Elements are independent of vertex format)
             this->elements = new GLuint[vertexData->model.faces*3*2];
+            int numElementsToPrintForDebug = 9; //Part of debug messages even though it's outside the check for debug (need to do this so code inside will run)
+            if (PRINT_DEBUG_MESSAGES) {
+                std::cout << "DEBUG::Here are the first " << numElementsToPrintForDebug << " values that were loaded into Elements: ";
+            }
             for (int i = 0; i < vertexData->model.faces * 3; i += 3) {
                 this->elements[i] = vertexData->faces[faceCounter][0] - 1;
                 this->elements[i+1] = vertexData->faces[faceCounter][3] - 1;
                 this->elements[i+2] = vertexData->faces[faceCounter][6] - 1;
                 ++faceCounter;
-                //debug::
-                if (i < 30) {
+                //Print debug message giving first few Elements that were loaded
+                if (PRINT_DEBUG_MESSAGES && i < numElementsToPrintForDebug) {
                     std::cout << "\nElements[" << i << " to " << i+2  << "] were set to " << elements[i] << " " << elements[i+1] << " " << elements[i+2];
                 }
             }
+    
             this->numberOfElements = vertexData->model.faces * 3;
             
             //Load vertices
@@ -166,25 +176,28 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
             }
             
             //NOTE ON vert3Normal3: This format does not work the way I thought it would. It looks like doing normals on faces with drawElements might not work at all. Might need to rethink how to send normal data to GPU?
-            //else if (t.vert3norml3) {
-            //    vertices = new GLfloat [(vertexData->model.positions + vertexData->model.normals) * 3];
-            //    int vertPosCounter = 0;
-            //    //for (int i = 0; i < vertexData->model.positions + vertexData->model.normals; ++i) {
-            //    for (int i = 0; i < vertexData->model.positions; ++i) {
-            //        vertices[vertPosCounter] = vertexData->positions[i][0];
-            //        vertices[vertPosCounter + 1] = vertexData->positions[i][1];
-            //        vertices[vertPosCounter + 2] = vertexData->positions[i][2];
-            //        vertPosCounter += 6;
-            //    }
-            //    //Load normals into vertex data array
-            //    vertPosCounter = 3;
-            //    for (int i = 0; i < vertexData->model.normals; ++i) {
-            //        vertices[vertPosCounter] = vertexData->normals[i][0];
-            //        vertices[vertPosCounter + 1] = vertexData->normals[i][1];
-            //        vertices[vertPosCounter + 2] = vertexData->normals[i][2];
-            //        vertPosCounter += 6;
-            //    }
-            //}
+            else if (t.vert3norml3) {
+                if (PRINT_DEBUG_MESSAGES) {
+                    std::cout << "DEBUG::\nOOPS! DON'T USE THIS FORMAT. Read\nhttp://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/ \nto learn about normal mapping.\n";
+                }
+                //    vertices = new GLfloat [(vertexData->model.positions + vertexData->model.normals) * 3];
+                //    int vertPosCounter = 0;
+                //    //for (int i = 0; i < vertexData->model.positions + vertexData->model.normals; ++i) {
+                //    for (int i = 0; i < vertexData->model.positions; ++i) {
+                //        vertices[vertPosCounter] = vertexData->positions[i][0];
+                //        vertices[vertPosCounter + 1] = vertexData->positions[i][1];
+                //        vertices[vertPosCounter + 2] = vertexData->positions[i][2];
+                //        vertPosCounter += 6;
+                //    }
+                //    //Load normals into vertex data array
+                //    vertPosCounter = 3;
+                //    for (int i = 0; i < vertexData->model.normals; ++i) {
+                //        vertices[vertPosCounter] = vertexData->normals[i][0];
+                //        vertices[vertPosCounter + 1] = vertexData->normals[i][1];
+                //        vertices[vertPosCounter + 2] = vertexData->normals[i][2];
+                //        vertPosCounter += 6;
+                //    }
+            }
             else {
                 std::cout << "\nDEBUG::OOPS! That format not yet implemented in generator's objLoader code!\n";
             }
@@ -193,10 +206,12 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
             std::cout << "\nDEBUG::OOPS! That format not yet implemented in generator's objLoader code";
             std::cout << std::endl;
         }
-        //Might want to delete the objLoader once I have all of the data from it
-        //this->numberOfVertices = (vertexData->model.positions + vertexData->model.normals) * 3;
-        //this->numberOfElements = vertexData->model.faces;
     }
+    
+    //Might want to delete the objLoader once I have all of the data from it
+    //this->numberOfVertices = (vertexData->model.positions + vertexData->model.normals) * 3;
+    //this->numberOfElements = vertexData->model.faces;
+    
     //Buffer the data
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
@@ -279,6 +294,7 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         ulocBlue = glGetUniformLocation(shaderID, "blue");
         ulocPDamage = glGetUniformLocation(shaderID, "damage");
         ulocPHealthMax = glGetUniformLocation(shaderID, "maxHealth");
+        ulocPlayerRoll = glGetUniformLocation(shaderID, "earlyThetaZ");
         
         std::cout << "\nDEBUG:\n        ulocRed = " << ulocRed;
         std::cout << "\n        ulocGreen = " << ulocGreen;
@@ -322,6 +338,7 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         ulocThetaXLine = glGetUniformLocation(shaderID, "thetaX");
         ulocThetaYLine = glGetUniformLocation(shaderID, "thetaY");
         ulocThetaZLine = glGetUniformLocation(shaderID, "thetaZ");
+        ulocPlayerRollLine = glGetUniformLocation(shaderID, "earlyThetaZ");
         
         std::cout << "    DEBUG::PlayerLineColorLocations: \n";
         std::cout << "ulocRedLine = " << ulocRedLine << std::endl;
@@ -355,6 +372,7 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         ulocThetaXEngine = glGetUniformLocation(shaderID, "thetaX");
         ulocThetaYEngine = glGetUniformLocation(shaderID, "thetaY");
         ulocThetaZEngine = glGetUniformLocation(shaderID, "thetaZ");
+        //no ulocPlayerRoll = glGetUniformLocation(shaderID, "earlyThetaZ"); //Because main engine is symmetric about roll axis
         if (shaderArray[2]->checkIfReady()) {
             std::cout << "\n       Main Engine shader ready!\n";
         }
@@ -380,6 +398,7 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         ulocThetaXEngineSide = glGetUniformLocation(shaderID, "thetaX");
         ulocThetaYEngineSide = glGetUniformLocation(shaderID, "thetaY");
         ulocThetaZEngineSide = glGetUniformLocation(shaderID, "thetaZ");
+        ulocPlayerRollEngineSide = glGetUniformLocation(shaderID, "earlyThetaZ");
         
         if (shaderArray[3]->checkIfReady()) {
             std::cout << "\n       Side Engine shader ready!\n";
@@ -400,11 +419,46 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
 
 void Generator::doUpkeep() {
     if (instances == nullptr) {return;}
-    for (int i = 0; i < activeInstances; ++i) {
+    for (int i = 0; i < activeInstances; ++i) { //Update every instances position with it's velocity
         instances[i]->timeAlive += TIME_TICK_RATE;
+        bool isPlayerInstance = (instances[i]->type == InstanceType::PLAYERINSTANCE); //Set a bool variable since I need to do this check multiple times
+        if (isPlayerInstance) {
+        aiVector2D tempForMaxSpeedCheck(instances[i]->velocity.x, instances[i]->velocity.y);
+        if (tempForMaxSpeedCheck.Length() > PLAYER_MOVEMENT_MAX_SPEED) {
+            tempForMaxSpeedCheck.Normalize();
+            tempForMaxSpeedCheck.operator*=(PLAYER_MOVEMENT_MAX_SPEED);
+            instances[i]->velocity.x = tempForMaxSpeedCheck.x;
+            instances[i]->velocity.y = tempForMaxSpeedCheck.y;
+        }
+        }
+        instances[i]->position.x += instances[i]->velocity.x;
+        instances[i]->position.y += instances[i]->velocity.y;
+        
+        //Keep player instances inbounds
+        if (isPlayerInstance) {
+            //Check to see if out of bounds, and if so, then move back inbounds
+            if (instances[i]->position.x > XLIMIT) {
+                instances[i]->position.x = XLIMIT;
+                instances[i]->velocity.x = 0.0f;
+            }
+            else if (instances[i]->position.x < -XLIMIT) {
+                instances[i]->position.x = -XLIMIT;
+                instances[i]->velocity.x = 0.0f;
+            }
+            //Check Y boundary as well
+            if (instances[i]->position.y > YLIMIT) {
+                instances[i]->position.y = YLIMIT;
+                instances[i]->velocity.y = 0.0f;
+            }
+            else if (instances[i]->position.y < -YLIMIT) {
+                instances[i]->position.y = -YLIMIT;
+                instances[i]->velocity.y = 0.0f;
+            }
+        }
     }
 }
 
+//NOTICE:: setSpecialization is now deprecated and should not be used at all
 void Generator::setSpecialization(specializationType expansionType) {
     //I now set an expansion type within the initializerTemplate, so the generator knows its type much earlier on in its setup process. As such, I moved the glGetUniformLocation calls to be all next to each other near the end of the function initializeFromTemplate(). So the generic calls are made first then uniform locations are set based off the type, which is known since it was given as part of the intializer template.
     //TL,DR: This function's functionality has been moved to within initializeFromTemplate()
@@ -579,6 +633,8 @@ void Generator::drawInstances() {
             glUniform1f(ulocRed, player->red);
             glUniform1f(ulocGreen, player->green);
             glUniform1f(ulocBlue, player->blue);
+            glUniform1f(ulocPlayerRoll, player->rollAmount);
+            
             //Draw the player body (using shader in shadderArray[0]
             glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
             
@@ -595,6 +651,7 @@ void Generator::drawInstances() {
             glUniform1f(ulocRedLine, player->red * PLAYER_LINE_COLOR_BOOST_FACTOR);
             glUniform1f(ulocGreenLine, player->green * PLAYER_LINE_COLOR_BOOST_FACTOR);
             glUniform1f(ulocBlueLine, player->blue * PLAYER_LINE_COLOR_BOOST_FACTOR);
+            glUniform1f(ulocPlayerRollLine, player->rollAmount);
             
             //Debug code:
 //            for (int i = 0; i < 18; ++i) {
@@ -626,13 +683,12 @@ void Generator::drawInstances() {
             glad_glDisable(GL_MULTISAMPLE); //Turns on additional anti-aliasing (though I don't really see a difference)
             glad_glDisable(GL_DEPTH_CLAMP);
             
-            
-            //Draw main engine
+            //Draw main Engine
              glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements * 2, elements, GL_STREAM_DRAW);
             //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
             
             
-            //Draw side ENgines
+            //Draw side Engines
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements * 2, elements, GL_STREAM_DRAW);
             //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
             
@@ -659,6 +715,9 @@ void Generator::drawInstances() {
             std::cout << "\nDEBUG::ERROR(sorta)! Generator's drawInstances command was called with an unrecognized (or just\ncurrently unimplemented) type! Please implement this type or fix error!\n\n";
         }
     }
+    //It's generally a good idea to set these next two things to 0 after having used them
+    glBindVertexArray(0); //Vertex attribute array
+    glUseProgram(0);
 }
 
 //Note that this function will not be efficient if called in a loop to delete a bunch of instances

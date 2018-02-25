@@ -52,6 +52,7 @@ public:
 private:
     //Variables
     unsigned long long p1Score, p2Score, frameNumber;
+    unsigned long long frameUnpaused; //Needed to make pause/unpause operate correctly
     float counter;
     GLFWwindow * mWindow; //Pointer to the display that is being rendered too 
     Quaternion * xRot, * yRot, * zRot; //Pointers to global rotation quaternions

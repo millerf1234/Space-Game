@@ -43,12 +43,9 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     std::cout << "Done\n" << std::endl;
     std::cout << "Game Launched." << std::endl << std::endl;
    
-    
     //Game.playIntroMovie(); //Implement later
     
-    
-    Game.launch(); //Launch will return only once the game is ready
-    // to no longer be running
+    Game.launch(); //Launch will return only once the game has concluded its game loop
    
     windowSetupRoutines.terminate(); //Handle closing the window
     return EXIT_SUCCESS;

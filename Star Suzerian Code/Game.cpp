@@ -19,8 +19,9 @@ Game::Game(MonitorData & mPtr) {
     this->numberOfLevels = 0; //Start with 0 levels
     counter = 0.0f; //Set game clock to 0
     
-    this->mWindow = mPtr.activeMonitor; //Set window to the active window 
+    p1Score = p2Score = frameNumber = frameUnpaused = 0ull;
     
+    this->mWindow = mPtr.activeMonitor; //Set window to the active window 
     
 }
 
@@ -114,65 +115,103 @@ void Game::loadGameObjects() {
 }
 
 bool Game::launch() {
-    
-    
-    //bool loopOver = false;
-    
-    
+
+    ////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////    GAME LOOP     ///////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
     while (glfwWindowShouldClose(mWindow) == false) {
-        //Reset() {
-        glClear(GL_COLOR_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-        //}
+        //----------------------------------------------------------------------
+        //  RESET OpenGL states to prepare for rendering next frame
+        //----------------------------------------------------------------------
+        glClear(GL_COLOR_BUFFER_BIT); //clear the color buffer
+        glEnable(GL_DEPTH_TEST); //Turn on the depth test for z-culling
+        glDepthFunc(GL_LESS); //Explicity tell the z-culling which direction to cull
         
-        //Handle Input() {
-        //Exit loop by pressing the escape key
+        
+        //----------------------------------------------------------------------
+        //  CHECK INPUT from users
+        //----------------------------------------------------------------------
+        
+        //Check for game-wide input directly
+        //check to see if need to Exit loop by user pressing the escape key
         if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            glfwSetWindowShouldClose(mWindow, true);
+            if (PRINT_DEBUG_MESSAGES) {
+                std::cout << "DEBUG::ESC KEY PRESS DETECTED. GAME WILL EXIT!\n";
+            }
+            glfwSetWindowShouldClose(mWindow, true); //This tells the render loop that this iteration will be its last
         }
-        //}
+        //Check to see if game should pause (pausing causes control to remain inside this block until an unpause occurs)
+        //Need to put a delay so unpausing doesn't cause pausing on the next few frames
+        //Ask "if enough frames have passed since the game was last unpaused and the unpause key is being pressed..."
+        if (frameNumber >= (frameUnpaused + 10ull) && glfwGetKey(mWindow, GLFW_KEY_SPACE) == GLFW_PRESS) {
+            auto begin = std::chrono::high_resolution_clock::now();  //Time Measurement
+            auto end = std::chrono::high_resolution_clock::now(); //Note that time measurement is in nanoseconds
+            std::cout << "Game Paused!\n"; //Announce that the game has been paused
+            //To convert nanoseconds to seconds, see: http://convert-units.info/time/nanosecond/300000000
+            while (std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count() < 300000000){  //this is saying wait 0.3 seconds before moving on to check for unpause
+                std::this_thread::sleep_for(std::chrono::nanoseconds(3000000));
+                end = std::chrono::high_resolution_clock::now();
+            }
+            //Okay, so now that a short pause has occured
+            while (true) { //Infinite loop of checking if unpaused key get's pressed
+                glfwPollEvents();
+                if (glfwGetKey(mWindow, GLFW_KEY_SPACE) == GLFW_PRESS) {
+                    goto unpause;
+                }
+                else {
+                    std::this_thread::sleep_for(std::chrono::nanoseconds(3333333)); //Sleep for a small amount of a second before checking again if unpaused.
+                }
+            }
+        }
+        //Need some way for unpausing to work. How about this:
+        if (false) {
+            unpause: std::cout << "Game Unpaused!" << std::endl;
+            frameUnpaused = frameNumber;
+        }
         
         //I went with a decentralized design (probably a mistake) where input reading is very decentralized
-        std::vector<GameEntityManager*>::iterator it3 = gEntities.begin(); //I guess I could just reuse the same iterator... Oh well
-        for (; it3 < gEntities.end(); ++it3) {
-            (*it3)->handleInput(mWindow);
+        //For each object in the game that can recieve user input, have that object check for and respond to that input
+        std::vector<GameEntityManager*>::iterator entityInputIterator = gEntities.begin(); //I guess I could have just reused the same iterator for each time I iterate through gameEntities... Oh well
+        for (; entityInputIterator < gEntities.end(); ++entityInputIterator) {
+            (*entityInputIterator)->handleInput(mWindow);
         }
         
-        //Logic () //Includes Upkeep and collision detection and everything else
+        //----------------------------------------------------------------------
+        //  Perform Game Logic Calculation
+        //----------------------------------------------------------------------
         //In logic, do:
-        std::vector<GameEntityManager*>::iterator it2 = gEntities.begin();
-        for (; it2 < gEntities.end(); ++it2) {
-            (*it2)->doUpkeep();
-        }
-        //levels[0]->generator->doUpkeep();
-        
-        
-        //Draw() {
-        //Draw background
-        /// this->background
-        //...
-        //levels[0]->generator->drawInstances();
-        std::vector<GameEntityManager*>::iterator it = gEntities.begin();
-        for ( ; it < gEntities.end(); ++it) {
-            (*it)->drawInstances();
+        std::vector<GameEntityManager*>::iterator entityLogicIterator = gEntities.begin();
+        for (; entityLogicIterator < gEntities.end(); ++entityLogicIterator) {
+            (*entityLogicIterator)->doUpkeep();
         }
         
+        //----------------------------------------------------------------------
+        //  Draw
+        //----------------------------------------------------------------------
+        std::vector<GameEntityManager*>::iterator entityDrawIterator = gEntities.begin();
+        for ( ; entityDrawIterator < gEntities.end(); ++entityDrawIterator) {
+            (*entityDrawIterator)->drawInstances();
+        }
+        
+        //
         glBindVertexArray(0); //Vertex attribute array
         glUseProgram(0);
-        //}
         
-        // Flip Buffers and Draw
+        //----------------------------------------------------------------------
+        // Flip buffers and get reader for the next frame
+        //----------------------------------------------------------------------
         glfwSwapBuffers(mWindow);
         glfwPollEvents();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Reset depth/color buffer bits
         ++frameNumber;
     }
     
+    if (PRINT_DEBUG_MESSAGES) {
+        std::cout << "\nDEBUG::Exiting Game Loop!" << std::endl;
+    }
     return true;
 }
-
-
 
 //   OLDE DEBUG CODE:
 ////----------------------------------------------------------------------------

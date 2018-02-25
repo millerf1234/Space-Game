@@ -11,36 +11,34 @@
 #include <fstream>
 #include "glad.h"
 
+//If using ShaderWrapper within a project that has a ProjectSetup.h
 //#include "ProjectSetup.h"
+//If using ShaderWrapper within a project that has a GameParameters.h
+#include "GameParameters.h"
 
-const static int MAX_SHADERS = 75; //Just an arbitrary value
+//constexpr static int MAX_SHADERS = 75; //Just an arbitrary value
+
+//TO LEARN HOW TO ACTUALY DO NORMALS/TANGENTS/BITANGENTS, see: http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/
 
 class ShaderWrapper {
 private:
-    
-    
     bool isLinked;
     bool isReady;
     bool hasVert, hasGeom, hasFrag, hasTessl;
     bool vertSuccess, geomSuccess, fragSuccess, tesslSuccess;
     
     bool vertLayoutSet;
-   // int uniformCount;
+    //int uniformCount; //NOT USED CURRENTLY...
     std::string vert;
     std::string geom;
     std::string frag;
     std::string tessl;
     
-    
-   //Add static to track number of programs in use?
-    
-    
-    std::string loadSourceFile(char* filename)
-    {
+    //Add static to track number of programs in use? (Actually programID will already be this counter)
+    std::string loadSourceFile(char* filename) {  //I didn't write this function, it's from Glitter.
         std::ifstream infile{ filename };
         return{ std::istreambuf_iterator<char>(infile), std::istreambuf_iterator<char>() };
     }
-    
     
 public:
     //Enum for vertexLayoutFormats
@@ -77,12 +75,10 @@ public:
     GLchar textureAttribName[512];
     GLchar normalAttribName[512];
     
-    
     bool attachVert(char * vertSource);
     bool attachGeom(char * geomSource);
     bool attachFrag(char * fragSource);
     bool attachTessl(char * tesslSource);
-    
     
     //These next 4 functions are for letting this object know what the 'in' variables
     //in the vert shader are called
@@ -154,6 +150,4 @@ public:
         return *programID;
     }
 };
-
-
 #endif /* ShaderWrapper_h */

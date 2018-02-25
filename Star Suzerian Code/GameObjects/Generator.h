@@ -130,6 +130,7 @@ protected: //temporary for debug
     GLint ulocTimeEngine, ulocZoomEngine, ulocXTransEngine, ulocYTransEngine, ulocZTransEngine, ulocThetaXEngine, ulocThetaYEngine, ulocThetaZEngine;
      GLint ulocTimeEngineSide, ulocZoomEngineSide, ulocXTransEngineSide, ulocYTransEngineSide, ulocZTransEngineSide, ulocThetaXEngineSide, ulocThetaYEngineSide, ulocThetaZEngineSide;
     GLint ulocPDamage, ulocPHealthMax;
+    GLint ulocPlayerRoll, ulocPlayerRollLine, ulocPlayerRollEngineSide; //Don't need to track roll for main engine 
     //Weapon uniform locations:
     
 public:

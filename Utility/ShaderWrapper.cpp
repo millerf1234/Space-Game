@@ -190,13 +190,11 @@ bool ShaderWrapper::attachFrag(char * fragSource){
 bool ShaderWrapper::attachTessl(char * tesslSource){
     if (hasTessl) { //Make sure a Frag shader is not already attached
         std::cout << "\nError attaching " << tesslSource;
-        std::cout << "\nThis ShaderWrapper already has a fragSource attached!";
+        std::cout << "\nThis ShaderWrapper already has a tesslSource attached!";
         return false;
     }
     return false;
 }
-
-
 
 //Note that a shader program must always have at least a vert and a frag. The
 //Tesselation and Geometry shaders are optional
@@ -204,7 +202,7 @@ bool ShaderWrapper::link() {
     //Make sure there are enough shaders in place to create the shaderProgram set
     if (!readyToLink() || this->programID != nullptr) {
         if (this->programID != nullptr) {
-            std::cout << "ERROR LINKING! This shader program has already been linked!"
+            std::cout << "\nERROR LINKING! This shader program (programID = " << programID << ") has already been linked!"
             << std::endl;
         }
         return false;
@@ -220,18 +218,17 @@ bool ShaderWrapper::link() {
     //Attach Geometry shader if there is one
     if (this->hasGeom) {
         //DO the work to attach the geom shader
-        std::cout << "OOPS! Attaching geomtry shaders hasn't been implemented yet!\n";
+        std::cout << "OOPS! Attaching geomtry shaders hasn't been implemented yet in the 'link()' step!\n";
     }
     
     //Attach Tesselation shader if there is one
     if (this->hasTessl) {
         //DO the work to attach the tesselation shader
-        std::cout << "OOPS! Attaching tessl shaders hasn't been implemented yet!\n";
+        std::cout << "OOPS! Attaching tessl shaders hasn't been implemented yet in the 'link()' step!\n";
     }
     
     //Attach Frag shader
     glAttachShader(*programID, *fragmentShader);
-    
     
     //Now that all the shaders have been attached, link the program
     glLinkProgram(*programID);
@@ -272,6 +269,9 @@ bool ShaderWrapper::link() {
     
     
     isLinked = true;
+    
+    //if (PRINT_DEBUG)
+    
     return isLinked;
 }
 
@@ -332,7 +332,6 @@ void ShaderWrapper::setVAOExternally(GLuint value) {
         this->VAO = nullptr;
     }
     this->VAO = new GLuint;
-    
     *(this->VAO) = value;
     vaoWasSetExternally = true;
 }
@@ -364,7 +363,9 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
         this->posAttrib = new GLint;
         *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
         glEnableVertexAttribArray(*(this->posAttrib));
-        std::cout << "\nposAttrib is " << this->vertexAttribName << " and was assigned to offset " << *(this->posAttrib) << " in the data."  << std::endl;
+        if (PRINT_DEBUG_MESSAGES) {
+            std::cout << "\nposAttrib is " << this->vertexAttribName << " and was assigned to offset " << *(this->posAttrib) << " in the data."  << std::endl;
+        }
         glVertexAttribPointer(*(this->posAttrib), 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
     }
     
@@ -374,11 +375,15 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
         *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
         *(this->texAttrib) = glGetAttribLocation(*programID, this->textureAttribName);
         glEnableVertexAttribArray(*(this->posAttrib));
-        std::cout << "\nposAttrib is " << *(this->posAttrib) << std::endl;
+        if (PRINT_DEBUG_MESSAGES) {
+            std::cout << "\nDEBUG::posAttrib is " << *(this->posAttrib) << std::endl;
+        }
 //        glVertexAttribPointer(*(this->posAttrib), 5, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
         glVertexAttribPointer(*(this->posAttrib), 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
         glEnableVertexAttribArray(*(this->texAttrib));
-        std::cout << "\ntexAttrib is " << *(this->texAttrib) << std::endl;
+        if (PRINT_DEBUG_MESSAGES) {
+            std::cout << "\nDEBUG::texAttrib is " << *(this->texAttrib) << std::endl;
+        }
         //glVertexAttribPointer(*(this->texAttrib), 5, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)) );
         glVertexAttribPointer(*(this->texAttrib), 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)) );
     }
@@ -387,18 +392,23 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
         this->normAttrib = new GLint;
         *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
         *(this->normAttrib) = glGetAttribLocation(*programID, this->normalAttribName);
-        std::cout << "\n\nDEBUG STATEMENT:NORMAL ATTRIB NAME IS: " << this->normalAttribName;
+        if (PRINT_DEBUG_MESSAGES) {
+            std::cout << "\n\nDEBUG STATEMENT:NORMAL ATTRIB NAME IS: " << this->normalAttribName;
+        }
         
         //Let GPU know how the data in vertices is laid-out
         //Position data:
         glEnableVertexAttribArray(*(this->posAttrib));
         glVertexAttribPointer(*(this->posAttrib), 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), 0);
-        std::cout << "\nDEBUG STATEMENT: Vertex Attrib was assigned: " << *(this->posAttrib);
+        if (PRINT_DEBUG_MESSAGES) {
+            std::cout << "\nDEBUG STATEMENT: Vertex Attrib was assigned: " << *(this->posAttrib);
+        }
         //Normal vector data:
         glEnableVertexAttribArray(*(this->normAttrib));
         glVertexAttribPointer(*(this->normAttrib), 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3 * sizeof(GLfloat)));
-        std::cout << "\nDEBUG STATEMENT: Normal Attrib was assigned: " << *(this->normAttrib);
-        
+        if (PRINT_DEBUG_MESSAGES) {
+            std::cout << "\nDEBUG STATEMENT: Normal Attrib was assigned: " << *(this->normAttrib);
+        }
     }
     else if (vlf == VERT2COLOR3TEXEL2) { //2 vertices, RGB color and 2 Texel coords
         //glBindVertexArray(*(this->VAO));
@@ -413,18 +423,24 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
         //Let GPU know how the vertex coordinates are layed out (first 2 values)
         glEnableVertexAttribArray(*(this->posAttrib));
         glVertexAttribPointer(*(this->posAttrib), 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0);
-        std::cout << "DEBUG STATEMENT: Vertex Attrib was assigned: " << *(this->posAttrib);
+        if (PRINT_DEBUG_MESSAGES) {
+            std::cout << "DEBUG STATEMENT: Vertex Attrib was assigned: " << *(this->posAttrib);
+        }
         
         //Let GPU know how the color rgb values are layed out (next 3 values)
         glEnableVertexAttribArray(*(this->colAttrib));
         glVertexAttribPointer(*(this->colAttrib), 3, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(2 * sizeof(GLfloat)));
-        std::cout << "\nDEBUG STATEMENT: Color Attrib was assigned: " << *(this->colAttrib);
+        if (PRINT_DEBUG_MESSAGES) {
+            std::cout << "\nDEBUG STATEMENT: Color Attrib was assigned: " << *(this->colAttrib);
+        }
         
         //Let GPU know how the texture sampling (u/v) coordinates are laid out (last 2 values)
         //The GPU interpolates between these values,
         glEnableVertexAttribArray(*(this->texAttrib));
         glVertexAttribPointer(*(this->texAttrib), 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(5*sizeof(float)) );
-        std::cout << "\nDEBUG STATEMENT: Tex Attrib was assigned: " << *(this->texAttrib);
+        if (PRINT_DEBUG_MESSAGES) {
+            std::cout << "\nDEBUG STATEMENT: Tex Attrib was assigned: " << *(this->texAttrib);
+        }
         std::cout << std::endl << std::endl;
         
     }
@@ -444,6 +460,7 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
 void ShaderWrapper::turnOffVertexLayout(vertLayoutFormat vlf) {
     std::cout << "Warning! Don't call this function because it should never be ";
     std::cout << "needed if you\nare using the VAO correctly." << std::endl;
+    std::cout << "(UNLESS YOU IMPLEMENT A PROPER CLEAN-UP ON EXITING THE PROGRAM... YOU SHOULD LOOK INTO IF THIS IS NECESSARY AT SOME POINT!" << std::endl;
     if (vlf == VERT3) {
         glDisableVertexAttribArray(*(this->posAttrib));
     }
@@ -454,20 +471,22 @@ void ShaderWrapper::turnOffVertexLayout(vertLayoutFormat vlf) {
     else {
         std::cout << "Extra Warning! You are attempting to turn off a vertex layout\n";
         std::cout << "that due to programmer laziness has not yet been implemented!" << std::endl;
+        std::cout << "Please implement this format before you try to turn it off!" << std::endl;
     }
 }
 
 
 
-/*
+/*  (THIS IS FROM AN EXAMPLE FROM THE INTERNET OF HOW THINGS ARE SUPPOSED TO GO DOWN)
  Initialisation:
  Code :
- glGenVertexArrays(1, &asteroid_vao);
- glBindVertexArray(asteroid_vao);
- glBindBuffer(GL_ARRAY_BUFFER, asteroid_buffer_object);
- glEnableVertexAttribArray(0);
- glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+ glGenVertexArrays(1, &asteroid_vao);  //First off, create a VAO
+ glBindVertexArray(asteroid_vao); //Bind dat VAO dawg (NOTE: Bind just means to tell OpenGL the location of something)
+ glBindBuffer(GL_ARRAY_BUFFER, asteroid_buffer_object); //Bind yo Vertex Buffer next
+ glEnableVertexAttribArray(0); //Here there is just plain vertex position data, so can use 0
+ glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0); //Tell OpenGL how the vertex data is laid out
  
+ //Now going to use a different VAO for a different object to be drawn
  glGenVertexArrays(1, &ship_vao);
  glBindVertexArray(ship_vao);
  glBindBuffer(GL_ARRAY_BUFFER, ship_buffer_object);
