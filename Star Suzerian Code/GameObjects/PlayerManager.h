@@ -61,11 +61,17 @@ public:
     virtual void handleInput(GLFWwindow*) override;
     virtual void drawInstances() override;
     
+    aiVector3D getCenterWeaponLaunchpoint();
+    aiVector3D * getSideWeaponLaunchPoints();
+    
+    
 protected:
     virtual void initializeFromTemplate() override;
 private:
     void generateInitializationTemplate();
     void processInput();
+    
+    float max(const float&, const float&);
     
 };
 

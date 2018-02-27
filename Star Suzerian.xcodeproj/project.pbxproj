@@ -30,20 +30,24 @@
 		9E10D5E62034BEBD00F0F724 /* Background.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E42034BEBD00F0F724 /* Background.cpp */; };
 		9E10D5EA2035485000F0F724 /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E82035485000F0F724 /* Object.cpp */; };
 		9E10D5EE20360AE500F0F724 /* ObjectGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */; };
+		9ECC63872044C51300F7B703 /* RocketManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ECC63852044C51300F7B703 /* RocketManager.cpp */; };
+		9ED562862042ACC600193697 /* assimp.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = 9E10D5B920323CD200F0F724 /* assimp.framework */; };
 		9ED772142036CE1600D569A4 /* TextureWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED772122036CE1600D569A4 /* TextureWrapper.cpp */; };
 		9ED77219203930F200D569A4 /* Generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED77217203930F100D569A4 /* Generator.cpp */; };
 		9ED7721D2039516500D569A4 /* Stage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED7721B2039516500D569A4 /* Stage.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		9E10D594203234CC00F0F724 /* CopyFiles */ = {
+		9E10D594203234CC00F0F724 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1;
-			dstSubfolderSpec = 0;
+			buildActionMask = 12;
+			dstPath = usr/share/man/man1;
+			dstSubfolderSpec = 16;
 			files = (
+				9ED562862042ACC600193697 /* assimp.framework in Copy Files */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -105,6 +109,8 @@
 		9E10D5E92035485000F0F724 /* Object.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
 		9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectGenerator.cpp; sourceTree = "<group>"; };
 		9E10D5ED20360AE500F0F724 /* ObjectGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectGenerator.h; sourceTree = "<group>"; };
+		9ECC63852044C51300F7B703 /* RocketManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RocketManager.cpp; sourceTree = "<group>"; };
+		9ECC63862044C51300F7B703 /* RocketManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RocketManager.h; sourceTree = "<group>"; };
 		9ED7720F2036B3D600D569A4 /* Cool_Picture_of_the_moon_915_609.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cool_Picture_of_the_moon_915_609.jpg; path = "../../../../../../../../Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Cool_Picture_of_the_moon_915_609.jpg"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9ED772112036B3D600D569A4 /* CalibrationPicture_915_609.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = CalibrationPicture_915_609.jpg; sourceTree = "<group>"; };
 		9ED772122036CE1600D569A4 /* TextureWrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TextureWrapper.cpp; sourceTree = "<group>"; };
@@ -332,6 +338,8 @@
 				9ED7721C2039516500D569A4 /* Stage.h */,
 				9E0754EC203B892C009B6215 /* GameEntityManager.h */,
 				9E0754EB203B892C009B6215 /* GameEntityManager.cpp */,
+				9ECC63852044C51300F7B703 /* RocketManager.cpp */,
+				9ECC63862044C51300F7B703 /* RocketManager.h */,
 			);
 			path = GameObjects;
 			sourceTree = "<group>";
@@ -373,7 +381,7 @@
 			buildPhases = (
 				9E10D592203234CC00F0F724 /* Sources */,
 				9E10D593203234CC00F0F724 /* Frameworks */,
-				9E10D594203234CC00F0F724 /* CopyFiles */,
+				9E10D594203234CC00F0F724 /* Copy Files */,
 			);
 			buildRules = (
 			);
@@ -428,6 +436,7 @@
 				9E0754ED203B892C009B6215 /* GameEntityManager.cpp in Sources */,
 				9E10D5EA2035485000F0F724 /* Object.cpp in Sources */,
 				9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */,
+				9ECC63872044C51300F7B703 /* RocketManager.cpp in Sources */,
 				9E10D5CB2032CC0100F0F724 /* Game.cpp in Sources */,
 				9E10D5E320338FF000F0F724 /* PlayerManager.cpp in Sources */,
 				9ED772142036CE1600D569A4 /* TextureWrapper.cpp in Sources */,
@@ -555,6 +564,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				GCC_OPTIMIZATION_LEVEL = 0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

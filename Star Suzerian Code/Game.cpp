@@ -114,6 +114,8 @@ void Game::loadGameObjects() {
     
 }
 
+
+
 bool Game::launch() {
 
     ////////////////////////////////////////////////////////////////////////////
@@ -121,6 +123,9 @@ bool Game::launch() {
     ////////////////////////////////////////////////////////////////////////////
 
     while (glfwWindowShouldClose(mWindow) == false) {
+        
+        auto frameBegin = std::chrono::high_resolution_clock::now();
+        
         //----------------------------------------------------------------------
         //  RESET OpenGL states to prepare for rendering next frame
         //----------------------------------------------------------------------
@@ -137,7 +142,7 @@ bool Game::launch() {
         //check to see if need to Exit loop by user pressing the escape key
         if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             if (PRINT_DEBUG_MESSAGES) {
-                std::cout << "DEBUG::ESC KEY PRESS DETECTED. GAME WILL EXIT!\n";
+                std::cout << "\nDEBUG::ESC KEY PRESS DETECTED. GAME WILL EXIT!\n";
             }
             glfwSetWindowShouldClose(mWindow, true); //This tells the render loop that this iteration will be its last
         }
@@ -190,7 +195,7 @@ bool Game::launch() {
         //  Draw
         //----------------------------------------------------------------------
         std::vector<GameEntityManager*>::iterator entityDrawIterator = gEntities.begin();
-        for ( ; entityDrawIterator < gEntities.end(); ++entityDrawIterator) {
+        for (; entityDrawIterator < gEntities.end(); ++entityDrawIterator) {
             (*entityDrawIterator)->drawInstances();
         }
         
@@ -205,7 +210,12 @@ bool Game::launch() {
         glfwPollEvents();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Reset depth/color buffer bits
         ++frameNumber;
+        if (PRINT_FRAME_PROCESS_TIME_INFORMATION) { //Might want to add more fame-time information
+            auto frameEnd = std::chrono::high_resolution_clock::now(); //Note that time measurement is in nanoseconds
+            std::cout << "\nFrame " << frameNumber << " processed in " << std::chrono::duration_cast<std::chrono::nanoseconds>(frameEnd-frameBegin).count()  << " nanoseconds.";
+        }
     }
+    
     
     if (PRINT_DEBUG_MESSAGES) {
         std::cout << "\nDEBUG::Exiting Game Loop!" << std::endl;

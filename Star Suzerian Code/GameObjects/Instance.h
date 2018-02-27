@@ -14,7 +14,7 @@
 
 
 enum InstanceType {PLAYERINSTANCE, WEAPONINSTANCE, ENEMYINSTANCE, SCENEINSTANCE, BASIC};
-
+enum WeaponType {HEXAGON_BOMB, LAZER, ROCKET, HOMINGROCKET, UNINITIALIZED};
 //Here is a typedef for an instance of what was generated
 
 class Instance{
@@ -62,6 +62,7 @@ public:
     float blue;
     
     float rollAmount;
+    aiVector3D * forward;
     
     int currentAnimationFrame;
     int maxAnimationFrame;
@@ -98,6 +99,7 @@ public:
         rollAmount = 0.0f;
         currentAnimationFrame = maxAnimationFrame = 0;
         rear = new aiVector3D(0.0f, 0.0f, PLAYER_ENGINE_FLAME_REAR_POSITION);
+        forward = new aiVector3D(0.0f, 0.0f, 1.0f);
         xRot = new Quaternion(1.0f, 0.0f, 0.0f);
         yRot = new Quaternion(0.0f, 1.0f, 0.0f);
         zRot = new Quaternion(0.0f, 0.0f, 1.0f);
@@ -125,6 +127,10 @@ public:
             delete this->zRot;
             this->zRot = nullptr;
         }
+        if (this->forward != nullptr) {
+            delete this->forward;
+            this->forward = nullptr;
+        }
         //delete the translation history vector
         if (translationHistory != nullptr) {
             for (int i = 0; i < PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES; ++i) {
@@ -136,10 +142,35 @@ public:
 };
 
 
+//Add a Weapon manager or manage weapons through PlayerManager?
 class WeaponInstance : public Instance {
 public:
+    float damage;
+    //collision box
+    
+    bool homing;
+    
+    WeaponType wepType;
     
 };
 
+
+class LazerDustParticleEffect : public Instance { //Do glDrawDots or whatever
+    float red, green, blue;
+    int framesRemaining;
+    aiVector2D * position;
+    
+    LazerDustParticleEffect() = delete;
+    LazerDustParticleEffect(float xMidpoint, float yMidpoint, float red, float green, float blue) {
+        position = new aiVector2D(xMidpoint, yMidpoint);
+    }
+    //Destructor
+    ~LazerDustParticleEffect() {
+        if (position != nullptr) {
+            delete position;
+            position = nullptr;
+        }
+    }
+};
 
 #endif /* Instance_h */

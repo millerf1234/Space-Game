@@ -25,21 +25,21 @@ out vec4 color;
 vec3 ambientCol = vec3(red - 0.2f, green - 0.2f, blue - 0.2f);
 
 //vec3 lightCol = vec3(0.95f, 0.95f, 0.75f);  //ffc877
-vec3 lightCol = vec3(red, green, blue);
-vec3 lightPos = vec3(1.0f, 0.0f, -0.5f);
+vec3 lightCol = vec3(red+0.2f, green+0.2f, blue+0.3f);
+vec3 lightPos = vec3(0.5f, 0.0f, 0.5f);
 //vec3 eyePos = vec3(0.0f, 2.0f * sin(time / 2.0f + 3.1415f), -1.0f + 2.0f*sin(time));
 vec3 eyePos = vec3(0.0f, -2.5f, 2.0f);
 
 vec3 Ka = vec3(0.3f, 0.3f, 0.3f);
 //vec3 Kd = vec3(0.9f, 0.3f, 0.1f);
 //vec3 Ks = vec3(0.6f, 0.3f, 0.05f);
-vec3 Kd = vec3(0.55f, 0.55f, 0.55f);
-vec3 Ks = vec3(0.85f, 0.85f, 0.85f);
+vec3 Kd = vec3(0.85f, 0.55f, 0.85f);
+vec3 Ks = vec3(0.95f, 0.95f, 0.95f);
 
-float shiny = 0.5f;
+float shiny = 0.15f;
 
 //Set normal to this sin function that will make ship blink faster the more damage it has taken
-vec3 N = vec3(0.0f, 0.0f, sin(time * 75.0f  * damage/maxHealth)); //No blinking when damage is 0, full blinking when damage == maxHealth
+vec3 N = vec3(0.0f, 0.0f, sin(time * 50.0f  * damage/maxHealth)); //No blinking when damage is 0, full blinking when damage == maxHealth
 //vec3 N = cross(vec3(0.0f, pos.y, -pos.z), eyePos);
 
 void main() {

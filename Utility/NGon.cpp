@@ -198,7 +198,6 @@ void NGon::changePosition(aiVector3D transl) { //move x y z position
 //    computeOffsets();
 }
 
-
 void NGon::resize(float size) {
     this->size = size;
     //need to set new offsets

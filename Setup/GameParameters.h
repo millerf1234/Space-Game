@@ -13,30 +13,108 @@
 
 static constexpr float PI = 3.1415927f;
 
+
+
+//-----------------------------------------------------------------------------
+// Control Bindings
+//-----------------------------------------------------------------------------
+
+////Player 1 control input first
+//if (glfwGetKey(mWindow, 'W') == GLFW_PRESS) {
+//    p1->accelerate = true;
+//    if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
+//        std::cout << "Player1 Acceleterating" << std::endl;
+//        }
+//        }
+//        if (glfwGetKey(mWindow, 'S') == GLFW_PRESS) {
+//            p1->decelerate = true;
+//            if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
+//                std::cout << "Player1 decelerating" << std::endl;
+//            }
+//        }
+//        if (glfwGetKey(mWindow, 'A') == GLFW_PRESS) {
+//            p1->turnLeft = true;
+//            if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
+//                std::cout << "Player1 Turning Left" << std::endl;
+//            }
+//        }
+//        if (glfwGetKey(mWindow, 'D') == GLFW_PRESS) {
+//            p1->turnRight = true;
+//            if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
+//                std::cout << "Player1 Turning Right" << std::endl;
+//            }
+//        }
+//        if (glfwGetKey(mWindow, 'Q') == GLFW_PRESS) {
+//            p1->rollLeft = true;
+//            if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
+//                std::cout << "Player1 Rolling Left" << std::endl;
+//            }
+//        }
+//        if (glfwGetKey(mWindow, 'E') == GLFW_PRESS) {
+//            p1->rollRight = true;
+//            if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
+//                std::cout << "Player1 Rolling Right" << std::endl;
+//            }
+//        }
+//        if (glfwGetKey(mWindow, GLFW_KEY_TAB) == GLFW_PRESS) {
+//            p1->shoot = true;
+//            if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
+//                std::cout << "Player1 shooting" << std::endl;
+//            }
+//        }
+//        
+//        //Player 2 input
+//        if (glfwGetKey(mWindow, GLFW_KEY_UP) == GLFW_PRESS) {
+//            p2->accelerate = true;
+//        }
+//        if (glfwGetKey(mWindow, GLFW_KEY_DOWN) == GLFW_PRESS) {
+//            p2->decelerate = true;
+//        }
+//        if (glfwGetKey(mWindow, GLFW_KEY_LEFT) == GLFW_PRESS) {
+//            p2->turnLeft = true;
+//        }
+//        if (glfwGetKey(mWindow, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+//            p2->turnRight = true;
+//        }
+//        if (glfwGetKey(mWindow, ',') == GLFW_PRESS) {
+//            p2->rollLeft = true;
+//        }
+//        if (glfwGetKey(mWindow, '/') == GLFW_PRESS) {
+//            p2->rollRight = true;
+//        }
+//        if (glfwGetKey(mWindow, '.') == GLFW_PRESS) {
+//            p2->shoot = true;
+//        }
+
+
+
 //-----------------------------------------------------------------------------
 // ZOOM-IN PARAMETERS
 // (Most Important!!!  Edit With Care!!!)
 //-----------------------------------------------------------------------------
+//Implement the zoom in at some point!
 static constexpr int FRAMES_TO_HOLD = 500;
 static constexpr float STARTING_ZOOM = 50.0f;
 static constexpr float ENDING_ZOOM = 5.0f; //This is probably way to large a change
 
-
 //-----------------------------------------------------------------------------
 //   GAME PARAMETERS
 //-----------------------------------------------------------------------------
-static constexpr float PLAYER_MOVEMENT_SPEED_LINEAR = 0.01f;
-static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.5f;
+static constexpr float PLAYER_MOVEMENT_SPEED_LINEAR = 0.015f;
+static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.45f;
 //Rotation speed values are radians per frame
-static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/120.0f;//This means 120 frames to do full rotation
+static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/120.0f;//This means 120 frames to do full rotation (i.e. about 2 seconds)
 static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 10 frames to rotate 90 degrees
 
 static constexpr float STARTING_PLAYER_HEALTH = 10.0f; //Tweak as needed
 static constexpr float STARTING_PLAYER_SHIELDS = 4.0f; //Tweak as needed (if this gets implemented...)
 static constexpr float STARTING_PLAYER_ENERGY = 25.0f; //Tweak as needed (if this ever gets implemented)
 static constexpr float STARTING_PLAYER_FUEL = 100.0f; //Tweak freely, as this will most likely never be implemented
+//Starting ammo:
 static constexpr int STARTING_PLAYER_ROCKETS = 50; //TWEAK AS NEEDED PER GAMEPLAY CONDITIONS
 static constexpr int STARTING_PLAYER_ROCKET_COUNT_MAX = 500; //TWEAK AS NEEDED
+static constexpr int STARTING_PLAYER_HEXAGON_BOMBS = 6;
+
 
 //Player Starting Positions: (these start offsets were calculated with a PlayerSize of 75.0f
 static constexpr float PLAYER1_STARTOFFSET_X = -65.0f;
@@ -48,36 +126,63 @@ static constexpr float PLAYER2_STARTOFFSET_Y = -40.5f;
 static constexpr float XLIMIT = 74.0f;
 static constexpr float YLIMIT = 45.0f;
 
+//Max Players (I currently have some things hardcoded for 2 players, so don't chnage this number)
+static constexpr short MAX_PLAYERS = 2; //Shouldn't be set higher than 2... really don't do it....
 
 static const char * NAME_OF_GAME = "SPACE ___! The Omega Occurance"; //Working Name of the game (not final)
 
 static const bool curserVisible = false; //Experimental still... (i.e. it doesn't work)
 
+//Game was written with an expected base TIME_TICK_RATE of 0.01f
 constexpr float TIME_TICK_RATE = 0.01f; //Time step per loop iteration, tweak wisely...
 
 //Player COLORS
-//Player 1
+//Player 1     (0.7f red, 0.48f green, 0.15f blue) is what I have been going with
 static constexpr float PLAYER_ONE_RED = 0.7f; //Red amount on a 0.0f to 1.0f scale
-static constexpr float PLAYER_ONE_GREEN = 0.5f; //Green amount
+static constexpr float PLAYER_ONE_GREEN = 0.48f; //Green amount
 static constexpr float PLAYER_ONE_BLUE = 0.15f; //Blue amount
-//Player 2
+
+//Player 2     (0.3f red, 0.6f green, 0.85f blue) is what I have been going with
 static constexpr float PLAYER_TWO_RED = 0.3f; //Red amount on a 0.0f to 1.0f scale
 static constexpr float PLAYER_TWO_GREEN = 0.6f; //Green amount
 static constexpr float PLAYER_TWO_BLUE = 0.85f; //Blue amount
+
 //(Player 3) (if a player3 is ever added)  [Player3 will be GREEN]
 static constexpr float PLAYER_THREE_RED = 0.2f; //Red amount on a 0.0f to 1.0f scale
 static constexpr float PLAYER_THREE_GREEN = 1.0f; //Green amount
 static constexpr float PLAYER_THREE_BLUE = 0.25f; //Blue amount
 
+static constexpr float PLAYER_ENGINE_FLAME_SIZE_INCREASE_FROM_VELOCITY = 1.2f;
+
+//-----------------------------------------------------------------------------
+//   WEAPON PARAMETERS
+//-----------------------------------------------------------------------------
+//Lazer
+static constexpr float LAZER_ENERGY_DRAIN = STARTING_PLAYER_ENERGY / 200.0f; //Gives 200 shots
+static constexpr float LAZER_SPEED = 0.8f;
+static constexpr float LAZER_WIDTH = 0.05f;
+static constexpr bool LAZER_COLOR_MATCH_PLAYER_COLOR = true;
+
+
+//Hexagon Bomb
+//static constexpr
+
+
+
 //-----------------------------------------------------------------------------
 //   SYSTEM PARAMETERS   (Graphics Settings)
 //-----------------------------------------------------------------------------
 static constexpr bool PRINT_DEBUG_MESSAGES = true; //Turn off if not in debug mode
-static constexpr short MAX_PLAYERS = 2; //Shouldn't be set higher than 2... really don't do it....
+static constexpr bool PRINT_FRAME_PROCESS_TIME_INFORMATION = false; //Prints the process time for the frame to the console
 
-static const int DEFAULT_AA_SAMPLES = 4; //This is for global anti-aliasing done by GLFW
+static const int DEFAULT_AA_SAMPLES = 4; //This is for global anti-aliasing done by GLFW (NOT SURE THIS DOES ANYTHING?)
 static const bool USE_VSYNC = true; //Should VSync be off/on
 static const int DEFAULT_MONITOR = 1; //The primary monitor is 0, so 1 will be the next monitor after the primary monitor
+
+//These next 3 haven't been implemented yet (delete this comment if I get around to implementing them)
+static const bool USE_CUSTOM_RESOLUTION = false;   //Common display resolutions: 3840x2160 (4k),
+static const int CUSTOM_DISPLAY_WIDTH = 3840;
+static const int CUSTOM_DISPLAY_HEIGHT = 2160;
 
 static constexpr float PLAYER_LINE_COLOR_BOOST_FACTOR = 1.5f; //Increases the color of the outline of the player ship models (from the base color of their body colors)
 
@@ -131,7 +236,6 @@ static constexpr int LEVEL_TO_LOAD = 1; //The level to load (Note I index valye 
 // from:
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Galaxy_history_revealed_by_the_Hubble_Space_Telescope_(GOODS-ERS2).jpg";
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/HubbleGalaxyHistory_915_609.jpg"; //I fixed to display properly, but it's sorta distorted now
-
 
 // Picture of the moon. Picture is the correct dimensions to be fixed to display properly.
 static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Cool_Picture_of_the_moon_915_609.jpg";
