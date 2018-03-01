@@ -12,4 +12,8 @@
 
 #include <stdio.h>
 
+//When forming Convex Hull, take first the extremes along each axis, then set a distance
+//and take the next max along that axis that is also the set distance away.
+
+
 #endif /* QuickHull_h */

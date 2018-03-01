@@ -42,7 +42,7 @@
 #include <iostream> //For debug, can remove eventually
 
 
-constexpr double e = 2.7182818284590452353602875;
+constexpr double e = 2.7182818284590452353602875; //probably don't need this many digits. Oh well...
 
 class Quaternion {
 private:
@@ -70,8 +70,6 @@ public:
     
     Quaternion(const aiQuaternion &); //Construct from assimp Quaternion
 
-    
-    
     //Destructor
     ~Quaternion();
     

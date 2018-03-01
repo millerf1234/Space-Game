@@ -85,6 +85,11 @@ Generator::~Generator() { //Delete any memory being claimed by this generator
     if (this->activeInstances > 0 && this->instances != nullptr) {
         for (int i = 0; i < activeInstances; ++i) {
             if (instances[i] != nullptr) {
+                //I moved it so instances now delete their own culBox if they have one
+                //if (instances[i]->colBox != nullptr) {
+                //    delete instances[i]->colBox;
+                //    instances[i]->colBox = nullptr;
+                //}
                 delete instances[i];
                 instances[i] = nullptr;
             }
@@ -99,7 +104,9 @@ Generator::~Generator() { //Delete any memory being claimed by this generator
 
 void Generator::initializeFromTemplate(const InitializationTemplate& t) {
     if (this->wasInitialized) {
-        std::cout << "\nDEBUG::OOPS! Attempting to initialize from template a generator which has already been initialized!\n";
+        if (PRINT_DEBUG_MESSAGES || PRINT_DEBUG_WARNING_MESSAGES) {
+            std::cout << "\nDEBUG::OOPS! Attempting to initialize from template a generator which has already been initialized!\n";
+        }
         return;
     }
     this->wasInitialized = true;
@@ -199,12 +206,16 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
                 //    }
             }
             else {
-                std::cout << "\nDEBUG::OOPS! That format not yet implemented in generator's objLoader code!\n";
+                if (PRINT_DEBUG_WARNING_MESSAGES || PRINT_DEBUG_MESSAGES) {
+                    std::cout << "\nDEBUG::OOPS! That format not yet implemented in generator's objLoader code!\n";
+                }
             }
         }
         else {
-            std::cout << "\nDEBUG::OOPS! That format not yet implemented in generator's objLoader code";
-            std::cout << std::endl;
+            if (PRINT_DEBUG_WARNING_MESSAGES || PRINT_DEBUG_MESSAGES) {
+                std::cout << "\nDEBUG::OOPS! That format not yet implemented in generator's objLoader code";
+                std::cout << std::endl;
+            }
         }
     }
     
@@ -420,7 +431,7 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
 void Generator::doUpkeep() {
     if (instances == nullptr) {return;}
     for (int i = 0; i < activeInstances; ++i) {
-        instances[i]->timeAlive += TIME_TICK_RATE;
+        //instances[i]->timeAlive += TIME_TICK_RATE; //I moved this to it's own function so all objects have their age incremented together
         bool isPlayerInstance = (instances[i]->type == InstanceType::PLAYERINSTANCE); //Set a bool variable since I need to do this check multiple times
         
         if (isPlayerInstance) { //Do additional checking on velocity if instance is a playerInstance
@@ -459,6 +470,7 @@ void Generator::doUpkeep() {
                 instances[i]->velocity.y = 0.0f;
             }
         }
+        
     }
 }
 
@@ -521,7 +533,16 @@ void Generator::generateSingle() {
     if (specialization == specializationType::PLAYER) {//Generate a player instance
         instances[newInstanceIndex] = new PlayerInstance(nextObjID);
         instances[newInstanceIndex]->type = PLAYERINSTANCE;
-        instances[newInstanceIndex]->identifierNumber = (nextObjID); //Not sure why this isn;t getting set...
+        instances[newInstanceIndex]->identifierNumber = (nextObjID); //Not sure why this isn;t getting set...or is it...
+        //Since the instance is a PLAYER instance, create the collisionBox for the instance
+        instances[newInstanceIndex]->colBox =  new CollisionRectangle(this->vertices, this->numberOfVertices);
+        instances[newInstanceIndex]->colBox->setScale(1.0f/PLAYER_SIZE);
+        //I will put the colBox rotations into place later, once they are actually set
+//        //Put the Player specific rotation order into place within CollisionRectangle
+//        instances[newInstanceIndex]->colBox->addToRotationOrder()
+//        instances[newInstanceIndex]->colBox->
+//        instances[newInstanceIndex]->colBox->
+        
         ++nextObjID;
     }
     else if (specialization == specializationType::WEAPON) {//Generate a weapon instance
@@ -549,8 +570,8 @@ void Generator::generateSingle() {
     this->instances[newInstanceIndex]->zoom = 3.5f; //Higher zoom means farther from camera
     this->instances[newInstanceIndex]->timeAlive = 0.0f;
     this->instances[newInstanceIndex]->thetaX = 0.0f;
-    this->instances[newInstanceIndex]->thetaY = 0.0f;
     this->instances[newInstanceIndex]->thetaZ = 0.0f;
+    this->instances[newInstanceIndex]->thetaY = 0.0f;
     
 }
 
@@ -589,20 +610,15 @@ void Generator::drawInstances() {
 //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements + 100, elements, GL_STATIC_DRAW);
     
     for (int i = 0; i < activeInstances; ++i) {
-//        //DEBUG:
-//        for (int i = 0; i < 28; ++i) {
-//            //printf("%3.2f ", vertices[i]);
-//            //std::cout << vertices[i] << " ";
-//            //if (i%7 == 6) {std::cout << std::endl;}
-//        }
-        this->shaderArray[0]->use();
+        this->shaderArray[0]->use(); //By default, activate the first shader effect
+        //If the instance has a texture, then activate the texture
         if (this->hasTexture()){
             this->textureArray[0]->activate();
         }
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, this->vertices, GL_STREAM_DRAW);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, elements, GL_STREAM_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, this->elements, GL_STREAM_DRAW);
         
         //Set Uniforms for this instance
         glUniform1f(ulocTime, instances[i]->timeAlive);
@@ -614,246 +630,10 @@ void Generator::drawInstances() {
         glUniform1f(ulocThetaY, instances[i]->thetaY);
         glUniform1f(ulocThetaZ, instances[i]->thetaZ);
         
-        
-        if (specialization == specializationType::PLAYER) { //Do extra stuff required for drawing the player models
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, elements, GL_STREAM_DRAW);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, vertices, GL_STREAM_DRAW);
-            PlayerInstance * player = static_cast<PlayerInstance*>(instances[i]);
-            //For debug (back when i was doing dynamic_cast still):
-            //std::cout << "\nDEBUG::CHECK TO SEE IF player is nullptr: " << player << std::endl;
-            glUniform1f(ulocRed, player->red);
-            glUniform1f(ulocGreen, player->green);
-            glUniform1f(ulocBlue, player->blue);
-            glUniform1f(ulocPlayerRoll, player->rollAmount);
-            
-            //Draw the player body (using shader in shadderArray[0]
-            glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
-            
-            //Draw Lines
-            shaderArray[1]->use();
-            glUniform1f(ulocTimeLine, instances[i]->timeAlive);
-            glUniform1f(ulocZoomLine, instances[i]->zoom);
-            glUniform1f(ulocXTransLine, instances[i]->position.x);
-            glUniform1f(ulocYTransLine, instances[i]->position.y);
-            glUniform1f(ulocZTransLine, instances[i]->position.z);
-            glUniform1f(ulocThetaXLine, instances[i]->thetaX);
-            glUniform1f(ulocThetaYLine, instances[i]->thetaY);
-            glUniform1f(ulocThetaZLine, instances[i]->thetaZ);
-            glUniform1f(ulocRedLine, player->red * PLAYER_LINE_COLOR_BOOST_FACTOR);
-            glUniform1f(ulocGreenLine, player->green * PLAYER_LINE_COLOR_BOOST_FACTOR);
-            glUniform1f(ulocBlueLine, player->blue * PLAYER_LINE_COLOR_BOOST_FACTOR);
-            glUniform1f(ulocPlayerRollLine, player->rollAmount);
-            
-            //Debug code:
-//            for (int i = 0; i < 18; ++i) {
-//                std::cout << "\nElements[" << i << "] = " << elements[i];
-//            }
-            convertTrianglesIntoLines(); //This line NOT debug code
-//            std::cout << "\nConverting...";
-//            for (int i = 0; i < 36; ++i) {
-//                std::cout << "\nElements[" << i << "] = " << elements[i];
-//            }
-//            std::cout << std::endl << std::endl;
-            //std::cout << "\n    DEBUG::sizeof(elements) = " << sizeof(elements) << std::endl;
-            //End debug code
-            
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, elements, GL_STREAM_DRAW);
-            //glBufferData(GL_ELEMENT_ARRAY_BUFFER, numberOfElements*2, elements, GL_STATIC_DRAW);
-            //glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STATIC_DRAW);
-            
-            glad_glEnable(GL_DEPTH_CLAMP); //Gets read of near/far plane culling (but not top/bottom plane, if this makes sense)
-            glad_glEnable(GL_DITHER); //Does something
-            glad_glEnable(GL_LINE_SMOOTH); //Makes the lines smooth
-            glad_glEnable(GL_MULTISAMPLE); //Turns on additional anti-aliasing
-            //Draw the lines:
-            glDrawElements(GL_LINES, sizeof(GLuint) * this->numberOfElements*2, GL_UNSIGNED_INT, 0);
-            
-            //Now convert the lines back into triangles:
-            convertLinesIntoTriangles();
-            
-            
-            //DRAW MAIN ENGINE FLAME
-            shaderArray[2]->use();
-            //Note that I don't have 100% of the uniforms for the main engine that I have for the ship body and lines
-            glUniform1f(ulocTimeEngine, instances[i]->timeAlive);
-            glUniform1f(ulocZoomEngine, instances[i]->zoom);
-            glUniform1f(ulocXTransEngine, instances[i]->position.x);
-            glUniform1f(ulocYTransEngine, instances[i]->position.y);
-            glUniform1f(ulocZTransEngine, instances[i]->position.z);
-            glUniform1f(ulocThetaXEngine, instances[i]->thetaX);
-            glUniform1f(ulocThetaYEngine, instances[i]->thetaY);
-            glUniform1f(ulocThetaZEngine, instances[i]->thetaZ);
-            
-//            if (PRINT_DEBUG_MESSAGES) {
-//                printf("\nAll of these uloc's are for the main Engine uniforms:\nulocTime is %d\nulocZoom is %d\nulocXTrans is %d\nulocYTrans is %d\nulocZTrans is %d\nulocThetaX is %d\nulocThetaY is %d\nulocThetaX is %d\n", ulocTimeEngine, ulocZoomEngine, ulocXTransEngine, ulocYTransEngine, ulocZTransEngine, ulocThetaXEngine, ulocThetaYEngine, ulocThetaZEngine);
-//            }
-          
-            //Need to quickly set a dummy value for earlyThetaZ (because main engine won't be affected by roll)
-            
-           // GLint earlyThetaZMainEngLocation = glGetUniformLocation(shaderArray[2]->getID(), "earlyThetaZ");
-           // glUniform1f(earlyThetaZMainEngLocation, 0.0f);
-//            if (PRINT_DEBUG_MESSAGES) {
-//                std::cout << "\nDEBUG::In main engine effect, earlyThetaZ was found and given location " << earlyThetaZMainEngLocation << std::endl;
-//            }
-            
-            //Make a copy of the first three vertices, because I am going to replace them temporarily to do the engine flames
-            aiVector3D first3VertsCopy(vertices[0], vertices[1], vertices[2]);
-            
-            //Set vertices to a value representing the engine flame rear center point
-            //aiVector3D rear(0.0f, 0.0f, -2.94231f);
-            aiVector3D rear = *(player->rear);
-            rear -= *(player->translationHistory[0]);
-            
-            // Model data layout (for the spaceship model I have been using)
-            //Layout of main engine vertices:
-            //             138   136   52
-            //               _----------_
-            //        140 _-˜            ˜-_ 54
-            //           /                  \
-            //      142 /                    \ 56
-            //         |                      |
-            //         |                      | 57
-            //      143 \                    /
-            //           \                  /
-            //        141 ˜-_            _-˜  55
-            //               ˜----------˜
-            //           139     137     53
-            //
-            
-            //Replace the first three elements of vertices with the components of 'rear'
-            vertices[0] = rear.x;
-            vertices[1] = rear.y;
-            vertices[2] = rear.z;
-            
-            GLuint tempElementsCopy[16];
-            for (int i = 0; i < 16; ++i) {
-                tempElementsCopy[i] = elements[i];
-            }
-            
-            elements[0] = 0;
-            elements[1] = 52;
-            elements[2] = 54;
-            elements[3] = 56;
-            elements[4] = 57;
-            elements[5] = 55;
-            elements[6] = 53;
-            elements[7] = 137;   //
-            elements[8] = 139;
-            elements[9] = 141;
-            elements[10] = 143;
-            elements[11] = 142;
-            elements[12] = 140;
-            elements[13] = 138;
-            elements[14] = 136;
-            elements[15] = 52;
-            
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, elements, GL_STREAM_DRAW);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, vertices, GL_STREAM_DRAW);
-            
-            glDrawElements(GL_TRIANGLE_FAN, 16, GL_UNSIGNED_INT, 0);
-            
-            
-            
-            //Draw side Engines
-            shaderArray[3]->use();
-            //get uniforms for side engines
-            glUniform1f(ulocTimeEngineSide, player->timeAlive);
-            glUniform1f(ulocZoomEngineSide, player->zoom);
-            glUniform1f(ulocXTransEngineSide, player->position.x);
-            glUniform1f(ulocYTransEngineSide, player->position.y);
-            glUniform1f(ulocZTransEngineSide, player->position.z);
-            glUniform1f(ulocThetaXEngineSide, player->thetaX);
-            glUniform1f(ulocThetaYEngineSide, player->thetaY);
-            glUniform1f(ulocThetaZEngineSide, player->thetaZ);
-            glUniform1f(ulocPlayerRollEngineSide, player->rollAmount);
-            
-            //Draw left engine (gonna keep reusing first 3 positions in vertices)
-            rear.x = -2.00213f; //From model data
-            rear.y = 0.0f;
-            if (player->turnRight) {
-                rear.z = -2.91f; //-2.19111 is the most rear side engine z component
-            }
-            else if (player->turnLeft && !(player->turnRight)) {
-                rear.z = -2.01f;
-            }
-            else { //Not turning
-                rear.z = -2.51f;
-            }
-            
-            rear -= *(player->translationHistory[0]);
-            
-            vertices[0] = rear.x;
-            vertices[1] = rear.y;
-            vertices[2] = rear.z;
-            
-            elements[0] = 0;
-            elements[1] = 130u;
-            elements[2] = 131u;
-            elements[3] = 132u;
-            elements[4] = 133u;
-            elements[5] = 130u;
-            
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements * 2, elements, GL_STREAM_DRAW);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, vertices, GL_STREAM_DRAW);
-            
-            glDrawElements(GL_TRIANGLE_FAN, 6, GL_UNSIGNED_INT, 0);
-            
-            //Draw right engine
-            rear.x = 2.00213f;
-            rear.y = 0.0f;
-            
-            if (player->turnLeft) {
-                rear.z = -2.91f; //-2.19111 is the most rear side engine z component
-            }
-            else if (player->turnRight && !player->turnLeft) {
-                rear.z = -2.21f;
-            }
-            else { //Not turning
-                rear.z = -2.51f;
-            }
-             rear.x += player->translationHistory[0]->x;
-            rear.y += player->translationHistory[0]->y;
-             rear.z -= player->translationHistory[0]->z; //-z to make flames keep coming out back (instead of going into the ship)
-            
-            vertices[0] = rear.x;
-            vertices[1] = rear.y;
-            vertices[2] = rear.z;
-            
-            //  Right engine element location
-            //
-            //               50
-            //               /\_                     (note that the side engines are
-            //              /   \_                    much wider than the one I drew
-            //          51 /  0   \ 49                here)
-            //             \     _/
-            //              \  _/
-            //               \/
-            //               48
-            
-            elements[0] = 0;
-            elements[1] = 51;
-            elements[2] = 50;
-            elements[3] = 49;
-            elements[4] = 48;
-            elements[5] = 51;
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, elements, GL_STREAM_DRAW);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, vertices, GL_STREAM_DRAW);
-            glDrawElements(GL_TRIANGLE_FAN, 6, GL_UNSIGNED_INT, 0);
-            
-            //Copy back elements to their original arrangement
-            for (int i = 0; i < 16; ++i) {
-                elements[i] = tempElementsCopy[i];
-            }
-            //Put vertices back to normal
-            vertices[0] = first3VertsCopy.x;
-            vertices[1] = first3VertsCopy.y;
-            vertices[2] = first3VertsCopy.z;
-            
-            glad_glDisable(GL_DITHER); //Does something
-            glad_glDisable(GL_LINE_SMOOTH); //Makes the lines smooth
-            glad_glDisable(GL_MULTISAMPLE); //Turns on additional anti-aliasing (though I don't really see a difference)
-            glad_glDisable(GL_DEPTH_CLAMP);
-            
+        //If being asked to draw a player, then draw PLAYER
+        if (specialization == specializationType::PLAYER) {
+            //Do extra stuff required for drawing the player models
+            doDrawPlayerShipInstance(i);
         }
         else if (specialization == specializationType::WEAPON) {
             //Do the weapon drawing stuff
@@ -936,6 +716,312 @@ void Generator::removeInstance(Instance * instPtr) {
     removeInstance(instPtr->getID());
 }
 
+
+//bool Generator::hasVbo() {
+//    return (this->vbo != 0 ); //No, remove these two checks for now...
+//}
+//bool Generator::hasEbo() {
+//    return (this->ebo != nullptr);
+//}
+bool Generator::hasVerts() {
+    return (this->vertices != nullptr);
+}
+bool Generator::hasElems() {
+    return (this->elements != nullptr);
+}
+bool Generator::hasShader() {
+    return (this->shaderArray != nullptr);
+}
+bool Generator::hasTexture(){
+    return (this->textureArray != nullptr);
+}
+bool Generator::hasModel() {
+    return (this->numberOfVertices != 0);
+}
+bool Generator::readyToGenerate() {
+    return (hasShader() && hasModel());
+}
+
+void Generator::doDrawPlayerShipInstance(int i) {
+    //Currently I am drawing players using 4 passes, the first is using triangles to draw the playership's body,
+    //the second is to draw the lines along each triangle in the body, and the final 2 are for the engine flames.
+    //All of the code for the engine flames (aside from the translationHistory array managment) is contained within
+    //this function.
+    
+    PlayerInstance * player = static_cast<PlayerInstance*>(instances[i]);
+    
+    //Get playerBody specific uniforms (see shader code for what uniforms are in use for each program)
+    glUniform1f(ulocRed, player->red);
+    glUniform1f(ulocGreen, player->green);
+    glUniform1f(ulocBlue, player->blue);
+    glUniform1f(ulocPlayerRoll, player->rollAmount);
+    
+    //Draw the player body (using shader in shadderArray[0]
+    glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
+    
+    //Set up to Draw Lines
+    shaderArray[1]->use();
+    glUniform1f(ulocTimeLine, instances[i]->timeAlive);
+    glUniform1f(ulocZoomLine, instances[i]->zoom);
+    glUniform1f(ulocXTransLine, instances[i]->position.x);
+    glUniform1f(ulocYTransLine, instances[i]->position.y);
+    glUniform1f(ulocZTransLine, instances[i]->position.z);
+    glUniform1f(ulocThetaXLine, instances[i]->thetaX);
+    glUniform1f(ulocThetaYLine, instances[i]->thetaY);
+    glUniform1f(ulocThetaZLine, instances[i]->thetaZ);
+    glUniform1f(ulocRedLine, player->red * PLAYER_LINE_COLOR_BOOST_FACTOR);
+    glUniform1f(ulocGreenLine, player->green * PLAYER_LINE_COLOR_BOOST_FACTOR);
+    glUniform1f(ulocBlueLine, player->blue * PLAYER_LINE_COLOR_BOOST_FACTOR);
+    glUniform1f(ulocPlayerRollLine, player->rollAmount);
+    
+    //Debug code:
+    //            for (int i = 0; i < 18; ++i) {
+    //                std::cout << "\nElements[" << i << "] = " << elements[i];
+    //            }
+    convertTrianglesIntoLines(); //This line NOT debug code
+    //            std::cout << "\nConverting...";
+    //            for (int i = 0; i < 36; ++i) {
+    //                std::cout << "\nElements[" << i << "] = " << elements[i];
+    //            }
+    //            std::cout << std::endl << std::endl;
+    //std::cout << "\n    DEBUG::sizeof(elements) = " << sizeof(elements) << std::endl;
+    //End debug code
+    
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, elements, GL_STREAM_DRAW);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, numberOfElements*2, elements, GL_STATIC_DRAW);
+    //glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STATIC_DRAW);
+    
+    glad_glEnable(GL_DEPTH_CLAMP); //Gets read of near/far plane culling (but not top/bottom plane, if this makes sense)
+    glad_glEnable(GL_DITHER); //Does something
+    glad_glEnable(GL_LINE_SMOOTH); //Makes the lines smooth //Don't use, see:https://www.khronos.org/opengl/wiki/Multisampling  (history section)
+    glad_glEnable(GL_MULTISAMPLE); //Turns on additional anti-aliasing
+    //Draw the lines:
+    glDrawElements(GL_LINES, sizeof(GLuint) * this->numberOfElements*2, GL_UNSIGNED_INT, 0);
+    
+    //Now convert the lines back into triangles:
+    convertLinesIntoTriangles();
+    
+    
+    //Draw the collision box now
+    GLfloat tempFirst24Vertices [24];
+    for (int i = 0; i < 24; ++i) {
+        tempFirst24Vertices[i] = vertices[i];
+    }
+    player->colBox->getRectCornersLines(vertices);
+    
+//    if (PRINT_DEBUG_MESSAGES) {
+//        std::cout << "\nDEBUG::First vertices: \n";
+//        for (int i = 0; i < 24; ++i) {
+//            std::cout << vertices[i] <<" ";
+//        }
+//    }
+    glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
+    
+    glUniform1f(ulocZoomLine, 1.0f);
+    glUniform1f(ulocXTransLine, 0.0f);
+    glUniform1f(ulocYTransLine, 0.0f);
+    glUniform1f(ulocZTransLine, 0.0f);
+    glUniform1f(ulocPlayerRoll, 0.0f);
+    glUniform1f(ulocThetaXLine, 0.0f);
+    glUniform1f(ulocThetaYLine, 0.0f);
+    glUniform1f(ulocThetaZLine, 0.0f);
+    
+    glad_glDisable(GL_LINE_SMOOTH);
+    
+    glDrawArrays(GL_LINES, 0, 18); //24 is too many, 18 seems to be just right
+    
+    glad_glEnable(GL_LINE_SMOOTH);
+    ///glDrawArrays(GL_LINE_STRIP, 0 , floatsPerTriangle*triangleCount);
+    
+    //Put vertices back to normal
+    for (int i = 0; i < 24; ++i) {
+        vertices[i] = tempFirst24Vertices[i];
+    }
+    
+    //DRAW MAIN ENGINE FLAME
+    shaderArray[2]->use();
+    //Note that I don't have 100% of the uniforms for the main engine that I have for the ship body and lines
+    glUniform1f(ulocTimeEngine, instances[i]->timeAlive);
+    glUniform1f(ulocZoomEngine, instances[i]->zoom);
+    glUniform1f(ulocXTransEngine, instances[i]->position.x);
+    glUniform1f(ulocYTransEngine, instances[i]->position.y);
+    glUniform1f(ulocZTransEngine, instances[i]->position.z);
+    glUniform1f(ulocThetaXEngine, instances[i]->thetaX);
+    glUniform1f(ulocThetaYEngine, instances[i]->thetaY);
+    glUniform1f(ulocThetaZEngine, instances[i]->thetaZ);
+    
+    //            if (PRINT_DEBUG_MESSAGES) {
+    //                printf("\nAll of these uloc's are for the main Engine uniforms:\nulocTime is %d\nulocZoom is %d\nulocXTrans is %d\nulocYTrans is %d\nulocZTrans is %d\nulocThetaX is %d\nulocThetaY is %d\nulocThetaX is %d\n", ulocTimeEngine, ulocZoomEngine, ulocXTransEngine, ulocYTransEngine, ulocZTransEngine, ulocThetaXEngine, ulocThetaYEngine, ulocThetaZEngine);
+    //            }
+    
+    //Need to quickly set a dummy value for earlyThetaZ (because main engine won't be affected by roll)
+    
+    // GLint earlyThetaZMainEngLocation = glGetUniformLocation(shaderArray[2]->getID(), "earlyThetaZ");
+    // glUniform1f(earlyThetaZMainEngLocation, 0.0f);
+    //            if (PRINT_DEBUG_MESSAGES) {
+    //                std::cout << "\nDEBUG::In main engine effect, earlyThetaZ was found and given location " << earlyThetaZMainEngLocation << std::endl;
+    //            }
+    
+    //Make a copy of the first three vertices, because I am going to replace them temporarily to do the engine flames
+    aiVector3D first3VertsCopy(vertices[0], vertices[1], vertices[2]);
+    
+    //Set vertices to a value representing the engine flame rear center point
+    //aiVector3D rear(0.0f, 0.0f, -2.94231f);
+    aiVector3D rear = *(player->rear);
+    rear -= *(player->translationHistory[0]);
+    
+    // Model data layout (for the spaceship model I have been using)
+    //Layout of main engine vertices:
+    //             138   136   52
+    //               _----------_
+    //        140 _-˜            ˜-_ 54
+    //           /                  \
+    //      142 /                    \ 56
+    //         |                      |
+    //         |                      | 57
+    //      143 \                    /
+    //           \                  /
+    //        141 ˜-_            _-˜  55
+    //               ˜----------˜
+    //           139     137     53
+    //
+    
+    //Replace the first three elements of vertices with the components of 'rear'
+    vertices[0] = rear.x;
+    vertices[1] = rear.y;
+    vertices[2] = rear.z;
+    
+    GLuint tempElementsCopy[16];
+    for (int i = 0; i < 16; ++i) {
+        tempElementsCopy[i] = elements[i];
+    }
+    
+    elements[0] = 0;
+    elements[1] = 52;
+    elements[2] = 54;
+    elements[3] = 56;
+    elements[4] = 57;
+    elements[5] = 55;
+    elements[6] = 53;
+    elements[7] = 137;   //
+    elements[8] = 139;
+    elements[9] = 141;
+    elements[10] = 143;
+    elements[11] = 142;
+    elements[12] = 140;
+    elements[13] = 138;
+    elements[14] = 136;
+    elements[15] = 52;
+    
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, elements, GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, vertices, GL_STREAM_DRAW);
+    
+    glDrawElements(GL_TRIANGLE_FAN, 16, GL_UNSIGNED_INT, 0);
+    
+    
+    
+    //Draw side Engines
+    shaderArray[3]->use();
+    //get uniforms for side engines
+    glUniform1f(ulocTimeEngineSide, player->timeAlive);
+    glUniform1f(ulocZoomEngineSide, player->zoom);
+    glUniform1f(ulocXTransEngineSide, player->position.x);
+    glUniform1f(ulocYTransEngineSide, player->position.y);
+    glUniform1f(ulocZTransEngineSide, player->position.z);
+    glUniform1f(ulocThetaXEngineSide, player->thetaX);
+    glUniform1f(ulocThetaYEngineSide, player->thetaY);
+    glUniform1f(ulocThetaZEngineSide, player->thetaZ);
+    glUniform1f(ulocPlayerRollEngineSide, player->rollAmount);
+    
+    //Draw left engine (gonna keep reusing first 3 positions in vertices)
+    rear.x = -2.00213f; //From model data
+    rear.y = 0.0f;
+    if (player->turnRight) {
+        rear.z = -2.91f; //-2.19111 is the most rear side engine z component
+    }
+    else if (player->turnLeft && !(player->turnRight)) {
+        rear.z = -2.01f;
+    }
+    else { //Not turning
+        rear.z = -2.51f;
+    }
+    
+    rear -= *(player->translationHistory[0]);
+    
+    vertices[0] = rear.x;
+    vertices[1] = rear.y;
+    vertices[2] = rear.z;
+    
+    elements[0] = 0;
+    elements[1] = 130u;
+    elements[2] = 131u;
+    elements[3] = 132u;
+    elements[4] = 133u;
+    elements[5] = 130u;
+    
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements * 2, elements, GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, vertices, GL_STREAM_DRAW);
+    
+    glDrawElements(GL_TRIANGLE_FAN, 6, GL_UNSIGNED_INT, 0);
+    
+    //Draw right engine
+    rear.x = 2.00213f;
+    rear.y = 0.0f;
+    
+    if (player->turnLeft) {
+        rear.z = -2.91f; //-2.19111 is the most rear side engine z component
+    }
+    else if (player->turnRight && !player->turnLeft) {
+        rear.z = -2.21f;
+    }
+    else { //Not turning
+        rear.z = -2.51f;
+    }
+    rear.x += player->translationHistory[0]->x;
+    rear.y += player->translationHistory[0]->y;
+    rear.z -= player->translationHistory[0]->z; //-z to make flames keep coming out back (instead of going into the ship)
+    
+    vertices[0] = rear.x;
+    vertices[1] = rear.y;
+    vertices[2] = rear.z;
+    
+    //  Right engine element location
+    //
+    //               50
+    //               /\_                     (note that the side engines are
+    //              /   \_                    much wider than the one I drew
+    //          51 /  0   \ 49                here)
+    //             \     _/
+    //              \  _/
+    //               \/
+    //               48
+    
+    elements[0] = 0;
+    elements[1] = 51;
+    elements[2] = 50;
+    elements[3] = 49;
+    elements[4] = 48;
+    elements[5] = 51;
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, elements, GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, vertices, GL_STREAM_DRAW);
+    glDrawElements(GL_TRIANGLE_FAN, 6, GL_UNSIGNED_INT, 0);
+    
+    //Copy back elements to their original arrangement
+    for (int i = 0; i < 16; ++i) {
+        elements[i] = tempElementsCopy[i];
+    }
+    //Put vertices back to normal
+    vertices[0] = first3VertsCopy.x;
+    vertices[1] = first3VertsCopy.y;
+    vertices[2] = first3VertsCopy.z;
+    
+    glad_glDisable(GL_DITHER); //Does something
+    glad_glDisable(GL_LINE_SMOOTH); //Makes the lines smooth //Don't use, see history section of: https://www.khronos.org/opengl/wiki/Multisampling
+    glad_glDisable(GL_MULTISAMPLE); //Turns on additional anti-aliasing (though I don't really see a difference)
+    glad_glDisable(GL_DEPTH_CLAMP);
+    
+}
+//Some helper functions for drawing the player ship:
 void Generator::convertTrianglesIntoLines() {
     int elemtsPos = 0;
     GLuint * temp = new GLuint[this->numberOfElements * 9];
@@ -980,27 +1066,8 @@ void Generator::convertLinesIntoTriangles() {
 }
 
 
-//bool Generator::hasVbo() {
-//    return (this->vbo != 0 ); //No, remove these two checks for now...
-//}
-//bool Generator::hasEbo() {
-//    return (this->ebo != nullptr);
-//}
-bool Generator::hasVerts() {
-    return (this->vertices != nullptr);
+void Generator::doDrawWeaponInstance(int i) {
+    
+    
 }
-bool Generator::hasElems() {
-    return (this->elements != nullptr);
-}
-bool Generator::hasShader() {
-    return (this->shaderArray != nullptr);
-}
-bool Generator::hasTexture(){
-    return (this->textureArray != nullptr);
-}
-bool Generator::hasModel() {
-    return (this->numberOfVertices != 0);
-}
-bool Generator::readyToGenerate() {
-    return (hasShader() && hasModel());
-}
+

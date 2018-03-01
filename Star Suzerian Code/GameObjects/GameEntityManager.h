@@ -7,7 +7,7 @@
 #ifndef GameEntity_h
 #define GameEntity_h
 
-#include <stdio.h>
+#include <iostream>
 #include "GameParameters.h"
 #include "Generator.h"
 #include "GLFW_Init.h"
@@ -27,10 +27,13 @@ public:
     bool requiresAIInput;
     bool hasSpecialization() {return (this->specType != specializationType::NOSPECIALIZATION);}
     
+    void ageObjects();
     virtual void doUpkeep() {;}
     virtual void handleInput() {;}
     virtual void handleInput(GLFWwindow* activeMonitor) {;}
     virtual void drawInstances() {;}
+    
+    
     
 //    virtual void deleteInstance(const int& instID);
 //    virtual void deleteInstance(Instance *);

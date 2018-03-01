@@ -59,7 +59,7 @@ void PlayerManager::handleInput(GLFWwindow* mWindow) {
     //    bool p1_shot = false;
     //    bool p2_shot = false;
     
-    if (MAX_PLAYERS == 2) {  //Controls for 2 people
+    if (MAX_PLAYERS <= 2 || true) {  //Controls for 2 people  //REALLY I SHOULD EVENTUALLY JUST REMOVE THIS CHECK ENTIRELY!!!
         //For each instance in generator, handle input
         //Start by getting all playerInstances from generator:
         Instance ** players = generator->getArrayOfInstances();
@@ -143,37 +143,6 @@ void PlayerManager::handleInput(GLFWwindow* mWindow) {
         if (glfwGetKey(mWindow, '.') == GLFW_PRESS) {
             p2->shoot = true;
         }
-        //UPDATE: I moved pause to be handled inside the Game class where it belongs
-////Should add a counter out here so that unpausing doesn't cause pausing again on the next frame!
-////Add a pause key
-//if (glfwGetKey(mWindow, GLFW_KEY_SPACE) == GLFW_PRESS) {
-//    auto begin = std::chrono::high_resolution_clock::now();  //Time Measurement
-//    auto end = std::chrono::high_resolution_clock::now();
-//    std::cout << "\nGame Paused!\n";
-//    //see: http://convert-units.info/time/nanosecond/300000000
-//    while (std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count() < 300000000){  //this is saying wait 0.3 seconds before moving on
-//        std::this_thread::sleep_for(std::chrono::nanoseconds(30000000));
-//        end = std::chrono::high_resolution_clock::now();
-//    }
-//    //Okay, so now that a short pause has occured
-//    while (1) {
-//        glfwPollEvents();
-//        if (glfwGetKey(mWindow, GLFW_KEY_SPACE) == GLFW_PRESS) {
-//            //std::cout << "Game Unpaused!" << std::endl;
-//            begin = std::chrono::high_resolution_clock::now();
-//            auto end = std::chrono::high_resolution_clock::now();
-//            while (std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count() < 30000000){  //this is saying wait 0.3 seconds before moving on
-//                std::this_thread::sleep_for(std::chrono::nanoseconds(300000));
-//                end = std::chrono::high_resolution_clock::now();
-//            }
-//            //break; //Doesn't work right...
-//            goto unpause;
-//        }
-//        else {
-//            std::this_thread::sleep_for(std::chrono::nanoseconds(333333333)); //Sleep for a third of a second before checking again if unpaused.
-//        }
-//    }
-//}
     }
     else {
         std::cout << "\n\nAARG! This game engine is not that robust yet.\nPlease leave MAX_PLAYERS set to 2!\n";
@@ -185,8 +154,6 @@ void PlayerManager::handleInput(GLFWwindow* mWindow) {
 void PlayerManager::drawInstances() {
     generator->drawInstances();
 }
-
-
 
 void PlayerManager::initializeFromTemplate() {
     generator->initializeFromTemplate(*initTemplate); //Sets generator up based off the initialization template
@@ -247,9 +214,23 @@ void PlayerManager::initializeFromTemplate() {
                 p->green = 1.0f;
                 p->blue = 1.0f;
                 std::cout << "\nWarning! This is more players than have been implemented in the PlayerManager class.\nThere might be some collision issues going forward if more than 4 players\n";
-                p->position.y = -0.9f * YLIMIT; //Gotta have players spawn somewhere...
+                p->position.y = -0.9f * YLIMIT; //Gotta have players spawn somewhere... (NOTE I USE THE SCREEN LIMITS HERE JUST TO SPAWN THE EXTRA PLAYERS NEAR THE EDGE OF THE SCREEN!)
                 p->position.x = -0.9f * XLIMIT + 5.0f * ((float)(i-3)); //Make it so players don't spawn on top of eachother
             }
+            //Set collisionBox data
+            aiVector2D position = aiVector2D(p->position.x, p->position.y);
+            p->colBox->setMidpointTo(position); //Set midboxes position to match the player's position
+            //Make the rotationQuaternions to initialize the player model with as well.
+            Quaternion earlyZcolBx(0.0f, 0.0f, 1.0f, p->rollAmount);
+            Quaternion xcolBx(1.0f, 0.0f, 0.0f, p->thetaY);
+            Quaternion ycolBx(0.0f, 1.0f, 0.0f, p->thetaY);
+            Quaternion zcolBx(0.0f, 0.0f, 0.0f, p->thetaZ);
+            
+            p->colBox->addToRotationOrder(earlyZcolBx);
+            p->colBox->addToRotationOrder(xcolBx);
+            p->colBox->addToRotationOrder(ycolBx);
+            p->colBox->addToRotationOrder(zcolBx);
+            
         }
         return;
     }
@@ -369,11 +350,9 @@ void PlayerManager::processInput() {
             else {
                 player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->y = 0.0f;
             }
-            if (player->turnRight) {goto turnRightAlso;}
-            
         }
-        else if (player->turnRight) {
-        turnRightAlso: player->thetaZ += PLAYER_ROTATION_SPEED_TURNING;
+        if (player->turnRight) {
+            player->thetaZ += PLAYER_ROTATION_SPEED_TURNING;
             //Change engine thruster patterns depending on roll
             if (player->rollAmount > rollThreshold) { //If rotated to the right
                 player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->y = player->rollAmount - rollThreshold;
@@ -455,7 +434,17 @@ void PlayerManager::processInput() {
         for (int i = 0; i < PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1; ++i) {
             *(player->translationHistory[i]) = *(player->translationHistory[i+1]);
         }
+        
+        //Update the players collisionBox
+        player->colBox->changeRotationAt(0, player->rollAmount);
+        player->colBox->changeRotationAt(1, player->thetaX);
+        player->colBox->changeRotationAt(2, player->thetaZ);
+        player->colBox->changeRotationAt(3, player->thetaY);
+        aiVector2D tempMidpoint(player->position.x, player->position.y);
+        player->colBox->setMidpointTo(tempMidpoint);
     }
+    //Check to see if any player's playerboxes are overlapping, and if so, move them apart
+    
 }
 
 void PlayerManager::generateInitializationTemplate() {

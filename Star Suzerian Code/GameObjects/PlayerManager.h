@@ -21,6 +21,8 @@
 #include "GameParameters.h"
 #include "GameEntityManager.h"
 #include "Instance.h"
+#include "CollisionRectangle.h"
+
 //#include "GLFW_Init.h"
 
 //typedef struct PlayerInstance : public Instance {

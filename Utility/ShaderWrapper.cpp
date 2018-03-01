@@ -440,8 +440,9 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
         glVertexAttribPointer(*(this->texAttrib), 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(5*sizeof(float)) );
         if (PRINT_DEBUG_MESSAGES) {
             std::cout << "\nDEBUG STATEMENT: Tex Attrib was assigned: " << *(this->texAttrib);
+            std::cout << std::endl << std::endl;
         }
-        std::cout << std::endl << std::endl;
+        
         
     }
     

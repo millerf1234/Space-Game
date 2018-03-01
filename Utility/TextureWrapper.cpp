@@ -55,8 +55,9 @@ TextWrapr::TextWrapr(const std::string & imageFilePath) {
     //Need to copy the data stb_image loaded into a vector
     //Find out how much data there is (I should rewrite this next line to match line in Vulkan cookbook)
     int dataSize = w * h * (0 < STBI_rgb ? STBI_rgb : this->components); //figure out how much data there is
-    std::cout << "\n\nDEBUG::stb_image successfully loaded image:\n    " << imageFilePath << std::endl;
-    std::cout << "DEBUG::Size of loaded image: " << dataSize << std::endl;
+    
+    //std::cout << "\n\nDEBUG::stb_image successfully loaded image:\n    " << imageFilePath << std::endl;
+    //std::cout << "DEBUG::Size of loaded image: " << dataSize << std::endl;
     
     this->image = new std::vector<unsigned char>; //create the vector in memory
     this->image->resize(dataSize); //Preallocate the vector to the right size

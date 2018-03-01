@@ -80,13 +80,13 @@ void Game::playIntroMovie() {  }
 
 void Game::loadGameObjects() {
     //Load the stages first
-    std::cout << std::endl << INDENT << "Loading Stages...\n";
+    std::cout << std::endl << INDENT << "Loading Stage Models...\n";
     for (int i = 0; i < NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD; ++i) {
         gEntities.push_back(new Stage);
         std::cout << INDENT << "    Level " << i+1 << " loaded..." << std::endl;
     }
     //Then load all parts required for a PLAYER object
-    std::cout << std::endl << INDENT << "Loading PlayerModels...\n";
+    std::cout /* << std::endl */ << INDENT << "Loading PlayerModels...\n";
     gEntities.push_back(new PlayerManager);
     
     
@@ -187,6 +187,12 @@ bool Game::launch() {
         //----------------------------------------------------------------------
         //In logic, do:
         std::vector<GameEntityManager*>::iterator entityLogicIterator = gEntities.begin();
+        //first, make sure that all the objects in game age at the same rate, so do
+         for (; entityLogicIterator < gEntities.end(); ++entityLogicIterator) {
+             (*entityLogicIterator)->ageObjects();
+         }
+        entityLogicIterator = gEntities.begin(); //Reset the iterator to the beginning of the vector
+        //Loop through all the gameEntities and handle the rest of their required upkeep steps
         for (; entityLogicIterator < gEntities.end(); ++entityLogicIterator) {
             (*entityLogicIterator)->doUpkeep();
         }
@@ -195,10 +201,23 @@ bool Game::launch() {
         //  Draw
         //----------------------------------------------------------------------
         std::vector<GameEntityManager*>::iterator entityDrawIterator = gEntities.begin();
+        
+        //-------  MSAA NOT WORKING TEST? ---------------------
+        //see: https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_fsaa/opengl_fsaa.html
+        //glad_glEnable(GL_MULTISAMPLE);  //See also: https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing
+    
+        //Gonna stick in some MSAA test code from OpenGL cookbook page 192
+        if (PRINT_MSAA_INFO_FROM_GPU_DRIVER) {
+            GLint bufs, samples;
+            glad_glGetIntegerv(GL_SAMPLE_BUFFERS, &bufs);
+            glad_glGetIntegerv(GL_SAMPLES, &samples);
+            printf("\nMSAA Information: buffers available = %d, samples = %d\n", bufs, samples);
+        }
+        
         for (; entityDrawIterator < gEntities.end(); ++entityDrawIterator) {
             (*entityDrawIterator)->drawInstances();
         }
-        
+        //glad_glDisable(GL_MULTISAMPLE);
         //
         glBindVertexArray(0); //Vertex attribute array
         glUseProgram(0);

@@ -93,6 +93,10 @@ private:
     static int nextObjID; //The ID for the next generated object (is static so each object gets own unique ID)
     int activeInstances; //Number of active instances of this object
     
+    //Special cases to be called within the drawInstances() function
+    void doDrawPlayerShipInstance(int);
+    void doDrawWeaponInstance(int);
+    
 protected:
     //-------------------
     //Fields
@@ -100,7 +104,7 @@ protected:
     //Master Copy of Object's necessary data:
 public: //temporary for debug
     GLfloat * vertices; //Object's vertice data
-    GLuint vbo, ebo, /*tex,*/ *elements; //Track this objects vertices and elements on GPU with trackers vbo and ebo, and also elements contains the order to draw vertices
+    GLuint vbo, ebo, /*tex,*/ *elements; //Track this objects vertices and elements on GPU with trackers vbo and ebo, and also use the array 'elements' to contain the order to draw vertices
 protected: //temporary for debug
     int numberOfVertices, numberOfElements; //Size of the arrays 'vertices' and 'elements'
     

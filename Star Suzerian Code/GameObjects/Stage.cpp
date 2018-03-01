@@ -23,6 +23,8 @@ Stage::Stage() : GameEntityManager() {
 }
 
 Stage::~Stage() {
+    //Since I have stage's vertices and elements hardcoded into the headder, need to
+    //delete the dynamic memory that was used to hold these values
     if (this->initTemplate->hasVertsAlreadyLoaded) {
         //Then delete heap data that was used
         if (this->initTemplate->vertices != nullptr) {
@@ -48,23 +50,11 @@ Stage::~Stage() {
 }
 
 void Stage::doUpkeep() {
-    generator->doUpkeep();
-    //Make background start distant and get bigger
-    Instance ** tmpPtr = generator->getArrayOfInstances();
-    Instance * tmp = *tmpPtr; //this is a lazy quick fix for now. getArrayOfInstances used to just return ptrs to Instance, but now returns ptr to ptr to instance
+    generator->doUpkeep(); //Have generator update the
+    Instance * tmp = (generator->getArrayOfInstances())[0]; //Since there really is only on stage being drawn at a time, the array of instances should only contain a single element (unless I change something later on down the line once I start worrying about implementing multiple stages)
     for (int i = 0; i < generator->getInstanceCount(); ++i) {
         tmp->zoom -= 0.0001f * (TIME_TICK_RATE / 0.01f); //-= 0.0003f seems like a good speed...
-        //OOOOOH I'm multipling by time alive, thats why it speeds up...
-//        if (tmp->zoom < 100.0f) {
-//            tmp->zoom -= -.0001f * tmp->timeAlive;
-//        }
-//        else if (tmp->zoom < 20.0f) {
-//            tmp->zoom -= 0.00001f * tmp->timeAlive;
-//        }
-//        else if (tmp->zoom < 3.0f) {
-//            tmp->zoom -=
-//        }
-        if (tmp->zoom < 1.3f) {tmp->zoom = 1.3f;} //Put a limit on closeness of zooming in
+        if (tmp->zoom < 1.25f) {tmp->zoom = 1.25f;} //Put a limit on closeness of zooming in
     }
 }
 
@@ -72,7 +62,7 @@ void Stage::drawInstances() {
     generator->drawInstances();
 }
 
-//protected:
+//Protected:
 void Stage::initializeFromTemplate() {
     generator->initializeFromTemplate(*initTemplate);
     //Create a new instance of the stage within the generator

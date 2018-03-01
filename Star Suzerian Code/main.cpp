@@ -27,7 +27,11 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     //Load OpenGL functions once window context has been set
     std::cout << "\nLoading Graphics Language..." << std::endl;
     gladLoadGL();
-    fprintf(stderr, "    Graphics Language loaded.\n    Graphics Language version: OpenGL %s\n", glGetString(GL_VERSION));
+    
+    fprintf(stderr, "    Graphics Language loaded.\n    Graphics Language version: OpenGL %s", glGetString(GL_VERSION));
+    
+    //looks like glGetString comes with a terminating new line. To remove this newline, do:
+    //      str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());  //where str is a string
     
     std::cout << std::endl << std::endl << "Launching Game..." << std::endl;
     
@@ -44,6 +48,7 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     std::cout << "Game Launched." << std::endl << std::endl;
    
     //Game.playIntroMovie(); //Implement later
+    
     
     Game.launch(); //Launch will return only once the game has concluded its game loop
    

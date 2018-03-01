@@ -49,7 +49,7 @@ MonitorData GLFW_Init::initialize() {
     //glfwWindowHint(GLFW_SRGB_CAPABLE, GL_TRUE); //NOT SURE IF THIS IS NEEDED
     
     //Set Anti-Aliasing (Still not sure this makes any difference)
-    std::cout << "    Window Global Anti-Aliasing set to: " << this->aaSamples << "x samples" << std::endl;
+    std::cout << "    Window Global Anti-Aliasing (MSAA) set to: " << this->aaSamples << "x samples" << std::endl;
     glfwWindowHint(GL_SAMPLES, this->aaSamples);
     
     //Use VSync?
@@ -93,8 +93,7 @@ MonitorData GLFW_Init::initialize() {
         
         std::cout << "Window Context is ready to open on this Display" << std::endl;
         
-        this->mWindow = glfwCreateWindow(this->width, this->height, NAME_OF_GAME,
-                                         monitors[this->defaultMonitor], nullptr);
+        this->mWindow = glfwCreateWindow(this->width, this->height, NAME_OF_GAME, monitors[this->defaultMonitor], nullptr);
     }
     //If specified display is not connected, try opening on the first non-primary display detected
     else if (this->connectedDisplayCount >= 2) {
@@ -157,6 +156,16 @@ MonitorData GLFW_Init::generateDetectedMonitorsStruct() {
     //Set integers
     displayDetectionResults.numDetected = this->connectedDisplayCount;
     displayDetectionResults.activeMonitorNum = this->defaultMonitor;
+//    if (RUNNING_ON_MAC_MAC && width == 1680 && height == 1050) {
+//        if (PRINT_DEBUG_MESSAGES) {
+//            std::cout << "\nDEBUG::Detected that game is running on my laptop's screen.\nDEBUG::Overriding display resolution to use full resoultion of retina display!" << std::endl;
+//        }
+//        width = 2560;
+//        height = 1600;
+//    }
+//    else if (USE_CUSTOM_RESOLUTION) {
+//
+//    }
     displayDetectionResults.width = this->width;
     displayDetectionResults.height = this->height;
     displayDetectionResults.refreshRate = this->refreshRate;
@@ -180,9 +189,23 @@ void GLFW_Init::detectDisplayResolution(int displayNum, int& width, int& height,
     }
     //Make sure mode isn't nullptr for some reason
     if (mode != nullptr) {
-        width = mode->width;
-        height = mode->height;
+        if (RUNNING_ON_MAC_MAC && width == 1680 && height == 1050) {
+            if (PRINT_DEBUG_MESSAGES) {
+                std::cout << "\nDEBUG::Detected that game is running on my laptop's screen.\nDEBUG::Overriding display resolution to use full resoultion of retina display!" << std::endl;
+            }
+            width = 2560;
+            height = 1600;
+        }
+        else if (USE_CUSTOM_RESOLUTION) {
+            width = CUSTOM_DISPLAY_WIDTH;
+            height = CUSTOM_DISPLAY_HEIGHT;
+        }
+        else {
+            width = mode->width;
+            height = mode->height;
+        }
         refreshRate = mode->refreshRate;
+        
     }
     else {
         std::cout << "\nOh No! GLFW encountered an error while communicating with your display!" << std::endl << "Error is due to: UNABLE TO RETRIEVE MONITOR VIDEO MODE INFORMATION. TRY A DIFFERENT MONITOR" << std::endl;

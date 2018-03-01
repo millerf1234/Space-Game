@@ -104,7 +104,7 @@ static constexpr float PLAYER_MOVEMENT_SPEED_LINEAR = 0.015f;
 static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.45f;
 //Rotation speed values are radians per frame
 static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/120.0f;//This means 120 frames to do full rotation (i.e. about 2 seconds)
-static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 10 frames to rotate 90 degrees
+static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 frames to rotate 90 degrees
 
 static constexpr float STARTING_PLAYER_HEALTH = 10.0f; //Tweak as needed
 static constexpr float STARTING_PLAYER_SHIELDS = 4.0f; //Tweak as needed (if this gets implemented...)
@@ -121,6 +121,7 @@ static constexpr float PLAYER1_STARTOFFSET_X = -65.0f;
 static constexpr float PLAYER1_STARTOFFSET_Y = 40.0f;
 static constexpr float PLAYER2_STARTOFFSET_X = 65.0f;
 static constexpr float PLAYER2_STARTOFFSET_Y = -40.5f;
+//I think I hardcoded in starting offsets for players beyond player 2, but currently controls are only implemented for 2 players...
 
 //Edge of screen limits for player movement:
 static constexpr float XLIMIT = 74.0f;
@@ -131,7 +132,7 @@ static constexpr short MAX_PLAYERS = 2; //Shouldn't be set higher than 2... real
 
 static const char * NAME_OF_GAME = "SPACE ___! The Omega Occurance"; //Working Name of the game (not final)
 
-static const bool curserVisible = false; //Experimental still... (i.e. it doesn't work)
+static const bool curserVisible = false; //Experimental still... (i.e. it doesn't work at all)
 
 //Game was written with an expected base TIME_TICK_RATE of 0.01f
 constexpr float TIME_TICK_RATE = 0.01f; //Time step per loop iteration, tweak wisely...
@@ -159,7 +160,7 @@ static constexpr float PLAYER_ENGINE_FLAME_SIZE_INCREASE_FROM_VELOCITY = 1.2f;
 //-----------------------------------------------------------------------------
 //Lazer
 static constexpr float LAZER_ENERGY_DRAIN = STARTING_PLAYER_ENERGY / 200.0f; //Gives 200 shots
-static constexpr float LAZER_SPEED = 0.8f;
+static constexpr float LAZER_SPEED = 1.5f * PLAYER_MOVEMENT_MAX_SPEED; //0.8f;
 static constexpr float LAZER_WIDTH = 0.05f;
 static constexpr bool LAZER_COLOR_MATCH_PLAYER_COLOR = true;
 
@@ -172,14 +173,19 @@ static constexpr bool LAZER_COLOR_MATCH_PLAYER_COLOR = true;
 //-----------------------------------------------------------------------------
 //   SYSTEM PARAMETERS   (Graphics Settings)
 //-----------------------------------------------------------------------------
+static constexpr bool RUNNING_ON_MAC_MAC = true; //Does some overrides that are optimized specifically for my laptop
+
+//ToDo --  seperate out Debug information messages from Debug warning messages
+static constexpr bool PRINT_DEBUG_WARNING_MESSAGES = true;
 static constexpr bool PRINT_DEBUG_MESSAGES = true; //Turn off if not in debug mode
 static constexpr bool PRINT_FRAME_PROCESS_TIME_INFORMATION = false; //Prints the process time for the frame to the console
+static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a test 
 
-static const int DEFAULT_AA_SAMPLES = 4; //This is for global anti-aliasing done by GLFW (NOT SURE THIS DOES ANYTHING?)
+static const int DEFAULT_AA_SAMPLES = 2; //This is for global anti-aliasing done by GLFW (NOT SURE THIS DOES ANYTHING?)
 static const bool USE_VSYNC = true; //Should VSync be off/on
 static const int DEFAULT_MONITOR = 1; //The primary monitor is 0, so 1 will be the next monitor after the primary monitor
 
-//These next 3 haven't been implemented yet (delete this comment if I get around to implementing them)
+//NOTE:I noticed that my macbook will still only run at 1080p if told to run at 4k, so these are usless if running on my laptop
 static const bool USE_CUSTOM_RESOLUTION = false;   //Common display resolutions: 3840x2160 (4k),
 static const int CUSTOM_DISPLAY_WIDTH = 3840;
 static const int CUSTOM_DISPLAY_HEIGHT = 2160;
@@ -192,7 +198,7 @@ static const int DEFAULT_OPENGL_VERSION_MINOR = 1;  //x.1
 
 //Suggested to leave player size at 75.0f, because other sizes will probably mess up collision detection
 static constexpr float PLAYER_SIZE = 75.0f; //Larger numbers means smaller player size
-constexpr int PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES = 18; //~15 is a good value
+static constexpr int PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES = 18; //~15 is a good value
 
 //Don't change this next value from -2.94231f
 constexpr float PLAYER_ENGINE_FLAME_REAR_POSITION = -2.94231f;

@@ -11,6 +11,7 @@
 #include "GameParameters.h"
 #include <assimp/Importer.hpp> //Gives access to the aiVector3D
 #include "Quaternion.h"
+#include "CollisionRectangle.h"
 
 
 enum InstanceType {PLAYERINSTANCE, WEAPONINSTANCE, ENEMYINSTANCE, SCENEINSTANCE, BASIC};
@@ -28,17 +29,26 @@ public:
     //collisionBox (eventually...)
     float timeAlive;
     InstanceType type;
+    //bool hasCollision; //This is set within EntityManager instead of being attached repeatedly to each instance
+    CollisionRectangle * colBox;
+    
     
     //Constructors
     Instance() {//Construct an anonymous instance
         this->identifierNumber = -1;
         this->type = BASIC;
         this->velocity.x = this->velocity.y = 0.0f;
+        this->colBox = nullptr;
     }
     Instance(int id) { //Construct an instance that has an ID number
         this->identifierNumber = id;
         this->type = BASIC;
         velocity.x = velocity.y = 0.0f;
+        this->colBox = nullptr;
+    }
+    
+    ~Instance() {
+        if (this->colBox != nullptr) {delete this->colBox; this->colBox = nullptr;}
     }
     
     //One function attached to getID()
