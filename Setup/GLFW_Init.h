@@ -51,7 +51,7 @@ public:
         else {
             vSyncInterval = 0;
         }
-        openFullScreen = true;
+        openFullScreen = USE_FULLSCREEN;
         defaultMonitor = 1;
         contextIsValid = true;
     }
@@ -67,7 +67,7 @@ public:
         this->aaSamples = aaSamples;
         if (useVSync) { vSyncInterval = 1; } //Should only be 0 or 1;
         else          { vSyncInterval = 0; }
-        openFullScreen = true;
+        openFullScreen = USE_FULLSCREEN;
         defaultMonitor = 1;
         contextIsValid = true;
     }
@@ -88,7 +88,7 @@ public:
         else {
             vSyncInterval = 0;
         }
-        openFullScreen = true;
+        openFullScreen = USE_FULLSCREEN;
         defaultMonitor = 1;
         contextIsValid = true;
     }

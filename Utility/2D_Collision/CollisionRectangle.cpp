@@ -26,8 +26,7 @@ CollisionRectangle::CollisionRectangle() {
     rotationOrderSize = 0;
     
     scale = 1.0f;
-    //calculateSelfBeforeTransformations(); //Don't need to calculate self if everything is 0?
-    
+    //calculateSelfBeforeTransformations(); //Don't need to calculate self if everything is 0? Investigate when I get time
 }
 
 /*!
@@ -68,10 +67,22 @@ CollisionRectangle::CollisionRectangle(float * data, int dataPoints) {
     
     scale = 1.0f;
     
+    //Check to make sure the array stays in bounds when checking bounds
+    if (dataPoints % 3 != 0) { //dataPoints must be divisible by 3
+        if (DEBUG_MSG_ON) {
+            std::cout << "\nDEBUG::Warning! You are trying to construct a collisionRectangle with an";
+            std::cout << " array of data who's size is not divisible by 3.\n";
+            std::cout << "Bounding Box was not set from model data!" << std::endl;
+        }
+        return;
+    }
+    
     //set rotatedXYZ
     float xDataPoints[dataPoints / 2]; //Give it some extra space, just in case
     float yDataPoints[dataPoints / 2]; //Same deal, extra space for just in case
     float zDataPoints[dataPoints / 2]; //Ya know the deal by now
+    
+    
     //Set all values in the three array to 0.0f so result of max calculation won't be incorrect
     //Is this faster or is doing all 3 in the same loop?
     for (int i = 0; i < dataPoints / 2; ++i) {
@@ -83,7 +94,7 @@ CollisionRectangle::CollisionRectangle(float * data, int dataPoints) {
     for (int k = 0; k < dataPoints / 2; ++k) {
         zDataPoints[k] = 0.0f;
     }
-    //potentiall faster method:
+    //potentially faster method (but this also could potentially be slower):
     //for (int i = 0; i < dataPoints / 2; ++i) {
     //    xDataPoints = yDataPoints = zDataPoints = 0.0f;
     //}
@@ -297,6 +308,7 @@ void CollisionRectangle::changeRotitationAxisAt(int index, const Quaternion & rQ
             rotationOrder[index] = new Quaternion(rQuat);
         }
     }
+    doRotationsAndRecalculate();
 }
 void CollisionRectangle::changeRotitationAxisAt(int index, const aiVector3D & axis, float theta) {
     if (index >= rotationOrderSize || index < 0) {
@@ -320,6 +332,7 @@ void CollisionRectangle::changeRotitationAxisAt(int index, const aiVector3D & ax
             rotationOrder[index]->changeTheta(theta);
         }
     }
+    doRotationsAndRecalculate();
 }
 void CollisionRectangle::changeRotitationAxisAt(int index, float x, float y, float z, float theta) {
     if (index >= rotationOrderSize || index < 0) {
@@ -342,6 +355,30 @@ void CollisionRectangle::changeRotitationAxisAt(int index, float x, float y, flo
             rotationOrder[index]->changeTheta(theta);
         }
     }
+    doRotationsAndRecalculate();
+}
+
+float CollisionRectangle::getRotationThetaAt(int index) {
+    if (index < 0 || index >= rotationOrderSize) {
+        if (DEBUG_MSG_ON) {
+            std::cout << "\nDEBUG::OOPS! YOU ARE TRYING TO RETRIEVE THE ROTATION OF A QUATERNION\n";
+            std::cout << "IN THE ROTATIONORDER ARRAY AT AN INDEX BEYOND THE SIZE OF THE ARRAY!\n";
+            std::cout << "CHECK YOUR COLLISIONRECTANGLE-FUNCTION-CALLING CODE!" << std::endl;
+        }
+        return 0.0f;
+    }
+    else {
+        if (rotationOrder[index] == nullptr) {
+            if (DEBUG_MSG_ON) {
+                std::cout << "\nDEBUG::OOPS! There is no rotation quat to get a theta value from at\nthis index. Your Index: ";
+                std::cout << index << std::endl;
+            }
+            return 0.0f;
+        }
+        else {
+            return rotationOrder[index]->getTheta();
+        }
+    }
 }
 
 void CollisionRectangle::clearRotationOrder() {
@@ -352,6 +389,7 @@ void CollisionRectangle::clearRotationOrder() {
         }
     }
     numberOfRotations = 0;
+    doRotationsAndRecalculate();
 }
 void CollisionRectangle::removeRotationAtIndex(int index) {
     if (index < 0 || index > rotationOrderSize) { //If index given is bogus...
@@ -377,6 +415,7 @@ void CollisionRectangle::removeRotationAtIndex(int index) {
             std::cout <<"from the intended index!" << std::endl;
         }
     }
+    doRotationsAndRecalculate();
 }
 
 int CollisionRectangle::getNumberOfRotations() const {
@@ -519,7 +558,6 @@ bool CollisionRectangle::isOverlapping(const CollisionRectangle& otherRect) {
     return false; //Return false if all checks fail to show one rectangle inside the other
 }
 
-
 float CollisionRectangle::getDistanceBetweenMidpoints(const CollisionRectangle &otherRect) const{
     float xDistance, yDistance;
     //xDistance = abs(this->midpoint.x - otherRect.midpoint.x); //Do I need ABS if I am squaring values anyways?
@@ -539,13 +577,14 @@ float CollisionRectangle::closestDistanceTo(const CollisionRectangle&) const {
     return 0.0f;
 }
 
-void CollisionRectangle::moveApartAlongAxisBetweenClosestCorners(CollisionRectangle &otherRect) {
+void CollisionRectangle::moveApartAlongAxisBetweenClosestDetectedPoints(CollisionRectangle &otherRect) {
     //todo (use the closestDistanceTo function
     if (DEBUG_MSG_ON) {
         std::cout << "\nDEBUG::OOPS! THIS FUNCTION HASN'T BEEN IMPLEMENTED YET!\n";
     }
 }
 
+//My intention was for this function to be called if both objects were moving when they collide
 void CollisionRectangle::moveApartAlongAxisBetweenMidpoints(CollisionRectangle &otherRect) {
     //The way I am going to write this is going to be terribly inefficient, kinda a brute force attemp
     //float stepsize = STEP_SIZE; //Just use the constant directly
@@ -555,12 +594,14 @@ void CollisionRectangle::moveApartAlongAxisBetweenMidpoints(CollisionRectangle &
     do {
         //Move this rectangle away from the otherRect midpoint by step amount
         this->midpoint += displacement * STEP_SIZE;
+        //Move the other rectangle away also by step amount
         otherRect.midpoint -= displacement * STEP_SIZE;
         this->calculateSelfAfterTranslations();
         otherRect.calculateSelfAfterTranslations();
     } while (this->isOverlapping(otherRect));
 }
 
+//My intention was for this to be used if the otherRect was stationary when the collision happens
 void CollisionRectangle::moveApartAlongAxisBetweenMidpointsThisOnly(CollisionRectangle & otherRect) {
     //The way I am going to write this is going to be terribly inefficient, kinda a brute force attemp
     aiVector2D displacement(this->midpoint.x - otherRect.midpoint.x, this->midpoint.y - otherRect.midpoint.y);
@@ -573,6 +614,7 @@ void CollisionRectangle::moveApartAlongAxisBetweenMidpointsThisOnly(CollisionRec
     } while (this->isOverlapping(otherRect));
 }
 
+//My intention for this function was for the other rectangle to move if this rectangle was stationary when collision occured
 void CollisionRectangle::moveApartAlongAxisBetweenMidpointsOtherOnly(CollisionRectangle & otherRect) {
     //The way I am going to write this is going to be terribly inefficient, kinda a brute force attemp
     aiVector2D displacement(this->midpoint.x - otherRect.midpoint.x, this->midpoint.y - otherRect.midpoint.y);
@@ -591,9 +633,9 @@ void CollisionRectangle::moveApartAlongAxisBetweenMidpointsOtherOnly(CollisionRe
 //------------------------------------------------------------------------
 /*!
  @remark  This function returns the x,y coordinates for the 4 corners of the collision rectangle
+ @remark  This function does not include zValues in the array
  */
 void CollisionRectangle::getRectCornersPoints(float * bufferOfEightFloats) const {
-    //ADD Z VALUES
     //Corner 1                                             v2
     bufferOfEightFloats[0] = corner1.x; //      +----------+
     bufferOfEightFloats[1] = corner1.y; //      |          |
@@ -610,25 +652,31 @@ void CollisionRectangle::getRectCornersPoints(float * bufferOfEightFloats) const
 
 /*!
  @remark  This function is intended to be used with gl_DrawArrays(GL_TRIANGLES, etc...)
+ @remark  This function includes Z values in the array
  */
-void CollisionRectangle::getRectCornersTriangles(float * bufferOfTwelveFloats) const {
-    
-    //ADD Z VALUEs
+void CollisionRectangle::getRectCornersTriangles(float * bufferOfEighteenFloats) const {
+    float zVal = 0.0f; //Choose a zValue to use
     //Triangle 1
-    bufferOfTwelveFloats[0] = corner1.x;
-    bufferOfTwelveFloats[1] = corner1.y;
-    bufferOfTwelveFloats[2] = corner1.x;
-    bufferOfTwelveFloats[3] = corner2.y;
-    bufferOfTwelveFloats[4] = corner2.x;
-    bufferOfTwelveFloats[5] = corner2.y;
+    bufferOfEighteenFloats[0] = corner1.x;
+    bufferOfEighteenFloats[1] = corner1.y;
+    bufferOfEighteenFloats[2] = zVal;
+    bufferOfEighteenFloats[3] = corner1.x;
+    bufferOfEighteenFloats[4] = corner2.y;
+    bufferOfEighteenFloats[5] = zVal;
+    bufferOfEighteenFloats[6] = corner2.x;
+    bufferOfEighteenFloats[7] = corner2.y;
+    bufferOfEighteenFloats[8] = zVal;
     
     //Triangle 2
-    bufferOfTwelveFloats[6] = corner2.x;
-    bufferOfTwelveFloats[7] = corner2.y;
-    bufferOfTwelveFloats[8] = corner2.x;
-    bufferOfTwelveFloats[9] = corner1.y;
-    bufferOfTwelveFloats[10] = corner1.x;
-    bufferOfTwelveFloats[11] = corner1.y;
+    bufferOfEighteenFloats[9] = corner2.x;
+    bufferOfEighteenFloats[10] = corner2.y;
+    bufferOfEighteenFloats[11] = zVal;
+    bufferOfEighteenFloats[12] = corner2.x;
+    bufferOfEighteenFloats[13] = corner1.y;
+    bufferOfEighteenFloats[14] = zVal;
+    bufferOfEighteenFloats[15] = corner1.x;
+    bufferOfEighteenFloats[16] = corner1.y;
+    bufferOfEighteenFloats[17] = zVal;
 }
 
 /*!
@@ -687,22 +735,54 @@ void CollisionRectangle::calculateSelfBeforeTransformations() { //Calculates sel
 
 void CollisionRectangle::doRotationsAndRecalculate() { //This performs all the rotations in the rotationOrder and
     aiVector3D vecToRotate = maxFromModelXYZ;
+    
+    if (DEBUG_MSG_ON) {
+        std::cout << "\nDEBUG::Max From Model XYZ is: " << maxFromModelXYZ.x << ",  " << maxFromModelXYZ.y << ",  " << maxFromModelXYZ.z << std::endl;
+    }
+    
     if (numberOfRotations >= 1) {
-        int rotationCounter = 0;
-        //This loop's declaration might look weird, but I worte it this way because there could be null slots anywhere in the
-        //rotationOrderArray. Thus need to go through entire array or until all the rotations in the array have been performed
-        for (int i = 0; ((i < rotationOrderSize) || (rotationCounter == numberOfRotations)) &&
-            !((i < rotationOrderSize) || (rotationCounter == numberOfRotations)) ; ++i) {
-            //Since class allows deleteing rotations at any index, need to make sure a valid rotation quaternion actually exists
-            if (rotationOrder[i] != nullptr) {
-                ++rotationCounter;
+       // int rotationCounter = 0;
+        //What I was doing here turned out not to work... so gonna rewrite it
+//        //This loop's declaration might look weird, but I worte it this way because there could be null slots anywhere in the
+//        //rotationOrderArray. Thus need to go through entire array or until all the rotations in the array have been performed
+//        for (int i = 0; ((i < rotationOrderSize) || (rotationCounter > numberOfRotations)) /* &&
+//            !((i < rotationOrderSize) && (rotationCounter > numberOfRotations))*/ ; ++i)  {
+//            //Since class allows deleteing rotations at any index, need to make sure a valid rotation quaternion actually exists
+//            if (rotationOrder[i] != nullptr) {
+//                ++rotationCounter;
+//                vecToRotate = rotationOrder[i]->computeRotation(vecToRotate);
+//            }
+//        }
+        
+        //Let's see if this fixes anything
+        //rotationOrder[3]->changeTheta(rotationOrder[2]->getTheta());
+        
+        //here is the simpler (and possibly slightly less efficient) version
+        
+        for (int i = 0; i < rotationOrderSize; ++i) {
+            if (rotationOrder[i] != nullptr /* && i != 2*/) {//The && i != 2 is for debug (but it doesnt seem to matter anyways)
                 vecToRotate = rotationOrder[i]->computeRotation(vecToRotate);
+                if (DEBUG_MSG_ON) {
+                    std::cout << "Performed rotation #" << i << " on collision box. Rotated by: " << rotationOrder[i]->getTheta() << "\n";
+                    aiVector3D rotAxis = rotationOrder[i]->getRotationAxis();
+                    std::cout << "Rotation axis of rotation " << i << " is: " << rotAxis.x << ", " << rotAxis.y << ", " << rotAxis.z << std::endl;
+                }
             }
         }
     }
-    this->x = vecToRotate.x;
-    this->y = vecToRotate.y;
-    this->z = vecToRotate.z;
+//    this->x = vecToRotate.x;
+//    this->y = vecToRotate.y;
+//    this->z = vecToRotate.z;
+    //Hmm clearly this won't make a difference...
+    this->x = (aiVector3D(1.0f, 0.0f, 0.0f) * dot(aiVector3D(1.0f, 0.0f, 0.0f), vecToRotate)).x;
+    this->y = (aiVector3D(0.0f, 1.0f, 0.0f) * dot(aiVector3D(0.0f, 1.0f, 0.0f), vecToRotate)).y;
+    this->z = (aiVector3D(0.0f, 0.0f, 1.0f) * dot(aiVector3D(0.0f, 0.0f, 1.0f), vecToRotate)).z;
+    
+    //More debug:
+    if (DEBUG_MSG_ON) {
+        std::cout << "Vector after rotations: " << x << " " << y << " " << z << std::endl;
+    }
+    
     calculateSelfAfterTranslations(); //Set the corners after rotating
 }
 
@@ -711,8 +791,9 @@ void CollisionRectangle::calculateSelfAfterTranslations() { //Recalculates corne
     float midY = midpoint.y;
     //corner1 = aiVector2D(midX + scale * x, midY + scale * y);
     //corner2 = aiVector2D(midX - scale * x, midY - scale * y);
+    
     corner1 = aiVector2D(scale*(midX + x), scale *(midY + y));
-    corner2 = aiVector2D(scale*(midX - x), scale *( midY - y));
+    corner2 = aiVector2D(scale*(midX - x), scale *(midY - y));
 }
 
 bool CollisionRectangle::hasNoArea() const {
@@ -735,3 +816,25 @@ float CollisionRectangle::getMaxFromArray(float * data, int dataSize) {
     }
     return max;
 }
+
+float CollisionRectangle::getMaxFromArrayPositiveOnly(float * data, int dataSize) {
+    float max = 0.0f;
+    for (int i = 0; i < dataSize; ++i) {
+        //if (data[i] < 0.0f) {continue;} //
+        if (data[i] > max) {
+            max = data[i];
+        }
+    }
+    return max;
+}
+//Finds the most negative value in an array of floats
+float CollisionRectangle::getMaxFromArrayNegativeOnly(float * data, int dataSize) {
+    float negMax = 0.0f;
+    for (int i = 0; i < dataSize; ++i) {
+        if (data[i] < negMax) {
+            negMax = data[i];
+        }
+    }
+    return negMax;
+}
+

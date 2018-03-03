@@ -137,6 +137,8 @@ protected: //temporary for debug
     GLint ulocPlayerRoll, ulocPlayerRollLine, ulocPlayerRollEngineSide; //Don't need to track roll for main engine 
     //Weapon uniform locations:
     
+    
+    
 public:
     //-------------------
     // Constructor and Destructor

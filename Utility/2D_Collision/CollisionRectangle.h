@@ -61,7 +61,6 @@
 //                    only do collision detection in a 2D plane.
 //
 //
-//
 //----------------------------------------------------------------------------
 
 
@@ -89,8 +88,16 @@ private:
     
     bool hasNoArea() const; //Checks to see if the collisionRectangle is taking up any area within the collision plane
     
-    float getMaxFromArray(float * data, int dataSize);
+    //For getting box bounds from model data  (dataSize should be the size of the array)
+    float getMaxFromArray(float * data, int dataSize); //Gets the largest absolute value in an array of floats
+    float getMaxFromArrayPositiveOnly(float * data, int dataSize); //Gets the most positive value in an array of floats
+    float getMaxFromArrayNegativeOnly(float * data, int dataSize); //Gets the most negative value in an array of floats
     
+    //Need a dot product operation
+    float dot(const aiVector3D & v1, const aiVector3D & v2) {
+        return (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z);
+    }
+
 public:
     CollisionRectangle();
     CollisionRectangle(float * data, int dataPoints);
@@ -110,6 +117,7 @@ public:
     void changeRotitationAxisAt(int index, const Quaternion &);
     void changeRotitationAxisAt(int index, const aiVector3D &, float theta);
     void changeRotitationAxisAt(int index, float x, float y, float z, float theta);
+    float getRotationThetaAt(int index);
     void clearRotationOrder();
     void removeRotationAtIndex(int index);
     int getNumberOfRotations() const;
@@ -174,7 +182,7 @@ public:
     
     float getDistanceBetweenMidpoints(const CollisionRectangle& otherRect) const; //Self explanitory I hope
     
-    void moveApartAlongAxisBetweenClosestCorners(CollisionRectangle &);
+    void moveApartAlongAxisBetweenClosestDetectedPoints(CollisionRectangle &);
     void moveApartAlongAxisBetweenMidpoints(CollisionRectangle &);
     void moveApartAlongAxisBetweenMidpointsThisOnly(CollisionRectangle &);
     void moveApartAlongAxisBetweenMidpointsOtherOnly(CollisionRectangle &);

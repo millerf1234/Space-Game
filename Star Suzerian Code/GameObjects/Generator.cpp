@@ -536,7 +536,7 @@ void Generator::generateSingle() {
         instances[newInstanceIndex]->identifierNumber = (nextObjID); //Not sure why this isn;t getting set...or is it...
         //Since the instance is a PLAYER instance, create the collisionBox for the instance
         instances[newInstanceIndex]->colBox =  new CollisionRectangle(this->vertices, this->numberOfVertices);
-        instances[newInstanceIndex]->colBox->setScale(1.0f/PLAYER_SIZE);
+        instances[newInstanceIndex]->colBox->setScale(1.0f/(PLAYER_SIZE));
         //I will put the colBox rotations into place later, once they are actually set
 //        //Put the Player specific rotation order into place within CollisionRectangle
 //        instances[newInstanceIndex]->colBox->addToRotationOrder()
@@ -774,6 +774,40 @@ void Generator::doDrawPlayerShipInstance(int i) {
     glUniform1f(ulocBlueLine, player->blue * PLAYER_LINE_COLOR_BOOST_FACTOR);
     glUniform1f(ulocPlayerRollLine, player->rollAmount);
     
+    //Some DEBUG code------------------------------
+    if (PRINT_DEBUG_MESSAGES) {
+    bool printPlayerUniformValuesForDebug = false; //Don't print messages, I finished debugging
+    if (printPlayerUniformValuesForDebug) {
+        std::cout << "\nUniform Values for player " << player->playerNumber << ":\n";
+        std::cout << "  Zoom  = " << player->zoom << "\n  Position x,y,z = " << player->position.x << ", " << player->position.y << ", " << player->position.z << std::endl;
+        std::cout << "  Roll amount = " << player->rollAmount << std::endl;
+        std::cout << "  thetaX = " << player->thetaX << "\n  thetaY = " << player->thetaY << "\n  thetaZ = " << player->thetaZ;
+        std::cout << std::endl;
+    }
+    
+    if (PRINT_DEBUG_MESSAGES) {
+        bool playersColliding = false;
+        for (int otherPlayerIndx = 0; otherPlayerIndx < this->getInstanceCount(); ++otherPlayerIndx) {
+            //This current way I am doing this only works with 2 players
+            if (otherPlayerIndx != i) { //Only check collisions between this player and other players
+                playersColliding = player->colBox->isOverlapping(*(instances[otherPlayerIndx]->colBox));
+                goto COLLISION_DETECTED; //I guess 'break' could work too
+            }
+        }
+    COLLISION_DETECTED:
+        if (playersColliding) {
+            std::cout << "\nDEBUG::Collision Detected beween players!\n";
+        }
+    }
+//        //Get the collision box rotation information
+//        std::cout << "\n  Collision Box information for this player: rotation values are:\n";
+//        for (int i = 0; i < player->colBox->getNumberOfRotations(); ++i) {
+//            std::cout << player->colBox->getRotationThetaAt(i) << "  ";
+//        }
+//
+    }
+    //----------------------------------------------------
+    
     //Debug code:
     //            for (int i = 0; i < 18; ++i) {
     //                std::cout << "\nElements[" << i << "] = " << elements[i];
@@ -801,7 +835,7 @@ void Generator::doDrawPlayerShipInstance(int i) {
     //Now convert the lines back into triangles:
     convertLinesIntoTriangles();
     
-    
+    if (DRAW_COLLISION_DETAILS) {
     //Draw the collision box now
     GLfloat tempFirst24Vertices [24];
     for (int i = 0; i < 24; ++i) {
@@ -809,11 +843,13 @@ void Generator::doDrawPlayerShipInstance(int i) {
     }
     player->colBox->getRectCornersLines(vertices);
     
-//    if (PRINT_DEBUG_MESSAGES) {
-//        std::cout << "\nDEBUG::First vertices: \n";
-//        for (int i = 0; i < 24; ++i) {
-//            std::cout << vertices[i] <<" ";
-//        }
+//    if ((int)instances[i]->timeAlive % 4 == 0) {
+////    if (PRINT_DEBUG_MESSAGES) {
+////        std::cout << "\nDEBUG::First vertices: \n";
+////        for (int i = 0; i < 24; ++i) {
+////            std::cout << vertices[i] <<" ";
+////        }
+////    }
 //    }
     glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
     
@@ -828,15 +864,18 @@ void Generator::doDrawPlayerShipInstance(int i) {
     
     glad_glDisable(GL_LINE_SMOOTH);
     
-    glDrawArrays(GL_LINES, 0, 18); //24 is too many, 18 seems to be just right
+    glDrawArrays(GL_LINE_LOOP, 0, 8); //Just draw arrays here, no need to mess with an element buffer
     
     glad_glEnable(GL_LINE_SMOOTH);
-    ///glDrawArrays(GL_LINE_STRIP, 0 , floatsPerTriangle*triangleCount);
+    
     
     //Put vertices back to normal
     for (int i = 0; i < 24; ++i) {
         vertices[i] = tempFirst24Vertices[i];
     }
+    
+    } //End draw collision details check
+    
     
     //DRAW MAIN ENGINE FLAME
     shaderArray[2]->use();

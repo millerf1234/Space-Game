@@ -220,16 +220,30 @@ void PlayerManager::initializeFromTemplate() {
             //Set collisionBox data
             aiVector2D position = aiVector2D(p->position.x, p->position.y);
             p->colBox->setMidpointTo(position); //Set midboxes position to match the player's position
-            //Make the rotationQuaternions to initialize the player model with as well.
-            Quaternion earlyZcolBx(0.0f, 0.0f, 1.0f, p->rollAmount);
-            Quaternion xcolBx(1.0f, 0.0f, 0.0f, p->thetaY);
-            Quaternion ycolBx(0.0f, 1.0f, 0.0f, p->thetaY);
-            Quaternion zcolBx(0.0f, 0.0f, 0.0f, p->thetaZ);
             
+            
+//            //Make the rotationQuaternions to initialize the player model with as well.
+            //NOTE THAT THESE ARE NOT THE CORRECT ROTATIONS:
+            Quaternion earlyZcolBx(0.0f, 0.0f, 1.0f, p->rollAmount);
+            Quaternion xcolBx(1.0f, 0.0f, 0.0f, p->thetaX);
+            Quaternion ycolBx(0.0f, 1.0f, 0.0f, p->thetaY);
+            Quaternion zcolBx(0.0f, 0.0f, 1.0f, p->thetaZ);
+
             p->colBox->addToRotationOrder(earlyZcolBx);
             p->colBox->addToRotationOrder(xcolBx);
             p->colBox->addToRotationOrder(ycolBx);
             p->colBox->addToRotationOrder(zcolBx);
+            
+//            Quaternion xColBx(1.0f, 0.0f, 0.0f, p->thetaX);
+//            Quaternion yColBx(0.0f, 0.0f, -1.0f, p->thetaZ);
+//
+//            //Add the rotations to the collisionBox's rotation order
+//            p->colBox->addToRotationOrder(yColBx);
+//            p->colBox->addToRotationOrder(xColBx);
+            
+            
+            p->colBox->setMidpointTo(position); //Set midboxes position to match the player's position
+            
             
         }
         return;
@@ -436,12 +450,19 @@ void PlayerManager::processInput() {
         }
         
         //Update the players collisionBox
+        aiVector3D tempMidpoint3D(player->position.x, player->position.y, player->position.z);
+        aiVector2D tempMidpoint = aiVector2D(tempMidpoint3D.x, tempMidpoint3D.y);
+        player->colBox->setMidpointTo(tempMidpoint);
+        
+//        player->colBox->changeRotationAt(0, 0.0f /*player->thetaX*/);
+//        player->colBox->changeRotationAt(1, PI / 2.0f /*player->thetaZ*/);
+        
+        
         player->colBox->changeRotationAt(0, player->rollAmount);
         player->colBox->changeRotationAt(1, player->thetaX);
-        player->colBox->changeRotationAt(2, player->thetaZ);
-        player->colBox->changeRotationAt(3, player->thetaY);
-        aiVector2D tempMidpoint(player->position.x, player->position.y);
-        player->colBox->setMidpointTo(tempMidpoint);
+        player->colBox->changeRotationAt(2, player->thetaY);
+        player->colBox->changeRotationAt(3, player->thetaZ);
+        
     }
     //Check to see if any player's playerboxes are overlapping, and if so, move them apart
     

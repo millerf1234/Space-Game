@@ -8,7 +8,10 @@
 
 #include "Quaternion.h"
 
+
 #define FLOATING_POINT_TOLERANCE 0.0000001f //i just made this value up as a value close to 0 to check for cancelation error (i.e. any result that comes out smaller than this is just automatically changed to 0.0f)
+
+const bool PRINT_WARNING = true; //Print a warning if using this class in an unexpected way (such as rotation about axis <0,0,0>) 
 
 //-----------------------------------------------------------------------------
 // Constructors
@@ -189,6 +192,13 @@ aiVector3D Quaternion::computeRotation(aiVector3D p, float theta) const {
     //a quaternion, so I am going to construct 2 quaternions with garbage values and then manually change
     //them to the correct values. This means that these quaternions components outside of these values will
     //be incorrect (i.e. the rotation axis will be bogus, as will theta, etc.)
+    
+    if (PRINT_WARNING) {
+        aiVector3D zeroVec(0.0f, 0.0f, 0.0f);
+        if (this->getRotationAxis() == zeroVec) {
+            std::cout << "\nWARNING! Quaternion computeRotation called with rotation axis of\nthe zero vector! Check ya code!\n";
+        }
+    }
     
     Quaternion vectorAsPureQuaternion; //Construct a quaternion
     Quaternion qConjugate; //Construct another quaternion

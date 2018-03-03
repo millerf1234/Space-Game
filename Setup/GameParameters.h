@@ -13,7 +13,15 @@
 
 static constexpr float PI = 3.1415927f;
 
+//-----------------------------------------------------------------------------
+// Debug Message Toggle Control (not complete)
+//-----------------------------------------------------------------------------
+static constexpr bool PRINT_DEBUG_WARNING_MESSAGES = false;
+static constexpr bool PRINT_DEBUG_MESSAGES = false; //Turn off if not in debug mode
+static constexpr bool PRINT_FRAME_PROCESS_TIME_INFORMATION = false; //Prints the process time for the frame to the console
+static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a test
 
+static constexpr bool DRAW_COLLISION_DETAILS = true;
 
 //-----------------------------------------------------------------------------
 // Control Bindings
@@ -175,15 +183,10 @@ static constexpr bool LAZER_COLOR_MATCH_PLAYER_COLOR = true;
 //-----------------------------------------------------------------------------
 static constexpr bool RUNNING_ON_MAC_MAC = true; //Does some overrides that are optimized specifically for my laptop
 
-//ToDo --  seperate out Debug information messages from Debug warning messages
-static constexpr bool PRINT_DEBUG_WARNING_MESSAGES = true;
-static constexpr bool PRINT_DEBUG_MESSAGES = true; //Turn off if not in debug mode
-static constexpr bool PRINT_FRAME_PROCESS_TIME_INFORMATION = false; //Prints the process time for the frame to the console
-static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a test 
-
 static const int DEFAULT_AA_SAMPLES = 2; //This is for global anti-aliasing done by GLFW (NOT SURE THIS DOES ANYTHING?)
 static const bool USE_VSYNC = true; //Should VSync be off/on
 static const int DEFAULT_MONITOR = 1; //The primary monitor is 0, so 1 will be the next monitor after the primary monitor
+static const bool USE_FULLSCREEN = true;
 
 //NOTE:I noticed that my macbook will still only run at 1080p if told to run at 4k, so these are usless if running on my laptop
 static const bool USE_CUSTOM_RESOLUTION = false;   //Common display resolutions: 3840x2160 (4k),

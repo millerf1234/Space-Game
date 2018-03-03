@@ -32,7 +32,6 @@ public:
     //bool hasCollision; //This is set within EntityManager instead of being attached repeatedly to each instance
     CollisionRectangle * colBox;
     
-    
     //Constructors
     Instance() {//Construct an anonymous instance
         this->identifierNumber = -1;

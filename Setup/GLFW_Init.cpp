@@ -65,7 +65,6 @@ MonitorData GLFW_Init::initialize() {
         std::cout << "WARNING! VSYNC INTERVAL IS SET TO A NON-STANDARD VALUE AND MAY RESULT IN UNDEFINED BEHAVIOR\n";
     }
     
-    
     std::cout << "    Configuring macOS specific window hints..." << std::endl;
     //Note that macOS specific window hints are just ignored if run on platforms
     //other than macOS
