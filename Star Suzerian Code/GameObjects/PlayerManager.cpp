@@ -145,7 +145,7 @@ void PlayerManager::handleInput(GLFWwindow* mWindow) {
         }
     }
     else {
-        std::cout << "\n\nAARG! This game engine is not that robust yet.\nPlease leave MAX_PLAYERS set to 2!\n";
+        std::cout << "\n\nAARG! This game (engine) is not that robust yet.\nPlease leave MAX_PLAYERS set to 2!\n"; 
     }
     //return; //only way to get to the line after this is through unpausing
     //unpause: std::cout << "Game Unpaused!" << std::endl;

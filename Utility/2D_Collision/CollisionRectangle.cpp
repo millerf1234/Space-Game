@@ -8,13 +8,13 @@
 
 static constexpr float STEP_SIZE = 0.01f; //Used for determining how fast to move two collosionRectangles apart
 
-static constexpr bool DEBUG_MSG_ON = true;
-
+//Note that these 2 booleans are independent, so having either on will result in messages being printed
+static constexpr bool DEBUG_MSG_ON = true; //Turn this off to stop debug messages from being printed
+static constexpr bool DEBUG_WARNING_MSG_ON = true; //Turn this off to stop debug warning messages from being printed
 
 //------------------------------------------------------------------------
 //              CONSTRUCTORS
 //------------------------------------------------------------------------
-
 CollisionRectangle::CollisionRectangle() {
     x = y = z = 0.0f;
     corner1 = corner2 = aiVector2D(0.0f, 0.0f);
@@ -24,24 +24,32 @@ CollisionRectangle::CollisionRectangle() {
     rotationOrder = nullptr;
     numberOfRotations = 0;
     rotationOrderSize = 0;
-    
+    hasModelData = false;
     scale = 1.0f;
     //calculateSelfBeforeTransformations(); //Don't need to calculate self if everything is 0? Investigate when I get time
 }
 
 /*!
  Constructor that initializes the collisionRectangle straight from the model data. If model has no z component, just
- create an array with x and y coordinates as desired and 0.0f set at every third value. Note that after construction the
- midpoint of the CollisionRectangle still needs to be set to match the models collisionRectangle, and 
+ create an array with x and y coordinates as desired and set every third value to 0.0f.
  @remark  It is assumed in this constructor that Data is model data in the form x0,y0,z0,x1,y1,z1,x2,y2,z2,...
  */
 CollisionRectangle::CollisionRectangle(float * data, int dataPoints) {
     if (dataPoints % 3 != 0) {
-        if (DEBUG_MSG_ON) {
-            std::cout << "\nDEBUG::OOPS! Attempting to construct a collision rectangle from\ndata that is not a multiple of 3!!";
+        if (DEBUG_MSG_ON || DEBUG_WARNING_MSG_ON) {
+            std::cout << "\nDEBUG::OOPS! Attempting to construct a Collision Rectangle from\ndata that is not a multiple of 3!!";
             std::cout << std::endl;
         } //Throw an exception? Maybe later once I have more classes written that can share exceptions to be thrown
         //(*this) = CollisionRectangle(); //Just call the parameterless constructor
+        ////Check to make sure the array stays in bounds when checking bounds
+        //if (dataPoints % 3 != 0) { //dataPoints must be divisible by 3
+        //    if (DEBUG_MSG_ON) {
+        //        std::cout << "\nDEBUG::Warning! You are trying to construct a collisionRectangle with an";
+        //        std::cout << " array of data who's size is not divisible by 3.\n";
+        //        std::cout << "Bounding Box was not set from model data!" << std::endl;
+        //    }
+        //    return;
+        //}
         x = y = z = 0.0f;
         corner1 = corner2 = aiVector2D(0.0f, 0.0f);
         corner1OffsetFromMidpointBeforeRotations = corner2OffsetFromMidpointBeforeRotations = aiVector3D(0.0f, 0.0f, 0.0f);
@@ -51,14 +59,9 @@ CollisionRectangle::CollisionRectangle(float * data, int dataPoints) {
         numberOfRotations = 0;
         rotationOrderSize = 0;
         scale = 1.0f;
+        hasModelData = false;
         return;
     }
-    //These next 3 lines necessary? They just initialize values that are about to be set anyways
-    //x = y = z = 0.0f;
-    //corner1 = corner2 = aiVector2D(0.0f, 0.0f);
-    //corner1OffsetFromMidpointBeforeRotations = corner2OffsetFromMidpointBeforeRotations = aiVector3D(0.0f, 0.0f, 0.0f);
-    
-    
     //Initialize values
     midpoint = aiVector2D(0.0f, 0.0f);
     rotationOrder = nullptr;
@@ -66,16 +69,6 @@ CollisionRectangle::CollisionRectangle(float * data, int dataPoints) {
     rotationOrderSize = 0;
     
     scale = 1.0f;
-    
-    //Check to make sure the array stays in bounds when checking bounds
-    if (dataPoints % 3 != 0) { //dataPoints must be divisible by 3
-        if (DEBUG_MSG_ON) {
-            std::cout << "\nDEBUG::Warning! You are trying to construct a collisionRectangle with an";
-            std::cout << " array of data who's size is not divisible by 3.\n";
-            std::cout << "Bounding Box was not set from model data!" << std::endl;
-        }
-        return;
-    }
     
     //set rotatedXYZ
     float xDataPoints[dataPoints / 2]; //Give it some extra space, just in case
@@ -120,6 +113,7 @@ CollisionRectangle::CollisionRectangle(float * data, int dataPoints) {
     z = getMaxFromArray(zDataPoints, dataPoints / 2); //Get max z value
     
     this->maxFromModelXYZ = aiVector3D(x,y,z); //Set this vector from the calculated maximums
+    this->hasModelData = true; //Set to true once bounds have been calculated from model data
     
     if (DEBUG_MSG_ON) {
         std::cout << "\nDEBUG::CollisionRectangle Size Values Determined!\nxMax: " << x;
@@ -131,10 +125,10 @@ CollisionRectangle::CollisionRectangle(float * data, int dataPoints) {
 }
 
 CollisionRectangle::CollisionRectangle(aiVector3D *, int numberOfVectors){
-    
     //Not Yet implemented. Shouldn't be very difficult to implement
-    
-    
+    if (DEBUG_MSG_ON || DEBUG_WARNING_MSG_ON) {
+        std::cout << "\nDEBUG::OOPS! THIS CONSTRUCTOR FOR COLLISION BOX HASN'T BEEN IMPLEMENTED YET!\n";
+    }
     calculateSelfBeforeTransformations();
 }
 
@@ -152,6 +146,69 @@ CollisionRectangle::~CollisionRectangle() {
         }
         delete [] rotationOrder;
     }
+}
+
+//------------------------------------------------------------------------
+//              Set Model Data Function
+//------------------------------------------------------------------------
+void CollisionRectangle::setFromModelData(float * data, int dataPoints) {
+    bool dataWasNotTheRightSize = false;
+    if (dataPoints % 3 != 0) {
+        if (DEBUG_WARNING_MSG_ON) {
+            std::cout << "DEBUG::WARNING! setFromModelData called on this ";
+            std::cout << "CollisionRectangle but the\ndata provided to this has";
+            std::cout << " a size other than a multiple of 3!\n";
+            std::cout << "CollisionRectangle was not set from provided data!\n";
+        }
+        dataWasNotTheRightSize = true;
+    }
+    
+    //Check to see if this object already has model data
+    if (hasModelData) { //if object already had model data
+        if (dataWasNotTheRightSize == false) { //and if newly provided data is divisble by 3
+            if (DEBUG_MSG_ON) {
+                std::cout << "\nDEBUG::ATTENTION! This CollisionRectangle already";
+                std::cout << " had model data set!\n";
+                std::cout << "CollsisionRectangle will now reconfigure itself from ";
+                std::cout << "the new model data!\nPlease note that the rotation ";
+                std::cout << "order will be cleared!" << std::endl;
+            }
+            //Clear the rotation order by
+            //Clearing up the dynamic array of rotation quaternions
+            if (rotationOrder != nullptr) {
+                //for each rotation in the rotation order
+                for (int i = 0; i < rotationOrderSize; ++i) {
+                    //if the rotation exists, delete it
+                    if (rotationOrder[i] != nullptr) {
+                        delete rotationOrder[i];
+                        rotationOrder[i] = nullptr;
+                    }
+                } //Delete the array of Quaternion pointers
+                delete [] rotationOrder;
+            }
+        }
+        else { //else there already was model data and new data is not the right size
+            if (DEBUG_MSG_ON || DEBUG_WARNING_MSG_ON) {
+                std::cout << "\nDEBUG::OOPS! This collisionRectangle already had";
+                std::cout << " model data and the newly\nprovided data to it using";
+                std::cout << " the function setFromModelData was not sized a\n";
+                std::cout << "multiple of three!\nNew model data not set, so ";
+                std::cout << "CollisionRectangle will keep previous data\nit was";
+                std::cout << " configured with!\n";
+            }
+            return; //Return without executing the rest of the function
+        }
+    } //If there wasn't already model data and provided data was not the right size
+    else if (dataWasNotTheRightSize) {
+        return; //A debug message for this case was already printed out when
+        //the first check for dataWasNotTheRightSize was performed
+    }
+    
+    //Here is where the function actually starts configuring the new CollisionRectangle
+    //based off the provided data
+    
+    std::cout << "\nDEBUG::OOPS! THIS FUNCTION HASN'T BEEN FULLY IMPLEMENTED YET!\n";
+    
 }
 
 
@@ -479,7 +536,7 @@ bool CollisionRectangle::isOverlapping(const CollisionRectangle& otherRect) {
     
     //If the midpoints between the two rectangles is greater than the largest sidelength, then it
     //isn't possible for them to be overlapping
-    if (maxSideLength < this->getDistanceBetweenMidpoints(otherRect)) {
+    if (maxSideLength < this->getDistanceBetweenMidpoints_Scalar(otherRect)) {
         return false; //Stop checking and return false
     }
     
@@ -558,7 +615,7 @@ bool CollisionRectangle::isOverlapping(const CollisionRectangle& otherRect) {
     return false; //Return false if all checks fail to show one rectangle inside the other
 }
 
-float CollisionRectangle::getDistanceBetweenMidpoints(const CollisionRectangle &otherRect) const{
+float CollisionRectangle::getDistanceBetweenMidpoints_Scalar(const CollisionRectangle &otherRect) const{
     float xDistance, yDistance;
     //xDistance = abs(this->midpoint.x - otherRect.midpoint.x); //Do I need ABS if I am squaring values anyways?
     //yDistance = abs(this->midpoint.y - otherRect.midpoint.y);
@@ -568,7 +625,7 @@ float CollisionRectangle::getDistanceBetweenMidpoints(const CollisionRectangle &
     return sqrt((xDistance * xDistance) + (yDistance * yDistance));
 }
 
-float CollisionRectangle::closestDistanceTo(const CollisionRectangle&) const {
+float CollisionRectangle::getClosestDistanceTo_Scalar(const CollisionRectangle&) const {
     //This one could take a while to implement, need to construct 8 lines using equation of line, then test x points along each
     // line to get the shortest distane from that point to each of the four lines in the other rectangle
     if (DEBUG_MSG_ON) {
@@ -576,6 +633,8 @@ float CollisionRectangle::closestDistanceTo(const CollisionRectangle&) const {
     }
     return 0.0f;
 }
+
+
 
 void CollisionRectangle::moveApartAlongAxisBetweenClosestDetectedPoints(CollisionRectangle &otherRect) {
     //todo (use the closestDistanceTo function
@@ -586,6 +645,15 @@ void CollisionRectangle::moveApartAlongAxisBetweenClosestDetectedPoints(Collisio
 
 //My intention was for this function to be called if both objects were moving when they collide
 void CollisionRectangle::moveApartAlongAxisBetweenMidpoints(CollisionRectangle &otherRect) {
+    if (!(this->hasModelData) || !(otherRect.hasModelData)) {
+        if (DEBUG_WARNING_MSG_ON) {
+            std::cout << "\nDEBUG::WARNING! MoveApartAlongAxisBetweenMidpoints ";
+            std::cout << " called but one of\nthe two CollisionsRectangles never had ";
+            std::cout << "itself set from model data!";
+            std::cout << std::endl;
+        }
+        return;
+    }
     //The way I am going to write this is going to be terribly inefficient, kinda a brute force attemp
     //float stepsize = STEP_SIZE; //Just use the constant directly
     aiVector2D displacement(this->midpoint.x - otherRect.midpoint.x, this->midpoint.y - otherRect.midpoint.y);
@@ -603,6 +671,15 @@ void CollisionRectangle::moveApartAlongAxisBetweenMidpoints(CollisionRectangle &
 
 //My intention was for this to be used if the otherRect was stationary when the collision happens
 void CollisionRectangle::moveApartAlongAxisBetweenMidpointsThisOnly(CollisionRectangle & otherRect) {
+    if (!(this->hasModelData) || !(otherRect.hasModelData)) {
+        if (DEBUG_WARNING_MSG_ON) {
+            std::cout << "\nDEBUG::WARNING! MoveApartAlongAxisBetweenMidpointsThisOnly ";
+            std::cout << " called but one of\nthe two CollisionsRectangles never had ";
+            std::cout << "itself set from model data!";
+            std::cout << std::endl;
+        }
+        return;
+    }
     //The way I am going to write this is going to be terribly inefficient, kinda a brute force attemp
     aiVector2D displacement(this->midpoint.x - otherRect.midpoint.x, this->midpoint.y - otherRect.midpoint.y);
     if (displacement.Length() == 0.0f) {return;}
@@ -616,6 +693,16 @@ void CollisionRectangle::moveApartAlongAxisBetweenMidpointsThisOnly(CollisionRec
 
 //My intention for this function was for the other rectangle to move if this rectangle was stationary when collision occured
 void CollisionRectangle::moveApartAlongAxisBetweenMidpointsOtherOnly(CollisionRectangle & otherRect) {
+    if (!(this->hasModelData) || !(otherRect.hasModelData)) {
+        if (DEBUG_WARNING_MSG_ON) {
+            std::cout << "\nDEBUG::WARNING! MoveApartAlongAxisBetweenMidpointsOtherOnly ";
+            std::cout << " called but one of\nthe two CollisionsRectangles never had ";
+            std::cout << "itself set from model data!";
+            std::cout << std::endl;
+        }
+        return;
+    }
+    
     //The way I am going to write this is going to be terribly inefficient, kinda a brute force attemp
     aiVector2D displacement(this->midpoint.x - otherRect.midpoint.x, this->midpoint.y - otherRect.midpoint.y);
     if (displacement.Length() == 0.0f) {return;}
@@ -636,6 +723,21 @@ void CollisionRectangle::moveApartAlongAxisBetweenMidpointsOtherOnly(CollisionRe
  @remark  This function does not include zValues in the array
  */
 void CollisionRectangle::getRectCornersPoints(float * bufferOfEightFloats) const {
+    if (!hasModelData) {
+        if (DEBUG_WARNING_MSG_ON) {
+            std::cout << "DEBUG::WARNING! Attempting to get data from a ";
+            std::cout << "CollisionRectangle that never was set to data!";
+            std::cout << std::endl;
+        }
+    }
+    else if (0.0f == this->scale) {
+        if (DEBUG_WARNING_MSG_ON) {
+            std::cout << "DEBUG::WARNING! This CollisionRectangle has a scale ";
+            std::cout << "set to 0.0f!\nThis could cause a divide by 0.0f to ";
+            std::cout << "occur! Please set scale using function setScale().";
+            std::cout << std::endl;
+        }
+    }
     //Corner 1                                             v2
     bufferOfEightFloats[0] = corner1.x; //      +----------+
     bufferOfEightFloats[1] = corner1.y; //      |          |
@@ -646,7 +748,7 @@ void CollisionRectangle::getRectCornersPoints(float * bufferOfEightFloats) const
     bufferOfEightFloats[4] = corner2.x; //      |          |
     bufferOfEightFloats[5] = corner2.y; //      +----------+
     //Corner 4                          //    v1
-    bufferOfEightFloats[6] = corner2.x; //                    Where the two corners are on the actual rectangle is not fixed
+    bufferOfEightFloats[6] = corner2.x; //              Where the two corners are on the actual rectangle is not fixed
     bufferOfEightFloats[7] = corner1.y; //
 }
 
@@ -655,6 +757,21 @@ void CollisionRectangle::getRectCornersPoints(float * bufferOfEightFloats) const
  @remark  This function includes Z values in the array
  */
 void CollisionRectangle::getRectCornersTriangles(float * bufferOfEighteenFloats) const {
+    if (!hasModelData) {
+        if (DEBUG_WARNING_MSG_ON) {
+            std::cout << "DEBUG::WARNING! Attempting to get data from a ";
+            std::cout << "CollisionRectangle that never was set to data!";
+            std::cout << std::endl;
+        }
+    }
+    else if (0.0f == this->scale) {
+        if (DEBUG_WARNING_MSG_ON) {
+            std::cout << "DEBUG::WARNING! This CollisionRectangle has a scale ";
+            std::cout << "set to 0.0f!\nThis could cause a divide by 0.0f to ";
+            std::cout << "occur! Please set scale using function setScale().";
+            std::cout << std::endl;
+        }
+    }
     float zVal = 0.0f; //Choose a zValue to use
     //Triangle 1
     bufferOfEighteenFloats[0] = corner1.x;
@@ -683,6 +800,21 @@ void CollisionRectangle::getRectCornersTriangles(float * bufferOfEighteenFloats)
  @remark  This code is intended to be used to easily do a Draw_Lines command from GL_DRAWARRAY
  */
 void CollisionRectangle::getRectCornersLines(float * bufferOfTwentyFourFloats) const {
+    if (!hasModelData) {
+        if (DEBUG_WARNING_MSG_ON) {
+            std::cout << "DEBUG::WARNING! Attempting to get data from a ";
+            std::cout << "CollisionRectangle that never was set to data!";
+            std::cout << std::endl;
+        }
+    }
+    else if (0.0f == this->scale) {
+        if (DEBUG_WARNING_MSG_ON) {
+            std::cout << "DEBUG::WARNING! This CollisionRectangle has a scale ";
+            std::cout << "set to 0.0f!\nThis could cause a divide by 0.0f to ";
+            std::cout << "occur! Please set scale using function setScale().";
+            std::cout << std::endl;
+        }
+    }
     float zVal = 0.0f;
     //Side 1
     bufferOfTwentyFourFloats[0] = corner1.x;
@@ -800,6 +932,7 @@ bool CollisionRectangle::hasNoArea() const {
     //It is assumed that whenever a translation or rotation (or anything) happens,
     //corner1 and corner2 will be recalculated, thus meaning they are always accurate descriptions
     //of an instance's collision
+    if (!hasModelData) {return true;}
     return (abs(corner1.x-corner2.x) * abs(corner1.y - corner2.y) == 0.0f);
 }
 
