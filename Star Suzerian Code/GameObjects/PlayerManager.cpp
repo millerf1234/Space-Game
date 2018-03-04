@@ -226,20 +226,20 @@ void PlayerManager::initializeFromTemplate() {
             //NOTE THAT THESE ARE NOT THE CORRECT ROTATIONS:
             Quaternion earlyZcolBx(0.0f, 0.0f, 1.0f, p->rollAmount);
             Quaternion xcolBx(1.0f, 0.0f, 0.0f, p->thetaX);
-            Quaternion ycolBx(0.0f, 1.0f, 0.0f, p->thetaY);
-            Quaternion zcolBx(0.0f, 0.0f, 1.0f, p->thetaZ);
+            Quaternion ycolBx(0.0f, 0.0f, 1.0f, p->thetaZ);
+            Quaternion zcolBx(0.0f, 1.0f, 0.0f, p->thetaY);
 
-            p->colBox->addToRotationOrder(earlyZcolBx);
-            p->colBox->addToRotationOrder(xcolBx);
-            p->colBox->addToRotationOrder(ycolBx);
-            p->colBox->addToRotationOrder(zcolBx);
+//            p->colBox->addToRotationOrder(earlyZcolBx);
+//            p->colBox->addToRotationOrder(xcolBx);
+//            p->colBox->addToRotationOrder(ycolBx);
+//            p->colBox->addToRotationOrder(zcolBx);
             
-//            Quaternion xColBx(1.0f, 0.0f, 0.0f, p->thetaX);
-//            Quaternion yColBx(0.0f, 0.0f, -1.0f, p->thetaZ);
-//
-//            //Add the rotations to the collisionBox's rotation order
-//            p->colBox->addToRotationOrder(yColBx);
-//            p->colBox->addToRotationOrder(xColBx);
+            //Quaternion xColBx(1.0f, 0.0f, 0.0f, p->thetaX);
+            //Quaternion yColBx(0.0f, 0.0f, -1.0f, p->thetaZ);
+
+            //Add the rotations to the collisionBox's rotation order
+           // p->colBox->addToRotationOrder(xColBx);
+           // p->colBox->addToRotationOrder(xColBx);
             
             
             p->colBox->setMidpointTo(position); //Set midboxes position to match the player's position
@@ -454,14 +454,14 @@ void PlayerManager::processInput() {
         aiVector2D tempMidpoint = aiVector2D(tempMidpoint3D.x, tempMidpoint3D.y);
         player->colBox->setMidpointTo(tempMidpoint);
         
-//        player->colBox->changeRotationAt(0, 0.0f /*player->thetaX*/);
+        //player->colBox->changeRotationAt(0, player->thetaX);
 //        player->colBox->changeRotationAt(1, PI / 2.0f /*player->thetaZ*/);
         
         
         player->colBox->changeRotationAt(0, player->rollAmount);
         player->colBox->changeRotationAt(1, player->thetaX);
-        player->colBox->changeRotationAt(2, player->thetaY);
-        player->colBox->changeRotationAt(3, player->thetaZ);
+        player->colBox->changeRotationAt(2, player->thetaZ);
+        player->colBox->changeRotationAt(3, player->thetaY);
         
     }
     //Check to see if any player's playerboxes are overlapping, and if so, move them apart
