@@ -30,6 +30,7 @@ CollisionRectangle::CollisionRectangle() {
     rotationOrderSize = 0;
     hasModelData = false;
     scale = 1.0f;
+    collisionBoxShrinkageFactor = 1.0f; //No shrinkage by default
     //calculateSelfBeforeTransformations(); //Don't need to calculate self if everything is 0? Investigate when I get time
 }
 
@@ -65,6 +66,7 @@ CollisionRectangle::CollisionRectangle(float * data, int dataPoints) {
         numberOfRotations = 0;
         rotationOrderSize = 0;
         scale = 1.0f;
+        collisionBoxShrinkageFactor = 1.0f; //No shrinkage by default
         hasModelData = false;
         return;
     }
@@ -75,6 +77,7 @@ CollisionRectangle::CollisionRectangle(float * data, int dataPoints) {
     rotationOrderSize = 0;
     
     scale = 1.0f;
+    collisionBoxShrinkageFactor = 1.0f; //No shrinkage by default
     
     //set rotatedXYZ
     float xDataPoints[dataPoints / 2]; //Give it some extra space, just in case
@@ -1158,16 +1161,16 @@ void CollisionRectangle::calculateSelfAfterTranslations() { //Recalculates corne
     //midpoint over to be at the centriod, then just using 2 vectors should work (hopefully)
     //See: https://en.wikipedia.org/wiki/Centroid
     
-    aiVector2D point1(maxXPos/4.0f, maxYPos/4.0f);
-    aiVector2D point2(maxXPos/4.0f, maxYNeg/4.0f);
-    aiVector2D point3(maxXNeg/4.0f, maxYPos/4.0f);
-    aiVector2D point4(maxXNeg/4.0f, maxYNeg/4.0f);
+//    aiVector2D point1(maxXPos/4.0f, maxYPos/4.0f);
+//    aiVector2D point2(maxXPos/4.0f, maxYNeg/4.0f);
+//    aiVector2D point3(maxXNeg/4.0f, maxYPos/4.0f);
+//    aiVector2D point4(maxXNeg/4.0f, maxYNeg/4.0f);
     
-    aiVector2D centriod = point1 + point2 + point3 + point4;
+    //aiVector2D centriod = point1 + point2 + point3 + point4;
     
     //std::cout << "\nCENTRIOD IS: " << centriod.x << ", " << centriod.y << " and scale is: " << scale;
     
-    float boxShrinkageFactor = 0.85f;
+    float boxShrinkageFactor = collisionBoxShrinkageFactor; //0.85f-0.90f seem like good values for this
     
     //here goes:
 //    corner1 = aiVector2D(scale*(midpoint.x + centriod.x + maxXPos), scale * (midpoint.y + centriod.y + maxYPos));

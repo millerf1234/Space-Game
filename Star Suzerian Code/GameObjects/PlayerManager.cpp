@@ -453,6 +453,7 @@ void PlayerManager::processInput() {
         aiVector2D tempMidpoint = aiVector2D(tempMidpoint3D.x, tempMidpoint3D.y);
         player->colBox->setMidpointTo(tempMidpoint);
         
+        player->colBox->setCollisionBoxShrinkageFactor(PLAYER_COLLISION_BOX_TO_MODEL_SCALE_FACTOR); 
         //player->colBox->changeRotationAt(0, player->thetaX);
 //        player->colBox->changeRotationAt(1, PI / 2.0f /*player->thetaZ*/);
         

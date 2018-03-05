@@ -110,6 +110,7 @@ private:
     int rotationOrderSize; //This is the size of rotationOrder array
     
     float scale; //Used to scale with the models
+    float collisionBoxShrinkageFactor;
     
     bool hasModelData;
     
@@ -173,6 +174,8 @@ public:
     //Scale getter and setter
     float getScale() const {return this->scale;}
     void setScale(float newScale) {this->scale = newScale;}
+    float getCollisionBoxShrinkageFactor() const {return this->collisionBoxShrinkageFactor;}
+    void setCollisionBoxShrinkageFactor(float shrinkageFactor) {this->collisionBoxShrinkageFactor = shrinkageFactor;}
     
     //Midpoint getter and setter (which include function to translate rectangle by a 2D vector)
     aiVector2D getMidpoint() const {return this->midpoint;}

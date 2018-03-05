@@ -123,6 +123,7 @@ static constexpr int STARTING_PLAYER_ROCKETS = 50; //TWEAK AS NEEDED PER GAMEPLA
 static constexpr int STARTING_PLAYER_ROCKET_COUNT_MAX = 500; //TWEAK AS NEEDED
 static constexpr int STARTING_PLAYER_HEXAGON_BOMBS = 6;
 
+static constexpr float PLAYER_COLLISION_BOX_TO_MODEL_SCALE_FACTOR = 0.85f; //So the collision box is slightly smaller than the player model
 
 //Player Starting Positions: (these start offsets were calculated with a PlayerSize of 75.0f
 static constexpr float PLAYER1_STARTOFFSET_X = -65.0f;
