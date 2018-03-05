@@ -9,7 +9,7 @@
 static constexpr float STEP_SIZE = 0.01f; //Used for determining how fast to move two collosionRectangles apart
 
 //Note that these 2 booleans are independent, so having either on will result in messages being printed
-static constexpr bool DEBUG_MSG_ON = true; //Turn this off to stop debug messages from being printed
+static constexpr bool DEBUG_MSG_ON = false; //Turn this off to stop debug messages from being printed
 static constexpr bool DEBUG_WARNING_MSG_ON = true; //Turn this off to stop debug warning messages from being printed
 
 //------------------------------------------------------------------------
@@ -1145,7 +1145,7 @@ void CollisionRectangle::calculateSelfAfterTranslations() { //Recalculates corne
             largestYIndxNeg = i;
         }
         this->corners[i] = cornerArray[i];
-        std::cout << "\nCorner[" << i << "] = " << corners[i].x << ", " << corners[i].y << ", " << corners[i].z;
+        //std::cout << "\nCorner[" << i << "] = " << corners[i].x << ", " << corners[i].y << ", " << corners[i].z;
     }
     
     //This method here doesn't quite work:
@@ -1167,13 +1167,18 @@ void CollisionRectangle::calculateSelfAfterTranslations() { //Recalculates corne
     
     //std::cout << "\nCENTRIOD IS: " << centriod.x << ", " << centriod.y << " and scale is: " << scale;
     
+    float boxShrinkageFactor = 0.85f;
+    
     //here goes:
 //    corner1 = aiVector2D(scale*(midpoint.x + centriod.x + maxXPos), scale * (midpoint.y + centriod.y + maxYPos));
 //    corner2 = aiVector2D(scale * (midpoint.x + centriod.x + maxXNeg), scale * (midpoint.y + centriod.y + maxYNeg));
-    corner1 = aiVector2D(scale*(midpoint.x + maxXPos), scale * (midpoint.y + maxYPos));
-    corner2 = aiVector2D(scale * (midpoint.x + maxXNeg), scale * (midpoint.y + maxYNeg));
     
+    //These here actually work pretty well, but gonna try this next one also:
+    //corner1 = aiVector2D(scale*(midpoint.x + maxXPos), scale *  (midpoint.y - maxYPos));
+    //corner2 = aiVector2D(scale * (midpoint.x + maxXNeg), scale * (midpoint.y - maxYNeg));
     
+    corner1 = aiVector2D(scale*(midpoint.x + (boxShrinkageFactor * maxXPos)), scale *  (midpoint.y - (boxShrinkageFactor * maxYPos)));
+    corner2 = aiVector2D(scale * (midpoint.x + (boxShrinkageFactor * maxXNeg)), scale * (midpoint.y - (boxShrinkageFactor * maxYNeg)));
     
     //Ye Olde calculateSelfAfterTranslations to go with the olde buggy computeRotations code above
     //    float midX = midpoint.x;
