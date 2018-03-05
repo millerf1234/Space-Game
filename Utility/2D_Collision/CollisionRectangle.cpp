@@ -1145,6 +1145,7 @@ void CollisionRectangle::calculateSelfAfterTranslations() { //Recalculates corne
             largestYIndxNeg = i;
         }
         this->corners[i] = cornerArray[i];
+        std::cout << "\nCorner[" << i << "] = " << corners[i].x << ", " << corners[i].y << ", " << corners[i].z;
     }
     
     //This method here doesn't quite work:
@@ -1163,12 +1164,14 @@ void CollisionRectangle::calculateSelfAfterTranslations() { //Recalculates corne
     aiVector2D point4(maxXNeg/4.0f, maxYNeg/4.0f);
     
     aiVector2D centriod = point1 + point2 + point3 + point4;
-    std::cout << "\nCENTRIOD IS: " << centriod.x << ", " << centriod.y;
+    
+    //std::cout << "\nCENTRIOD IS: " << centriod.x << ", " << centriod.y << " and scale is: " << scale;
     
     //here goes:
-    corner1 = aiVector2D(scale*(midpoint.x + centriod.x + maxXPos), scale * (midpoint.y + centriod.y + maxYPos));
-    corner2 = aiVector2D(scale * (midpoint.x + centriod.x + maxXNeg), scale * (midpoint.y + centriod.y + maxYNeg));
-    
+//    corner1 = aiVector2D(scale*(midpoint.x + centriod.x + maxXPos), scale * (midpoint.y + centriod.y + maxYPos));
+//    corner2 = aiVector2D(scale * (midpoint.x + centriod.x + maxXNeg), scale * (midpoint.y + centriod.y + maxYNeg));
+    corner1 = aiVector2D(scale*(midpoint.x + maxXPos), scale * (midpoint.y + maxYPos));
+    corner2 = aiVector2D(scale * (midpoint.x + maxXNeg), scale * (midpoint.y + maxYNeg));
     
     
     

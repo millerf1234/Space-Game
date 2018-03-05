@@ -857,7 +857,7 @@ void Generator::doDrawPlayerShipInstance(int i) {
     glUniform1f(ulocXTransLine, 0.0f);
     glUniform1f(ulocYTransLine, 0.0f);
     glUniform1f(ulocZTransLine, 0.0f);
-    glUniform1f(ulocPlayerRoll, 0.0f);
+    glUniform1f(ulocPlayerRollLine, 0.0f);
     glUniform1f(ulocThetaXLine, 0.0f);
     glUniform1f(ulocThetaYLine, 0.0f);
     glUniform1f(ulocThetaZLine, 0.0f);
@@ -868,9 +868,10 @@ void Generator::doDrawPlayerShipInstance(int i) {
     glDrawArrays(GL_LINE_LOOP, 0, 8); //Just draw arrays here, no need to mess with an element buffer
     
         //Draw the 3D collision box
-        player->colBox->get3DRectCornersLines(vertices);
-        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
-        glDrawArrays(GL_LINE_STRIP, 0, 24);
+//        player->colBox->get3DRectCornersLines(vertices);
+//        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
+//        glDrawArrays(GL_LINE_LOOP, 0, 12);
+        
         
         
     glad_glEnable(GL_LINE_SMOOTH);
