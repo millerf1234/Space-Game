@@ -1106,7 +1106,7 @@ void CollisionRectangle::calculateSelfAfterTranslations() { //Recalculates corne
     cornerArray[6] = xAxisMinor + yAxisMinor + zAxisMajor;
     cornerArray[7] = xAxisMinor + yAxisMinor + zAxisMinor;
     
-    //-----------------THIS NEXT PART COULD BE BUGGY IF MY MATH IS WRONG!--------------
+    //-----------------THIS NEXT PART COULD BE BUGGY IF MY MATH IS WRONG!--------------  (so close!)
     //Need to get the four points that represent the extremes along x and y axes
     int largestXIndxPos, largestXIndxNeg, largestYIndxPos, largestYIndxNeg;
     largestXIndxPos = largestXIndxNeg = largestYIndxPos = largestYIndxNeg = 0;
@@ -1137,9 +1137,29 @@ void CollisionRectangle::calculateSelfAfterTranslations() { //Recalculates corne
         }
     }
     
-    //now can set corner1 and corner2 from these values
-    corner1 = aiVector2D(scale*(midpoint.x + maxXPos), scale * (midpoint.y + maxYPos));
-    corner2 = aiVector2D(scale * (midpoint.x + maxYNeg), scale * (midpoint.y + maxYNeg));
+    //This method here doesn't quite work:
+    ////now can set corner1 and corner2 from these values
+    //corner1 = aiVector2D(scale*(midpoint.x + maxXPos), scale * (midpoint.y + maxYPos));
+    //corner2 = aiVector2D(scale * (midpoint.x + maxYNeg), scale * (midpoint.y + maxYNeg));
+    
+    
+    //So instead, calculate the centriod of the 4 maximum vectors that came out of the loops, and then just shift the
+    //midpoint over to be at the centriod, then just using 2 vectors should work (hopefully)
+    //See: https://en.wikipedia.org/wiki/Centroid
+    
+    aiVector2D point1(maxXPos/4.0f, maxYPos/4.0f);
+    aiVector2D point2(maxXPos/4.0f, maxYNeg/4.0f);
+    aiVector2D point3(maxXNeg/4.0f, maxYPos/4.0f);
+    aiVector2D point4(maxXNeg/4.0f, maxYNeg/4.0f);
+    
+    aiVector2D centriod = point1 + point2 + point3 + point4;
+    
+    //here goes:
+    corner1 = aiVector2D(scale*(midpoint.x + centriod.x + maxXPos), scale * (midpoint.y + centriod.y + maxYPos));
+    corner2 = aiVector2D(scale * (midpoint.x + centriod.y + maxYNeg), scale * (midpoint.y + centriod.y + maxYNeg));
+    
+    
+    
     
     //Ye Olde calculateSelfAfterTranslations to go with the olde buggy computeRotations code above
     //    float midX = midpoint.x;
