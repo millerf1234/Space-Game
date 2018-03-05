@@ -145,7 +145,7 @@ void PlayerManager::handleInput(GLFWwindow* mWindow) {
         }
     }
     else {
-        std::cout << "\n\nAARG! This game (engine) is not that robust yet.\nPlease leave MAX_PLAYERS set to 2!\n"; 
+        std::cout << "\n\nAARG! This game (engine) is not that robust yet.\nPlease leave MAX_PLAYERS set to 2!\n";
     }
     //return; //only way to get to the line after this is through unpausing
     //unpause: std::cout << "Game Unpaused!" << std::endl;
@@ -219,20 +219,21 @@ void PlayerManager::initializeFromTemplate() {
             }
             //Set collisionBox data
             aiVector2D position = aiVector2D(p->position.x, p->position.y);
-            p->colBox->setMidpointTo(position); //Set midboxes position to match the player's position
+            //p->colBox->setMidpointTo(position); //Set midboxes position to match the player's position
             
+            p->colBox->presetRotationOrderSize(3); //tell colBox to preallocate some memory for placing rotations into (3 for 3 rotations)
             
-//            //Make the rotationQuaternions to initialize the player model with as well.
-            //NOTE THAT THESE ARE NOT THE CORRECT ROTATIONS:
+            //Make the rotationQuaternions to initialize the player model with as well.
             Quaternion earlyZcolBx(0.0f, 0.0f, 1.0f, p->rollAmount);
             Quaternion xcolBx(1.0f, 0.0f, 0.0f, p->thetaX);
-            Quaternion ycolBx(0.0f, 0.0f, 1.0f, p->thetaZ);
-            Quaternion zcolBx(0.0f, 1.0f, 0.0f, p->thetaY);
+            Quaternion zcolBx(0.0f, 0.0f, 1.0f, p->thetaZ);
+            //Quaternion ycolBx(0.0f, 1.0f, 0.0f, p->thetaY);
 
-//            p->colBox->addToRotationOrder(earlyZcolBx);
-//            p->colBox->addToRotationOrder(xcolBx);
-//            p->colBox->addToRotationOrder(ycolBx);
-//            p->colBox->addToRotationOrder(zcolBx);
+            //Put the quaternions into the collisionBoxes' rotation order
+            p->colBox->addToRotationOrder(earlyZcolBx); //Do the roll rotation first
+            p->colBox->addToRotationOrder(xcolBx); //Align the spaceship to fly within the xy-plane
+            p->colBox->addToRotationOrder(zcolBx); //This z-axis rotation is for turning the spacecraft
+            //p->colBox->addToRotationOrder(ycolBx); //This rotation is actually never used I think
             
             //Quaternion xColBx(1.0f, 0.0f, 0.0f, p->thetaX);
             //Quaternion yColBx(0.0f, 0.0f, -1.0f, p->thetaZ);
@@ -243,8 +244,6 @@ void PlayerManager::initializeFromTemplate() {
             
             
             p->colBox->setMidpointTo(position); //Set midboxes position to match the player's position
-            
-            
         }
         return;
     }
@@ -461,7 +460,7 @@ void PlayerManager::processInput() {
         player->colBox->changeRotationAt(0, player->rollAmount);
         player->colBox->changeRotationAt(1, player->thetaX);
         player->colBox->changeRotationAt(2, player->thetaZ);
-        player->colBox->changeRotationAt(3, player->thetaY);
+        //player->colBox->changeRotationAt(3, player->thetaY); //This rotation actually never happens?
         
     }
     //Check to see if any player's playerboxes are overlapping, and if so, move them apart

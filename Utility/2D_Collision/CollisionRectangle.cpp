@@ -16,11 +16,15 @@ static constexpr bool DEBUG_WARNING_MSG_ON = true; //Turn this off to stop debug
 //              CONSTRUCTORS
 //------------------------------------------------------------------------
 CollisionRectangle::CollisionRectangle() {
-    x = y = z = 0.0f;
+    xMajorMinorEqual = yMajorMinorEqual = zMajorMinorEqual = false; //Initialize these to false
+    xAxisMajor = xAxisMinor = yAxisMajor = yAxisMinor = zAxisMajor = zAxisMinor = aiVector3D(0.0f, 0.0f, 0.0f);
+    originalMajorsFromModel = originalMinorsFromModel = aiVector3D(0.0f, 0.0f, 0.0f);
+    
+    //x = y = z = 0.0f;
+    //maxFromModelXYZ = aiVector3D(x,y,z);
+    
     corner1 = corner2 = aiVector2D(0.0f, 0.0f);
-    corner1OffsetFromMidpointBeforeRotations = corner2OffsetFromMidpointBeforeRotations = aiVector3D(0.0f, 0.0f, 0.0f);
     midpoint = aiVector2D(0.0f, 0.0f);
-    maxFromModelXYZ = aiVector3D(x,y,z);
     rotationOrder = nullptr;
     numberOfRotations = 0;
     rotationOrderSize = 0;
@@ -50,11 +54,13 @@ CollisionRectangle::CollisionRectangle(float * data, int dataPoints) {
         //    }
         //    return;
         //}
-        x = y = z = 0.0f;
+        xMajorMinorEqual = yMajorMinorEqual = zMajorMinorEqual = false; //Initialize these to false
+        xAxisMajor = xAxisMinor = yAxisMajor = yAxisMinor = zAxisMajor = zAxisMinor = aiVector3D(0.0f, 0.0f, 0.0f);
+        originalMajorsFromModel = originalMinorsFromModel = aiVector3D(0.0f, 0.0f, 0.0f);
+        //x = y = z = 0.0f;
+        //maxFromModelXYZ = aiVector3D(x,y,z);
         corner1 = corner2 = aiVector2D(0.0f, 0.0f);
-        corner1OffsetFromMidpointBeforeRotations = corner2OffsetFromMidpointBeforeRotations = aiVector3D(0.0f, 0.0f, 0.0f);
         midpoint = aiVector2D(0.0f, 0.0f);
-        maxFromModelXYZ = aiVector3D(x,y,z);
         rotationOrder = nullptr;
         numberOfRotations = 0;
         rotationOrderSize = 0;
@@ -107,20 +113,112 @@ CollisionRectangle::CollisionRectangle(float * data, int dataPoints) {
         counter += 3;
     }
     
-    //Get the max values along each axis of from the model data
-    x = getMaxFromArray(xDataPoints, dataPoints / 2); //Get max x value
-    y = getMaxFromArray(yDataPoints, dataPoints / 2); //Get max y value
-    z = getMaxFromArray(zDataPoints, dataPoints / 2); //Get max z value
+    //Get both the maximum positive and negative values, for six total
+    float maxPosX, maxNegX, maxPosY, maxNegY, maxPosZ, maxNegZ;
+    maxPosX = maxNegX = maxPosY = maxNegY = maxPosZ = maxNegZ = 0.0f; //Initialize all 6 to 0.
+    //Set the maximums from model data:
+    maxPosX = getMaxFromArrayPositiveOnly(xDataPoints, dataPoints / 2);
+    maxNegX = getMaxFromArrayNegativeOnly(xDataPoints, dataPoints / 2);
+    maxPosY = getMaxFromArrayPositiveOnly(yDataPoints, dataPoints / 2);
+    maxNegY = getMaxFromArrayNegativeOnly(yDataPoints, dataPoints / 2);
+    maxPosZ = getMaxFromArrayPositiveOnly(zDataPoints, dataPoints / 2);
+    maxNegZ = getMaxFromArrayNegativeOnly(zDataPoints, dataPoints / 2);
     
-    this->maxFromModelXYZ = aiVector3D(x,y,z); //Set this vector from the calculated maximums
-    this->hasModelData = true; //Set to true once bounds have been calculated from model data
-    
-    if (DEBUG_MSG_ON) {
-        std::cout << "\nDEBUG::CollisionRectangle Size Values Determined!\nxMax: " << x;
-        std::cout << "\nyMax: " << y << "\nzMax: " << z << std::endl;
+    //Figure out which direction along each basis axis will be major and which will be minor
+    //Along the x axis:
+    if (maxPosX == abs(maxNegX)) {
+        xMajorMinorEqual = true;
+        //use positive as major
+        xAxisMajor = aiVector3D(maxPosX, 0.0f, 0.0f);
+        originalMajorsFromModel.x = maxPosX;
+        xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
+        originalMinorsFromModel.x = maxNegX;
     }
-    calculateSelfBeforeTransformations();
-    //Not sure if I need to do this second
+    else if (maxPosX > abs(maxNegX)) { //Else if positive x values have larger max then neg x values
+        xMajorMinorEqual = false; //False because one axis was bigger than the other
+        //use positive as major
+        xAxisMajor = aiVector3D(maxPosX, 0.0f, 0.0f);
+        originalMajorsFromModel.x = maxPosX;
+        xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
+        originalMinorsFromModel.x = maxNegX;
+    }
+    else { //else negative x must have contained overall larger values
+        xMajorMinorEqual = false; //False because one axis was bigger than the other
+        //use negative as major
+        xAxisMajor = aiVector3D(maxNegX, 0.0f, 0.0f);
+        originalMajorsFromModel.x = maxNegX;
+        xAxisMinor = aiVector3D(maxPosX, 0.0f, 0.0f);
+        originalMinorsFromModel.x = maxPosX;
+    }
+    
+    //Along the y axis:
+    if (maxPosY == abs(maxNegY)) {
+        yMajorMinorEqual = true;
+        //use positive as major
+        yAxisMajor = aiVector3D(0.0f, maxPosY, 0.0f);
+        originalMajorsFromModel.y = maxPosY;
+        yAxisMinor = aiVector3D(0.0f, maxNegY, 0.0f);
+        originalMinorsFromModel.y = maxNegY;
+    }
+    else if (maxPosY > abs(maxNegY)) { //Else if positive Y values have larger max then negative Y values
+        yMajorMinorEqual = false; //False because one axis was bigger than the other
+        //use positive as major
+        yAxisMajor = aiVector3D(0.0f, maxPosY, 0.0f);
+        originalMajorsFromModel.y = maxPosY;
+        yAxisMinor = aiVector3D(0.0f, maxNegY, 0.0f);
+        originalMinorsFromModel.y = maxNegY;
+    }
+    else { //else negative y must have contained overall larger values
+        yMajorMinorEqual = false; //False because one axis was bigger than the other
+        //use negative as major
+        yAxisMajor = aiVector3D(0.0f, maxNegY, 0.0f);
+        originalMajorsFromModel.y = maxNegY;
+        yAxisMinor = aiVector3D(0.0f, maxPosY, 0.0f);
+        originalMinorsFromModel.y = maxPosY;
+    }
+    
+    //Along the z axis:
+    if (maxPosZ == abs(maxNegZ)) { //If the largest distance is equal in both directions
+        zMajorMinorEqual = true;
+        //use positive as major
+        zAxisMajor = aiVector3D(0.0f, 0.0f, maxPosZ);
+        originalMajorsFromModel.z = maxPosZ;
+        zAxisMinor = aiVector3D(0.0f, 0.0f, maxNegZ);
+        originalMinorsFromModel.z = maxNegZ;
+    }
+    else if (maxPosZ > abs(maxNegZ)) { //Else if positive Z values have larger max then negative Z values
+        zMajorMinorEqual = false; //False because one axis was bigger than the other
+        //use positive as major
+        zAxisMajor = aiVector3D(0.0f, 0.0f, maxPosZ);
+        originalMajorsFromModel.z = maxPosZ;
+        zAxisMinor = aiVector3D(0.0f, 0.0f, maxNegZ);
+        originalMinorsFromModel.z = maxNegZ;
+    }
+    else { //else negative z must have contained overall larger values
+        zMajorMinorEqual = false; //False because one axis was bigger than the other
+        //use negative as major
+        zAxisMajor = aiVector3D(0.0f, 0.0f, maxNegZ);
+        originalMajorsFromModel.z = maxNegZ;
+        zAxisMinor = aiVector3D(0.0f, 0.0f, maxPosZ);
+        originalMinorsFromModel.z = maxPosZ;
+    }
+    this->hasModelData = true;
+    
+//    //Here is what I used to do when I would only get the largest absolute value along each axis
+//    //Get the max values along each axis of from the model data
+//    x = getMaxFromArray(xDataPoints, dataPoints / 2); //Get max x value
+//    y = getMaxFromArray(yDataPoints, dataPoints / 2); //Get max y value
+//    z = getMaxFromArray(zDataPoints, dataPoints / 2); //Get max z value
+//
+//    this->maxFromModelXYZ = aiVector3D(x,y,z); //Set this vector from the calculated maximums
+    //this->hasModelData = true; //Set to true once bounds have been calculated from model data
+    //
+    //if (DEBUG_MSG_ON) {
+    //    std::cout << "\nDEBUG::CollisionRectangle Size Values Determined!\nxMax: " << x;
+    //    std::cout << "\nyMax: " << y << "\nzMax: " << z << std::endl;
+   // }
+    
+   // calculateSelfBeforeTransformations(); //Not sure if I even need this first private func
     doRotationsAndRecalculate();
 }
 
@@ -129,7 +227,8 @@ CollisionRectangle::CollisionRectangle(aiVector3D *, int numberOfVectors){
     if (DEBUG_MSG_ON || DEBUG_WARNING_MSG_ON) {
         std::cout << "\nDEBUG::OOPS! THIS CONSTRUCTOR FOR COLLISION BOX HASN'T BEEN IMPLEMENTED YET!\n";
     }
-    calculateSelfBeforeTransformations();
+    //calculateSelfBeforeTransformations();
+    return;
 }
 
 //------------------------------------------------------------------------
@@ -218,7 +317,7 @@ void CollisionRectangle::setFromModelData(float * data, int dataPoints) {
 void CollisionRectangle::presetRotationOrderSize(int size) {
     //Allows for space to be allocated for all the rotations before adding them
     if (size <= 0 || size < this->rotationOrderSize) {
-        if (DEBUG_MSG_ON) {
+        if (DEBUG_MSG_ON || DEBUG_WARNING_MSG_ON) {
             if (size <= 0) {
                 std::cout << "\nDEBUG::OOPS! The Rotation Queue for this CollisionRectangle was attemped to be\n";
                 std::cout << "set to a size of " << size << ", which is invalid!" << std::endl;
@@ -232,11 +331,11 @@ void CollisionRectangle::presetRotationOrderSize(int size) {
         return;
     }
     if (rotationOrder == nullptr) { //If a rotationOrder array hasn't been allocated yet
-        rotationOrder = new Quaternion* [size];
+        rotationOrder = new Quaternion* [size]; //allocate 'size' amount of space
         for (int i = 0; i < size; ++i) {
             rotationOrder[i] = nullptr; //Set each entry to nullptr
         }
-        this->rotationOrderSize = size;
+        this->rotationOrderSize = size; //set the rotation order size equal to the parameter 'size'
     }
     else { //A rotationOrder array must already exist
         Quaternion ** tempForNewRotOrderArray = new Quaternion * [size];
@@ -256,7 +355,7 @@ void CollisionRectangle::presetRotationOrderSize(int size) {
         }
         rotationOrder = tempForNewRotOrderArray; //Set rotationOrder to the new array
         rotationOrderSize = size;
-        //numberOfRotations shoudl remain unchanged
+        //numberOfRotations should remain unchanged
     }
 }
 
@@ -309,19 +408,49 @@ void CollisionRectangle::addToRotationOrder(const Quaternion & rQuat) { //'rQuat
     }
     
     else { //There must be room in the rotation array for more rotations
+        int indexOfFurthestRotationInRotOrder = 0;
+        //Loop through the entire rotationOrder array and get the largest index that is not null
+        for (int i = 0; i < rotationOrderSize; ++i) {
+            if (rotationOrder[i] != nullptr) {
+                indexOfFurthestRotationInRotOrder = i;
+            }
+        }
+        if (indexOfFurthestRotationInRotOrder == 0 && rotationOrder[0] == nullptr) { //If there were no rotations in the rot order
+            rotationOrder[0] = new Quaternion(rQuat); //Then place rQuat as the first rotation
+            ++numberOfRotations;
+        }
+        else if (indexOfFurthestRotationInRotOrder == 0) { //and rotationOrder[0] != nullptr
+            rotationOrder[++indexOfFurthestRotationInRotOrder] = new Quaternion(rQuat);
+        }
+        //If the next available spot is not the final allocated slot in the array
+        else if (indexOfFurthestRotationInRotOrder + 1 < rotationOrderSize - 1) {
+            rotationOrder[++indexOfFurthestRotationInRotOrder + 1] = new Quaternion(rQuat);
+            ++numberOfRotations;
+        }
+        //We already checked to see if rotationOrder[rotationOrderSize - 1] was not null, so if we are here then we know it is not null
+        else {
+            rotationOrder[++indexOfFurthestRotationInRotOrder] = new Quaternion(rQuat);
+        }
+        
+        //Print a debug message checking to make sure the right thing happened
+        if (DEBUG_MSG_ON) {
+            std::cout << "\nDEBUG::Rotation about axis (" << rQuat.getRotationAxis_x() << ", " << rQuat.getRotationAxis_y() << ", " << rQuat.getRotationAxis_z() << ") added to slot " << indexOfFurthestRotationInRotOrder << " in rotation order." << std::endl;
+        }
+        
+        //  INVALID LOGIC I USED TO USE:
         //Iterate backwards through the rotationOrder array until the first non-null rotation quaternion is encountered
-        int rotOrderArrayIter = rotationOrderSize - 1;
-        while (rotationOrder[rotOrderArrayIter] != nullptr && rotOrderArrayIter >= 0) {
-            --rotOrderArrayIter;
-        }
-        if (rotOrderArrayIter >= 0) {
-            rotationOrder[rotOrderArrayIter + 1] = new Quaternion (rQuat);
-            ++numberOfRotations;
-        }
-        else { //Else the rotationOrder array does not contain any actual rotation Quaternions
-            rotationOrder[0] = new Quaternion(rQuat);
-            ++numberOfRotations;
-        }
+//        int rotOrderArrayIter = rotationOrderSize - 1;
+//        while (rotationOrder[rotOrderArrayIter] != nullptr && rotOrderArrayIter >= 0) {
+//            --rotOrderArrayIter;
+//        }
+//        if (rotOrderArrayIter >= 0) {
+//            rotationOrder[rotOrderArrayIter + 1] = new Quaternion (rQuat);
+//            ++numberOfRotations;
+//        }
+//        else { //Else the rotationOrder array does not contain any actual rotation Quaternions
+//            rotationOrder[0] = new Quaternion(rQuat);
+//            ++numberOfRotations;
+//        }
     }
 }
 void CollisionRectangle::changeRotationAt(int index, float theta) {
@@ -850,82 +979,176 @@ void CollisionRectangle::getRectCornersLines(float * bufferOfTwentyFourFloats) c
 //              Private Functions
 //------------------------------------------------------------------------
 
-void CollisionRectangle::calculateSelfBeforeTransformations() { //Calculates self before rotations from original XYZ and midpoint
-    //Assume that maxFromModelXYZ has already been set
-    x = maxFromModelXYZ.x;
-    y = maxFromModelXYZ.y;
-    z = maxFromModelXYZ.z;
-    //
-    corner1OffsetFromMidpointBeforeRotations = aiVector3D(x, y, z); //
-    corner2OffsetFromMidpointBeforeRotations = aiVector3D(-x, -y, -z);
+//void CollisionRectangle::calculateSelfBeforeTransformations() { //Calculates self before rotations from original XYZ and midpoint
+//    //Assume that maxFromModelXYZ has already been set
+//    x = maxFromModelXYZ.x;
+//    y = maxFromModelXYZ.y;
+//    z = maxFromModelXYZ.z;
+//
+//    float midX = midpoint.x;
+//    float midY = midpoint.y;
+//    corner1 = aiVector2D(midX + scale * x, midY + scale * y);
+//    corner2 = aiVector2D(midX - scale * x, midY - scale * y);
+//}
 
-    float midX = midpoint.x;
-    float midY = midpoint.y;
-    corner1 = aiVector2D(midX + scale * x, midY + scale * y);
-    corner2 = aiVector2D(midX - scale * x, midY - scale * y);
-}
 
-void CollisionRectangle::doRotationsAndRecalculate() { //This performs all the rotations in the rotationOrder and
-    aiVector3D vecToRotate = maxFromModelXYZ;
-    
+ //This performs all the rotations in the rotationOrder and then calls computeAfterTranslations()
+void CollisionRectangle::doRotationsAndRecalculate() {
+    //New (hopefully) not-buggy doRotationsAndRecalculate method:
+    //Set the major axes (these are the largest values along each axis for the model
+    xAxisMajor = aiVector3D(originalMajorsFromModel.x, 0.0f, 0.0f);
+    yAxisMajor = aiVector3D(0.0f, originalMajorsFromModel.y, 0.0f);
+    zAxisMajor = aiVector3D(0.0f, 0.0f, originalMajorsFromModel.z);
+    //Set the minor axes (these are the largest values of opposite sign from the majors of the model)
+    xAxisMinor = aiVector3D(originalMinorsFromModel.x, 0.0f, 0.0f);
+    yAxisMinor = aiVector3D(0.0f, originalMinorsFromModel.y, 0.0f);
+    zAxisMinor = aiVector3D(0.0f, 0.0f, originalMinorsFromModel.z);
+
     if (DEBUG_MSG_ON) {
-        std::cout << "\nDEBUG::Max From Model XYZ is: " << maxFromModelXYZ.x << ",  " << maxFromModelXYZ.y << ",  " << maxFromModelXYZ.z << std::endl;
-    }
+        std::cout << "\nDEBUG::MAJOR AXIS VALUES OF MODEL: ";
+        std::cout << originalMajorsFromModel.x << ", ";
+        std::cout << originalMajorsFromModel.y << ", ";
+        std::cout << originalMajorsFromModel.z << std::endl;
+        std::cout << "       MINOR AXIS VALUES OF MODEL: ";
+        std::cout << originalMinorsFromModel.x << ", ";
+        std::cout << originalMinorsFromModel.y << ", ";
+        std::cout << originalMinorsFromModel.z << std::endl;
+     }
+    //Now to rotate all of these vectors
+     for (int i = 0; i < rotationOrderSize; ++i) {
+         if (rotationOrder[i] != nullptr) { //If a valid rotation exists in the rotationOrder at this index
+             //do this rotation on all 6 vectors
+             xAxisMajor = rotationOrder[i]->computeRotation(xAxisMajor);
+             xAxisMinor = rotationOrder[i]->computeRotation(xAxisMinor);
+             yAxisMajor = rotationOrder[i]->computeRotation(yAxisMajor);
+             yAxisMinor = rotationOrder[i]->computeRotation(yAxisMinor);
+             zAxisMajor = rotationOrder[i]->computeRotation(zAxisMajor);
+             zAxisMinor = rotationOrder[i]->computeRotation(zAxisMinor);
+         }
+         if (DEBUG_MSG_ON) {
+             std::cout << "Performed rotation #" << i << " on collision box. ";
+             std::cout << "Rotated by: " << rotationOrder[i]->getTheta() << "\n";
+             aiVector3D rotAxis = rotationOrder[i]->getRotationAxis();
+             std::cout << "Rotation axis of rotation " << i << " is: ";
+             std::cout << rotAxis.x << ", " << rotAxis.y << ", " << rotAxis.z;
+             std::cout << std::endl;
+         }
+     }
     
-    if (numberOfRotations >= 1) {
-       // int rotationCounter = 0;
-        //What I was doing here turned out not to work... so gonna rewrite it
-//        //This loop's declaration might look weird, but I worte it this way because there could be null slots anywhere in the
-//        //rotationOrderArray. Thus need to go through entire array or until all the rotations in the array have been performed
-//        for (int i = 0; ((i < rotationOrderSize) || (rotationCounter > numberOfRotations)) /* &&
-//            !((i < rotationOrderSize) && (rotationCounter > numberOfRotations))*/ ; ++i)  {
-//            //Since class allows deleteing rotations at any index, need to make sure a valid rotation quaternion actually exists
-//            if (rotationOrder[i] != nullptr) {
-//                ++rotationCounter;
+    
+    //OLDE BUGGY METHOD (This didn't work because I was just rotating a single vector, which represents a cube, not a rectangle)
+//    aiVector3D vecToRotate = maxFromModelXYZ;
+//
+//    if (DEBUG_MSG_ON) {
+//        std::cout << "\nDEBUG::Max From Model XYZ is: " << maxFromModelXYZ.x << ",  " << maxFromModelXYZ.y << ",  " << maxFromModelXYZ.z << std::endl;
+//    }
+//
+//    if (numberOfRotations >= 1) {
+//       // int rotationCounter = 0;
+//        //What I was doing here turned out not to work... so gonna rewrite it
+////        //This loop's declaration might look weird, but I worte it this way because there could be null slots anywhere in the
+////        //rotationOrderArray. Thus need to go through entire array or until all the rotations in the array have been performed
+////        for (int i = 0; ((i < rotationOrderSize) || (rotationCounter > numberOfRotations)) /* &&
+////            !((i < rotationOrderSize) && (rotationCounter > numberOfRotations))*/ ; ++i)  {
+////            //Since class allows deleteing rotations at any index, need to make sure a valid rotation quaternion actually exists
+////            if (rotationOrder[i] != nullptr) {
+////                ++rotationCounter;
+////                vecToRotate = rotationOrder[i]->computeRotation(vecToRotate);
+////            }
+////        }
+//
+//        //Let's see if this fixes anything
+//        //rotationOrder[3]->changeTheta(rotationOrder[2]->getTheta());
+//
+//        //here is the simpler (and possibly slightly less efficient) version
+//
+//        for (int i = 0; i < rotationOrderSize; ++i) {
+//            if (rotationOrder[i] != nullptr /* && i != 2*/) {//The && i != 2 is for debug (but it doesnt seem to matter anyways)
 //                vecToRotate = rotationOrder[i]->computeRotation(vecToRotate);
+//                if (DEBUG_MSG_ON) {
+//                    std::cout << "Performed rotation #" << i << " on collision box. Rotated by: " << rotationOrder[i]->getTheta() << "\n";
+//                    aiVector3D rotAxis = rotationOrder[i]->getRotationAxis();
+//                    std::cout << "Rotation axis of rotation " << i << " is: " << rotAxis.x << ", " << rotAxis.y << ", " << rotAxis.z << std::endl;
+//                }
 //            }
 //        }
-        
-        //Let's see if this fixes anything
-        //rotationOrder[3]->changeTheta(rotationOrder[2]->getTheta());
-        
-        //here is the simpler (and possibly slightly less efficient) version
-        
-        for (int i = 0; i < rotationOrderSize; ++i) {
-            if (rotationOrder[i] != nullptr /* && i != 2*/) {//The && i != 2 is for debug (but it doesnt seem to matter anyways)
-                vecToRotate = rotationOrder[i]->computeRotation(vecToRotate);
-                if (DEBUG_MSG_ON) {
-                    std::cout << "Performed rotation #" << i << " on collision box. Rotated by: " << rotationOrder[i]->getTheta() << "\n";
-                    aiVector3D rotAxis = rotationOrder[i]->getRotationAxis();
-                    std::cout << "Rotation axis of rotation " << i << " is: " << rotAxis.x << ", " << rotAxis.y << ", " << rotAxis.z << std::endl;
-                }
-            }
-        }
-    }
-//    this->x = vecToRotate.x;
-//    this->y = vecToRotate.y;
-//    this->z = vecToRotate.z;
-    //Hmm clearly this won't make a difference...
-    this->x = (aiVector3D(1.0f, 0.0f, 0.0f) * dot(aiVector3D(1.0f, 0.0f, 0.0f), vecToRotate)).x;
-    this->y = (aiVector3D(0.0f, 1.0f, 0.0f) * dot(aiVector3D(0.0f, 1.0f, 0.0f), vecToRotate)).y;
-    this->z = (aiVector3D(0.0f, 0.0f, 1.0f) * dot(aiVector3D(0.0f, 0.0f, 1.0f), vecToRotate)).z;
-    
-    //More debug:
-    if (DEBUG_MSG_ON) {
-        std::cout << "Vector after rotations: " << x << " " << y << " " << z << std::endl;
-    }
+//    }
+////    this->x = vecToRotate.x;
+////    this->y = vecToRotate.y;
+////    this->z = vecToRotate.z;
+//    //Hmm clearly this won't make a difference...
+//    this->x = (aiVector3D(1.0f, 0.0f, 0.0f) * dot(aiVector3D(1.0f, 0.0f, 0.0f), vecToRotate)).x;
+//    this->y = (aiVector3D(0.0f, 1.0f, 0.0f) * dot(aiVector3D(0.0f, 1.0f, 0.0f), vecToRotate)).y;
+//    this->z = (aiVector3D(0.0f, 0.0f, 1.0f) * dot(aiVector3D(0.0f, 0.0f, 1.0f), vecToRotate)).z;
+//
+//    //More debug:
+//    if (DEBUG_MSG_ON) {
+//        std::cout << "Vector after rotations: " << x << " " << y << " " << z << std::endl;
+//    }
     
     calculateSelfAfterTranslations(); //Set the corners after rotating
 }
 
 void CollisionRectangle::calculateSelfAfterTranslations() { //Recalculates corner1 and corner2 from midpoint and rotatedXYZ
-    float midX = midpoint.x;
-    float midY = midpoint.y;
-    //corner1 = aiVector2D(midX + scale * x, midY + scale * y);
-    //corner2 = aiVector2D(midX - scale * x, midY - scale * y);
     
-    corner1 = aiVector2D(scale*(midX + x), scale *(midY + y));
-    corner2 = aiVector2D(scale*(midX - x), scale *(midY - y));
+    //new ComputeAfterTranslations code that constructs the 2D collision box from the 6 rotated 3D collision cuboid vectors
+    //First I am going to need to construct the 8 cuboid corners from the rotated axis vectors
+    aiVector3D cornerArray[8];
+    cornerArray[0] = xAxisMajor + yAxisMajor + zAxisMajor;
+    cornerArray[1] = xAxisMajor + yAxisMajor + zAxisMinor;
+    
+    cornerArray[2] = xAxisMajor + yAxisMinor + zAxisMajor;
+    cornerArray[3] = xAxisMajor + yAxisMinor + zAxisMinor;
+    
+    cornerArray[4] = xAxisMinor + yAxisMajor + zAxisMajor;
+    cornerArray[5] = xAxisMinor + yAxisMajor + zAxisMinor;
+    
+    cornerArray[6] = xAxisMinor + yAxisMinor + zAxisMajor;
+    cornerArray[7] = xAxisMinor + yAxisMinor + zAxisMinor;
+    
+    //-----------------THIS NEXT PART COULD BE BUGGY IF MY MATH IS WRONG!--------------
+    //Need to get the four points that represent the extremes along x and y axes
+    int largestXIndxPos, largestXIndxNeg, largestYIndxPos, largestYIndxNeg;
+    largestXIndxPos = largestXIndxNeg = largestYIndxPos = largestYIndxNeg = 0;
+    
+    //Now loop through the array to find which vectors in the cornerArray contain these maximums
+    float maxXPos, maxXNeg, maxYPos, maxYNeg;
+    maxXPos = maxXNeg = maxYPos = maxYNeg = 0.0f;
+    for (int i = 0; i < 8; ++i) {
+        //get largest x
+        if (cornerArray[i].x > maxXPos) {
+            maxXPos = cornerArray[i].x;
+            largestXIndxPos = i;
+        }
+        //get most negative x
+        if (cornerArray[i].x < maxXNeg) {
+            maxXNeg = cornerArray[i].x;
+            largestXIndxNeg = i;
+        }
+        //get largest y
+        if (cornerArray[i].y > maxYPos) {
+            maxYPos = cornerArray[i].y;
+            largestYIndxPos = i;
+        }
+        //get most negative y
+        if (cornerArray[i].y < maxYNeg) {
+            maxYNeg = cornerArray[i].y;
+            largestYIndxNeg = i;
+        }
+    }
+    
+    //now can set corner1 and corner2 from these values
+    corner1 = aiVector2D(scale*(midpoint.x + maxXPos), scale * (midpoint.y + maxYPos));
+    corner2 = aiVector2D(scale * (midpoint.x + maxYNeg), scale * (midpoint.y + maxYNeg));
+    
+    //Ye Olde calculateSelfAfterTranslations to go with the olde buggy computeRotations code above
+    //    float midX = midpoint.x;
+//    float midY = midpoint.y;
+//    //corner1 = aiVector2D(midX + scale * x, midY + scale * y);
+//    //corner2 = aiVector2D(midX - scale * x, midY - scale * y);
+//
+//    corner1 = aiVector2D(scale*(midX + x), scale *(midY + y));
+//    corner2 = aiVector2D(scale*(midX - x), scale *(midY - y));
 }
 
 bool CollisionRectangle::hasNoArea() const {
@@ -933,6 +1156,7 @@ bool CollisionRectangle::hasNoArea() const {
     //corner1 and corner2 will be recalculated, thus meaning they are always accurate descriptions
     //of an instance's collision
     if (!hasModelData) {return true;}
+    //Else do a calculation to see if the box actually has no area for some reason
     return (abs(corner1.x-corner2.x) * abs(corner1.y - corner2.y) == 0.0f);
 }
 

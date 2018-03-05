@@ -89,10 +89,19 @@
 //the principle axeses, but for now will not do things that way.
 class CollisionRectangle {
 private:
+    //If the model is larger in one direction that in it's opposite, the longer
+    //axis becomes the major and the shorter axis becomes the minor.
+    bool xMajorMinorEqual, yMajorMinorEqual, zMajorMinorEqual;
+    aiVector3D xAxisMajor, yAxisMajor, zAxisMajor, xAxisMinor, yAxisMinor, zAxisMinor;
+    aiVector3D originalMajorsFromModel, originalMinorsFromModel;
+    
+    //-------------------- Delete once Major/Minor has been fully implemented ----------------------------
+    // x, y, z and maxFromModelXYZ will soon each be replaced by 6 vectors.
     float x, y, z; //Maximum model limits that will rotate when model rotates
     aiVector3D maxFromModelXYZ; //maxFromModelXYZ is set when box is given model data, and won't change beyond that
+    //----------------------------------------------------------------------------------------------------
+    
     aiVector2D corner1, corner2; //corners will change often with rotations and translations. This is world space coordinates, calculated from a midpoint that intended to be linked to a models midpoint.
-    aiVector3D corner1OffsetFromMidpointBeforeRotations, corner2OffsetFromMidpointBeforeRotations; //This is just a description of the 3D collision box in model-coordinates (i.e. these are both just offsets from a midpoint located at the orgin)
    
     aiVector2D midpoint; //The center of the rectangle. Translations only need to move this midpoint, and the class will take care of recalculating the rectangle corners as needed.
     
@@ -107,7 +116,8 @@ private:
     void calculateSelfAfterTranslations(); //Calculate corner1 and corner2 from originalCorners and rotations
     //Call this next function after any changes are made to rotation
     void doRotationsAndRecalculate(); //Do rotations to get new values for x,y,z, then recalculate the corners
-    void calculateSelfBeforeTransformations(); //Calculate corner1, corner2 and originalCorners from midpoint and xyz
+    //Gonna try this to see if I actually ever need to do calculateBeforeTransformations...
+    //void calculateSelfBeforeTransformations(); //Calculate corner1, corner2 and originalCorners from midpoint and xyz
     
     bool hasNoArea() const;//Checks to see if the collisionRectangle is taking up any area within the collision plane
     
