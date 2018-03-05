@@ -975,6 +975,14 @@ void CollisionRectangle::getRectCornersLines(float * bufferOfTwentyFourFloats) c
     bufferOfTwentyFourFloats[23] = zVal;
 }
 
+void CollisionRectangle::get3DRectCornersLines(float * bufferOfTwentyfourFloats) const {
+    for (int i = 0; i < 24; i += 3) {
+        bufferOfTwentyfourFloats[i] = scale * corners[i%3].x;
+        bufferOfTwentyfourFloats[i+1] = scale * corners[i%3].y;
+        bufferOfTwentyfourFloats[i+2] = scale * corners[i%3].z;
+    }
+}
+
 //------------------------------------------------------------------------
 //              Private Functions
 //------------------------------------------------------------------------
@@ -1024,7 +1032,7 @@ void CollisionRectangle::doRotationsAndRecalculate() {
              yAxisMinor = rotationOrder[i]->computeRotation(yAxisMinor);
              zAxisMajor = rotationOrder[i]->computeRotation(zAxisMajor);
              zAxisMinor = rotationOrder[i]->computeRotation(zAxisMinor);
-         }
+         
          if (DEBUG_MSG_ON) {
              std::cout << "Performed rotation #" << i << " on collision box. ";
              std::cout << "Rotated by: " << rotationOrder[i]->getTheta() << "\n";
@@ -1032,6 +1040,7 @@ void CollisionRectangle::doRotationsAndRecalculate() {
              std::cout << "Rotation axis of rotation " << i << " is: ";
              std::cout << rotAxis.x << ", " << rotAxis.y << ", " << rotAxis.z;
              std::cout << std::endl;
+         }
          }
      }
     
@@ -1135,6 +1144,7 @@ void CollisionRectangle::calculateSelfAfterTranslations() { //Recalculates corne
             maxYNeg = cornerArray[i].y;
             largestYIndxNeg = i;
         }
+        this->corners[i] = cornerArray[i];
     }
     
     //This method here doesn't quite work:
@@ -1153,10 +1163,11 @@ void CollisionRectangle::calculateSelfAfterTranslations() { //Recalculates corne
     aiVector2D point4(maxXNeg/4.0f, maxYNeg/4.0f);
     
     aiVector2D centriod = point1 + point2 + point3 + point4;
+    std::cout << "\nCENTRIOD IS: " << centriod.x << ", " << centriod.y;
     
     //here goes:
     corner1 = aiVector2D(scale*(midpoint.x + centriod.x + maxXPos), scale * (midpoint.y + centriod.y + maxYPos));
-    corner2 = aiVector2D(scale * (midpoint.x + centriod.y + maxYNeg), scale * (midpoint.y + centriod.y + maxYNeg));
+    corner2 = aiVector2D(scale * (midpoint.x + centriod.x + maxXNeg), scale * (midpoint.y + centriod.y + maxYNeg));
     
     
     

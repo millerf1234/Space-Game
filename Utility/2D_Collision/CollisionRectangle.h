@@ -113,6 +113,9 @@ private:
     
     bool hasModelData;
     
+    //This next array might just be temporary?
+    aiVector3D corners[8];
+    
     void calculateSelfAfterTranslations(); //Calculate corner1 and corner2 from originalCorners and rotations
     //Call this next function after any changes are made to rotation
     void doRotationsAndRecalculate(); //Do rotations to get new values for x,y,z, then recalculate the corners
@@ -237,6 +240,7 @@ public:
     void getRectCornersPoints(float * bufferOfEightFloats) const;
     void getRectCornersTriangles(float * bufferOfTwelveFloats) const;
     void getRectCornersLines(float * bufferOfSixteenFloats) const;
+    void get3DRectCornersLines(float * bufferOfTwentyfourFloats) const;
     
     bool operator==(const CollisionRectangle & otherRect) const {
         return ((this->midpoint == otherRect.midpoint) && (this->corner1 == otherRect.corner1) && (this->corner2 == otherRect.corner2));

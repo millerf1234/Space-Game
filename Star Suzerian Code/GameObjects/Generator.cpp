@@ -864,8 +864,15 @@ void Generator::doDrawPlayerShipInstance(int i) {
     
     glad_glDisable(GL_LINE_SMOOTH);
     
+        //Draw the 2D collision box
     glDrawArrays(GL_LINE_LOOP, 0, 8); //Just draw arrays here, no need to mess with an element buffer
     
+        //Draw the 3D collision box
+        player->colBox->get3DRectCornersLines(vertices);
+        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
+        glDrawArrays(GL_LINE_STRIP, 0, 24);
+        
+        
     glad_glEnable(GL_LINE_SMOOTH);
     
     
