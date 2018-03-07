@@ -11,6 +11,7 @@
 #include "GameParameters.h"
 #include <assimp/Importer.hpp> //Gives access to the aiVector3D
 #include "Quaternion.h"
+#include "AACollisionBox.h"
 #include "CollisionRectangle.h"
 
 
@@ -30,7 +31,7 @@ public:
     float timeAlive;
     InstanceType type;
     //bool hasCollision; //This is set within EntityManager instead of being attached repeatedly to each instance
-    CollisionRectangle * colBox;
+    AACollisionBox * colBox;
     
     //Constructors
     Instance() {//Construct an anonymous instance

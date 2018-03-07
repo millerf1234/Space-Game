@@ -535,7 +535,8 @@ void Generator::generateSingle() {
         instances[newInstanceIndex]->type = PLAYERINSTANCE;
         instances[newInstanceIndex]->identifierNumber = (nextObjID); //Not sure why this isn;t getting set...or is it...
         //Since the instance is a PLAYER instance, create the collisionBox for the instance
-        instances[newInstanceIndex]->colBox =  new CollisionRectangle(this->vertices, this->numberOfVertices);
+        //instances[newInstanceIndex]->colBox =  new CollisionRectangle(this->vertices, this->numberOfVertices);
+        instances[newInstanceIndex]->colBox = new AACollisionBox(this->vertices, this->numberOfVertices);
         instances[newInstanceIndex]->colBox->setScale(1.0f/(PLAYER_SIZE));
         //I will put the colBox rotations into place later, once they are actually set
 //        //Put the Player specific rotation order into place within CollisionRectangle
@@ -841,14 +842,14 @@ void Generator::doDrawPlayerShipInstance(int i) {
     for (int i = 0; i < 24; ++i) {
         tempFirst24Vertices[i] = vertices[i];
     }
-    player->colBox->getRectCornersLines(vertices);
+    player->colBox->getRectCornersLines3D(vertices);
     
 //    if ((int)instances[i]->timeAlive % 4 == 0) {
 ////    if (PRINT_DEBUG_MESSAGES) {
-////        std::cout << "\nDEBUG::First vertices: \n";
-////        for (int i = 0; i < 24; ++i) {
-////            std::cout << vertices[i] <<" ";
-////        }
+        std::cout << "\nDEBUG::First vertices: \n";
+        for (int i = 0; i < 24; ++i) {
+            std::cout << vertices[i] <<" ";
+        }
 ////    }
 //    }
     glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);

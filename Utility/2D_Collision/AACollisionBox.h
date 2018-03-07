@@ -241,7 +241,7 @@ public:
     void getRect3DCornerPoints3D(float * bufferOfTwentyfourFloats) const; //sets x,y,z values
     //These next two return formated position values for drawing various primatives
     void getRectCornersTriangles3D(float * bufferOfEighteenFloats) const; //sets x,y,z values
-    void getRectCornersLines3D(float * bufferOfThirtySixFloats) const; //sets x,y,z values
+    void getRectCornersLines3D(float * bufferOfTwentyfourFloats) const; //sets x,y,z values
     //Gets the Sample points most recently used in collision detection
     void getCollisionDetectionSamplePointsBoxToBox(float * bufferOf200Floats);
     void getCollisionDetectionSamplePointsBoxToBoxMidpoint(float * bufferOf200Floats);

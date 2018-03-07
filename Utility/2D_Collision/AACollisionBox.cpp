@@ -78,12 +78,12 @@ AACollisionBox::AACollisionBox(float * data, int dataPoints) {
     float maxPosX, maxNegX, maxPosY, maxNegY, maxPosZ, maxNegZ;
     maxPosX = maxNegX = maxPosY = maxNegY = maxPosZ = maxNegZ = 0.0f; //Initialize all 6 to 0.
     
-    maxPosX = getMaxFromArrayPositiveOnly(xDataPoints, dataPoints / 2);
-    maxNegX = getMaxFromArrayNegativeOnly(xDataPoints, dataPoints / 2);
-    maxPosY = getMaxFromArrayPositiveOnly(yDataPoints, dataPoints / 2);
-    maxNegY = getMaxFromArrayNegativeOnly(yDataPoints, dataPoints / 2);
-    maxPosZ = getMaxFromArrayPositiveOnly(zDataPoints, dataPoints / 2);
-    maxNegZ = getMaxFromArrayNegativeOnly(zDataPoints, dataPoints / 2);
+    maxPosX = getMaxFromArrayPositiveOnly(xDataPoints, dataPoints / 3);
+    maxNegX = getMaxFromArrayNegativeOnly(xDataPoints, dataPoints / 3);
+    maxPosY = getMaxFromArrayPositiveOnly(yDataPoints, dataPoints / 3);
+    maxNegY = getMaxFromArrayNegativeOnly(yDataPoints, dataPoints / 3);
+    maxPosZ = getMaxFromArrayPositiveOnly(zDataPoints, dataPoints / 3);
+    maxNegZ = getMaxFromArrayNegativeOnly(zDataPoints, dataPoints / 3);
     
     
     //Figure out which direction along each basis axis will be major and which will be minor
@@ -383,12 +383,12 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
     float maxPosX, maxNegX, maxPosY, maxNegY, maxPosZ, maxNegZ;
     maxPosX = maxNegX = maxPosY = maxNegY = maxPosZ = maxNegZ = 0.0f; //Initialize all 6 to 0.
     
-    maxPosX = getMaxFromArrayPositiveOnly(xDataPoints, dataPoints / 2);
-    maxNegX = getMaxFromArrayNegativeOnly(xDataPoints, dataPoints / 2);
-    maxPosY = getMaxFromArrayPositiveOnly(yDataPoints, dataPoints / 2);
-    maxNegY = getMaxFromArrayNegativeOnly(yDataPoints, dataPoints / 2);
-    maxPosZ = getMaxFromArrayPositiveOnly(zDataPoints, dataPoints / 2);
-    maxNegZ = getMaxFromArrayNegativeOnly(zDataPoints, dataPoints / 2);
+    maxPosX = getMaxFromArrayPositiveOnly(xDataPoints, dataPoints / 3);
+    maxNegX = getMaxFromArrayNegativeOnly(xDataPoints, dataPoints / 3);
+    maxPosY = getMaxFromArrayPositiveOnly(yDataPoints, dataPoints / 3);
+    maxNegY = getMaxFromArrayNegativeOnly(yDataPoints, dataPoints / 3);
+    maxPosZ = getMaxFromArrayPositiveOnly(zDataPoints, dataPoints / 3);
+    maxNegZ = getMaxFromArrayNegativeOnly(zDataPoints, dataPoints / 3);
     
     
     //Figure out which direction along each basis axis will be major and which will be minor
@@ -801,19 +801,19 @@ void AACollisionBox::getRect2DCornerPoints2D(float * bufferOfEightFloats) const 
 void AACollisionBox::getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const {
     bufferOfTwelveFloats[0] = this->corners2D[0].x;
     bufferOfTwelveFloats[1] = this->corners2D[0].y;
-    bufferOfTwelveFloats[2] = 0.5f;
+    bufferOfTwelveFloats[2] = -0.5f;
     
     bufferOfTwelveFloats[3] = this->corners2D[1].x;
     bufferOfTwelveFloats[4] = this->corners2D[1].y;
-    bufferOfTwelveFloats[5] = 0.5f;
+    bufferOfTwelveFloats[5] = -0.5f;
     
     bufferOfTwelveFloats[6] = this->corners2D[2].x;
     bufferOfTwelveFloats[7] = this->corners2D[2].y;
-    bufferOfTwelveFloats[8] = 0.5f;
+    bufferOfTwelveFloats[8] = -0.5f;
     
     bufferOfTwelveFloats[9] = this->corners2D[3].x;
     bufferOfTwelveFloats[10] = this->corners2D[3].y;
-    bufferOfTwelveFloats[11] = 0.5f;
+    bufferOfTwelveFloats[11] = -0.5f;
 }
 void AACollisionBox::getRect3DCornerPoints3D(float * bufferOfTwentyfourFloats) const {
     std::cout << "\nDEBUG::Warning! getRect3DCornerPoints3D() has not yet been implemented!\n";
@@ -824,52 +824,52 @@ void AACollisionBox::getRectCornersTriangles3D(float * bufferOfEighteenFloats) c
     //Triangle 1
     bufferOfEighteenFloats[0] = this->corners2D[0].x;
     bufferOfEighteenFloats[1] = this->corners2D[0].y;
-    bufferOfEighteenFloats[2] = 0.5f;
+    bufferOfEighteenFloats[2] = -0.5f;
     bufferOfEighteenFloats[3] = this->corners2D[1].x;
     bufferOfEighteenFloats[4] = this->corners2D[1].y;
-    bufferOfEighteenFloats[5] = 0.5f;
+    bufferOfEighteenFloats[5] = -0.5f;
     bufferOfEighteenFloats[6] = this->corners2D[2].x;
     bufferOfEighteenFloats[7] = this->corners2D[2].y;
-    bufferOfEighteenFloats[8] = 0.5f;
+    bufferOfEighteenFloats[8] = -0.5f;
     //Triangle 2
     bufferOfEighteenFloats[9] = this->corners2D[2].x;
     bufferOfEighteenFloats[10] = this->corners2D[2].y;
-    bufferOfEighteenFloats[11] = 0.5f;
+    bufferOfEighteenFloats[11] = -0.5f;
     bufferOfEighteenFloats[12] = this->corners2D[3].x;
     bufferOfEighteenFloats[13] = this->corners2D[3].y;
-    bufferOfEighteenFloats[14] = 0.5f;
+    bufferOfEighteenFloats[14] = -0.5f;
     bufferOfEighteenFloats[15] = this->corners2D[0].x;
     bufferOfEighteenFloats[16] = this->corners2D[0].y;
-    bufferOfEighteenFloats[17] = 0.5f;
+    bufferOfEighteenFloats[17] = -0.5f;
 }
 void AACollisionBox::getRectCornersLines3D(float * bufferOfTwentyfourFloats) const {
     bufferOfTwentyfourFloats[0] = this->corners2D[0].x;
     bufferOfTwentyfourFloats[1] = this->corners2D[0].y;
-    bufferOfTwentyfourFloats[2] = 0.5f;
+    bufferOfTwentyfourFloats[2] = -0.5f;
     bufferOfTwentyfourFloats[3] = this->corners2D[1].x;
     bufferOfTwentyfourFloats[4] = this->corners2D[1].y;
-    bufferOfTwentyfourFloats[5] = 0.5f;
+    bufferOfTwentyfourFloats[5] = -0.5f;
     
     bufferOfTwentyfourFloats[6] = this->corners2D[1].x;
     bufferOfTwentyfourFloats[7] = this->corners2D[1].y;
-    bufferOfTwentyfourFloats[8] = 0.5f;
+    bufferOfTwentyfourFloats[8] = -0.5f;
     bufferOfTwentyfourFloats[9] = this->corners2D[2].x;
     bufferOfTwentyfourFloats[10] = this->corners2D[2].y;
-    bufferOfTwentyfourFloats[11] = 0.5f;
+    bufferOfTwentyfourFloats[11] = -0.5f;
     
     bufferOfTwentyfourFloats[12] = this->corners2D[2].x;
     bufferOfTwentyfourFloats[13] = this->corners2D[2].y;
-    bufferOfTwentyfourFloats[14] = 0.5f;
+    bufferOfTwentyfourFloats[14] = -0.5f;
     bufferOfTwentyfourFloats[15] = this->corners2D[3].x;
     bufferOfTwentyfourFloats[16] = this->corners2D[3].y;
-    bufferOfTwentyfourFloats[17] = 0.5f;
+    bufferOfTwentyfourFloats[17] = -0.5f;
     
     bufferOfTwentyfourFloats[18] = this->corners2D[3].x;
     bufferOfTwentyfourFloats[19] = this->corners2D[3].y;
-    bufferOfTwentyfourFloats[20] = 0.5f;
+    bufferOfTwentyfourFloats[20] = -0.5f;
     bufferOfTwentyfourFloats[21] = this->corners2D[0].x;
     bufferOfTwentyfourFloats[22] = this->corners2D[0].y;
-    bufferOfTwentyfourFloats[23] = 0.5f;
+    bufferOfTwentyfourFloats[23] = -0.5f;
     
     //Don't need?
 //    bufferOfThirtySixFloats[24] = this->corners2D[].x
@@ -966,7 +966,7 @@ void AACollisionBox::doRotationsAndRecalculate() {
 void AACollisionBox::calculateSelfAfterTranslations() {
     //This function updates the values in the corners2D and corners3D arrays
     
-    aiVector3D unorderedCornersArray[8];
+    aiVector3D unorderedCornersArray[CUBOID_CORNERS];
     unorderedCornersArray[0] = xAxisMajor + yAxisMajor + zAxisMajor;
     unorderedCornersArray[1] = xAxisMajor + yAxisMajor + zAxisMinor;
     unorderedCornersArray[2] = xAxisMajor + yAxisMinor + zAxisMajor;
@@ -976,6 +976,64 @@ void AACollisionBox::calculateSelfAfterTranslations() {
     unorderedCornersArray[6] = xAxisMinor + yAxisMinor + zAxisMajor;
     unorderedCornersArray[7] = xAxisMinor + yAxisMinor + zAxisMinor;
     
+    //New Different way of getting the four corners
+    //Set all vectors in corners2D to 0
+    for (int i = 0; i < BOX_CORNERS; ++i) {
+        corners2D[i].x = 0.0f;
+        corners2D[i].y = 0.0f;
+    }
+    
+    aiVector2D cornersProjectedOntoPlane[CUBOID_CORNERS];
+    for (int i = 0; i < CUBOID_CORNERS; i+=1) {
+        cornersProjectedOntoPlane[i].x = unorderedCornersArray[i].x;
+        cornersProjectedOntoPlane[i].y = unorderedCornersArray[i].y;
+    }
+    //Need to find the four largest vectors in each quadrant
+    //Loop through the corner array again
+    for (int i = 0; i < CUBOID_CORNERS; i+=1) {
+        if (cornersProjectedOntoPlane[i].x > 0.0f) {
+            if (cornersProjectedOntoPlane[i].y > 0.0f) {
+                //Then vector is in quadrant 1
+                //Check to see if it is the longest
+                if (corners2D[0].Length() < cornersProjectedOntoPlane[i].Length()) {
+                    corners2D[0] = cornersProjectedOntoPlane[i];
+                }
+            }
+            else {
+                //Then Vector is in quadrant 4
+                if (corners2D[1].Length() < cornersProjectedOntoPlane[i].Length()) {
+                    corners2D[1] = cornersProjectedOntoPlane[i];
+                }
+            }
+        }
+        else { //Else x coord is <=0.0f
+            if (cornersProjectedOntoPlane[i].y > 0.0f) {
+                //Then vector is in quadrant 2
+                //Check to see if it is the longest
+                if (corners2D[3].Length() < cornersProjectedOntoPlane[i].Length()) {
+                    corners2D[3] = cornersProjectedOntoPlane[i];
+                }
+            }
+            else {
+                //Then Vector is in quadrant 3
+                if (corners2D[2].Length() < cornersProjectedOntoPlane[i].Length()) {
+                    corners2D[2] = cornersProjectedOntoPlane[i];
+                }
+            }
+        }
+    }
+    
+    //Need to now scale corners2D and put them around the objects midpoint
+    corners2D[0] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[0].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[0].y)));
+     corners2D[1] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[1].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[1].y)));
+     corners2D[2] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[2].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[2].y)));
+     corners2D[3] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[3].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[3].y)));
+    
+    
+    
+    /*
+    //I think my collision box is being bound to the axeses here, so need to find
+    //a diffrernt way to construct the 4 extreme points
     //Need to get the four points that represent the extremes along x and y axes
     int largestXIndxPos, largestXIndxNeg, largestYIndxPos, largestYIndxNeg;
     largestXIndxPos = largestXIndxNeg = largestYIndxPos = largestYIndxNeg = 0;
@@ -1009,52 +1067,12 @@ void AACollisionBox::calculateSelfAfterTranslations() {
     
     //Set corners2D array
     corners2D[0] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners3D[largestXIndxPos].x)), scale * (midpoint.y - (collisionBoxShrinkageFactor * corners3D[largestYIndxPos].y)));
-    corners2D[1] = aiVector2D(scale * (midpoint.x - (collisionBoxShrinkageFactor * corners3D[largestXIndxNeg].x)), scale * (midpoint.y - (collisionBoxShrinkageFactor * corners3D[largestYIndxPos].y)));
-    corners2D[2] = aiVector2D(scale * (midpoint.x - (collisionBoxShrinkageFactor * corners3D[largestXIndxNeg].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners3D[largestYIndxNeg].y)));
-    corners2D[3] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners3D[largestXIndxPos].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners3D[largestYIndxNeg].y)));
+    corners2D[1] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners3D[largestXIndxNeg].x)), scale * (midpoint.y - (collisionBoxShrinkageFactor * corners3D[largestYIndxPos].y)));
+    corners2D[2] = aiVector2D(scale * (midpoint.x - (collisionBoxShrinkageFactor * corners3D[largestXIndxPos].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners3D[largestYIndxNeg].y)));
+    corners2D[3] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners3D[largestXIndxNeg].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners3D[largestYIndxNeg].y)));
     
    // corner1 = aiVector2D(scale*(midpoint.x + (boxShrinkageFactor * maxXPos)), scale *  (midpoint.y - (boxShrinkageFactor * maxYPos)));
-     //   corner2 = aiVector2D(scale * (midpoint.x + (boxShrinkageFactor * maxXNeg)), scale * (midpoint.y - (boxShrinkageFactor * maxYNeg)));
-    
-    
-    
-//    // //-----------------THIS NEXT PART COULD BE BUGGY IF MY MATH IS WRONG!--------------  (so close!)
-//    //Need to get the four points that represent the extremes along x and y axes
-//    int largestXIndxPos, largestXIndxNeg, largestYIndxPos, largestYIndxNeg;
-//    largestXIndxPos = largestXIndxNeg = largestYIndxPos = largestYIndxNeg = 0;
-//
-//    //Now loop through the array to find which vectors in the cornerArray contain these maximums
-//    float maxXPos, maxXNeg, maxYPos, maxYNeg;
-//    maxXPos = maxXNeg = maxYPos = maxYNeg = 0.0f;
-//    for (int i = 0; i < 8; ++i) {
-//        //get largest x
-//        if (cornerArray[i].x > maxXPos) {
-//            maxXPos = cornerArray[i].x;
-//            largestXIndxPos = i;
-//        }
-//        //get most negative x
-//        if (cornerArray[i].x < maxXNeg) {
-//            maxXNeg = cornerArray[i].x;
-//            largestXIndxNeg = i;
-//        }
-//        //get largest y
-//        if (cornerArray[i].y > maxYPos) {
-//            maxYPos = cornerArray[i].y;
-//            largestYIndxPos = i;
-//        }
-//        //get most negative y
-//        if (cornerArray[i].y < maxYNeg) {
-//            maxYNeg = cornerArray[i].y;
-//            largestYIndxNeg = i;
-//        }
-//        this->corners[i] = cornerArray[i];
-//        //std::cout << "\nCorner[" << i << "] = " << corners[i].x << ", " << corners[i].y << ", " << corners[i].z;
-//    }
-//
-//    float boxShrinkageFactor = collisionBoxShrinkageFactor; //0.85f-0.90f seem like good values for this
-//
-//    corner1 = aiVector2D(scale*(midpoint.x + (boxShrinkageFactor * maxXPos)), scale *  (midpoint.y - (boxShrinkageFactor * maxYPos)));
-//    corner2 = aiVector2D(scale * (midpoint.x + (boxShrinkageFactor * maxXNeg)), scale * (midpoint.y - (boxShrinkageFactor * maxYNeg)));
+     //   corner2 = aiVector2D(scale * (midpoint.x + (boxShrinkageFactor * maxXNeg)), scale * (midpoint.y - (boxShrinkageFactor * maxYNeg))); */
     
 }
 
