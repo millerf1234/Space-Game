@@ -30,6 +30,7 @@
 		9E10D5E62034BEBD00F0F724 /* Background.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E42034BEBD00F0F724 /* Background.cpp */; };
 		9E10D5EA2035485000F0F724 /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E82035485000F0F724 /* Object.cpp */; };
 		9E10D5EE20360AE500F0F724 /* ObjectGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */; };
+		9E8FF849204DDD29006E2392 /* AACollisionBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8FF847204DDD29006E2392 /* AACollisionBox.cpp */; };
 		9ECC63872044C51300F7B703 /* RocketManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ECC63852044C51300F7B703 /* RocketManager.cpp */; };
 		9ECC638B204640B600F7B703 /* RectangularCuboid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ECC6389204640B600F7B703 /* RectangularCuboid.cpp */; };
 		9ECC638F2046A6C000F7B703 /* CollisionRectangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ECC638D2046A6C000F7B703 /* CollisionRectangle.cpp */; };
@@ -112,6 +113,8 @@
 		9E10D5E92035485000F0F724 /* Object.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
 		9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectGenerator.cpp; sourceTree = "<group>"; };
 		9E10D5ED20360AE500F0F724 /* ObjectGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectGenerator.h; sourceTree = "<group>"; };
+		9E8FF847204DDD29006E2392 /* AACollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AACollisionBox.cpp; sourceTree = "<group>"; };
+		9E8FF848204DDD29006E2392 /* AACollisionBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AACollisionBox.h; sourceTree = "<group>"; };
 		9ECC63852044C51300F7B703 /* RocketManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RocketManager.cpp; sourceTree = "<group>"; };
 		9ECC63862044C51300F7B703 /* RocketManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RocketManager.h; sourceTree = "<group>"; };
 		9ECC6389204640B600F7B703 /* RectangularCuboid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RectangularCuboid.cpp; sourceTree = "<group>"; };
@@ -362,6 +365,8 @@
 			children = (
 				9ECC638D2046A6C000F7B703 /* CollisionRectangle.cpp */,
 				9ECC638E2046A6C000F7B703 /* CollisionRectangle.h */,
+				9E8FF847204DDD29006E2392 /* AACollisionBox.cpp */,
+				9E8FF848204DDD29006E2392 /* AACollisionBox.h */,
 			);
 			path = 2D_Collision;
 			sourceTree = "<group>";
@@ -462,6 +467,7 @@
 			files = (
 				9E0754F1203B8B58009B6215 /* QuickHull.cpp in Sources */,
 				9ED77219203930F200D569A4 /* Generator.cpp in Sources */,
+				9E8FF849204DDD29006E2392 /* AACollisionBox.cpp in Sources */,
 				9E10D5D72032CEDC00F0F724 /* SimpleObjLoader.cpp in Sources */,
 				9E10D5EE20360AE500F0F724 /* ObjectGenerator.cpp in Sources */,
 				9E0754ED203B892C009B6215 /* GameEntityManager.cpp in Sources */,

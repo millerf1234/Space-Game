@@ -23,6 +23,7 @@
 #include "Object.h" //Abstract base class for any in-game objects
 //#include "Background.h"
 #include "GameEntityManager.h"
+#include "RocketManager.h"
 #include "PlayerManager.h"
 #include "Stage.h" //I replaced Background.h with Stage.h
 #include "GameParameters.h" //Get gameplay-affecting constants
@@ -58,6 +59,10 @@ private:
     Quaternion * xRot, * yRot, * zRot; //Pointers to global rotation quaternions
     //std::vector<Object *> activeGameObjects; //A vector of all active objects currently in the game (an active object may need to be rendered and may need to have collisions detected)
     
+    Stage * stage;
+    PlayerManager * playerManager;
+    RocketManager * rocketManager;
+    
    // BackGroundGenerator *background;
     
     int numberOfLevels; //Number of levels
@@ -69,7 +74,8 @@ private:
     //Private Member Functions
     void draw();
     void processUserInput();
-    void doGameLogic(); //Handle collisions and whatnot (upkeep)
+    void doGameLogic(); //Do upkeep for game objects (upkeep)
+    void processInterEntityEvents(); //Handle inter-entity instance collision/creation/destruction
 
     void doZoomIn(unsigned long long framesToHold); //The most important function
 };

@@ -151,7 +151,7 @@ public:
 };
 
 
-//Add a Weapon manager or manage weapons through PlayerManager?
+//WeaponInstance is managed by weaponManager
 class WeaponInstance : public Instance {
 public:
     float damage;

@@ -1,3 +1,9 @@
+//  NOTE!!! THIS CLASS IS A SIMPLER VERSION OF MY AACollisionBox class. Chances
+//  are I will be using the AACollisionBox much more frequently than this class,
+//  I am just keeping it around for now becuase it works for what it is.
+//  Chances are I am going to stop modifying this class with the rest of the project,
+//  so be wary of using it as there are some not-fully-implemented or buggy methods
+//
 //  This is a rectangle I am using to do 2D collision with my Player Instances
 //  (and maybe other instances if it turns out to be portable)
 //

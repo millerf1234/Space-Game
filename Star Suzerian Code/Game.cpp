@@ -78,17 +78,27 @@ Game::~Game() { //std::cout << "\nDEBUG::Game destructor was called...\n";
 
 void Game::playIntroMovie() {  }
 
+//Note that since dynamic memory to entityManager pointers are allocated into the
+//vector, the only way they will be deleted is also through the vector.
 void Game::loadGameObjects() {
     //Load the stages first
     std::cout << std::endl << INDENT << "Loading Stage Models...\n";
-    for (int i = 0; i < NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD; ++i) {
+    //for (int i = 0; i < NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD; ++i) {
         gEntities.push_back(new Stage);
-        std::cout << INDENT << "    Level " << i+1 << " loaded..." << std::endl;
-    }
+        std::cout << INDENT << "    Level " << /*i*/0+1 << " loaded..." << std::endl;
+    //}
+    //Since I am no longer doing the loop, do:
+    stage = static_cast<Stage*> (gEntities[0]);
+    
     //Then load all parts required for a PLAYER object
     std::cout /* << std::endl */ << INDENT << "Loading PlayerModels...\n";
     gEntities.push_back(new PlayerManager);
+    playerManager = static_cast<PlayerManager *>(gEntities[1]);
     
+    //Then load all parts required to have Rockets
+    std::cout << "Loading Rockets...\n";
+    gEntities.push_back(new RocketManager);
+    rocketManager = static_cast<RocketManager *>(gEntities[2]);
     
     
     //std::cout << std::endl << INDENT <<  "Loading background...\n";
@@ -196,6 +206,9 @@ bool Game::launch() {
         for (; entityLogicIterator < gEntities.end(); ++entityLogicIterator) {
             (*entityLogicIterator)->doUpkeep();
         }
+        
+        
+        
         
         //----------------------------------------------------------------------
         //  Draw
