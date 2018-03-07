@@ -107,17 +107,24 @@ private:
     bool printDebugMessages;
     bool printDebugWarnings;
     bool hasModelData;
+    bool xAxisSymmetry, yAxisSymmetry, zAxisSymmetry;
 
     Quaternion ** rotationOrder; //Rotations to be performed, should match rotations on model
     int numberOfRotations; //Number of rotations in the array
     int rotationOrderSize; //The size allocated for the array
 
     //Some private helper functions
+    void buildCornerAdjacencyList(); //Call this once after model data set/reset
     void doRotationsAndRecalculate(); //Used to recalculate box after a rotation is updated
     void calculateSelfAfterTranslations();
 
     //Initialization function for consructors to call
     void initialize();
+    
+    //Adding this to try to get box projection fixed
+    int adjacencyList[8][3]; //An Array containing the adjacent indices to each corner
+    
+    
     
     
 protected:
@@ -128,6 +135,7 @@ protected:
     aiVector3D corners3D[8]; //The 8 3D coordinates of the box corners after rotation
     aiVector2D midpoint;
     aiVector2D corners2D[4]; //The four corners of the box within the collision plane
+    aiVector2D corners2DPossibleCombinations[70][4];
 
     //Scale should be set to 1/w to match model's w so box scales with model
     float scale;

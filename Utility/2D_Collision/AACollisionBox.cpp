@@ -10,7 +10,7 @@ static const float STEP_SIZE = 0.01f; //Used for seperating two overlapping Coll
 
 static const int CUBOID_CORNERS = 8;
 static const int BOX_CORNERS = 4;
-
+static const int NOT_SET = -1;
 
 //------------------------------------------------------------------------
 //              CONSTRUCTORS
@@ -201,6 +201,7 @@ AACollisionBox::AACollisionBox(aiVector3D * data, int numberOfVectors) {
         originalMajorsFromModel.x = maxPosX;
         xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
         originalMinorsFromModel.x = maxNegX;
+        xAxisSymmetry = true;
     }
     else if (maxPosX > abs(maxNegX)) { //Else if positive x values have larger max then neg x values
         //use positive as major
@@ -208,6 +209,7 @@ AACollisionBox::AACollisionBox(aiVector3D * data, int numberOfVectors) {
         originalMajorsFromModel.x = maxPosX;
         xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
         originalMinorsFromModel.x = maxNegX;
+        xAxisSymmetry = false;
     }
     else { //else negative x must have contained overall larger values
         //use negative as major
@@ -215,6 +217,7 @@ AACollisionBox::AACollisionBox(aiVector3D * data, int numberOfVectors) {
         originalMajorsFromModel.x = maxNegX;
         xAxisMinor = aiVector3D(maxPosX, 0.0f, 0.0f);
         originalMinorsFromModel.x = maxPosX;
+        xAxisSymmetry = false;
     }
     
     //Along the y axis:
@@ -224,6 +227,7 @@ AACollisionBox::AACollisionBox(aiVector3D * data, int numberOfVectors) {
         originalMajorsFromModel.y = maxPosY;
         yAxisMinor = aiVector3D(0.0f, maxNegY, 0.0f);
         originalMinorsFromModel.y = maxNegY;
+        yAxisSymmetry = true;
     }
     else if (maxPosY > abs(maxNegY)) { //Else if positive Y values have larger max then negative Y values
         //use positive as major
@@ -231,6 +235,7 @@ AACollisionBox::AACollisionBox(aiVector3D * data, int numberOfVectors) {
         originalMajorsFromModel.y = maxPosY;
         yAxisMinor = aiVector3D(0.0f, maxNegY, 0.0f);
         originalMinorsFromModel.y = maxNegY;
+        yAxisSymmetry = false;
     }
     else { //else negative y must have contained overall larger values
         //use negative as major
@@ -238,6 +243,7 @@ AACollisionBox::AACollisionBox(aiVector3D * data, int numberOfVectors) {
         originalMajorsFromModel.y = maxNegY;
         yAxisMinor = aiVector3D(0.0f, maxPosY, 0.0f);
         originalMinorsFromModel.y = maxPosY;
+        yAxisSymmetry = false;
     }
     
     //Along the z axis:
@@ -247,6 +253,7 @@ AACollisionBox::AACollisionBox(aiVector3D * data, int numberOfVectors) {
         originalMajorsFromModel.z = maxPosZ;
         zAxisMinor = aiVector3D(0.0f, 0.0f, maxNegZ);
         originalMinorsFromModel.z = maxNegZ;
+        zAxisSymmetry = true;
     }
     else if (maxPosZ > abs(maxNegZ)) { //Else if positive Z values have larger max then negative Z values
         //use positive as major
@@ -254,6 +261,7 @@ AACollisionBox::AACollisionBox(aiVector3D * data, int numberOfVectors) {
         originalMajorsFromModel.z = maxPosZ;
         zAxisMinor = aiVector3D(0.0f, 0.0f, maxNegZ);
         originalMinorsFromModel.z = maxNegZ;
+        zAxisSymmetry = false;
     }
     else { //else negative z must have contained overall larger values
         //use negative as major
@@ -261,6 +269,7 @@ AACollisionBox::AACollisionBox(aiVector3D * data, int numberOfVectors) {
         originalMajorsFromModel.z = maxNegZ;
         zAxisMinor = aiVector3D(0.0f, 0.0f, maxPosZ);
         originalMinorsFromModel.z = maxPosZ;
+        zAxisSymmetry = false;
     }
     this->hasModelData = true;
     
@@ -399,6 +408,7 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
         originalMajorsFromModel.x = maxPosX;
         xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
         originalMinorsFromModel.x = maxNegX;
+        xAxisSymmetry = true;
     }
     else if (maxPosX > abs(maxNegX)) { //Else if positive x values have larger max then neg x values
         //use positive as major
@@ -406,6 +416,7 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
         originalMajorsFromModel.x = maxPosX;
         xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
         originalMinorsFromModel.x = maxNegX;
+        xAxisSymmetry = false;
     }
     else { //else negative x must have contained overall larger values
         //use negative as major
@@ -413,6 +424,7 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
         originalMajorsFromModel.x = maxNegX;
         xAxisMinor = aiVector3D(maxPosX, 0.0f, 0.0f);
         originalMinorsFromModel.x = maxPosX;
+        xAxisSymmetry = false;
     }
     
     //Along the y axis:
@@ -422,6 +434,7 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
         originalMajorsFromModel.y = maxPosY;
         yAxisMinor = aiVector3D(0.0f, maxNegY, 0.0f);
         originalMinorsFromModel.y = maxNegY;
+        yAxisSymmetry = true;
     }
     else if (maxPosY > abs(maxNegY)) { //Else if positive Y values have larger max then negative Y values
         //use positive as major
@@ -429,6 +442,7 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
         originalMajorsFromModel.y = maxPosY;
         yAxisMinor = aiVector3D(0.0f, maxNegY, 0.0f);
         originalMinorsFromModel.y = maxNegY;
+        yAxisSymmetry = false;
     }
     else { //else negative y must have contained overall larger values
         //use negative as major
@@ -436,6 +450,7 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
         originalMajorsFromModel.y = maxNegY;
         yAxisMinor = aiVector3D(0.0f, maxPosY, 0.0f);
         originalMinorsFromModel.y = maxPosY;
+        yAxisSymmetry = false;
     }
     
     //Along the z axis:
@@ -445,6 +460,7 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
         originalMajorsFromModel.z = maxPosZ;
         zAxisMinor = aiVector3D(0.0f, 0.0f, maxNegZ);
         originalMinorsFromModel.z = maxNegZ;
+        zAxisSymmetry = true;
     }
     else if (maxPosZ > abs(maxNegZ)) { //Else if positive Z values have larger max then negative Z values
         //use positive as major
@@ -452,6 +468,7 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
         originalMajorsFromModel.z = maxPosZ;
         zAxisMinor = aiVector3D(0.0f, 0.0f, maxNegZ);
         originalMinorsFromModel.z = maxNegZ;
+        zAxisSymmetry = false;
     }
     else { //else negative z must have contained overall larger values
         //use negative as major
@@ -459,11 +476,11 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
         originalMajorsFromModel.z = maxNegZ;
         zAxisMinor = aiVector3D(0.0f, 0.0f, maxPosZ);
         originalMinorsFromModel.z = maxPosZ;
+        zAxisSymmetry = false;
     }
     this->hasModelData = true;
     
     doRotationsAndRecalculate(); //This will set up the box based off the axis data
-    
 }
 
 //------------------------------------------------------------------------
@@ -968,6 +985,7 @@ void AACollisionBox::initialize() {
     printDebugWarnings = true; //Toggle improper use/potentially unintended behavior warnings
     //Initialize object fields
     hasModelData = false;
+    xAxisSymmetry = yAxisSymmetry = zAxisSymmetry = true; //because 0 vector has symmetry
     rotationOrder = nullptr;
     numberOfRotations = 0;
     rotationOrderSize = 0;
@@ -982,6 +1000,28 @@ void AACollisionBox::initialize() {
     originalMajorsFromModel = originalMinorsFromModel = aiVector3D(0.0f, 0.0f, 0.0f);
     scale = 1.0;
     collisionBoxShrinkageFactor = 1.0f;
+    
+    //initialize the adjacencyList indices
+    for (int i = 0; i < CUBOID_CORNERS; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            adjacencyList[i][j] = NOT_SET;
+        }
+    }
+}
+
+void AACollisionBox::buildCornerAdjacencyList() {
+    /* //Here is how the corners are being set
+     unorderedCornersArray[0] = xAxisMajor + yAxisMajor + zAxisMajor;
+     unorderedCornersArray[1] = xAxisMajor + yAxisMajor + zAxisMinor;
+     unorderedCornersArray[2] = xAxisMajor + yAxisMinor + zAxisMajor;
+     unorderedCornersArray[3] = xAxisMajor + yAxisMinor + zAxisMinor;
+     unorderedCornersArray[4] = xAxisMinor + yAxisMajor + zAxisMajor;
+     unorderedCornersArray[5] = xAxisMinor + yAxisMajor + zAxisMinor;
+     unorderedCornersArray[6] = xAxisMinor + yAxisMinor + zAxisMajor;
+     unorderedCornersArray[7] = xAxisMinor + yAxisMinor + zAxisMinor;
+     */
+    
+    
 }
 
 void AACollisionBox::doRotationsAndRecalculate() {
@@ -1055,6 +1095,10 @@ void AACollisionBox::calculateSelfAfterTranslations() {
     
     aiVector2D centriod = point1 + point2 + point3 + point4 + point5 + point6 + point7 + point8;
     
+    //for debug:
+    int cindx1, cindx2, cindx3, cindx4;
+    cindx1 = cindx2 = cindx3 = cindx4 = -1;
+    
     aiVector2D centriodToCorners[CUBOID_CORNERS];
     for (int i = 0; i < CUBOID_CORNERS; ++i) {
         centriodToCorners[i] = aiVector2D(unorderedCornersArray[i].x, unorderedCornersArray[i].y) - centriod;
@@ -1064,6 +1108,7 @@ void AACollisionBox::calculateSelfAfterTranslations() {
         corners2D[i] = aiVector2D(0.0f, 0.0f);
     }
     
+    //Okay so this works if roll is at -90º, 0º or 90º, but fails all other times
     //Need to find the four largest vectors in each quadrant
     //Loop through the corner array again
     for (int i = 0; i < CUBOID_CORNERS; i+=1) {
@@ -1074,6 +1119,7 @@ void AACollisionBox::calculateSelfAfterTranslations() {
                 if (corners2D[0].Length() < centriodToCorners[i].Length()) {
                     corners2D[0].x = unorderedCornersArray[i].x;
                     corners2D[0].y = unorderedCornersArray[i].y;
+                    cindx1 = i;
                     //corners2D[0] = centriodToCorners[i];
 //                    centriodToCorners[i].x = 0.0f;
 //                    centriodToCorners[i].y = 0.0f;
@@ -1087,6 +1133,7 @@ void AACollisionBox::calculateSelfAfterTranslations() {
 //                    corners2D[1] = centriodToCorners[i];
 //                    centriodToCorners[i].x = 0.0f;
 //                    centriodToCorners[i].y = 0.0f;
+                    cindx2 = i;
                 }
             }
         }
@@ -1100,6 +1147,7 @@ void AACollisionBox::calculateSelfAfterTranslations() {
 //                    corners2D[3] = centriodToCorners[i];
 //                    centriodToCorners[i].x = 0.0f;
 //                    centriodToCorners[i].y = 0.0f;
+                    cindx4 = i;
                 }
             }
             else {
@@ -1111,6 +1159,7 @@ void AACollisionBox::calculateSelfAfterTranslations() {
 //                    centriodToCorners[i].x = 0.0f;
 //                    centriodToCorners[i].y = 0.0f;
                 }
+                cindx3 = i;
             }
         }
     }
@@ -1148,6 +1197,7 @@ void AACollisionBox::calculateSelfAfterTranslations() {
                     if (corners2D[0].Length() < centriodToCorners[i].Length()) {
                         corners2D[0].x = unorderedCornersArray[i].x;
                         corners2D[0].y = unorderedCornersArray[i].y;
+                        cindx1 = i;
                     }
                 }
             }
@@ -1167,6 +1217,7 @@ void AACollisionBox::calculateSelfAfterTranslations() {
                     if (corners2D[2].Length() < centriodToCorners[i].Length()) {
                         corners2D[2].x = unorderedCornersArray[i].x;
                         corners2D[2].y = unorderedCornersArray[i].y;
+                        cindx3 = i;
                     }
                 }
             }
@@ -1278,6 +1329,7 @@ void AACollisionBox::calculateSelfAfterTranslations() {
                     if (corners2D[1].Length() < centriodToCorners[i].Length()) {
                         corners2D[1].x = unorderedCornersArray[i].x;
                         corners2D[1].y = unorderedCornersArray[i].y;
+                        cindx2 = i;
                     }
                 }
             }
@@ -1297,6 +1349,7 @@ void AACollisionBox::calculateSelfAfterTranslations() {
                     if (corners2D[3].Length() < centriodToCorners[i].Length()) {
                         corners2D[3].x = unorderedCornersArray[i].x;
                         corners2D[3].y = unorderedCornersArray[i].y;
+                        cindx4 = i;
                     }
                 }
             }
@@ -1310,6 +1363,8 @@ void AACollisionBox::calculateSelfAfterTranslations() {
     corners2D[1] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[1].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[1].y)));
     
     
+    //Print the corner indexes that were selected
+    std::cout << "\nCorners from the 8 corners that were selected (indexed from 0): " << cindx1 << " " << cindx2 << " " << cindx3 << " " << cindx4 << std::endl;
     
     
     /*  This new way is really close, but not quite
