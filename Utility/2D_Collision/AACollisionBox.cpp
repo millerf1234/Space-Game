@@ -1050,20 +1050,20 @@ void AACollisionBox::calculateSelfAfterTranslations() {
         }
     }
     
-    //AFter running this check, it looks like the problem is occuring when 0 and 2 are getting set to the same value or 1 and 3 are getting set to the same value. So i am going to do a direct, inefficent fix for this
-////DEBUG CHECK
-   //Check to see if any of the two corners got set to eachother
-    for (int i = 0; i < BOX_CORNERS; ++i) {
-        for (int j = i+1; j < BOX_CORNERS; ++j) {
-            if (corners2D[i] == corners2D[j]) {
-                std::cout << "\nCorners[" << i << "] == Corners[" << j << "]\n";
-                std::cout << "Corners[" << i << "] = " << corners2D[i].x << ", " << corners2D[i].y << std::endl;
-                std::cout << "Corners[" << j << "] = " << corners2D[j].x << ", " << corners2D[j].y << std::endl;
-                corners2D[j].x *= -1.0f;
-                corners2D[j].y *= -1.0f;
-            }
-        }
-    }
+    //AFter running this check, it looks like the problem is occuring when 0 and 2 are getting set to the same value or 1 and 3 are getting set to the same value. So I am going to do a direct, inefficent fix for this
+   //////DEBUG CHECK
+   ////Check to see if any of the two corners got set to eachother
+    //for (int i = 0; i < BOX_CORNERS; ++i) {
+     //   for (int j = i+1; j < BOX_CORNERS; ++j) {
+            //if (corners2D[i] == corners2D[j]) {
+                //std::cout << "\nCorners[" << i << "] == Corners[" << j << "]\n";
+                //std::cout << "Corners[" << i << "] = " << corners2D[i].x << ", " << corners2D[i].y << std::endl;
+                //std::cout << "Corners[" << j << "] = " << corners2D[j].x << ", " << corners2D[j].y << std::endl;
+                //corners2D[j].x *= -1.0f;
+                //corners2D[j].y *= -1.0f;
+           // }
+        //}
+    //}
     //Check for pathological case where there are no vectors in 2 of the 4 quadrants
     if (corners2D[0] == corners2D[2]) { //If two corners were set to the same value (chances are both are still 0 vector)
         //Then assign them to the second longest corner in the other two quadrants (note that 1 is quadrant 4 and 3 is quadrant 2)  (confusing, I know...)
@@ -1196,6 +1196,47 @@ void AACollisionBox::calculateSelfAfterTranslations() {
 //        }
 //    }
     
+    
+    if (corners2D[1] == corners2D[3]) { //If other two corners were set to the same value (chances are both are still 0 vector)
+        
+        //Do special process for corner 1:
+        for (int i = 0; i < CUBOID_CORNERS; ++i) {
+            if (unorderedCornersArray[i].x == corners2D[2].x && unorderedCornersArray[i].y == corners2D[2].y) {
+                //Delete the longest vector from corner 1's quadrant
+                unorderedCornersArray[i] = aiVector3D(0.0f, 0.0f, 0.0f); //Set this vector to be 0 vector
+                centriodToCorners[i] = aiVector2D(0.0f, 0.0f); //Set the centriod-to-corner vector to 0 vector as well
+            }
+        } //Set corner 1 to the second longest vector in corner 2's quadrant
+        for (int i = 0; i < CUBOID_CORNERS; ++i) {
+            if (centriodToCorners[i].x < 0.0f) {
+                if (centriodToCorners[i].y < 0.0f) {
+                    if (corners2D[1].Length() < centriodToCorners[i].Length()) {
+                        corners2D[1].x = unorderedCornersArray[i].x;
+                        corners2D[1].y = unorderedCornersArray[i].y;
+                    }
+                }
+            }
+        }
+        
+        //Repeat similar special process for corner 3:
+        for (int i = 0; i < CUBOID_CORNERS; ++i) {
+            if (unorderedCornersArray[i].x == corners2D[0].x && unorderedCornersArray[i].y == corners2D[0].y) {
+                //Delete the longest vector from corner 3's quadrant
+                unorderedCornersArray[i] = aiVector3D(0.0f, 0.0f, 0.0f); //Set this vector to be 0 vector
+                centriodToCorners[i] = aiVector2D(0.0f, 0.0f); //Set the centriod-to-corner vector to 0 vector as well
+            }
+        } //Set corner 3 to the second longest vector in corner 0's quadrant
+        for (int i = 0; i < CUBOID_CORNERS; ++i) {
+            if (centriodToCorners[i].x > 0.0f) {
+                if (centriodToCorners[i].y > 0.0f) {
+                    if (corners2D[3].Length() < centriodToCorners[i].Length()) {
+                        corners2D[3].x = unorderedCornersArray[i].x;
+                        corners2D[3].y = unorderedCornersArray[i].y;
+                    }
+                }
+            }
+        }
+    }
     
     //Need to now scale corners2D and put them around the objects midpoint
     corners2D[0] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[0].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[0].y)));
