@@ -1025,9 +1025,9 @@ void AACollisionBox::calculateSelfAfterTranslations() {
     
     //Need to now scale corners2D and put them around the objects midpoint
     corners2D[0] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[0].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[0].y)));
-     corners2D[1] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[1].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[1].y)));
-     corners2D[2] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[2].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[2].y)));
      corners2D[3] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[3].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[3].y)));
+     corners2D[2] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[2].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[2].y)));
+     corners2D[1] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[1].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[1].y)));
     
     
     
