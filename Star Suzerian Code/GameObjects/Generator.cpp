@@ -839,10 +839,11 @@ void Generator::doDrawPlayerShipInstance(int i) {
     convertLinesIntoTriangles();
     
     if (DRAW_COLLISION_DETAILS) {
+        int verticesToReplace = 108;
     //Draw the collision box now
-    GLfloat tempFirst36Vertices [36];
-    for (int i = 0; i < 36; ++i) {
-        tempFirst36Vertices[i] = vertices[i];
+    GLfloat tempFirstVerticesBackup [verticesToReplace];
+    for (int i = 0; i < verticesToReplace; ++i) {
+        tempFirstVerticesBackup[i] = vertices[i];
     }
     player->colBox->getRectCornersLines3D(vertices);
     
@@ -870,29 +871,36 @@ void Generator::doDrawPlayerShipInstance(int i) {
     
         
     
-    glad_glDisable(GL_LINE_SMOOTH);
+    
     
         //Draw the 2D collision box
     glDrawArrays(GL_LINE_LOOP, 0, 8); //Just draw arrays here, no need to mess with an element buffer
     
-        //Draw the collision box axes
+        //Draw the collision box axes (plural of axis)
         player->colBox->getRotatedMajorMinor3D(vertices);
         glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
         glDrawArrays(GL_LINE_LOOP, 0, 12);
+
+        glad_glDisable(GL_LINE_SMOOTH);
         
-        //Draw the 3D collision box
-//        player->colBox->get3DRectCornersLines(vertices);
-//        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
-//        glDrawArrays(GL_LINE_LOOP, 0, 12);
+        //Just for fun, draw the collision cuboid triangles
+        glUniform1f(ulocRedLine, 0.3f);
+        glUniform1f(ulocGreenLine, 0.3f);
+        glUniform1f(ulocBlueLine, 0.7f);
+        player->colBox->getCubiodTriangles3D(vertices);
+        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
+        glDrawArrays(GL_LINE_STRIP, 0, 36);
         
-        
-        
+//        std::cout << "\nDEBUG::First vertices: \n";
+//        for (int i = 0; i < 24; ++i) {
+//            std::cout << vertices[i] <<" ";
+//        }
     glad_glEnable(GL_LINE_SMOOTH);
     
     
     //Put vertices back to normal
-    for (int i = 0; i < 36; ++i) {
-        vertices[i] = tempFirst36Vertices[i];
+    for (int i = 0; i < verticesToReplace; ++i) {
+        vertices[i] = tempFirstVerticesBackup[i];
     }
     
     } //End draw collision details check

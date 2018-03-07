@@ -482,12 +482,6 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
     }
     this->hasModelData = true;
     
-    //Initialize the large array of corner combinations
-    for (int i = 0; i < 70; ++i) {
-        for (int j = 0; j < 4; ++j){
-            corners2DPossibleCombinations[i][j] = aiVector2D(0.0f, 0.0f);
-        }
-    }
     buildCornerAdjacencyList(); //Build this list after model data is set
     doRotationsAndRecalculate(); //This will set up the box based off the axis data
 }
@@ -813,22 +807,22 @@ bool AACollisionBox::isOverlapping(const AACollisionBox& otherBox) const {
 void AACollisionBox::getRotatedMajorMinor3D(float * bufferOfThirtysixFloats) const {
     //Normalize the vectors
     aiVector3D xAxisMajor = this->xAxisMajor;
-    xAxisMajor.NormalizeSafe();
+    //xAxisMajor.NormalizeSafe();
     
     aiVector3D yAxisMajor = this->yAxisMajor;
-    yAxisMajor.NormalizeSafe();
+    //yAxisMajor.NormalizeSafe();
     
     aiVector3D zAxisMajor = this->zAxisMajor;
-    zAxisMajor.NormalizeSafe();
+    //zAxisMajor.NormalizeSafe();
     
     aiVector3D xAxisMinor = this->xAxisMinor;
-    xAxisMinor.NormalizeSafe();
+    //xAxisMinor.NormalizeSafe();
     
     aiVector3D yAxisMinor = this->yAxisMinor;
-    yAxisMinor.NormalizeSafe();
+    //yAxisMinor.NormalizeSafe();
     
     aiVector3D zAxisMinor = this->zAxisMinor;
-    zAxisMinor.NormalizeSafe();
+    //zAxisMinor.NormalizeSafe();
     
     
     bufferOfThirtysixFloats[0] = xAxisMajor.x;
@@ -872,7 +866,6 @@ void AACollisionBox::getRotatedMajorMinor3D(float * bufferOfThirtysixFloats) con
     bufferOfThirtysixFloats[33] = 0.0f;
     bufferOfThirtysixFloats[34] = 0.0f;
     bufferOfThirtysixFloats[35] = 0.0f;
-    
 }
 
 void AACollisionBox::getRect2DCornerPoints2D(float * bufferOfEightFloats) const {
@@ -906,38 +899,167 @@ void AACollisionBox::getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const
     bufferOfTwelveFloats[10] = this->corners2D[3].y;
     bufferOfTwelveFloats[11] = -0.5f;
 }
-void AACollisionBox::getRect3DCornerPoints3D(float * bufferOfTwentyfourFloats) const {
-    bufferOfTwentyfourFloats[0] = corners3D[1].x;
-    bufferOfTwentyfourFloats[1] = corners3D[1].y;
-    bufferOfTwentyfourFloats[2] = corners3D[1].z;
-    
-    bufferOfTwentyfourFloats[3] = corners3D[0].x;
-    bufferOfTwentyfourFloats[4] = corners3D[0].y;
-    bufferOfTwentyfourFloats[5] = corners3D[0].z;
-    
-    bufferOfTwentyfourFloats[6] = corners3D[3].x;
-    bufferOfTwentyfourFloats[7] = corners3D[3].y;
-    bufferOfTwentyfourFloats[8] = corners3D[3].z;
-    
-    bufferOfTwentyfourFloats[9] = corners3D[2].x;
-    bufferOfTwentyfourFloats[10] = corners3D[2].y;
-    bufferOfTwentyfourFloats[11] = corners3D[2].z;
-    
-    bufferOfTwentyfourFloats[12] = corners3D[6].x;
-    bufferOfTwentyfourFloats[13] = corners3D[6].y;
-    bufferOfTwentyfourFloats[14] = corners3D[6].z;
-    
-    bufferOfTwentyfourFloats[15] = corners3D[4].x;
-    bufferOfTwentyfourFloats[16] = corners3D[4].y;
-    bufferOfTwentyfourFloats[17] = corners3D[4].z;
-    
-    bufferOfTwentyfourFloats[18] = corners3D[5].x;
-    bufferOfTwentyfourFloats[19] = corners3D[5].y;
-    bufferOfTwentyfourFloats[20] = corners3D[5].z;
-    
-    bufferOfTwentyfourFloats[21] = corners3D[7].x;
-    bufferOfTwentyfourFloats[22] = corners3D[7].y;
-    bufferOfTwentyfourFloats[23] = corners3D[7].z;
+//void AACollisionBox::getRect3DLines3D(float * bufferOfTwentyfourFloats) const {
+//    bufferOfTwentyfourFloats[0] = corners3D[1].x;
+//    bufferOfTwentyfourFloats[1] = corners3D[1].y;
+//    bufferOfTwentyfourFloats[2] = corners3D[1].z;
+//
+//    bufferOfTwentyfourFloats[3] = corners3D[0].x;
+//    bufferOfTwentyfourFloats[4] = corners3D[0].y;
+//    bufferOfTwentyfourFloats[5] = corners3D[0].z;
+//
+//    bufferOfTwentyfourFloats[6] = corners3D[3].x;
+//    bufferOfTwentyfourFloats[7] = corners3D[3].y;
+//    bufferOfTwentyfourFloats[8] = corners3D[3].z;
+//
+//    bufferOfTwentyfourFloats[9] = corners3D[2].x;
+//    bufferOfTwentyfourFloats[10] = corners3D[2].y;
+//    bufferOfTwentyfourFloats[11] = corners3D[2].z;
+//
+//    bufferOfTwentyfourFloats[12] = corners3D[6].x;
+//    bufferOfTwentyfourFloats[13] = corners3D[6].y;
+//    bufferOfTwentyfourFloats[14] = corners3D[6].z;
+//
+//    bufferOfTwentyfourFloats[15] = corners3D[4].x;
+//    bufferOfTwentyfourFloats[16] = corners3D[4].y;
+//    bufferOfTwentyfourFloats[17] = corners3D[4].z;
+//
+//    bufferOfTwentyfourFloats[18] = corners3D[5].x;
+//    bufferOfTwentyfourFloats[19] = corners3D[5].y;
+//    bufferOfTwentyfourFloats[20] = corners3D[5].z;
+//
+//    bufferOfTwentyfourFloats[21] = corners3D[7].x;
+//    bufferOfTwentyfourFloats[22] = corners3D[7].y;
+//    bufferOfTwentyfourFloats[23] = corners3D[7].z;
+//}
+
+void AACollisionBox::getCubiodTriangles3D(float * bufferOf108Floats) const {
+    aiVector3D corners3D[8];
+    aiVector3D midpoint3D = aiVector3D(midpoint.x, midpoint.y, 0.0f);
+    for (int i = 0; i < CUBOID_CORNERS; ++i) {
+        //corners3D[i] = this->corners3D[i];
+        corners3D[i] = (midpoint3D + this->corners3D[i]) * scale;
+    }
+    //Triangle 1
+    bufferOf108Floats[0] = corners3D[0].x;  //yMajor Face
+    bufferOf108Floats[1] = corners3D[0].y;
+    bufferOf108Floats[2] = corners3D[0].z;
+    bufferOf108Floats[3] = corners3D[1].x;
+    bufferOf108Floats[4] = corners3D[1].y;
+    bufferOf108Floats[5] = corners3D[1].z;
+    bufferOf108Floats[6] = corners3D[3].x;
+    bufferOf108Floats[7] = corners3D[3].y;
+    bufferOf108Floats[8] = corners3D[3].z;
+    //Triangle 2
+    bufferOf108Floats[9] = corners3D[2].x; //yMajor face
+    bufferOf108Floats[10] = corners3D[2].y;
+    bufferOf108Floats[11] = corners3D[2].z;
+    bufferOf108Floats[12] = corners3D[3].x;
+    bufferOf108Floats[13] = corners3D[3].y;
+    bufferOf108Floats[14] = corners3D[3].z;
+    bufferOf108Floats[15] = corners3D[0].x;
+    bufferOf108Floats[16] = corners3D[0].y;
+    bufferOf108Floats[17] = corners3D[0].z;
+    //Triangle 3
+    bufferOf108Floats[18] = corners3D[2].x; //xMinor face
+    bufferOf108Floats[19] = corners3D[2].y;
+    bufferOf108Floats[20] = corners3D[2].z;
+    bufferOf108Floats[21] = corners3D[3].x;
+    bufferOf108Floats[22] = corners3D[3].y;
+    bufferOf108Floats[23] = corners3D[3].z;
+    bufferOf108Floats[24] = corners3D[7].x;
+    bufferOf108Floats[25] = corners3D[7].y;
+    bufferOf108Floats[26] = corners3D[7].z;
+    //Triangle 4
+    bufferOf108Floats[27] = corners3D[6].x; //xMinor face
+    bufferOf108Floats[28] = corners3D[6].y;
+    bufferOf108Floats[29] = corners3D[6].z;
+    bufferOf108Floats[30] = corners3D[7].x;
+    bufferOf108Floats[31] = corners3D[7].y;
+    bufferOf108Floats[32] = corners3D[7].z;
+    bufferOf108Floats[33] = corners3D[2].x;
+    bufferOf108Floats[34] = corners3D[2].y;
+    bufferOf108Floats[35] = corners3D[2].z;
+    //Triangle 5
+    bufferOf108Floats[36] = corners3D[6].x; //yMinor face
+    bufferOf108Floats[37] = corners3D[6].y;
+    bufferOf108Floats[38] = corners3D[6].z;
+    bufferOf108Floats[39] = corners3D[7].x;
+    bufferOf108Floats[40] = corners3D[7].y;
+    bufferOf108Floats[41] = corners3D[7].z;
+    bufferOf108Floats[42] = corners3D[4].x;
+    bufferOf108Floats[43] = corners3D[4].y;
+    bufferOf108Floats[44] = corners3D[4].z;
+    //Triangle 6
+    bufferOf108Floats[45] = corners3D[5].x; //yMinor face
+    bufferOf108Floats[46] = corners3D[5].y;
+    bufferOf108Floats[47] = corners3D[5].z;
+    bufferOf108Floats[48] = corners3D[4].x;
+    bufferOf108Floats[49] = corners3D[4].y;
+    bufferOf108Floats[50] = corners3D[4].z;
+    bufferOf108Floats[51] = corners3D[7].x;
+    bufferOf108Floats[52] = corners3D[7].y;
+    bufferOf108Floats[53] = corners3D[7].z;
+    //Triangle 7
+    bufferOf108Floats[54] = corners3D[4].x; //xMajor face
+    bufferOf108Floats[55] = corners3D[4].y;
+    bufferOf108Floats[56] = corners3D[4].z;
+    bufferOf108Floats[57] = corners3D[5].x;
+    bufferOf108Floats[58] = corners3D[5].y;
+    bufferOf108Floats[59] = corners3D[5].z;
+    bufferOf108Floats[60] = corners3D[0].x;
+    bufferOf108Floats[61] = corners3D[0].y;
+    bufferOf108Floats[62] = corners3D[0].z;
+    //Triangle 8
+    bufferOf108Floats[63] = corners3D[0].x; //xMajor face
+    bufferOf108Floats[64] = corners3D[0].y;
+    bufferOf108Floats[65] = corners3D[0].z;
+    bufferOf108Floats[66] = corners3D[1].x;
+    bufferOf108Floats[67] = corners3D[1].y;
+    bufferOf108Floats[68] = corners3D[1].z;
+    bufferOf108Floats[69] = corners3D[5].x;
+    bufferOf108Floats[70] = corners3D[5].y;
+    bufferOf108Floats[71] = corners3D[5].z;
+    //Triangle 9
+    bufferOf108Floats[72] = corners3D[0].x; //zMajor face
+    bufferOf108Floats[73] = corners3D[0].y;
+    bufferOf108Floats[74] = corners3D[0].z;
+    bufferOf108Floats[75] = corners3D[2].x;
+    bufferOf108Floats[76] = corners3D[2].y;
+    bufferOf108Floats[77] = corners3D[2].z;
+    bufferOf108Floats[78] = corners3D[6].x;
+    bufferOf108Floats[79] = corners3D[6].y;
+    bufferOf108Floats[80] = corners3D[6].z;
+    //Triangle 10
+    bufferOf108Floats[81] = corners3D[6].x; //zMajor face
+    bufferOf108Floats[82] = corners3D[6].y;
+    bufferOf108Floats[83] = corners3D[6].z;
+    bufferOf108Floats[84] = corners3D[4].x;
+    bufferOf108Floats[85] = corners3D[4].y;
+    bufferOf108Floats[86] = corners3D[4].z;
+    bufferOf108Floats[87] = corners3D[0].x;
+    bufferOf108Floats[88] = corners3D[0].y;
+    bufferOf108Floats[89] = corners3D[0].z;
+    //Triangle 11
+    bufferOf108Floats[90] = corners3D[1].x; //zMinor face
+    bufferOf108Floats[91] = corners3D[1].y;
+    bufferOf108Floats[92] = corners3D[1].z;
+    bufferOf108Floats[93] = corners3D[3].x;
+    bufferOf108Floats[94] = corners3D[3].y;
+    bufferOf108Floats[95] = corners3D[3].z;
+    bufferOf108Floats[96] = corners3D[7].x;
+    bufferOf108Floats[97] = corners3D[7].y;
+    bufferOf108Floats[98] = corners3D[7].z;
+    //Triangle 12
+    bufferOf108Floats[99] = corners3D[7].x; //zMinor face
+    bufferOf108Floats[100] = corners3D[7].y;
+    bufferOf108Floats[101] = corners3D[7].z;
+    bufferOf108Floats[102] = corners3D[5].x;
+    bufferOf108Floats[103] = corners3D[5].y;
+    bufferOf108Floats[104] = corners3D[5].z;
+    bufferOf108Floats[105] = corners3D[1].x;
+    bufferOf108Floats[106] = corners3D[1].y;
+    bufferOf108Floats[107] = corners3D[1].z;
 }
 
 //These next two return formated position values for drawing various primatives
@@ -962,6 +1084,7 @@ void AACollisionBox::getRectCornersTriangles3D(float * bufferOfEighteenFloats) c
     bufferOfEighteenFloats[15] = this->corners2D[0].x;
     bufferOfEighteenFloats[16] = this->corners2D[0].y;
     bufferOfEighteenFloats[17] = -0.5f;
+    
 }
 void AACollisionBox::getRectCornersLines3D(float * bufferOfTwentyfourFloats) const {
     bufferOfTwentyfourFloats[0] = this->corners2D[0].x;
@@ -1047,12 +1170,6 @@ void AACollisionBox::initialize() {
         }
     }
     
-    //Initialize the large array of corner combinations
-    for (int i = 0; i < 70; ++i) {
-        for (int j = 0; j < 4; ++j){
-            corners2DPossibleCombinations[i][j] = aiVector2D(0.0f, 0.0f);
-        }
-    }
 }
 
 void AACollisionBox::buildCornerAdjacencyList() { //Note that this function must be called before any rotations occur
@@ -1443,7 +1560,9 @@ void AACollisionBox::calculateSelfAfterTranslations() {
     
     
     //Print the corner indexes that were selected
-    std::cout << "\nCorners from the 8 corners that were selected (indexed from 0): " << cindx1 << " " << cindx2 << " " << cindx3 << " " << cindx4 << std::endl;
+    if (printDebugMessages) {
+        std::cout << "\nCorners from the 8 corners that were selected (indexed from 0): " << cindx1 << " " << cindx2 << " " << cindx3 << " " << cindx4 << std::endl;
+    }
     
     
     /*  This new way is really close, but not quite

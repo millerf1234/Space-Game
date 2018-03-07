@@ -136,7 +136,6 @@ protected:
     aiVector3D corners3D[8]; //The 8 3D coordinates of the box corners after rotation
     aiVector2D midpoint;
     aiVector2D corners2D[4]; //The four corners of the box within the collision plane
-    aiVector2D corners2DPossibleCombinations[70][4];
 
     //Scale should be set to 1/w to match model's w so box scales with model
     float scale;
@@ -248,7 +247,8 @@ public:
     //Functions to help faciliate drawing the collision box
     void getRect2DCornerPoints2D(float * bufferOfEightFloats) const; //sets x,y values
     void getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const; //sets x,y,z values
-    void getRect3DCornerPoints3D(float * bufferOfTwentyfourFloats) const; //sets x,y,z values
+    //void getRect3DLines3D(float * bufferOfTwentyfourFloats) const; //sets x,y,z values
+    void getCubiodTriangles3D(float * bufferOfThirtysixFloats) const;//(NOTE: HAVE TESTed THIS ONE, IT WORKS WELL. DONT CHANGE!)
     //These next two return formated position values for drawing various primatives
     void getRectCornersTriangles3D(float * bufferOfEighteenFloats) const; //sets x,y,z values
     void getRectCornersLines3D(float * bufferOfTwentyfourFloats) const; //sets x,y,z values
