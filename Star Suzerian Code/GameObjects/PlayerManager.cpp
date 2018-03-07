@@ -460,7 +460,7 @@ void PlayerManager::processInput() {
         
         player->colBox->changeRotationAt(0, player->rollAmount );
         player->colBox->changeRotationAt(1, player->thetaX);
-        player->colBox->changeRotationAt(2, -1.0f * player->thetaZ);
+        player->colBox->changeRotationAt(2, -1.0f * player->thetaZ + PI); //Box was backwards, this is a quick fix
         //player->colBox->changeRotationAt(3, player->thetaY); //This rotation actually never happens?
         
     }

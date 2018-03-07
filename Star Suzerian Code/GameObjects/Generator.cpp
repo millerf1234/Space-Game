@@ -830,8 +830,10 @@ void Generator::doDrawPlayerShipInstance(int i) {
     glad_glEnable(GL_DITHER); //Does something
     glad_glEnable(GL_LINE_SMOOTH); //Makes the lines smooth //Don't use, see:https://www.khronos.org/opengl/wiki/Multisampling  (history section)
     glad_glEnable(GL_MULTISAMPLE); //Turns on additional anti-aliasing
-    //Draw the lines:
-    glDrawElements(GL_LINES, sizeof(GLuint) * this->numberOfElements*2, GL_UNSIGNED_INT, 0);
+    if (DRAW_LINES_PLAYER_MODELS) { //I probably can move this check out so that setting up for lines doesn't happen if false
+        //Draw the lines:
+        glDrawElements(GL_LINES, sizeof(GLuint) * this->numberOfElements*2, GL_UNSIGNED_INT, 0);
+    }
     
     //Now convert the lines back into triangles:
     convertLinesIntoTriangles();
@@ -846,10 +848,10 @@ void Generator::doDrawPlayerShipInstance(int i) {
     
 //    if ((int)instances[i]->timeAlive % 4 == 0) {
 ////    if (PRINT_DEBUG_MESSAGES) {
-        std::cout << "\nDEBUG::First vertices: \n";
-        for (int i = 0; i < 24; ++i) {
-            std::cout << vertices[i] <<" ";
-        }
+////        std::cout << "\nDEBUG::First vertices: \n";
+////        for (int i = 0; i < 24; ++i) {
+////            std::cout << vertices[i] <<" ";
+////        }
 ////    }
 //    }
     glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
@@ -862,6 +864,11 @@ void Generator::doDrawPlayerShipInstance(int i) {
     glUniform1f(ulocThetaXLine, 0.0f);
     glUniform1f(ulocThetaYLine, 0.0f);
     glUniform1f(ulocThetaZLine, 0.0f);
+    glUniform1f(ulocRedLine, 0.0f);
+    glUniform1f(ulocGreenLine, 1.0f);
+    glUniform1f(ulocBlueLine, 0.6f);
+    
+        
     
     glad_glDisable(GL_LINE_SMOOTH);
     
