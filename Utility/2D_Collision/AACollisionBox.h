@@ -235,6 +235,7 @@ public:
     //--------------------------------------------------------------------------
     //                 Box Position Coordinate Functions (for drawing)
     //--------------------------------------------------------------------------
+    void getRotatedMajorMinor3D(float * bufferOfThirtysixFloats) const;
     //Functions to help faciliate drawing the collision box
     void getRect2DCornerPoints2D(float * bufferOfEightFloats) const; //sets x,y values
     void getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const; //sets x,y,z values

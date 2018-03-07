@@ -100,7 +100,7 @@ static constexpr float PLAYER_THREE_BLUE = 0.25f; //Blue amount
 
 static constexpr float PLAYER_ENGINE_FLAME_SIZE_INCREASE_FROM_VELOCITY = 1.2f;
 
-static constexpr bool DRAW_LINES_PLAYER_MODELS = false;
+static constexpr bool DRAW_LINES_PLAYER_MODELS = true;
 
 //-----------------------------------------------------------------------------
 //   WEAPON PARAMETERS

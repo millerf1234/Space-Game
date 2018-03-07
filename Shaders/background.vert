@@ -44,7 +44,7 @@ void main()
     
     //pos = vec3( aspectRatioMatrix * vec3(position.x, position.y, 0.1f));
     
-    temp = vec3( aspectRatioMatrix * vec3(position.x + 0.5f, position.y, 1.0f));
+    temp = vec3( aspectRatioMatrix * vec3(position.x + 0.5f, position.y, 1.1f));
     
     //time = time + 1;
     

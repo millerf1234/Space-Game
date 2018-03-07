@@ -784,6 +784,71 @@ bool AACollisionBox::isOverlapping(const AACollisionBox& otherBox) const {
 //              Getters for drawing AACollisionBox
 //------------------------------------------------------------------------
 
+void AACollisionBox::getRotatedMajorMinor3D(float * bufferOfThirtysixFloats) const {
+    //Normalize the vectors
+    aiVector3D xAxisMajor = this->xAxisMajor;
+    xAxisMajor.NormalizeSafe();
+    
+    aiVector3D yAxisMajor = this->yAxisMajor;
+    yAxisMajor.NormalizeSafe();
+    
+    aiVector3D zAxisMajor = this->zAxisMajor;
+    zAxisMajor.NormalizeSafe();
+    
+    aiVector3D xAxisMinor = this->xAxisMinor;
+    xAxisMinor.NormalizeSafe();
+    
+    aiVector3D yAxisMinor = this->yAxisMinor;
+    yAxisMinor.NormalizeSafe();
+    
+    aiVector3D zAxisMinor = this->zAxisMinor;
+    zAxisMinor.NormalizeSafe();
+    
+    
+    bufferOfThirtysixFloats[0] = xAxisMajor.x;
+    bufferOfThirtysixFloats[1] = xAxisMajor.y;
+    bufferOfThirtysixFloats[2] = xAxisMajor.z;
+    bufferOfThirtysixFloats[3] = 0.0f;
+    bufferOfThirtysixFloats[4] = 0.0f;
+    bufferOfThirtysixFloats[5] = 0.0f;
+    
+    bufferOfThirtysixFloats[6] = xAxisMinor.x;
+    bufferOfThirtysixFloats[7] = xAxisMinor.y;
+    bufferOfThirtysixFloats[8] = xAxisMinor.z;
+    bufferOfThirtysixFloats[9] = 0.0f;
+    bufferOfThirtysixFloats[10] = 0.0f;
+    bufferOfThirtysixFloats[11] = 0.0f;
+    
+    bufferOfThirtysixFloats[12] = yAxisMajor.x;
+    bufferOfThirtysixFloats[13] = yAxisMajor.y;
+    bufferOfThirtysixFloats[14] = yAxisMajor.z;
+    bufferOfThirtysixFloats[15] = 0.0f;
+    bufferOfThirtysixFloats[16] = 0.0f;
+    bufferOfThirtysixFloats[17] = 0.0f;
+    
+    bufferOfThirtysixFloats[18] = yAxisMinor.x;
+    bufferOfThirtysixFloats[19] = yAxisMinor.y;
+    bufferOfThirtysixFloats[20] = yAxisMinor.z;
+    bufferOfThirtysixFloats[21] = 0.0f;
+    bufferOfThirtysixFloats[22] = 0.0f;
+    bufferOfThirtysixFloats[23] = 0.0f;
+    
+    bufferOfThirtysixFloats[24] = zAxisMajor.x;
+    bufferOfThirtysixFloats[25] = zAxisMajor.y;
+    bufferOfThirtysixFloats[26] = zAxisMajor.z;
+    bufferOfThirtysixFloats[27] = 0.0f;
+    bufferOfThirtysixFloats[28] = 0.0f;
+    bufferOfThirtysixFloats[29] = 0.0f;
+    
+    bufferOfThirtysixFloats[30] = zAxisMinor.x;
+    bufferOfThirtysixFloats[31] = zAxisMinor.y;
+    bufferOfThirtysixFloats[32] = zAxisMinor.z;
+    bufferOfThirtysixFloats[33] = 0.0f;
+    bufferOfThirtysixFloats[34] = 0.0f;
+    bufferOfThirtysixFloats[35] = 0.0f;
+    
+}
+
 void AACollisionBox::getRect2DCornerPoints2D(float * bufferOfEightFloats) const {
     bufferOfEightFloats[0] = this->corners2D[0].x;
     bufferOfEightFloats[1] = this->corners2D[0].y;

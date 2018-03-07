@@ -840,9 +840,9 @@ void Generator::doDrawPlayerShipInstance(int i) {
     
     if (DRAW_COLLISION_DETAILS) {
     //Draw the collision box now
-    GLfloat tempFirst24Vertices [24];
-    for (int i = 0; i < 24; ++i) {
-        tempFirst24Vertices[i] = vertices[i];
+    GLfloat tempFirst36Vertices [36];
+    for (int i = 0; i < 36; ++i) {
+        tempFirst36Vertices[i] = vertices[i];
     }
     player->colBox->getRectCornersLines3D(vertices);
     
@@ -875,6 +875,11 @@ void Generator::doDrawPlayerShipInstance(int i) {
         //Draw the 2D collision box
     glDrawArrays(GL_LINE_LOOP, 0, 8); //Just draw arrays here, no need to mess with an element buffer
     
+        //Draw the collision box axes
+        player->colBox->getRotatedMajorMinor3D(vertices);
+        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
+        glDrawArrays(GL_LINE_LOOP, 0, 12);
+        
         //Draw the 3D collision box
 //        player->colBox->get3DRectCornersLines(vertices);
 //        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
@@ -886,8 +891,8 @@ void Generator::doDrawPlayerShipInstance(int i) {
     
     
     //Put vertices back to normal
-    for (int i = 0; i < 24; ++i) {
-        vertices[i] = tempFirst24Vertices[i];
+    for (int i = 0; i < 36; ++i) {
+        vertices[i] = tempFirst36Vertices[i];
     }
     
     } //End draw collision details check
