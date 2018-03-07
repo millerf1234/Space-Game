@@ -116,6 +116,7 @@ private:
     //Some private helper functions
     void buildCornerAdjacencyList(); //Call this once after model data set/reset
     void doRotationsAndRecalculate(); //Used to recalculate box after a rotation is updated
+    void setCorners3D(); //Called by doRotationsAndRecalculate()
     void calculateSelfAfterTranslations();
 
     //Initialization function for consructors to call

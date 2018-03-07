@@ -157,6 +157,7 @@ AACollisionBox::AACollisionBox(float * data, int dataPoints) {
     }
     this->hasModelData = true;
     
+    buildCornerAdjacencyList();
     doRotationsAndRecalculate(); //This will set up the box based off the axis data
 }
 
@@ -296,6 +297,7 @@ AACollisionBox::~AACollisionBox() {
 //              Set Model Data Function
 //------------------------------------------------------------------------
 void AACollisionBox::setFromModelData(float * data, int dataPoints) {
+    //Should I call initialize again? No, I shouldn't, so rotationOrder doesn't memory leak
     bool dataWasNotTheRightSize = false;
     if (dataPoints % 3 != 0) {
         if (printDebugWarnings || printDebugMessages) {
@@ -480,6 +482,13 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
     }
     this->hasModelData = true;
     
+    //Initialize the large array of corner combinations
+    for (int i = 0; i < 70; ++i) {
+        for (int j = 0; j < 4; ++j){
+            corners2DPossibleCombinations[i][j] = aiVector2D(0.0f, 0.0f);
+        }
+    }
+    buildCornerAdjacencyList(); //Build this list after model data is set
     doRotationsAndRecalculate(); //This will set up the box based off the axis data
 }
 
@@ -898,7 +907,37 @@ void AACollisionBox::getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const
     bufferOfTwelveFloats[11] = -0.5f;
 }
 void AACollisionBox::getRect3DCornerPoints3D(float * bufferOfTwentyfourFloats) const {
-    std::cout << "\nDEBUG::Warning! getRect3DCornerPoints3D() has not yet been implemented!\n";
+    bufferOfTwentyfourFloats[0] = corners3D[1].x;
+    bufferOfTwentyfourFloats[1] = corners3D[1].y;
+    bufferOfTwentyfourFloats[2] = corners3D[1].z;
+    
+    bufferOfTwentyfourFloats[3] = corners3D[0].x;
+    bufferOfTwentyfourFloats[4] = corners3D[0].y;
+    bufferOfTwentyfourFloats[5] = corners3D[0].z;
+    
+    bufferOfTwentyfourFloats[6] = corners3D[3].x;
+    bufferOfTwentyfourFloats[7] = corners3D[3].y;
+    bufferOfTwentyfourFloats[8] = corners3D[3].z;
+    
+    bufferOfTwentyfourFloats[9] = corners3D[2].x;
+    bufferOfTwentyfourFloats[10] = corners3D[2].y;
+    bufferOfTwentyfourFloats[11] = corners3D[2].z;
+    
+    bufferOfTwentyfourFloats[12] = corners3D[6].x;
+    bufferOfTwentyfourFloats[13] = corners3D[6].y;
+    bufferOfTwentyfourFloats[14] = corners3D[6].z;
+    
+    bufferOfTwentyfourFloats[15] = corners3D[4].x;
+    bufferOfTwentyfourFloats[16] = corners3D[4].y;
+    bufferOfTwentyfourFloats[17] = corners3D[4].z;
+    
+    bufferOfTwentyfourFloats[18] = corners3D[5].x;
+    bufferOfTwentyfourFloats[19] = corners3D[5].y;
+    bufferOfTwentyfourFloats[20] = corners3D[5].z;
+    
+    bufferOfTwentyfourFloats[21] = corners3D[7].x;
+    bufferOfTwentyfourFloats[22] = corners3D[7].y;
+    bufferOfTwentyfourFloats[23] = corners3D[7].z;
 }
 
 //These next two return formated position values for drawing various primatives
@@ -1007,21 +1046,60 @@ void AACollisionBox::initialize() {
             adjacencyList[i][j] = NOT_SET;
         }
     }
+    
+    //Initialize the large array of corner combinations
+    for (int i = 0; i < 70; ++i) {
+        for (int j = 0; j < 4; ++j){
+            corners2DPossibleCombinations[i][j] = aiVector2D(0.0f, 0.0f);
+        }
+    }
 }
 
-void AACollisionBox::buildCornerAdjacencyList() {
-    /* //Here is how the corners are being set
-     unorderedCornersArray[0] = xAxisMajor + yAxisMajor + zAxisMajor;
-     unorderedCornersArray[1] = xAxisMajor + yAxisMajor + zAxisMinor;
-     unorderedCornersArray[2] = xAxisMajor + yAxisMinor + zAxisMajor;
-     unorderedCornersArray[3] = xAxisMajor + yAxisMinor + zAxisMinor;
-     unorderedCornersArray[4] = xAxisMinor + yAxisMajor + zAxisMajor;
-     unorderedCornersArray[5] = xAxisMinor + yAxisMajor + zAxisMinor;
-     unorderedCornersArray[6] = xAxisMinor + yAxisMinor + zAxisMajor;
-     unorderedCornersArray[7] = xAxisMinor + yAxisMinor + zAxisMinor;
-     */
-    
-    
+void AACollisionBox::buildCornerAdjacencyList() { //Note that this function must be called before any rotations occur
+    if (!hasModelData) {return;}
+    //It turns out that no matter which way the axes are set, the adjacency list remains the same
+    adjacencyList[0][0] = 1;  //The list is derived by how the corners3D array will be set in setCorners3D()
+    adjacencyList[0][1] = 2;  //
+    adjacencyList[0][2] = 4;  //
+    //
+    adjacencyList[1][0] = 0;
+    adjacencyList[1][1] = 3;
+    adjacencyList[1][2] = 5;
+    //
+    adjacencyList[2][0] = 0;
+    adjacencyList[2][1] = 3;
+    adjacencyList[2][2] = 6;
+    //
+    adjacencyList[3][0] = 1;
+    adjacencyList[3][1] = 2;
+    adjacencyList[3][2] = 7;
+    //
+    adjacencyList[4][0] = 0;
+    adjacencyList[4][1] = 5;
+    adjacencyList[4][2] = 6;
+    //
+    adjacencyList[5][0] = 1;
+    adjacencyList[5][1] = 4;
+    adjacencyList[5][2] = 7;
+    //
+    adjacencyList[6][0] = 2;
+    adjacencyList[6][1] = 4;
+    adjacencyList[6][2] = 7;
+    //
+    adjacencyList[7][0] = 3;
+    adjacencyList[7][1] = 5;
+    adjacencyList[7][2] = 6;
+}
+
+void AACollisionBox::setCorners3D() {
+    corners3D[0] = xAxisMajor + yAxisMajor + zAxisMajor;
+    corners3D[1] = xAxisMajor + yAxisMajor + zAxisMinor;
+    corners3D[2] = xAxisMajor + yAxisMinor + zAxisMajor;
+    corners3D[3] = xAxisMajor + yAxisMinor + zAxisMinor;
+    corners3D[4] = xAxisMinor + yAxisMajor + zAxisMajor;
+    corners3D[5] = xAxisMinor + yAxisMajor + zAxisMinor;
+    corners3D[6] = xAxisMinor + yAxisMinor + zAxisMajor;
+    corners3D[7] = xAxisMinor + yAxisMinor + zAxisMinor;
 }
 
 void AACollisionBox::doRotationsAndRecalculate() {
@@ -1065,6 +1143,7 @@ void AACollisionBox::doRotationsAndRecalculate() {
             }
         }
     }
+    setCorners3D(); //Set the 3D corners array to the rotated values
     calculateSelfAfterTranslations();
 }
 
