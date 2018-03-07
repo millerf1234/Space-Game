@@ -781,6 +781,120 @@ bool AACollisionBox::isOverlapping(const AACollisionBox& otherBox) const {
 }
 
 //------------------------------------------------------------------------
+//              Getters for drawing AACollisionBox
+//------------------------------------------------------------------------
+
+void AACollisionBox::getRect2DCornerPoints2D(float * bufferOfEightFloats) const {
+    bufferOfEightFloats[0] = this->corners2D[0].x;
+    bufferOfEightFloats[1] = this->corners2D[0].y;
+    
+    bufferOfEightFloats[2] = this->corners2D[1].x;
+    bufferOfEightFloats[3] = this->corners2D[1].y;
+    
+    bufferOfEightFloats[4] = this->corners2D[2].x;
+    bufferOfEightFloats[5] = this->corners2D[2].y;
+    
+    bufferOfEightFloats[6] = this->corners2D[3].x;
+    bufferOfEightFloats[7] = this->corners2D[3].y;
+}
+
+void AACollisionBox::getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const {
+    bufferOfTwelveFloats[0] = this->corners2D[0].x;
+    bufferOfTwelveFloats[1] = this->corners2D[0].y;
+    bufferOfTwelveFloats[2] = 0.5f;
+    
+    bufferOfTwelveFloats[3] = this->corners2D[1].x;
+    bufferOfTwelveFloats[4] = this->corners2D[1].y;
+    bufferOfTwelveFloats[5] = 0.5f;
+    
+    bufferOfTwelveFloats[6] = this->corners2D[2].x;
+    bufferOfTwelveFloats[7] = this->corners2D[2].y;
+    bufferOfTwelveFloats[8] = 0.5f;
+    
+    bufferOfTwelveFloats[9] = this->corners2D[3].x;
+    bufferOfTwelveFloats[10] = this->corners2D[3].y;
+    bufferOfTwelveFloats[11] = 0.5f;
+}
+void AACollisionBox::getRect3DCornerPoints3D(float * bufferOfTwentyfourFloats) const {
+    std::cout << "\nDEBUG::Warning! getRect3DCornerPoints3D() has not yet been implemented!\n";
+}
+
+//These next two return formated position values for drawing various primatives
+void AACollisionBox::getRectCornersTriangles3D(float * bufferOfEighteenFloats) const {
+    //Triangle 1
+    bufferOfEighteenFloats[0] = this->corners2D[0].x;
+    bufferOfEighteenFloats[1] = this->corners2D[0].y;
+    bufferOfEighteenFloats[2] = 0.5f;
+    bufferOfEighteenFloats[3] = this->corners2D[1].x;
+    bufferOfEighteenFloats[4] = this->corners2D[1].y;
+    bufferOfEighteenFloats[5] = 0.5f;
+    bufferOfEighteenFloats[6] = this->corners2D[2].x;
+    bufferOfEighteenFloats[7] = this->corners2D[2].y;
+    bufferOfEighteenFloats[8] = 0.5f;
+    //Triangle 2
+    bufferOfEighteenFloats[9] = this->corners2D[2].x;
+    bufferOfEighteenFloats[10] = this->corners2D[2].y;
+    bufferOfEighteenFloats[11] = 0.5f;
+    bufferOfEighteenFloats[12] = this->corners2D[3].x;
+    bufferOfEighteenFloats[13] = this->corners2D[3].y;
+    bufferOfEighteenFloats[14] = 0.5f;
+    bufferOfEighteenFloats[15] = this->corners2D[0].x;
+    bufferOfEighteenFloats[16] = this->corners2D[0].y;
+    bufferOfEighteenFloats[17] = 0.5f;
+}
+void AACollisionBox::getRectCornersLines3D(float * bufferOfTwentyfourFloats) const {
+    bufferOfTwentyfourFloats[0] = this->corners2D[0].x;
+    bufferOfTwentyfourFloats[1] = this->corners2D[0].y;
+    bufferOfTwentyfourFloats[2] = 0.5f;
+    bufferOfTwentyfourFloats[3] = this->corners2D[1].x;
+    bufferOfTwentyfourFloats[4] = this->corners2D[1].y;
+    bufferOfTwentyfourFloats[5] = 0.5f;
+    
+    bufferOfTwentyfourFloats[6] = this->corners2D[1].x;
+    bufferOfTwentyfourFloats[7] = this->corners2D[1].y;
+    bufferOfTwentyfourFloats[8] = 0.5f;
+    bufferOfTwentyfourFloats[9] = this->corners2D[2].x;
+    bufferOfTwentyfourFloats[10] = this->corners2D[2].y;
+    bufferOfTwentyfourFloats[11] = 0.5f;
+    
+    bufferOfTwentyfourFloats[12] = this->corners2D[2].x;
+    bufferOfTwentyfourFloats[13] = this->corners2D[2].y;
+    bufferOfTwentyfourFloats[14] = 0.5f;
+    bufferOfTwentyfourFloats[15] = this->corners2D[3].x;
+    bufferOfTwentyfourFloats[16] = this->corners2D[3].y;
+    bufferOfTwentyfourFloats[17] = 0.5f;
+    
+    bufferOfTwentyfourFloats[18] = this->corners2D[3].x;
+    bufferOfTwentyfourFloats[19] = this->corners2D[3].y;
+    bufferOfTwentyfourFloats[20] = 0.5f;
+    bufferOfTwentyfourFloats[21] = this->corners2D[0].x;
+    bufferOfTwentyfourFloats[22] = this->corners2D[0].y;
+    bufferOfTwentyfourFloats[23] = 0.5f;
+    
+    //Don't need?
+//    bufferOfThirtySixFloats[24] = this->corners2D[].x
+//    bufferOfThirtySixFloats[25] = this->corners2D[].y
+//    bufferOfThirtySixFloats[26] = 0.5f;
+//    bufferOfThirtySixFloats[27] = this->corners2D[].x
+//    bufferOfThirtySixFloats[28] = this->corners2D[].y
+//    bufferOfThirtySixFloats[29] = 0.5f;
+//
+//    bufferOfThirtySixFloats[30] = this->corners2D[].x
+//    bufferOfThirtySixFloats[31] = this->corners2D[].y
+//    bufferOfThirtySixFloats[32] = 0.5f;
+//    bufferOfThirtySixFloats[33] = this->corners2D[].x
+//    bufferOfThirtySixFloats[34] = this->corners2D[].y
+//    bufferOfThirtySixFloats[35] = 0.5f;
+    
+}
+
+
+void getCollisionDetectionSamplePointsBoxToBox(float * bufferOf200Floats);
+void getCollisionDetectionSamplePointsBoxToBoxMidpoint(float * bufferOf200Floats);
+void getCollisionDetectionSamplePointsBoxMidpointToBoxMidpoint(float * bufferOfFourFloats);
+
+
+//------------------------------------------------------------------------
 //              Private Functions
 //------------------------------------------------------------------------
 void AACollisionBox::initialize() {
@@ -852,6 +966,96 @@ void AACollisionBox::doRotationsAndRecalculate() {
 void AACollisionBox::calculateSelfAfterTranslations() {
     //This function updates the values in the corners2D and corners3D arrays
     
+    aiVector3D unorderedCornersArray[8];
+    unorderedCornersArray[0] = xAxisMajor + yAxisMajor + zAxisMajor;
+    unorderedCornersArray[1] = xAxisMajor + yAxisMajor + zAxisMinor;
+    unorderedCornersArray[2] = xAxisMajor + yAxisMinor + zAxisMajor;
+    unorderedCornersArray[3] = xAxisMajor + yAxisMinor + zAxisMinor;
+    unorderedCornersArray[4] = xAxisMinor + yAxisMajor + zAxisMajor;
+    unorderedCornersArray[5] = xAxisMinor + yAxisMajor + zAxisMinor;
+    unorderedCornersArray[6] = xAxisMinor + yAxisMinor + zAxisMajor;
+    unorderedCornersArray[7] = xAxisMinor + yAxisMinor + zAxisMinor;
+    
+    //Need to get the four points that represent the extremes along x and y axes
+    int largestXIndxPos, largestXIndxNeg, largestYIndxPos, largestYIndxNeg;
+    largestXIndxPos = largestXIndxNeg = largestYIndxPos = largestYIndxNeg = 0;
+    
+    //Now loop through the array to find which vectors in the cornerArray contain these maximums
+    float maxXPos, maxXNeg, maxYPos, maxYNeg;
+    maxXPos = maxXNeg = maxYPos = maxYNeg = 0.0f;
+    for (int i = 0; i < CUBOID_CORNERS; ++i) {
+        //get most positive x
+        if (unorderedCornersArray[i].x > maxXPos) {
+            maxXPos = unorderedCornersArray[i].x;
+            largestXIndxPos = i;
+        }
+        //get most negative x
+        if (unorderedCornersArray[i].x < maxXNeg) {
+            maxXNeg = unorderedCornersArray[i].x;
+            largestXIndxNeg = i;
+        }
+        //get most positive y
+        if (unorderedCornersArray[i].y > maxYPos) {
+            maxYPos = unorderedCornersArray[i].y;
+            largestYIndxPos = i;
+        }
+        //get most negative y
+        if (unorderedCornersArray[i].y < maxYNeg) {
+            maxYNeg = unorderedCornersArray[i].y;
+            largestYIndxNeg = i;
+        }
+        this->corners3D[i] = unorderedCornersArray[i];
+    }
+    
+    //Set corners2D array
+    corners2D[0] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners3D[largestXIndxPos].x)), scale * (midpoint.y - (collisionBoxShrinkageFactor * corners3D[largestYIndxPos].y)));
+    corners2D[1] = aiVector2D(scale * (midpoint.x - (collisionBoxShrinkageFactor * corners3D[largestXIndxNeg].x)), scale * (midpoint.y - (collisionBoxShrinkageFactor * corners3D[largestYIndxPos].y)));
+    corners2D[2] = aiVector2D(scale * (midpoint.x - (collisionBoxShrinkageFactor * corners3D[largestXIndxNeg].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners3D[largestYIndxNeg].y)));
+    corners2D[3] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners3D[largestXIndxPos].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners3D[largestYIndxNeg].y)));
+    
+   // corner1 = aiVector2D(scale*(midpoint.x + (boxShrinkageFactor * maxXPos)), scale *  (midpoint.y - (boxShrinkageFactor * maxYPos)));
+     //   corner2 = aiVector2D(scale * (midpoint.x + (boxShrinkageFactor * maxXNeg)), scale * (midpoint.y - (boxShrinkageFactor * maxYNeg)));
+    
+    
+    
+//    // //-----------------THIS NEXT PART COULD BE BUGGY IF MY MATH IS WRONG!--------------  (so close!)
+//    //Need to get the four points that represent the extremes along x and y axes
+//    int largestXIndxPos, largestXIndxNeg, largestYIndxPos, largestYIndxNeg;
+//    largestXIndxPos = largestXIndxNeg = largestYIndxPos = largestYIndxNeg = 0;
+//
+//    //Now loop through the array to find which vectors in the cornerArray contain these maximums
+//    float maxXPos, maxXNeg, maxYPos, maxYNeg;
+//    maxXPos = maxXNeg = maxYPos = maxYNeg = 0.0f;
+//    for (int i = 0; i < 8; ++i) {
+//        //get largest x
+//        if (cornerArray[i].x > maxXPos) {
+//            maxXPos = cornerArray[i].x;
+//            largestXIndxPos = i;
+//        }
+//        //get most negative x
+//        if (cornerArray[i].x < maxXNeg) {
+//            maxXNeg = cornerArray[i].x;
+//            largestXIndxNeg = i;
+//        }
+//        //get largest y
+//        if (cornerArray[i].y > maxYPos) {
+//            maxYPos = cornerArray[i].y;
+//            largestYIndxPos = i;
+//        }
+//        //get most negative y
+//        if (cornerArray[i].y < maxYNeg) {
+//            maxYNeg = cornerArray[i].y;
+//            largestYIndxNeg = i;
+//        }
+//        this->corners[i] = cornerArray[i];
+//        //std::cout << "\nCorner[" << i << "] = " << corners[i].x << ", " << corners[i].y << ", " << corners[i].z;
+//    }
+//
+//    float boxShrinkageFactor = collisionBoxShrinkageFactor; //0.85f-0.90f seem like good values for this
+//
+//    corner1 = aiVector2D(scale*(midpoint.x + (boxShrinkageFactor * maxXPos)), scale *  (midpoint.y - (boxShrinkageFactor * maxYPos)));
+//    corner2 = aiVector2D(scale * (midpoint.x + (boxShrinkageFactor * maxXNeg)), scale * (midpoint.y - (boxShrinkageFactor * maxYNeg)));
+    
 }
 
 
@@ -867,10 +1071,11 @@ bool AACollisionBox::hasNoArea() const {
 }
 
 float AACollisionBox::getQuadrilateralArea() const{
-    
+    //Think I fixed the bug so going to temporarily remove this warning (for now) until I can test
+    //std::cout << "\nDEBUG::Warning! Get Quadrilateral area is buggy and won't work on all quadrilaterals. Fix this function\n";
     //This isn't going to work until I can guarentee the ordering of the corners
-    float x0 = corners2D[0].x;
-    float y0 = corners2D[0].y;
+    float x0 = corners2D[0].x;          //It is assumed that corners2D[0] and corners2D[2] are opposite sides (not connected)
+    float y0 = corners2D[0].y;          //Same with corners2D[1] and corners2D[3]
     float x1 = corners2D[1].x;
     float y1 = corners2D[1].y;
     float x2 = corners2D[2].x;
@@ -880,8 +1085,8 @@ float AACollisionBox::getQuadrilateralArea() const{
     
     //Could use the Cayley-Menger determinant, or could just be simple and calculate the area of two triangles and add
     //(technically these next 2 computations are themselves determinants) see: http://mathworld.wolfram.com/TriangleArea.html
-    float triangle1Area = (-x2*y1 + x3*y1 + x1*y2 - x3*y2 - x1*y3 + x2*y3); //Note this is double the triangle area
-    float triangle2Area = (-x2*y0 + x3*y0 + x0*y2 - x3*y2 - x0*y3 + x2*y3); //I will just wait till end to divide by 2
+    float triangle1Area = (-x1*y0 + x2*y0 + x0*y1 - x2*y1 - x0*y2 + x1*y2); //Note this is double the triangle area
+    float triangle2Area = (-x3*y0 + x2*y0 + x0*y3 - x2*y3 - x0*y2 + x3*y2); //I will just wait till end to divide by 2
     return ((abs(triangle1Area) + abs(triangle2Area)) / 2.0f);
 }
 

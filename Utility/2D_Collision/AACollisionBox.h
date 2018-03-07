@@ -35,6 +35,10 @@
 //both directions along the axis and will store both direction values if the
 //model is not symmetrical, so objects need not be symmetrical.
 //
+// NOTE: THIS CLASS ASSUMES THAT THE ORGIN IN THE COORDINATE DATA IS LOCATED
+//       SOMEWHERE INSIDE THE MODEL. HAVING A MODEL THAT HAS THE ORGIN AS AN
+//       EXTERNAL POINT WILL RESULT IN AN INACCURATE COLLISION BOX BEING FORMED!
+//
 //  to add --
 //(In the future this class could be modified to calculate moment-of-intertia of
 //the model and then from that get the principle axes [which I think would could

@@ -11,6 +11,10 @@
 //Put all this in a namespace?
 #include <string>
 
+//To update github repository, do the following two (1 {only need second}) lines while in the main project folder:
+//     git remote add origin https://github.com/millerf1234/Space-Game.git
+//     git push -u origin master
+
 static constexpr float PI = 3.1415927f;
 
 //-----------------------------------------------------------------------------
@@ -26,74 +30,6 @@ static constexpr bool DRAW_COLLISION_DETAILS = true;
 //-----------------------------------------------------------------------------
 // Control Bindings
 //-----------------------------------------------------------------------------
-
-////Player 1 control input first
-//if (glfwGetKey(mWindow, 'W') == GLFW_PRESS) {
-//    p1->accelerate = true;
-//    if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
-//        std::cout << "Player1 Acceleterating" << std::endl;
-//        }
-//        }
-//        if (glfwGetKey(mWindow, 'S') == GLFW_PRESS) {
-//            p1->decelerate = true;
-//            if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
-//                std::cout << "Player1 decelerating" << std::endl;
-//            }
-//        }
-//        if (glfwGetKey(mWindow, 'A') == GLFW_PRESS) {
-//            p1->turnLeft = true;
-//            if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
-//                std::cout << "Player1 Turning Left" << std::endl;
-//            }
-//        }
-//        if (glfwGetKey(mWindow, 'D') == GLFW_PRESS) {
-//            p1->turnRight = true;
-//            if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
-//                std::cout << "Player1 Turning Right" << std::endl;
-//            }
-//        }
-//        if (glfwGetKey(mWindow, 'Q') == GLFW_PRESS) {
-//            p1->rollLeft = true;
-//            if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
-//                std::cout << "Player1 Rolling Left" << std::endl;
-//            }
-//        }
-//        if (glfwGetKey(mWindow, 'E') == GLFW_PRESS) {
-//            p1->rollRight = true;
-//            if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
-//                std::cout << "Player1 Rolling Right" << std::endl;
-//            }
-//        }
-//        if (glfwGetKey(mWindow, GLFW_KEY_TAB) == GLFW_PRESS) {
-//            p1->shoot = true;
-//            if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
-//                std::cout << "Player1 shooting" << std::endl;
-//            }
-//        }
-//        
-//        //Player 2 input
-//        if (glfwGetKey(mWindow, GLFW_KEY_UP) == GLFW_PRESS) {
-//            p2->accelerate = true;
-//        }
-//        if (glfwGetKey(mWindow, GLFW_KEY_DOWN) == GLFW_PRESS) {
-//            p2->decelerate = true;
-//        }
-//        if (glfwGetKey(mWindow, GLFW_KEY_LEFT) == GLFW_PRESS) {
-//            p2->turnLeft = true;
-//        }
-//        if (glfwGetKey(mWindow, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-//            p2->turnRight = true;
-//        }
-//        if (glfwGetKey(mWindow, ',') == GLFW_PRESS) {
-//            p2->rollLeft = true;
-//        }
-//        if (glfwGetKey(mWindow, '/') == GLFW_PRESS) {
-//            p2->rollRight = true;
-//        }
-//        if (glfwGetKey(mWindow, '.') == GLFW_PRESS) {
-//            p2->shoot = true;
-//        }
-
 
 
 //-----------------------------------------------------------------------------
