@@ -47,7 +47,7 @@ static constexpr float ENDING_ZOOM = 5.0f; //This is probably way to large a cha
 static constexpr float PLAYER_MOVEMENT_SPEED_LINEAR = 0.015f;
 static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.45f;
 //Rotation speed values are radians per frame
-static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/120.0f;//This means 120 frames to do full rotation (i.e. about 2 seconds)
+static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/105.0f;//This means 120 frames to do full rotation (i.e. about 2 seconds)
 static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 frames to rotate 90 degrees
 
 static constexpr float STARTING_PLAYER_HEALTH = 10.0f; //Tweak as needed

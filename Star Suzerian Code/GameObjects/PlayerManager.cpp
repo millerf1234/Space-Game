@@ -192,6 +192,7 @@ void PlayerManager::initializeFromTemplate() {
                 p->green = PLAYER_ONE_GREEN;
                 p->blue = PLAYER_ONE_BLUE;
                 p->thetaZ = PI / 2.0f; //Set this to pi/2 to get player1 oriented the correct way at start
+                p->thetaZ -= PLAYER_ROTATION_SPEED_TURNING / 11.0f; //Offset rotation by some small amount to prevent weird collision things from happeneing
                 p->position.x += PLAYER1_STARTOFFSET_X;
                 p->position.y += PLAYER1_STARTOFFSET_Y;
             }
@@ -200,6 +201,7 @@ void PlayerManager::initializeFromTemplate() {
                 p->green = PLAYER_TWO_GREEN;
                 p->blue = PLAYER_TWO_BLUE;
                 p->thetaZ = -PI / 2.0f; //Set this to -pi/2 to get player2 oriented the correct way at start
+                p->thetaZ -= PLAYER_ROTATION_SPEED_TURNING / 11.0f; //Shift thetaZ by some tiny amont to fix collisionBox
                 p->position.x += PLAYER2_STARTOFFSET_X;
                 p->position.y += PLAYER2_STARTOFFSET_Y;
             }
