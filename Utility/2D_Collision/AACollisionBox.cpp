@@ -800,6 +800,7 @@ bool AACollisionBox::isOverlapping(const AACollisionBox& otherBox) const {
     for (int i = 0; i < BOX_CORNERS; ++i) {
         if (otherBox.corners2D[i].x <= corners2D[0].x) {
             allPointsOfOtherBoxBeyondThisBoxExtrema = false;
+            break;
         }
     }
     if (allPointsOfOtherBoxBeyondThisBoxExtrema) {return false;} //Then boxes can't be overlapping
@@ -809,6 +810,7 @@ bool AACollisionBox::isOverlapping(const AACollisionBox& otherBox) const {
     for (int i = 0; i < BOX_CORNERS; ++i) {
         if (otherBox.corners2D[i].y <= corners2D[1].y) {
             allPointsOfOtherBoxBeyondThisBoxExtrema = false;
+            break;
         }
     }
     if (allPointsOfOtherBoxBeyondThisBoxExtrema) {return false;} //Then boxes can't be overlapping
@@ -818,6 +820,7 @@ bool AACollisionBox::isOverlapping(const AACollisionBox& otherBox) const {
     for (int i = 0; i < BOX_CORNERS; ++i) {
         if (otherBox.corners2D[i].x >= corners2D[2].x) {
             allPointsOfOtherBoxBeyondThisBoxExtrema = false;
+            break;
         }
     }
     if (allPointsOfOtherBoxBeyondThisBoxExtrema) {return false;} //Then boxes can't be overlapping
@@ -825,8 +828,9 @@ bool AACollisionBox::isOverlapping(const AACollisionBox& otherBox) const {
     //Check to see if all of the other box's coord are of lesser y than this boxes yMin coord
     allPointsOfOtherBoxBeyondThisBoxExtrema = true;
     for (int i = 0; i < BOX_CORNERS; ++i) {
-        if (otherBox.corners2D[i].y <= corners2D[3].y) {
+        if (otherBox.corners2D[i].y >= corners2D[3].y) {
             allPointsOfOtherBoxBeyondThisBoxExtrema = false;
+            break;
         }
     }
     if (allPointsOfOtherBoxBeyondThisBoxExtrema) {return false;} //Then boxes can't be overlapping
@@ -862,15 +866,62 @@ void AACollisionBox::moveApartAlongAxisBetweenMidpoints(AACollisionBox & otherBo
     
     //The way I am going to write this is going to be terribly inefficient, kinda a brute force attemp
     aiVector2D displacement(this->midpoint.x - otherBox.midpoint.x, this->midpoint.y - otherBox.midpoint.y);
-    if (displacement.Length() == 0.0f) {return;}
+    if (displacement.Length() == 0.0f) {return;} //If there is no displacement, then don't know which direction to move
     //Start moving the two rectangles apart until they are no longer overlapping
     do {
         //Move this rectangle away from the otherRect midpoint by step amount
+        this->midpoint += displacement * STEP_SIZE;
+        //Move the other rectangle away also by step amount
         otherBox.midpoint -= displacement * STEP_SIZE;
+        this->calculateSelfAfterTranslations();
         otherBox.calculateSelfAfterTranslations();
     } while (this->isOverlapping(otherBox));
 }
 
+
+void AACollisionBox::moveApartAlongAxisBetweenMidpointsThisOnly(AACollisionBox & otherBox) {
+    if (!(this->hasModelData) || !(otherBox.hasModelData)) {
+        if (printDebugWarnings || printDebugMessages) {
+            std::cout << "\nDEBUG::WARNING! MoveApartAlongAxisBetweenMidpointsOtherOnly ";
+            std::cout << " called but one of\nthe two CollisionsRectangles never had ";
+            std::cout << "itself set from model data!";
+            std::cout << std::endl;
+        }
+        return;
+    }
+    
+    //The way I am going to write this is going to be terribly inefficient, kinda a brute force attemp
+    aiVector2D displacement(this->midpoint.x - otherBox.midpoint.x, this->midpoint.y - otherBox.midpoint.y);
+    if (displacement.Length() == 0.0f) {return;} //If there is no displacement, then don't know which direction to move
+    //Start moving the two rectangles apart until they are no longer overlapping
+    do {
+        //Move this rectangle away from the otherRect midpoint by step amount
+        this->midpoint += displacement * STEP_SIZE;
+        this->calculateSelfAfterTranslations();
+    } while (this->isOverlapping(otherBox));
+}
+
+void AACollisionBox::moveApartAlongAxisBetweenMidpointsOtherOnly(AACollisionBox & otherBox) {
+    if (!(this->hasModelData) || !(otherBox.hasModelData)) {
+        if (printDebugWarnings || printDebugMessages) {
+            std::cout << "\nDEBUG::WARNING! MoveApartAlongAxisBetweenMidpointsOtherOnly ";
+            std::cout << " called but one of\nthe two CollisionsRectangles never had ";
+            std::cout << "itself set from model data!";
+            std::cout << std::endl;
+        }
+        return;
+    }
+    
+    //The way I am going to write this is going to be terribly inefficient, kinda a brute force attemp
+    aiVector2D displacement(this->midpoint.x - otherBox.midpoint.x, this->midpoint.y - otherBox.midpoint.y);
+    if (displacement.Length() == 0.0f) {return;} //If there is no displacement, then don't know which direction to move
+    //Start moving the two rectangles apart until they are no longer overlapping
+    do {
+        //Move the other rectangle away also by step amount
+        otherBox.midpoint -= displacement * STEP_SIZE;
+        otherBox.calculateSelfAfterTranslations();
+    } while (this->isOverlapping(otherBox));
+}
 //------------------------------------------------------------------------
 //              Getters for drawing AACollisionBox
 //------------------------------------------------------------------------
