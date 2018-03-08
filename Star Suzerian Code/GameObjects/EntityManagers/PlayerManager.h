@@ -21,7 +21,7 @@
 #include "GameParameters.h"
 #include "GameEntityManager.h"
 #include "Instance.h"
-#include "CollisionRectangle.h"
+//#include "CollisionRectangle.h"
 
 //#include "GLFW_Init.h"
 

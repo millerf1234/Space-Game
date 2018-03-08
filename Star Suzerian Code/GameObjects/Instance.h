@@ -55,7 +55,6 @@ public:
     int getID() const {return this->identifierNumber;}
 };
 
-
 class PlayerInstance : public Instance {
 public:
     float health;

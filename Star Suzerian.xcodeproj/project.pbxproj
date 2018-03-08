@@ -39,6 +39,7 @@
 		9ED772142036CE1600D569A4 /* TextureWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED772122036CE1600D569A4 /* TextureWrapper.cpp */; };
 		9ED77219203930F200D569A4 /* Generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED77217203930F100D569A4 /* Generator.cpp */; };
 		9ED7721D2039516500D569A4 /* Stage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED7721B2039516500D569A4 /* Stage.cpp */; };
+		9EFA4CA32051D9B000308177 /* WeaponManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EFA4CA12051D9B000308177 /* WeaponManager.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -134,6 +135,9 @@
 		9ED7721B2039516500D569A4 /* Stage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Stage.cpp; sourceTree = "<group>"; };
 		9ED7721C2039516500D569A4 /* Stage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Stage.h; sourceTree = "<group>"; };
 		9ED7721E203A2D7C00D569A4 /* debug.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = debug.vert; sourceTree = "<group>"; };
+		9EFA4CA02051D89D00308177 /* WeaponTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponTracker.h; sourceTree = "<group>"; };
+		9EFA4CA12051D9B000308177 /* WeaponManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = WeaponManager.cpp; sourceTree = "<group>"; };
+		9EFA4CA22051D9B000308177 /* WeaponManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponManager.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -344,18 +348,12 @@
 		9E10D5E020338FD000F0F724 /* GameObjects */ = {
 			isa = PBXGroup;
 			children = (
-				9ED7721A20394CD000D569A4 /* OldStyleObjectGeneration */,
-				9E10D5E220338FF000F0F724 /* PlayerManager.h */,
-				9E10D5E120338FF000F0F724 /* PlayerManager.cpp */,
+				9EFA4C9F2051D7F500308177 /* Unfinished_or_Not_Used */,
+				9EFA4CA42051E69200308177 /* EntityManagers */,
+				9EFA4CA02051D89D00308177 /* WeaponTracker.h */,
 				9E0754F3203B9BE5009B6215 /* Instance.h */,
 				9ED77217203930F100D569A4 /* Generator.cpp */,
 				9ED77218203930F100D569A4 /* Generator.h */,
-				9ED7721B2039516500D569A4 /* Stage.cpp */,
-				9ED7721C2039516500D569A4 /* Stage.h */,
-				9E0754EC203B892C009B6215 /* GameEntityManager.h */,
-				9E0754EB203B892C009B6215 /* GameEntityManager.cpp */,
-				9ECC63852044C51300F7B703 /* RocketManager.cpp */,
-				9ECC63862044C51300F7B703 /* RocketManager.h */,
 			);
 			path = GameObjects;
 			sourceTree = "<group>";
@@ -406,6 +404,39 @@
 				9E10D5E42034BEBD00F0F724 /* Background.cpp */,
 			);
 			path = OldStyleObjectGeneration;
+			sourceTree = "<group>";
+		};
+		9EFA4C9E2051D63400308177 /* Experimental_Weapon_Code */ = {
+			isa = PBXGroup;
+			children = (
+				9ECC63852044C51300F7B703 /* RocketManager.cpp */,
+				9ECC63862044C51300F7B703 /* RocketManager.h */,
+			);
+			path = Experimental_Weapon_Code;
+			sourceTree = "<group>";
+		};
+		9EFA4C9F2051D7F500308177 /* Unfinished_or_Not_Used */ = {
+			isa = PBXGroup;
+			children = (
+				9ED7721A20394CD000D569A4 /* OldStyleObjectGeneration */,
+				9EFA4C9E2051D63400308177 /* Experimental_Weapon_Code */,
+			);
+			path = Unfinished_or_Not_Used;
+			sourceTree = "<group>";
+		};
+		9EFA4CA42051E69200308177 /* EntityManagers */ = {
+			isa = PBXGroup;
+			children = (
+				9E0754EC203B892C009B6215 /* GameEntityManager.h */,
+				9E0754EB203B892C009B6215 /* GameEntityManager.cpp */,
+				9ED7721C2039516500D569A4 /* Stage.h */,
+				9ED7721B2039516500D569A4 /* Stage.cpp */,
+				9E10D5E220338FF000F0F724 /* PlayerManager.h */,
+				9E10D5E120338FF000F0F724 /* PlayerManager.cpp */,
+				9EFA4CA22051D9B000308177 /* WeaponManager.h */,
+				9EFA4CA12051D9B000308177 /* WeaponManager.cpp */,
+			);
+			path = EntityManagers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -470,6 +501,7 @@
 				9E8FF849204DDD29006E2392 /* AACollisionBox.cpp in Sources */,
 				9E10D5D72032CEDC00F0F724 /* SimpleObjLoader.cpp in Sources */,
 				9E10D5EE20360AE500F0F724 /* ObjectGenerator.cpp in Sources */,
+				9EFA4CA32051D9B000308177 /* WeaponManager.cpp in Sources */,
 				9E0754ED203B892C009B6215 /* GameEntityManager.cpp in Sources */,
 				9E10D5EA2035485000F0F724 /* Object.cpp in Sources */,
 				9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */,

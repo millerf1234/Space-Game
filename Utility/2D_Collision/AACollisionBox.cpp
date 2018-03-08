@@ -1022,6 +1022,7 @@ void AACollisionBox::getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const
     bufferOfTwelveFloats[11] = -0.5f;
 }
 
+//DEBUG::This one tested and it works
 void AACollisionBox::getCubiodTriangles3D(float * bufferOf108Floats) const {
     aiVector3D modelTranslantedCorners3D[8];
     aiVector3D midpoint3D = aiVector3D(midpoint.x, midpoint.y, 0.0f);
@@ -1307,6 +1308,7 @@ void AACollisionBox::setCorners3D() {
 }
 
 void AACollisionBox::doRotationsAndRecalculate() {
+    if (!hasModelData) {return;}
     //Set the major axes (these are the largest values along each axis for the model
     xAxisMajor = aiVector3D(originalMajorsFromModel.x, 0.0f, 0.0f);
     yAxisMajor = aiVector3D(0.0f, originalMajorsFromModel.y, 0.0f);

@@ -1,4 +1,5 @@
  //  Implementation for the Generator class
+//  This class should probably be called InstanceGenerator or InstanceFactory instead of just Generator. Oh well...
 //  Generator.cpp
 //  Created by Forrest Miller on 2/17/18.
 
@@ -1161,7 +1162,6 @@ void Generator::convertLinesIntoTriangles() {
     drawLines = false;
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements + 100, elements, GL_STATIC_DRAW);
 }
-
 
 void Generator::doDrawWeaponInstance(int i) {
     

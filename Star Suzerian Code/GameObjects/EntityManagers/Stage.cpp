@@ -1,6 +1,11 @@
 //  This is the implementation for the class 'Stage'
 //  Stage.cpp
 //
+//  All Stage does currently is draw two triangles to form a box and then
+//  samples a texture onto the box, creating a background.
+//
+//  This class could use some cleaning up
+//
 //  Rewritten to inherit from GameEntity on 2/19/2018
 //  Created by Forrest Miller on 2/17/18.
 //

@@ -3,6 +3,10 @@
 //
 //  Created by Forrest Miller on 2/17/18.
 //
+//  All Stage does currently is draw two triangles to form a box and then
+//  samples a texture onto the box, creating a background.
+//
+//  This class could use some cleaning up
 
 #ifndef Stage_h
 #define Stage_h
@@ -15,14 +19,22 @@
 
 static constexpr int STAGE_VERTS_SIZE = 4*(2+3+2);
 static constexpr GLfloat STAGE_VERTS[] = {
+    
     // Position                     Color                      Texture (U/V)
     -1.0f,  1.0f,            0.0f,   0.0f,   0.0f,            0.0f, 0.0f, //  Top-left corner   //0
-     1.0f,  1.0f,            0.0f,   0.0f,   0.0f,            1.0f, 0.0f, //  Top-right corner  //1
-     1.0f, -1.0f,            0.0f,   0.0f,   0.0f,            1.0f, 1.0f, // Lower-right corner //2
+    1.0f,  1.0f,            0.0f,   0.0f,   0.0f,            1.0f, 0.0f, //  Top-right corner  //1
+    1.0f, -1.0f,            0.0f,   0.0f,   0.0f,            1.0f, 1.0f, // Lower-right corner //2
     -1.0f, -1.0f,            0.0f,   0.0f,   0.0f,            0.0f, 1.0f  // Lower-left corner  //3
     
-    //Bigger stage:
-//    -3.0f,  3.0f,            0.0f,   0.0f,   0.0f,            0.0f, 0.0f, //  Top-left corner   //0
+    ////Way to Many Moons
+    //// Position                     Color                      Texture (U/V)
+    //-1.0f,  1.0f,            0.0f,   0.0f,   0.0f,            -100.0f, -100.0f, //  Top-left corner   //0
+    // 1.0f,  1.0f,            0.0f,   0.0f,   0.0f,            10.0f, -100.0f, //  Top-right corner  //1
+    // 1.0f, -1.0f,            0.0f,   0.0f,   0.0f,            10.0f, 10.0f, // Lower-right corner //2
+    //-1.0f, -1.0f,            0.0f,   0.0f,   0.0f,            -100.0f, 10.0f  // Lower-left corner  //3
+    
+    //Bigger stage (To test texture sampling):
+//    -3.0f,  3.0f,            0.0f,   0.0f,   0.0f,           0.0f, 0.0f, //  Top-left corner   //0
 //    3.0f,  3.0f,            0.0f,   0.0f,   0.0f,            1.0f, 0.0f, //  Top-right corner  //1
 //    3.0f, -3.0f,            0.0f,   0.0f,   0.0f,            1.0f, 1.0f, // Lower-right corner //2
 //    -3.0f, -3.0f,            0.0f,   0.0f,   0.0f,            0.0f, 1.0f  // Lower-left corner  //3
