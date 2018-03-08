@@ -162,6 +162,11 @@ protected:
         return aiVector2D(head.x-tail.x, head.y-tail.y);
     }
     
+    float getTriangleArea(const aiVector2D& p0, const aiVector2D& p1, const aiVector2D& p2) const {
+       
+        return abs(((-p1.x*p0.y + p2.x*p0.y + p0.x*p1.y - p2.x*p1.y - p0.x*p2.y + p1.x*p2.y) / 2.0f));
+        //(-x1*y0 + x2*y0 + x0*y1 - x2*y1 - x0*y2 + x1*y2); //Computation to be performed (basically just a determinant)
+    }
     
 public:
     //--------------------------------------------------------------------------
@@ -247,7 +252,7 @@ public:
     //Functions to help faciliate drawing the collision box
     void getRect2DCornerPoints2D(float * bufferOfEightFloats) const; //sets x,y values
     void getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const; //sets x,y,z values
-    //void getRect3DLines3D(float * bufferOfTwentyfourFloats) const; //sets x,y,z values
+    
     void getCubiodTriangles3D(float * bufferOfThirtysixFloats) const;//(NOTE: HAVE TESTed THIS ONE, IT WORKS WELL. DONT CHANGE!)
     //These next two return formated position values for drawing various primatives
     void getRectCornersTriangles3D(float * bufferOfEighteenFloats) const; //sets x,y,z values

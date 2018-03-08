@@ -31,6 +31,7 @@ public:
     virtual void doUpkeep() {;}
     virtual void handleInput() {;}
     virtual void handleInput(GLFWwindow* activeMonitor) {;}
+    virtual void processCollisions() {;}
     virtual void drawInstances() {;}
     
     

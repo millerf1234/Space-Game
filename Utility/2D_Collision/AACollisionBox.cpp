@@ -764,41 +764,111 @@ void AACollisionBox::removeRotationAtIndex(int index) {
 
 bool AACollisionBox::isWithin(float x, float y) const {
     if (!hasModelData || hasNoArea()) {return false;}
-    return false;
+    //I use the test that is outlined in this link: https://stackoverflow.com/questions/5922027/how-to-determine-if-a-point-is-within-a-quadrilateral
+    //The idea is that if the point is inside the quadrilateral, then the sum of the areas of the triangles formed from the interior point to the four side points will equal the area of the quadrilateral. If the triangles area sum is greater, then the point is outside the quadrilateral.
+    aiVector2D testPoint(x,y);
+    float triangleAreaSum = getTriangleArea(corners2D[0], testPoint, corners2D[1]) +
+                            getTriangleArea(corners2D[1], testPoint, corners2D[2]) +
+                            getTriangleArea(corners2D[2], testPoint, corners2D[3]) +
+                            getTriangleArea(corners2D[3], testPoint, corners2D[0]);
+    
+    return (abs(triangleAreaSum - this->getQuadrilateralArea()) <= 0.00005f); //Just some floating point tolerance in case result is not exactly 0
 }
 
 bool AACollisionBox::isWithin(const aiVector2D & point) const {
     if (!hasModelData || hasNoArea()) {return false;}
-    return false;
+    //See the other version of this function for comments on computation being performed
+    float triangleAreaSum = getTriangleArea(corners2D[0], point, corners2D[1]) +
+                            getTriangleArea(corners2D[1], point, corners2D[2]) +
+                            getTriangleArea(corners2D[2], point, corners2D[3]) +
+                            getTriangleArea(corners2D[3], point, corners2D[0]);
+    return (abs(triangleAreaSum - this->getQuadrilateralArea()) <= 0.00005f); //Just some floating point tolerance in case result is not exactly 0
 }
 
 bool AACollisionBox::isOverlapping(const AACollisionBox& otherBox) const {
     if (!hasModelData || !(otherBox.hasModelData)) {
         return false;
     }
-    //Actually neither of these next 2 are special cases... four points could be (nearly) colinear (maybe, probably not?)
-    //Consider the case of very small values along one axis relative to another...
-//    else if (this->getQuadrilateralArea() == 0) {
-    //        //check to see if any three points of this quadrilateral are inside the other (problem: which 3?)
-//    }
-//    else if (otherBox.getQuadrilateralArea() == 0) {
-//
-//    }
-    else { //Check to see if any of the four corners from one box are inside the other
-        if (otherBox.isWithin(this->corners2D[0])) {
-            return true;
+    //There are several pathological cases I have drawn out on paper (most involving boxes of vastly different size),
+    //so I am going to try to get a very general algorithm for checking.
+    
+    //Idea: It will be easier to do some quick checks to rule out cases where it isn't possible for the two rectangles to be overlapping
+    
+    //Check to see if all four points of one rectangle lie beyond the max/min of the other
+    //Start with all points of other having x coords greater than this rectangles x0
+    bool allPointsOfOtherBoxBeyondThisBoxExtrema = true;
+    for (int i = 0; i < BOX_CORNERS; ++i) {
+        if (otherBox.corners2D[i].x <= corners2D[0].x) {
+            allPointsOfOtherBoxBeyondThisBoxExtrema = false;
         }
-        if (otherBox.isWithin(this->corners2D[1])) {
-            return true;
+    }
+    if (allPointsOfOtherBoxBeyondThisBoxExtrema) {return false;} //Then boxes can't be overlapping
+    
+    //Check to see if all of other's coord are greater than this box's y Max
+    allPointsOfOtherBoxBeyondThisBoxExtrema = true;
+    for (int i = 0; i < BOX_CORNERS; ++i) {
+        if (otherBox.corners2D[i].y <= corners2D[1].y) {
+            allPointsOfOtherBoxBeyondThisBoxExtrema = false;
         }
-        if (otherBox.isWithin(this->corners2D[2])) {
-            return true;
+    }
+    if (allPointsOfOtherBoxBeyondThisBoxExtrema) {return false;} //Then boxes can't be overlapping
+    
+    //Check to see if all of the other box's coord are lesser x values then this box's xMinimun
+    allPointsOfOtherBoxBeyondThisBoxExtrema = true;
+    for (int i = 0; i < BOX_CORNERS; ++i) {
+        if (otherBox.corners2D[i].x >= corners2D[2].x) {
+            allPointsOfOtherBoxBeyondThisBoxExtrema = false;
         }
-        if (otherBox.isWithin(this->corners2D[3])) {
+    }
+    if (allPointsOfOtherBoxBeyondThisBoxExtrema) {return false;} //Then boxes can't be overlapping
+    
+    //Check to see if all of the other box's coord are of lesser y than this boxes yMin coord
+    allPointsOfOtherBoxBeyondThisBoxExtrema = true;
+    for (int i = 0; i < BOX_CORNERS; ++i) {
+        if (otherBox.corners2D[i].y <= corners2D[3].y) {
+            allPointsOfOtherBoxBeyondThisBoxExtrema = false;
+        }
+    }
+    if (allPointsOfOtherBoxBeyondThisBoxExtrema) {return false;} //Then boxes can't be overlapping
+    
+    //I haven't definitivly proved it, but I am pretty sure that combining that last check with
+    //this next one will always determine if there is any overlap
+    
+    //Check to see if any of the four corners from one box are inside the other
+    for (int i = 0; i < BOX_CORNERS; ++i) {
+        if (otherBox.isWithin(this->corners2D[i])) {
             return true;
         }
     }
-    return false;
+    //Also then do the same check with otherBox's corners inside this one
+    for (int i = 0; i < BOX_CORNERS; ++i) {
+        if (isWithin(otherBox.corners2D[i])) {
+            return true;
+        }
+    }
+    return false; //If both tests passed without returning, then boxes are not overlapping
+}
+
+void AACollisionBox::moveApartAlongAxisBetweenMidpoints(AACollisionBox & otherBox) {
+    if (!(this->hasModelData) || !(otherBox.hasModelData)) {
+        if (printDebugWarnings || printDebugMessages) {
+            std::cout << "\nDEBUG::WARNING! MoveApartAlongAxisBetweenMidpointsOtherOnly ";
+            std::cout << " called but one of\nthe two CollisionsRectangles never had ";
+            std::cout << "itself set from model data!";
+            std::cout << std::endl;
+        }
+        return;
+    }
+    
+    //The way I am going to write this is going to be terribly inefficient, kinda a brute force attemp
+    aiVector2D displacement(this->midpoint.x - otherBox.midpoint.x, this->midpoint.y - otherBox.midpoint.y);
+    if (displacement.Length() == 0.0f) {return;}
+    //Start moving the two rectangles apart until they are no longer overlapping
+    do {
+        //Move this rectangle away from the otherRect midpoint by step amount
+        otherBox.midpoint -= displacement * STEP_SIZE;
+        otherBox.calculateSelfAfterTranslations();
+    } while (this->isOverlapping(otherBox));
 }
 
 //------------------------------------------------------------------------
@@ -900,39 +970,6 @@ void AACollisionBox::getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const
     bufferOfTwelveFloats[10] = this->corners2D[3].y;
     bufferOfTwelveFloats[11] = -0.5f;
 }
-//void AACollisionBox::getRect3DLines3D(float * bufferOfTwentyfourFloats) const {
-//    bufferOfTwentyfourFloats[0] = corners3D[1].x;
-//    bufferOfTwentyfourFloats[1] = corners3D[1].y;
-//    bufferOfTwentyfourFloats[2] = corners3D[1].z;
-//
-//    bufferOfTwentyfourFloats[3] = corners3D[0].x;
-//    bufferOfTwentyfourFloats[4] = corners3D[0].y;
-//    bufferOfTwentyfourFloats[5] = corners3D[0].z;
-//
-//    bufferOfTwentyfourFloats[6] = corners3D[3].x;
-//    bufferOfTwentyfourFloats[7] = corners3D[3].y;
-//    bufferOfTwentyfourFloats[8] = corners3D[3].z;
-//
-//    bufferOfTwentyfourFloats[9] = corners3D[2].x;
-//    bufferOfTwentyfourFloats[10] = corners3D[2].y;
-//    bufferOfTwentyfourFloats[11] = corners3D[2].z;
-//
-//    bufferOfTwentyfourFloats[12] = corners3D[6].x;
-//    bufferOfTwentyfourFloats[13] = corners3D[6].y;
-//    bufferOfTwentyfourFloats[14] = corners3D[6].z;
-//
-//    bufferOfTwentyfourFloats[15] = corners3D[4].x;
-//    bufferOfTwentyfourFloats[16] = corners3D[4].y;
-//    bufferOfTwentyfourFloats[17] = corners3D[4].z;
-//
-//    bufferOfTwentyfourFloats[18] = corners3D[5].x;
-//    bufferOfTwentyfourFloats[19] = corners3D[5].y;
-//    bufferOfTwentyfourFloats[20] = corners3D[5].z;
-//
-//    bufferOfTwentyfourFloats[21] = corners3D[7].x;
-//    bufferOfTwentyfourFloats[22] = corners3D[7].y;
-//    bufferOfTwentyfourFloats[23] = corners3D[7].z;
-//}
 
 void AACollisionBox::getCubiodTriangles3D(float * bufferOf108Floats) const {
     aiVector3D modelTranslantedCorners3D[8];
@@ -1115,7 +1152,7 @@ void AACollisionBox::getRectCornersLines3D(float * bufferOfTwentyfourFloats) con
     bufferOfTwentyfourFloats[21] = this->corners2D[0].x;
     bufferOfTwentyfourFloats[22] = this->corners2D[0].y;
     bufferOfTwentyfourFloats[23] = -0.5f;
-    
+
     //Don't need?
 //    bufferOfThirtySixFloats[24] = this->corners2D[].x
 //    bufferOfThirtySixFloats[25] = this->corners2D[].y
@@ -1130,9 +1167,7 @@ void AACollisionBox::getRectCornersLines3D(float * bufferOfTwentyfourFloats) con
 //    bufferOfThirtySixFloats[33] = this->corners2D[].x
 //    bufferOfThirtySixFloats[34] = this->corners2D[].y
 //    bufferOfThirtySixFloats[35] = 0.5f;
-    
 }
-
 
 void getCollisionDetectionSamplePointsBoxToBox(float * bufferOf200Floats);
 void getCollisionDetectionSamplePointsBoxToBoxMidpoint(float * bufferOf200Floats);
@@ -1266,9 +1301,7 @@ void AACollisionBox::doRotationsAndRecalculate() {
 }
 
 void AACollisionBox::calculateSelfAfterTranslations() {
-    
-    //New new version
-    //SO corners3D should have been set
+    //We know that corners3D will have already been set, so construct 2D box directly from corners3D
     aiVector3D modelTranslatedCorners3D[8];
     aiVector3D midpoint3D = aiVector3D(midpoint.x, midpoint.y, 0.0f);
     for (int i = 0; i < CUBOID_CORNERS; ++i) {
@@ -1301,433 +1334,26 @@ void AACollisionBox::calculateSelfAfterTranslations() {
             minYIndex = i;
         }
     }
+    //Note that constructing this way causes issues if two points tied for same max/min x or y value
     corners2D[0] = aiVector2D(modelTranslatedCorners3D[maxXIndex].x, modelTranslatedCorners3D[maxXIndex].y); //Max x
-    corners2D[1] = aiVector2D(modelTranslatedCorners3D[maxYIndex].x, modelTranslatedCorners3D[maxYIndex].y); //Max Y
+    corners2D[1] = aiVector2D(modelTranslatedCorners3D[maxYIndex].x, modelTranslatedCorners3D[maxYIndex].y); //Max y
     corners2D[2] = aiVector2D(modelTranslatedCorners3D[minXIndex].x, modelTranslatedCorners3D[minXIndex].y); //Min x
-    corners2D[3] = aiVector2D(modelTranslatedCorners3D[minYIndex].x, modelTranslatedCorners3D[minYIndex].y); //Min Y
-    return;
-    
-    //This function updates the values in the corners2D and corners3D arrays
-    
-    aiVector3D unorderedCornersArray[CUBOID_CORNERS];
-    unorderedCornersArray[0] = xAxisMajor + yAxisMajor + zAxisMajor;
-    unorderedCornersArray[1] = xAxisMajor + yAxisMajor + zAxisMinor;
-    unorderedCornersArray[2] = xAxisMajor + yAxisMinor + zAxisMajor;
-    unorderedCornersArray[3] = xAxisMajor + yAxisMinor + zAxisMinor;
-    unorderedCornersArray[4] = xAxisMinor + yAxisMajor + zAxisMajor;
-    unorderedCornersArray[5] = xAxisMinor + yAxisMajor + zAxisMinor;
-    unorderedCornersArray[6] = xAxisMinor + yAxisMinor + zAxisMajor;
-    unorderedCornersArray[7] = xAxisMinor + yAxisMinor + zAxisMinor;
-    
-    //new new way of calculating the four corners
-    //Find the 2D centriod of all 8 vectors
-    
-    aiVector2D point1(unorderedCornersArray[0].x / 8.0f, unorderedCornersArray[0].y / 8.0f);
-    aiVector2D point2(unorderedCornersArray[1].x / 8.0f, unorderedCornersArray[1].y / 8.0f);
-    aiVector2D point3(unorderedCornersArray[2].x / 8.0f, unorderedCornersArray[2].y / 8.0f);
-    aiVector2D point4(unorderedCornersArray[3].x / 8.0f, unorderedCornersArray[3].y / 8.0f);
-    aiVector2D point5(unorderedCornersArray[4].x / 8.0f, unorderedCornersArray[4].y / 8.0f);
-    aiVector2D point6(unorderedCornersArray[5].x / 8.0f, unorderedCornersArray[5].y / 8.0f);
-    aiVector2D point7(unorderedCornersArray[6].x / 8.0f, unorderedCornersArray[6].y / 8.0f);
-    aiVector2D point8(unorderedCornersArray[7].x / 8.0f, unorderedCornersArray[7].y / 8.0f);
-    
-    aiVector2D centriod = point1 + point2 + point3 + point4 + point5 + point6 + point7 + point8;
-    
-    //for debug:
-    int cindx1, cindx2, cindx3, cindx4;
-    cindx1 = cindx2 = cindx3 = cindx4 = -1;
-    
-    aiVector2D centriodToCorners[CUBOID_CORNERS];
-    for (int i = 0; i < CUBOID_CORNERS; ++i) {
-        centriodToCorners[i] = aiVector2D(unorderedCornersArray[i].x, unorderedCornersArray[i].y) - centriod;
-    }
-    
-    for (int i = 0; i < BOX_CORNERS; ++i) {
-        corners2D[i] = aiVector2D(0.0f, 0.0f);
-    }
-    
-    //Okay so this works if roll is at -90º, 0º or 90º, but fails all other times
-    //Need to find the four largest vectors in each quadrant
-    //Loop through the corner array again
-    for (int i = 0; i < CUBOID_CORNERS; i+=1) {
-        if (centriodToCorners[i].x > 0.0f) {
-            if (centriodToCorners[i].y > 0.0f) {
-                //Then vector is in quadrant 1
-                //Check to see if it is the longest
-                if (corners2D[0].Length() < centriodToCorners[i].Length()) {
-                    corners2D[0].x = unorderedCornersArray[i].x;
-                    corners2D[0].y = unorderedCornersArray[i].y;
-                    cindx1 = i;
-                    //corners2D[0] = centriodToCorners[i];
-//                    centriodToCorners[i].x = 0.0f;
-//                    centriodToCorners[i].y = 0.0f;
-                }
-            }
-            else {
-                //Then Vector is in quadrant 4
-                if (corners2D[1].Length() < centriodToCorners[i].Length()) {
-                    corners2D[1].x = unorderedCornersArray[i].x;
-                    corners2D[1].y = unorderedCornersArray[i].y;
-//                    corners2D[1] = centriodToCorners[i];
-//                    centriodToCorners[i].x = 0.0f;
-//                    centriodToCorners[i].y = 0.0f;
-                    cindx2 = i;
-                }
-            }
-        }
-        else { //Else x coord is <=0.0f
-            if (centriodToCorners[i].y > 0.0f) {
-                //Then vector is in quadrant 2
-                //Check to see if it is the longest
-                if (corners2D[3].Length() < centriodToCorners[i].Length()) {
-                    corners2D[3].x = unorderedCornersArray[i].x;
-                    corners2D[3].y = unorderedCornersArray[i].y;
-//                    corners2D[3] = centriodToCorners[i];
-//                    centriodToCorners[i].x = 0.0f;
-//                    centriodToCorners[i].y = 0.0f;
-                    cindx4 = i;
-                }
-            }
-            else {
-                //Then Vector is in quadrant 3
-                if (corners2D[2].Length() < centriodToCorners[i].Length()) {
-                    corners2D[2].x = unorderedCornersArray[i].x;
-                    corners2D[2].y = unorderedCornersArray[i].y;
-//                    corners2D[2] = centriodToCorners[i];
-//                    centriodToCorners[i].x = 0.0f;
-//                    centriodToCorners[i].y = 0.0f;
-                }
-                cindx3 = i;
-            }
-        }
-    }
-    
-    //AFter running this check, it looks like the problem is occuring when 0 and 2 are getting set to the same value or 1 and 3 are getting set to the same value. So I am going to do a direct, inefficent fix for this
-   //////DEBUG CHECK
-   ////Check to see if any of the two corners got set to eachother
-    //for (int i = 0; i < BOX_CORNERS; ++i) {
-     //   for (int j = i+1; j < BOX_CORNERS; ++j) {
-            //if (corners2D[i] == corners2D[j]) {
-                //std::cout << "\nCorners[" << i << "] == Corners[" << j << "]\n";
-                //std::cout << "Corners[" << i << "] = " << corners2D[i].x << ", " << corners2D[i].y << std::endl;
-                //std::cout << "Corners[" << j << "] = " << corners2D[j].x << ", " << corners2D[j].y << std::endl;
-                //corners2D[j].x *= -1.0f;
-                //corners2D[j].y *= -1.0f;
-           // }
-        //}
-    //}
-    //Check for pathological case where there are no vectors in 2 of the 4 quadrants
-    if (corners2D[0] == corners2D[2]) { //If two corners were set to the same value (chances are both are still 0 vector)
-        //Then assign them to the second longest corner in the other two quadrants (note that 1 is quadrant 4 and 3 is quadrant 2)  (confusing, I know...)
-        //Move in order, set corner 0 to second largest vector in corner 1's quadrant, and set corner 2 to second longest vec in corner 3's quadrant
-        
-        //Do special process for corner 0:
-        for (int i = 0; i < CUBOID_CORNERS; ++i) {
-            if (unorderedCornersArray[i].x == corners2D[1].x && unorderedCornersArray[i].y == corners2D[1].y) {
-                //Delete the longest vector from corner 1's quadrant
-                unorderedCornersArray[i] = aiVector3D(0.0f, 0.0f, 0.0f); //Set this vector to be 0 vector
-                centriodToCorners[i] = aiVector2D(0.0f, 0.0f); //Set the centriod-to-corner vector to 0 vector as well
-            }
-        } //Set corner 0 to the second longest vector in corner 1's quadrant
-        for (int i = 0; i < CUBOID_CORNERS; ++i) {
-            if (centriodToCorners[i].x > 0.0f) {
-                if (centriodToCorners[i].y < 0.0f) {
-                    if (corners2D[0].Length() < centriodToCorners[i].Length()) {
-                        corners2D[0].x = unorderedCornersArray[i].x;
-                        corners2D[0].y = unorderedCornersArray[i].y;
-                        cindx1 = i;
-                    }
-                }
-            }
-        }
-        
-        //Repeat similar special process for corner 2:
-        for (int i = 0; i < CUBOID_CORNERS; ++i) {
-            if (unorderedCornersArray[i].x == corners2D[3].x && unorderedCornersArray[i].y == corners2D[3].y) {
-                //Delete the longest vector from corner 3's quadrant
-                unorderedCornersArray[i] = aiVector3D(0.0f, 0.0f, 0.0f); //Set this vector to be 0 vector
-                centriodToCorners[i] = aiVector2D(0.0f, 0.0f); //Set the centriod-to-corner vector to 0 vector as well
-            }
-        } //Set corner 2 to the second longest vector in corner 3's quadrant
-        for (int i = 0; i < CUBOID_CORNERS; ++i) {
-            if (centriodToCorners[i].x < 0.0f) {
-                if (centriodToCorners[i].y > 0.0f) {
-                    if (corners2D[2].Length() < centriodToCorners[i].Length()) {
-                        corners2D[2].x = unorderedCornersArray[i].x;
-                        corners2D[2].y = unorderedCornersArray[i].y;
-                        cindx3 = i;
-                    }
-                }
-            }
-        }
-        /*if (corners2D[0].x > 0.0f) {
-            corners2D[2] = aiVector2D(0.0f, 0.0f); //Reset the duplicate vector
-            //loop through the array of unordered corners
-            for (int i = 0; i < CUBOID_CORNERS; ++i) {
-                if (unorderedCornersArray[i].x == corners2D[0].x && unorderedCornersArray[i].y == corners2D[0].y) {
-                    unorderedCornersArray[i] = aiVector3D(0.0f, 0.0f, 0.0f); //Set this vector to be 0 vector
-                    centriodToCorners[i] = aiVector2D(0.0f, 0.0f); //Set the centriod-to-corner vector to 0 vector as well
-                }
-            }
-            for (int i = 0; i < CUBOID_CORNERS; ++i) {
-                if (centriodToCorners[i].x > 0.0f) {
-                    if (centriodToCorners[i].y > 0.0f) {
-                        if (corners2D[2].Length() < centriodToCorners[i].Length()) {
-                            corners2D[2].x = unorderedCornersArray[i].x;
-                            corners2D[2].y = unorderedCornersArray[i].y;
-                        }
-                    }
-                }
-            }
-        }
-        else {
-            corners2D[0] = aiVector2D(0.0f, 0.0f); //Reset the duplicate vector
-            //loop through the array of unordered corners
-            for (int i = 0; i < CUBOID_CORNERS; ++i) {
-                if (unorderedCornersArray[i].x == corners2D[2].x && unorderedCornersArray[i].y == corners2D[2].y) {
-                    unorderedCornersArray[i] = aiVector3D(0.0f, 0.0f, 0.0f); //Set this vector to be 0 vector
-                    centriodToCorners[i] = aiVector2D(0.0f, 0.0f); //Set the centriod-to-corner vector to 0 vector as well
-                }
-            }
-            for (int i = 0; i < CUBOID_CORNERS; ++i) {
-                if (centriodToCorners[i].x < 0.0f) {
-                    if (centriodToCorners[i].y > 0.0f) {
-                        if (corners2D[0].Length() < centriodToCorners[i].Length()) {
-                            corners2D[0].x = unorderedCornersArray[i].x;
-                            corners2D[0].y = unorderedCornersArray[i].y;
-                        }
-                    }
-                }
-            }
-        } */
-    }
-    
-    
-    
-    //This code below right here fixes the wrong problem. If two vectors are equal, it's because no longest vector existed within their quadrant
-//    //This code will fix faulty boxes formed if two vectors are in the same quadrant
-//    if (corners2D[0] == corners2D[2]) { //If two corners were set to the same value
-//        //Figure out what quadrant this vector exists in (NOTE THAT FOR 0 and 2, Y will always be positive)
-//        if (corners2D[0].x > 0.0f) {
-//            corners2D[2] = aiVector2D(0.0f, 0.0f); //Reset the duplicate vector
-//            //loop through the array of unordered corners
-//            for (int i = 0; i < CUBOID_CORNERS; ++i) {
-//                if (unorderedCornersArray[i].x == corners2D[0].x && unorderedCornersArray[i].y == corners2D[0].y) {
-//                    unorderedCornersArray[i] = aiVector3D(0.0f, 0.0f, 0.0f); //Set this vector to be 0 vector
-//                    centriodToCorners[i] = aiVector2D(0.0f, 0.0f); //Set the centriod-to-corner vector to 0 vector as well
-//                }
-//            }
-//            for (int i = 0; i < CUBOID_CORNERS; ++i) {
-//                if (centriodToCorners[i].x > 0.0f) {
-//                    if (centriodToCorners[i].y > 0.0f) {
-//                        if (corners2D[2].Length() < centriodToCorners[i].Length()) {
-//                            corners2D[2].x = unorderedCornersArray[i].x;
-//                            corners2D[2].y = unorderedCornersArray[i].y;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        else {
-//            corners2D[0] = aiVector2D(0.0f, 0.0f); //Reset the duplicate vector
-//            //loop through the array of unordered corners
-//            for (int i = 0; i < CUBOID_CORNERS; ++i) {
-//                if (unorderedCornersArray[i].x == corners2D[2].x && unorderedCornersArray[i].y == corners2D[2].y) {
-//                    unorderedCornersArray[i] = aiVector3D(0.0f, 0.0f, 0.0f); //Set this vector to be 0 vector
-//                    centriodToCorners[i] = aiVector2D(0.0f, 0.0f); //Set the centriod-to-corner vector to 0 vector as well
-//                }
-//            }
-//            for (int i = 0; i < CUBOID_CORNERS; ++i) {
-//                if (centriodToCorners[i].x < 0.0f) {
-//                    if (centriodToCorners[i].y > 0.0f) {
-//                        if (corners2D[0].Length() < centriodToCorners[i].Length()) {
-//                            corners2D[0].x = unorderedCornersArray[i].x;
-//                            corners2D[0].y = unorderedCornersArray[i].y;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-    
-    
-    if (corners2D[1] == corners2D[3]) { //If other two corners were set to the same value (chances are both are still 0 vector)
-        
-        //Do special process for corner 1:
-        for (int i = 0; i < CUBOID_CORNERS; ++i) {
-            if (unorderedCornersArray[i].x == corners2D[2].x && unorderedCornersArray[i].y == corners2D[2].y) {
-                //Delete the longest vector from corner 1's quadrant
-                unorderedCornersArray[i] = aiVector3D(0.0f, 0.0f, 0.0f); //Set this vector to be 0 vector
-                centriodToCorners[i] = aiVector2D(0.0f, 0.0f); //Set the centriod-to-corner vector to 0 vector as well
-            }
-        } //Set corner 1 to the second longest vector in corner 2's quadrant
-        for (int i = 0; i < CUBOID_CORNERS; ++i) {
-            if (centriodToCorners[i].x < 0.0f) {
-                if (centriodToCorners[i].y < 0.0f) {
-                    if (corners2D[1].Length() < centriodToCorners[i].Length()) {
-                        corners2D[1].x = unorderedCornersArray[i].x;
-                        corners2D[1].y = unorderedCornersArray[i].y;
-                        cindx2 = i;
-                    }
-                }
-            }
-        }
-        
-        //Repeat similar special process for corner 3:
-        for (int i = 0; i < CUBOID_CORNERS; ++i) {
-            if (unorderedCornersArray[i].x == corners2D[0].x && unorderedCornersArray[i].y == corners2D[0].y) {
-                //Delete the longest vector from corner 3's quadrant
-                unorderedCornersArray[i] = aiVector3D(0.0f, 0.0f, 0.0f); //Set this vector to be 0 vector
-                centriodToCorners[i] = aiVector2D(0.0f, 0.0f); //Set the centriod-to-corner vector to 0 vector as well
-            }
-        } //Set corner 3 to the second longest vector in corner 0's quadrant
-        for (int i = 0; i < CUBOID_CORNERS; ++i) {
-            if (centriodToCorners[i].x > 0.0f) {
-                if (centriodToCorners[i].y > 0.0f) {
-                    if (corners2D[3].Length() < centriodToCorners[i].Length()) {
-                        corners2D[3].x = unorderedCornersArray[i].x;
-                        corners2D[3].y = unorderedCornersArray[i].y;
-                        cindx4 = i;
-                    }
-                }
-            }
-        }
-    }
-    
-    //Need to now scale corners2D and put them around the objects midpoint
-    corners2D[0] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[0].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[0].y)));
-    corners2D[3] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[3].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[3].y)));
-    corners2D[2] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[2].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[2].y)));
-    corners2D[1] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[1].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[1].y)));
-    
-    
-    //Print the corner indexes that were selected
-    if (printDebugMessages) {
-        std::cout << "\nCorners from the 8 corners that were selected (indexed from 0): " << cindx1 << " " << cindx2 << " " << cindx3 << " " << cindx4 << std::endl;
-    }
-    
-    
-    /*  This new way is really close, but not quite
-    //New Different way of getting the four corners
-    //Set all vectors in corners2D to 0
-    for (int i = 0; i < BOX_CORNERS; ++i) {
-        corners2D[i].x = 0.0f;
-        corners2D[i].y = 0.0f;
-    }
-    
-    aiVector2D cornersProjectedOntoPlane[CUBOID_CORNERS];
-    for (int i = 0; i < CUBOID_CORNERS; i+=1) {
-        cornersProjectedOntoPlane[i].x = unorderedCornersArray[i].x;
-        cornersProjectedOntoPlane[i].y = unorderedCornersArray[i].y;
-    }
-    //Need to find the four largest vectors in each quadrant
-    //Loop through the corner array again
-    for (int i = 0; i < CUBOID_CORNERS; i+=1) {
-        if (cornersProjectedOntoPlane[i].x > 0.0f) {
-            if (cornersProjectedOntoPlane[i].y > 0.0f) {
-                //Then vector is in quadrant 1
-                //Check to see if it is the longest
-                if (corners2D[0].Length() < cornersProjectedOntoPlane[i].Length()) {
-                    corners2D[0] = cornersProjectedOntoPlane[i];
-                }
-            }
-            else {
-                //Then Vector is in quadrant 4
-                if (corners2D[1].Length() < cornersProjectedOntoPlane[i].Length()) {
-                    corners2D[1] = cornersProjectedOntoPlane[i];
-                }
-            }
-        }
-        else { //Else x coord is <=0.0f
-            if (cornersProjectedOntoPlane[i].y > 0.0f) {
-                //Then vector is in quadrant 2
-                //Check to see if it is the longest
-                if (corners2D[3].Length() < cornersProjectedOntoPlane[i].Length()) {
-                    corners2D[3] = cornersProjectedOntoPlane[i];
-                }
-            }
-            else {
-                //Then Vector is in quadrant 3
-                if (corners2D[2].Length() < cornersProjectedOntoPlane[i].Length()) {
-                    corners2D[2] = cornersProjectedOntoPlane[i];
-                }
-            }
-        }
-    }
-    
-    //Need to now scale corners2D and put them around the objects midpoint
-    corners2D[0] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[0].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[0].y)));
-     corners2D[3] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[3].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[3].y)));
-     corners2D[2] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[2].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[2].y)));
-     corners2D[1] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners2D[1].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners2D[1].y)));
-    
-    */
-    
-    
-    /*
-    //I think my collision box is being bound to the axeses here, so need to find
-    //a diffrernt way to construct the 4 extreme points
-    //Need to get the four points that represent the extremes along x and y axes
-    int largestXIndxPos, largestXIndxNeg, largestYIndxPos, largestYIndxNeg;
-    largestXIndxPos = largestXIndxNeg = largestYIndxPos = largestYIndxNeg = 0;
-    
-    //Now loop through the array to find which vectors in the cornerArray contain these maximums
-    float maxXPos, maxXNeg, maxYPos, maxYNeg;
-    maxXPos = maxXNeg = maxYPos = maxYNeg = 0.0f;
-    for (int i = 0; i < CUBOID_CORNERS; ++i) {
-        //get most positive x
-        if (unorderedCornersArray[i].x > maxXPos) {
-            maxXPos = unorderedCornersArray[i].x;
-            largestXIndxPos = i;
-        }
-        //get most negative x
-        if (unorderedCornersArray[i].x < maxXNeg) {
-            maxXNeg = unorderedCornersArray[i].x;
-            largestXIndxNeg = i;
-        }
-        //get most positive y
-        if (unorderedCornersArray[i].y > maxYPos) {
-            maxYPos = unorderedCornersArray[i].y;
-            largestYIndxPos = i;
-        }
-        //get most negative y
-        if (unorderedCornersArray[i].y < maxYNeg) {
-            maxYNeg = unorderedCornersArray[i].y;
-            largestYIndxNeg = i;
-        }
-        this->corners3D[i] = unorderedCornersArray[i];
-    }
-    
-    //Set corners2D array
-    corners2D[0] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners3D[largestXIndxPos].x)), scale * (midpoint.y - (collisionBoxShrinkageFactor * corners3D[largestYIndxPos].y)));
-    corners2D[1] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners3D[largestXIndxNeg].x)), scale * (midpoint.y - (collisionBoxShrinkageFactor * corners3D[largestYIndxPos].y)));
-    corners2D[2] = aiVector2D(scale * (midpoint.x - (collisionBoxShrinkageFactor * corners3D[largestXIndxPos].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners3D[largestYIndxNeg].y)));
-    corners2D[3] = aiVector2D(scale * (midpoint.x + (collisionBoxShrinkageFactor * corners3D[largestXIndxNeg].x)), scale * (midpoint.y + (collisionBoxShrinkageFactor * corners3D[largestYIndxNeg].y)));
-    
-   // corner1 = aiVector2D(scale*(midpoint.x + (boxShrinkageFactor * maxXPos)), scale *  (midpoint.y - (boxShrinkageFactor * maxYPos)));
-     //   corner2 = aiVector2D(scale * (midpoint.x + (boxShrinkageFactor * maxXNeg)), scale * (midpoint.y - (boxShrinkageFactor * maxYNeg))); */
-    
-}
+    corners2D[3] = aiVector2D(modelTranslatedCorners3D[minYIndex].x, modelTranslatedCorners3D[minYIndex].y); //Min y
 
+}
 
 bool AACollisionBox::hasNoArea() const {
     if (!hasModelData) {return true;}
-    //Else do a calculation to see if the box actually has no area for some reason
-    //The calculation is to test all four points, to see if they all lie along the same line
-    
     //Math note: This can be used to determine if three points are colinear (might be overkill?):
     //                http://mathworld.wolfram.com/Cayley-MengerDeterminant.html
-    
-    return (getQuadrilateralArea() == 0);
+    return (abs(getQuadrilateralArea()) <= 0.000001f); //See if the quad area is (nearly) 0.0ƒ
 }
 
-float AACollisionBox::getQuadrilateralArea() const{
-    //Think I fixed the bug so going to temporarily remove this warning (for now) until I can test
-    //std::cout << "\nDEBUG::Warning! Get Quadrilateral area is buggy and won't work on all quadrilaterals. Fix this function\n";
-    //This isn't going to work until I can guarentee the ordering of the corners
-    float x0 = corners2D[0].x;          //It is assumed that corners2D[0] and corners2D[2] are opposite sides (not connected)
-    float y0 = corners2D[0].y;          //Same with corners2D[1] and corners2D[3]
-    float x1 = corners2D[1].x;
+float AACollisionBox::getQuadrilateralArea() const {
+    //(x0,y0) will be point with maximum x value, (x1,y1) will be point with max y value, (x2,y2) min x value, (x3,y3) min y val
+    float x0 = corners2D[0].x; //So 0 and 2 will be on opposite sides
+    float y0 = corners2D[0].y;
+    float x1 = corners2D[1].x; //and 1 and 3 will be on opposite sides
     float y1 = corners2D[1].y;
     float x2 = corners2D[2].x;
     float y2 = corners2D[2].y;
@@ -1736,8 +1362,8 @@ float AACollisionBox::getQuadrilateralArea() const{
     
     //Could use the Cayley-Menger determinant, or could just be simple and calculate the area of two triangles and add
     //(technically these next 2 computations are themselves determinants) see: http://mathworld.wolfram.com/TriangleArea.html
-    float triangle1Area = (-x1*y0 + x2*y0 + x0*y1 - x2*y1 - x0*y2 + x1*y2); //Note this is double the triangle area
-    float triangle2Area = (-x3*y0 + x2*y0 + x0*y3 - x2*y3 - x0*y2 + x3*y2); //I will just wait till end to divide by 2
+    float triangle1Area = abs((-x1*y0 + x2*y0 + x0*y1 - x2*y1 - x0*y2 + x1*y2)); //Note this is double the triangle area
+    float triangle2Area = abs((-x3*y0 + x2*y0 + x0*y3 - x2*y3 - x0*y2 + x3*y2)); //I will just wait till end to divide by 2
     return ((abs(triangle1Area) + abs(triangle2Area)) / 2.0f);
 }
 

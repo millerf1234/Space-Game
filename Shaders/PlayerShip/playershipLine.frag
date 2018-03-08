@@ -27,7 +27,7 @@ void main() {
     //Orangeish/Yellowish/Redish lines
     //color = vec4(1.0f, 0.65f, 0.0f /* + 0.4f*sin(time3D / 5.0f)*/, 1.0f);
     
-    color = vec4(red, green, blue, 1.0f);
+    color = vec4(red, green, blue, 0.8f);
     
     //Blue lines:
     //color = vec4(0.2f, 0.2f, 0.8f, 1.0f);

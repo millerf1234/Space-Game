@@ -800,6 +800,8 @@ void Generator::doDrawPlayerShipInstance(int i) {
             std::cout << "\nDEBUG::Collision Detected beween players!\n";
         }
     }
+        
+        
 //        //Get the collision box rotation information
 //        std::cout << "\n  Collision Box information for this player: rotation values are:\n";
 //        for (int i = 0; i < player->colBox->getNumberOfRotations(); ++i) {
@@ -807,7 +809,23 @@ void Generator::doDrawPlayerShipInstance(int i) {
 //        }
 //
     }
+    //Repeat some more debug code (delete all this later plz)
+    bool playersColliding = false;
+    for (int otherPlayerIndx = 0; otherPlayerIndx < this->getInstanceCount(); ++otherPlayerIndx) {
+        //This current way I am doing this only works with 2 players
+        if (otherPlayerIndx != i) { //Only check collisions between this player and other players
+            playersColliding = player->colBox->isOverlapping(*(instances[otherPlayerIndx]->colBox));
+            goto COLLISION_DETECTED2; //I guess 'break' could work too
+        }
+    }
+COLLISION_DETECTED2:
+    if (playersColliding) {
+        std::cout << "\nDEBUG::Collision Detected beween players!\n";
+    }
     //----------------------------------------------------
+    //std::cout << "\nDEBUG::ColBox area is: " << player->colBox->getQuadrilateralArea() << std::endl;
+    
+    
     
     //Debug code:
     //            for (int i = 0; i < 18; ++i) {
@@ -845,7 +863,25 @@ void Generator::doDrawPlayerShipInstance(int i) {
     for (int i = 0; i < verticesToReplace; ++i) {
         tempFirstVerticesBackup[i] = vertices[i];
     }
+        
+//        //ALL DEBUG CODE: ------------------------------------
+//        //Draw a point at the center of the screen
+//        vertices[0] = 0.0f;
+//        vertices[1] = 0.0f;
+//        vertices[2] = -0.9f;
+//        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
+//        glDrawArrays(GL_POINT, 0, 1);
+//        aiVector2D temp(0.0f, 0.0f);
+//        player->colBox->setMidpointTo(temp);
+//        //------------------------------------------------------------
+        
     player->colBox->getRectCornersLines3D(vertices);
+    
+        //Debug test to see if the point (0,0) is within a collisionBox
+    //std::cout << "\nDEBUG::Is within for (0.0, 0.0) is: " << player->colBox->isWithin(0.0f, 0.0f) << "\n\n";
+        
+        
+       
     
 //    if ((int)instances[i]->timeAlive % 4 == 0) {
 ////    if (PRINT_DEBUG_MESSAGES) {
@@ -870,20 +906,17 @@ void Generator::doDrawPlayerShipInstance(int i) {
     glUniform1f(ulocBlueLine, 0.6f);
     
         
-    
-    
-    
         //Draw the 2D collision box
     glDrawArrays(GL_LINE_LOOP, 0, 8); //Just draw arrays here, no need to mess with an element buffer
     
-        //Draw the collision box axes (plural of axis)
-        player->colBox->getRotatedMajorMinor3D(vertices);
-        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
-        glDrawArrays(GL_LINE_LOOP, 0, 12);
+//        //Draw the collision box axes (plural of axis)
+//        player->colBox->getRotatedMajorMinor3D(vertices);
+//        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
+//        glDrawArrays(GL_LINE_LOOP, 0, 12);
 
         glad_glDisable(GL_LINE_SMOOTH);
         
-        //Just for fun, draw the collision cuboid triangles
+        //Draw the 3D collision box around the player model 
         glUniform1f(ulocRedLine, 0.3f);
         glUniform1f(ulocGreenLine, 0.3f);
         glUniform1f(ulocBlueLine, 0.7f);
@@ -891,10 +924,6 @@ void Generator::doDrawPlayerShipInstance(int i) {
         glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
         glDrawArrays(GL_LINE_STRIP, 0, 36);
         
-//        std::cout << "\nDEBUG::First vertices: \n";
-//        for (int i = 0; i < 24; ++i) {
-//            std::cout << vertices[i] <<" ";
-//        }
     glad_glEnable(GL_LINE_SMOOTH);
     
     

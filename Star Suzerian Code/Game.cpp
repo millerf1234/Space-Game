@@ -207,6 +207,11 @@ bool Game::launch() {
             (*entityLogicIterator)->doUpkeep();
         }
         
+        entityLogicIterator = gEntities.begin(); //Reset the iterator to the beginning of the vector
+        //Loop through all the gameEntities and process any collisions that occured after all object's movement has been computed
+        for (; entityLogicIterator < gEntities.end(); ++entityLogicIterator) {
+            (*entityLogicIterator)->processCollisions();
+        }
         
         
         

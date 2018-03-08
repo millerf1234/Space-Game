@@ -386,13 +386,13 @@ void PlayerManager::processInput() {
         
         if (player->rollLeft) {
             player->rollAmount -= PLAYER_ROTATION_SPEED_ROLLING * TIME_TICK_RATE / 0.01f;
-            if (player->rollAmount < -PI / 2.0f) {
+            if (player->rollAmount < -PI / 2.0f - + (PLAYER_ROTATION_SPEED_TURNING / 11.0f)) {
                 player->rollAmount = -PI / 2.0f;
             }
         }
         if (player->rollRight) {
             player->rollAmount += PLAYER_ROTATION_SPEED_ROLLING * TIME_TICK_RATE / 0.01f;
-            if (player->rollAmount > PI / 2.0f) {
+            if (player->rollAmount > PI / 2.0f + (PLAYER_ROTATION_SPEED_TURNING / 11.0f)) { //This small amount is so that roll angle is never actually exactly 0.0f
                 player->rollAmount = PI / 2.0f;
             }
         }
@@ -467,7 +467,26 @@ void PlayerManager::processInput() {
         
     }
     //Check to see if any player's playerboxes are overlapping, and if so, move them apart
+}
+
+void PlayerManager::processCollisions() {
+    //Just gonna hardcode in something simple knowing I have only 2 players, can make this more robust later
+    Instance ** players = generator->getArrayOfInstances();
     
+    PlayerInstance * p1 = static_cast<PlayerInstance *>(players[0]);
+    PlayerInstance * p2 = static_cast<PlayerInstance *>(players[1]);
+    //See if player1 hit player 2
+    if (p1->colBox->isOverlapping(*(p2->colBox))) {
+        p1->colBox->moveApartAlongAxisBetweenMidpoints(*(p2->colBox));
+        aiVector2D p1BoxMidpoint = p1->colBox->getMidpoint();
+        aiVector2D p2BoxMidpoint = p2->colBox->getMidpoint();
+        
+        p1->position.x = p1BoxMidpoint.x;
+        p1->position.y = p1BoxMidpoint.y;
+        
+        p2->position.x = p2BoxMidpoint.x;
+        p2->position.y = p2BoxMidpoint.y;
+    }
 }
 
 void PlayerManager::generateInitializationTemplate() {

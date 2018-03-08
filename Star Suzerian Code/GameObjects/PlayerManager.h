@@ -59,9 +59,11 @@ public:
     //void addPlayer(struct controlBindings); //Add a public function like this?
     
     virtual void doUpkeep() override;
+    virtual void processCollisions() override;
     //virtual void handleInput() override;
     virtual void handleInput(GLFWwindow*) override;
     virtual void drawInstances() override;
+    
     
     aiVector3D getCenterWeaponLaunchpoint();
     aiVector3D * getSideWeaponLaunchPoints();
