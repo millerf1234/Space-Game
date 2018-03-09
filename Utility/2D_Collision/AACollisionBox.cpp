@@ -292,6 +292,16 @@ AACollisionBox::~AACollisionBox() {
         }
         delete [] rotationOrder;
     }
+    
+    //Delete the vectors of collision points
+    if (collisionSamplePointsAll != nullptr) {
+        delete collisionSamplePointsAll;
+        collisionSamplePointsAll = nullptr;
+    }
+    if (collisionSamplePointsThis != nullptr) {
+        delete collisionSamplePointsThis;
+        collisionSamplePointsThis = nullptr;
+    }
 }
 
 //------------------------------------------------------------------------
@@ -853,6 +863,20 @@ bool AACollisionBox::isOverlapping(const AACollisionBox& otherBox) const {
     return false; //If both tests passed without returning, then boxes are not overlapping
 }
 
+void AACollisionBox::moveApartAlongAxisBetweenClosestDetectedPoints(AACollisionBox & other) {
+    int samplePoints;
+    if (COLLISION_SAMPLE_POINTS % 2 != 0 || COLLISION_SAMPLE_POINTS < 10) {
+        samplePoints = 10;
+    }
+    else {
+        samplePoints = COLLISION_SAMPLE_POINTS;
+    }
+    
+    collisionSamplePointsThis->reserve(samplePoints * 3);
+    collisionSamplePointsAll->reserve(samplePoints * samplePoints * 3);
+    
+}
+
 void AACollisionBox::moveApartAlongAxisBetweenMidpoints(AACollisionBox & otherBox) {
     if (!(this->hasModelData) || !(otherBox.hasModelData)) {
         if (printDebugWarnings || printDebugMessages) {
@@ -1176,6 +1200,8 @@ void AACollisionBox::getRectCornersTriangles3D(float * bufferOfEighteenFloats) c
     bufferOfEighteenFloats[17] = -0.5f;
     
 }
+
+//TESTED THIS ONE AND IT WORKS
 void AACollisionBox::getRectCornersLines3D(float * bufferOfTwentyfourFloats) const {
     bufferOfTwentyfourFloats[0] = this->corners2D[0].x;
     bufferOfTwentyfourFloats[1] = this->corners2D[0].y;
@@ -1221,10 +1247,48 @@ void AACollisionBox::getRectCornersLines3D(float * bufferOfTwentyfourFloats) con
 //    bufferOfThirtySixFloats[35] = 0.5f;
 }
 
-void getCollisionDetectionSamplePointsBoxToBox(float * bufferOf200Floats);
-void getCollisionDetectionSamplePointsBoxToBoxMidpoint(float * bufferOf200Floats);
-void getCollisionDetectionSamplePointsBoxMidpointToBoxMidpoint(float * bufferOfFourFloats);
+void AACollisionBox::resetCollisionDetectionSamplePoints() {
+    if (collisionSamplePointsAll != nullptr) {
+        delete collisionSamplePointsAll;
+        collisionSamplePointsAll = nullptr; //Don't need this because setting it again on the very next line to a new mem location
+    }
+    collisionSamplePointsAll = new std::vector<float>;
+   
+    if (collisionSamplePointsThis != nullptr) {
+        delete collisionSamplePointsThis;
+        collisionSamplePointsThis = nullptr;
+    }
+    collisionSamplePointsThis = new std::vector<float>;
+}
 
+void AACollisionBox::getCollisionDetectionSamplePointsBoxMidpointToBoxMidpoint(float * bufferOfSixFloats, const AACollisionBox &otherBox) const {
+    bufferOfSixFloats[0] = otherBox.midpoint.x;
+    bufferOfSixFloats[1] = otherBox.midpoint.y;
+    bufferOfSixFloats[2] = -0.75f;
+    bufferOfSixFloats[3] = this->midpoint.x;
+    bufferOfSixFloats[4] = this->midpoint.y;
+    bufferOfSixFloats[5] = -0.75f;
+}
+
+std::vector<float>* AACollisionBox::getCollisionDetectionSamplePoints() const {
+    if (collisionSamplePointsAll == nullptr) {
+        if (printDebugWarnings) {
+            std::cout << "\nDEBUG::WARNING collisionSamplePointsAll is null for this collision box!\n";
+        }
+        return nullptr;
+    }
+    return collisionSamplePointsAll;
+}
+
+std::vector<float>* AACollisionBox::getCollisionDetectionSamplePointsThisOnly() const {
+    if (collisionSamplePointsThis == nullptr) {
+        if (printDebugWarnings) {
+            std::cout << "\nDEBUG::WARNING collisionSamplePointsThis is null for this collision box!\n";
+        }
+        return nullptr;
+    }
+    return collisionSamplePointsThis;
+}
 
 //------------------------------------------------------------------------
 //              Private Functions
@@ -1251,12 +1315,16 @@ void AACollisionBox::initialize() {
     scale = 1.0;
     collisionBoxShrinkageFactor = 1.0f;
     
-    //initialize the adjacencyList indices
+    //Initialize the adjacencyList indices
     for (int i = 0; i < CUBOID_CORNERS; ++i) {
         for (int j = 0; j < 3; ++j) {
             adjacencyList[i][j] = NOT_SET;
         }
     }
+    
+    //Initialize the vectors for holding the collision sample points
+    collisionSamplePointsAll = new std::vector<float>;
+    collisionSamplePointsThis = new std::vector<float>;
     
 }
 
@@ -1388,6 +1456,7 @@ void AACollisionBox::calculateSelfAfterTranslations() {
         }
     }
     //Note that constructing this way causes issues if two points tied for same max/min x or y value
+    //So to fix this boundary condition, check to see if any two points are th
     corners2D[0] = aiVector2D(modelTranslatedCorners3D[maxXIndex].x, modelTranslatedCorners3D[maxXIndex].y); //Max x
     corners2D[1] = aiVector2D(modelTranslatedCorners3D[maxYIndex].x, modelTranslatedCorners3D[maxYIndex].y); //Max y
     corners2D[2] = aiVector2D(modelTranslatedCorners3D[minXIndex].x, modelTranslatedCorners3D[minXIndex].y); //Min x

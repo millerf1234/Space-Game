@@ -23,9 +23,11 @@
 #define AACollisionBox_h
 
 #include <iostream>
+#include <vector>
 #include <assimp/Importer.hpp> //Gives access to the aiVector3D (and 2D)
 
 #include "Quaternion.h"//Use the Quaternion class I wrote
+#include "GameParameters.h" //Needed to get the constant COLLISION_SAMPLE_POINTS
 
 //Important Note on accurate box generation:
 //This class is intended to be set from a model that is oriented in the way that
@@ -125,9 +127,6 @@ private:
     //Adding this to try to get box projection fixed
     int adjacencyList[8][3]; //An Array containing the adjacent indices to each corner
     
-    
-    
-    
 protected:
     //If the model is larger in one direction that in it's opposite, the longer
     //axis becomes the major and the shorter axis becomes the minor.
@@ -137,6 +136,10 @@ protected:
     aiVector2D midpoint;
     aiVector2D corners2D[4]; //The four corners of the box within the collision plane
 
+    //For printing collision detection traces
+    std::vector<float> * collisionSamplePointsAll;
+    std::vector<float> * collisionSamplePointsThis;
+    
     //Scale should be set to 1/w to match model's w so box scales with model
     float scale;
     //Since the box is being set from the model extremes, this can be used to move the box inside the model
@@ -158,12 +161,20 @@ protected:
         return (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z);
     }
     //Need a function to get the vector between two points
-    aiVector2D getVectorBetween(const aiVector2D& head, const aiVector2D& tail) {
+    aiVector2D getVectorBetween(const aiVector2D& head, const aiVector2D& tail) const {
         return aiVector2D(head.x-tail.x, head.y-tail.y);
     }
     
+    float getDistance(const aiVector2D & p1, const aiVector2D & p2) const {
+        return (getVectorBetween(p1, p2).Length());
+    }
+    aiVector2D getMidpoint(const aiVector2D & p1, const aiVector2D & p2) const {
+        aiVector2D midpointDisplacement = getVectorBetween(p2, p1); //p2 head, p1 tail
+        midpointDisplacement *= 0.5f; //Shorten the vector by half
+        return (p1 + midpointDisplacement);
+    }
+    
     float getTriangleArea(const aiVector2D& p0, const aiVector2D& p1, const aiVector2D& p2) const {
-       
         return abs(((-p1.x*p0.y + p2.x*p0.y + p0.x*p1.y - p2.x*p1.y - p0.x*p2.y + p1.x*p2.y) / 2.0f));
         //(-x1*y0 + x2*y0 + x0*y1 - x2*y1 - x0*y2 + x1*y2); //Computation to be performed (basically just a determinant)
     }
@@ -231,12 +242,12 @@ public:
     //TODO Add more functions here once more Collision Detection shape classes are in place
 
     //CollisionBox Distance/Direction finding functions using boxes midpoint (instead of edges)
-    float getDistanceBetweenMidpoints(const AACollisionBox & otherBox) const;
-    aiVector2D getVectorBetweenMidpoints (const AACollisionBox & otherBox) const;
-    float getDistanceFromMidpointToPoint(const aiVector2D & point) const;
-    aiVector2D getVectorFromMidpointToPoint(const aiVector2D & point) const;
-    float getDistanceFromMidpointToPoint(const float & x, const float & y) const;
-    aiVector2D getVectorFromMidpointToPoint(float x, float y) const;
+    float getDistanceBetweenMidpoints(const AACollisionBox & otherBox) const;     //NEEDS TO BE IMPLEMENTED!
+    aiVector2D getVectorBetweenMidpoints (const AACollisionBox & otherBox) const; //NEEDS TO BE IMPLEMENTED
+    float getDistanceFromMidpointToPoint(const aiVector2D & point) const; //NEEDS TO BE IMPLEMENTED
+    aiVector2D getVectorFromMidpointToPoint(const aiVector2D & point) const; //NEEDS TO BE IMPLEMENTED
+    float getDistanceFromMidpointToPoint(const float & x, const float & y) const; //NEEDS TO BE IMPLEMENTED
+    aiVector2D getVectorFromMidpointToPoint(float x, float y) const; //NEEDS TO BE IMPLEMENTED
 
     //Function to facilitate seperating objects if their boxes overlap
     void moveApartAlongAxisBetweenClosestDetectedPoints(AACollisionBox & other);
@@ -257,12 +268,18 @@ public:
     //These next two return formated position values for drawing various primatives
     void getRectCornersTriangles3D(float * bufferOfEighteenFloats) const; //sets x,y,z values
     void getRectCornersLines3D(float * bufferOfTwentyfourFloats) const; //sets x,y,z values
+    
     //Gets the Sample points most recently used in collision detection
-    void getCollisionDetectionSamplePointsBoxToBox(float * bufferOf200Floats);
-    void getCollisionDetectionSamplePointsBoxToBoxMidpoint(float * bufferOf200Floats);
-    void getCollisionDetectionSamplePointsBoxMidpointToBoxMidpoint(float * bufferOfFourFloats);
+    void resetCollisionDetectionSamplePoints();
+    void getCollisionDetectionSamplePointsBoxMidpointToBoxMidpoint(float * bufferOfFourFloats, const AACollisionBox &) const;
+    std::vector<float>* getCollisionDetectionSamplePoints() const;
+    std::vector<float>* getCollisionDetectionSamplePointsThisOnly() const;
+    
+    
     //TODO Add more getters once different collision detection geometry is in place
 
+    
+    
     //--------------------------------------------------------------------------
     //                Debug Message Activation/Deactivation
     //--------------------------------------------------------------------------

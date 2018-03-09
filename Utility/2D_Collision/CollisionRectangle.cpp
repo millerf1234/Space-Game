@@ -786,8 +786,9 @@ void CollisionRectangle::moveApartAlongAxisBetweenMidpoints(CollisionRectangle &
         }
         return;
     }
-    //The way I am going to write this is going to be terribly inefficient, kinda a brute force attemp
-    //float stepsize = STEP_SIZE; //Just use the constant directly
+    //The way I am going to write this is going to be terribly inefficient, kinda a brute force attempt
+    //Bascially I check to see if they are overlapping, and while they are overlapping, I move the midpoints apart by
+    //a small amout
     aiVector2D displacement(this->midpoint.x - otherRect.midpoint.x, this->midpoint.y - otherRect.midpoint.y);
     if (displacement.Length() == 0.0f) {return;}
     //Start moving the two rectangles apart until they are no longer overlapping

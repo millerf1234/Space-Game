@@ -142,6 +142,8 @@ static const int DEFAULT_OPENGL_VERSION_MINOR = 1;  //x.1
 static constexpr float PLAYER_SIZE = 75.0f; //Larger numbers means smaller player size
 static constexpr int PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES = 18; //~15 is a good value
 
+static constexpr int COLLISION_SAMPLE_POINTS = 10; //Must be multiple of 2, should be 10 or greater
+
 //Don't change this next value from -2.94231f
 constexpr float PLAYER_ENGINE_FLAME_REAR_POSITION = -2.94231f;
 
