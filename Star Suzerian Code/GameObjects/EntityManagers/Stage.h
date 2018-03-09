@@ -20,10 +20,10 @@
 static constexpr int STAGE_VERTS_SIZE = 4*(2+3+2);
 static constexpr GLfloat STAGE_VERTS[] = {
     
-    // Position                     Color                      Texture (U/V)
+    // Position                     Color                     Texture (U/V)
     -1.0f,  1.0f,            0.0f,   0.0f,   0.0f,            0.0f, 0.0f, //  Top-left corner   //0
-    1.0f,  1.0f,            0.0f,   0.0f,   0.0f,            1.0f, 0.0f, //  Top-right corner  //1
-    1.0f, -1.0f,            0.0f,   0.0f,   0.0f,            1.0f, 1.0f, // Lower-right corner //2
+     1.0f,  1.0f,            0.0f,   0.0f,   0.0f,            1.0f, 0.0f, //  Top-right corner  //1
+     1.0f, -1.0f,            0.0f,   0.0f,   0.0f,            1.0f, 1.0f, // Lower-right corner //2
     -1.0f, -1.0f,            0.0f,   0.0f,   0.0f,            0.0f, 1.0f  // Lower-left corner  //3
     
     ////Way to Many Moons
@@ -40,7 +40,7 @@ static constexpr GLfloat STAGE_VERTS[] = {
 //    -3.0f, -3.0f,            0.0f,   0.0f,   0.0f,            0.0f, 1.0f  // Lower-left corner  //3
 };
 
-static constexpr int STAGE_ELEMENTCOUNT = 2*3;
+static constexpr int STAGE_ELEMENTCOUNT = 2*3; //two triangles
 static constexpr GLuint STAGE_ELEMENTS[] {  //                 t1 ___    /|
     0, 1, 2, //Triangle 1 (top-left, top-right, lower-right)     |  /   / | (Oops these are not correct)
     2, 3, 0  //Triangle 2 (lower-right, lower-left, top-left)    | /   /__| t2

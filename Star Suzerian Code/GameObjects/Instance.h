@@ -1,6 +1,8 @@
 //
 //  Instance.h
 //
+//  This header will eventually be broken apart into each class in its own file
+//
 //  Created by Forrest Miller on 2/19/18.
 //
 
