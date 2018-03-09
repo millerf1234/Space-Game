@@ -40,6 +40,8 @@
 		9ED77219203930F200D569A4 /* Generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED77217203930F100D569A4 /* Generator.cpp */; };
 		9ED7721D2039516500D569A4 /* Stage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED7721B2039516500D569A4 /* Stage.cpp */; };
 		9EFA4CA32051D9B000308177 /* WeaponManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EFA4CA12051D9B000308177 /* WeaponManager.cpp */; };
+		9EFA4CA72053366600308177 /* Impact2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EFA4CA52053366600308177 /* Impact2D.cpp */; };
+		9EFA4CAB20533D7000308177 /* VectorOps.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EFA4CA920533D7000308177 /* VectorOps.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -138,6 +140,10 @@
 		9EFA4CA02051D89D00308177 /* WeaponTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponTracker.h; sourceTree = "<group>"; };
 		9EFA4CA12051D9B000308177 /* WeaponManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = WeaponManager.cpp; sourceTree = "<group>"; };
 		9EFA4CA22051D9B000308177 /* WeaponManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponManager.h; sourceTree = "<group>"; };
+		9EFA4CA52053366600308177 /* Impact2D.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Impact2D.cpp; sourceTree = "<group>"; };
+		9EFA4CA62053366600308177 /* Impact2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Impact2D.h; sourceTree = "<group>"; };
+		9EFA4CA920533D7000308177 /* VectorOps.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VectorOps.cpp; sourceTree = "<group>"; };
+		9EFA4CAA20533D7000308177 /* VectorOps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VectorOps.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -328,13 +334,10 @@
 		9E10D5CE2032CD6E00F0F724 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				9EFA4CA820533D5200308177 /* Math */,
 				9ECC63902047B63C00F7B703 /* 3D_Collision */,
 				9ECC638C2046A6A200F7B703 /* 2D_Collision */,
 				9E0754EE203B8B3A009B6215 /* Experimental_Or_Unfinished */,
-				9E10D5D12032CEDB00F0F724 /* NGon.cpp */,
-				9E10D5D52032CEDB00F0F724 /* NGon.h */,
-				9E10D5D42032CEDB00F0F724 /* Quaternion.cpp */,
-				9E10D5D62032CEDC00F0F724 /* Quaternion.h */,
 				9E10D5D22032CEDB00F0F724 /* ShaderWrapper.cpp */,
 				9E10D5D32032CEDB00F0F724 /* ShaderWrapper.h */,
 				9E10D5CF2032CEDA00F0F724 /* SimpleObjLoader.cpp */,
@@ -365,6 +368,8 @@
 				9ECC638E2046A6C000F7B703 /* CollisionRectangle.h */,
 				9E8FF847204DDD29006E2392 /* AACollisionBox.cpp */,
 				9E8FF848204DDD29006E2392 /* AACollisionBox.h */,
+				9EFA4CA52053366600308177 /* Impact2D.cpp */,
+				9EFA4CA62053366600308177 /* Impact2D.h */,
 			);
 			path = 2D_Collision;
 			sourceTree = "<group>";
@@ -439,6 +444,19 @@
 			path = EntityManagers;
 			sourceTree = "<group>";
 		};
+		9EFA4CA820533D5200308177 /* Math */ = {
+			isa = PBXGroup;
+			children = (
+				9E10D5D12032CEDB00F0F724 /* NGon.cpp */,
+				9E10D5D52032CEDB00F0F724 /* NGon.h */,
+				9E10D5D42032CEDB00F0F724 /* Quaternion.cpp */,
+				9E10D5D62032CEDC00F0F724 /* Quaternion.h */,
+				9EFA4CA920533D7000308177 /* VectorOps.cpp */,
+				9EFA4CAA20533D7000308177 /* VectorOps.h */,
+			);
+			path = Math;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -497,6 +515,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9E0754F1203B8B58009B6215 /* QuickHull.cpp in Sources */,
+				9EFA4CA72053366600308177 /* Impact2D.cpp in Sources */,
 				9ED77219203930F200D569A4 /* Generator.cpp in Sources */,
 				9E8FF849204DDD29006E2392 /* AACollisionBox.cpp in Sources */,
 				9E10D5D72032CEDC00F0F724 /* SimpleObjLoader.cpp in Sources */,
@@ -512,6 +531,7 @@
 				9ED772142036CE1600D569A4 /* TextureWrapper.cpp in Sources */,
 				9E10D5D82032CEDC00F0F724 /* NGon.cpp in Sources */,
 				9E10D5D92032CEDC00F0F724 /* ShaderWrapper.cpp in Sources */,
+				9EFA4CAB20533D7000308177 /* VectorOps.cpp in Sources */,
 				9E10D5DA2032CEDC00F0F724 /* Quaternion.cpp in Sources */,
 				9E10D59A203234CC00F0F724 /* main.cpp in Sources */,
 				9E10D5B4203237BB00F0F724 /* glad.c in Sources */,

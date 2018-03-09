@@ -218,6 +218,12 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
                 std::cout << std::endl;
             }
         }
+        if (vertexData->isLoaded) {
+            std::cout << "                Model loaded successfully. Model triangle count: " << this->vertexData->model.faces << std::endl;
+        }
+        else {
+            std::cout << "                OPPS! There was an error loading this model!" << std::endl;
+        }
     }
     
     //Might want to delete the objLoader once I have all of the data from it
@@ -297,9 +303,16 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
     
     //Set type-specific uniform location
     if (this->specialization == STAGE) {
+        //Pretend I am printing out this next message earlier in the code (it won't matter)
+        std::cout << "            Loading Stage Model...\n";
+        std::cout << "                Model Loaded Succcessfully. Model triangle count: 2" << std::endl;
+        std::cout << "            Loading Stage Shader...\n";
         //Currently STAGE has no unique uniforms that need to be set.
+        std::cout << "                Stage Shader Loaded...\n";
     }
     else if (this->specialization == PLAYER) {
+        std::cout << "            Loading Player Shaders..." << std::endl;
+        std::cout << "                Creating Body shader...\n";
         //Set the uniform locations for PLAYER
         ulocRed = glGetUniformLocation(shaderID, "red");
         ulocGreen = glGetUniformLocation(shaderID, "green");
@@ -308,16 +321,18 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         ulocPHealthMax = glGetUniformLocation(shaderID, "maxHealth");
         ulocPlayerRoll = glGetUniformLocation(shaderID, "earlyThetaZ");
         
-        std::cout << "\nDEBUG:\n        ulocRed = " << ulocRed;
-        std::cout << "\n        ulocGreen = " << ulocGreen;
-        std::cout << "\n        ulocBlue = " << ulocBlue;
-        std::cout << "\n        ulocPDamage = " << ulocPDamage;
-        std::cout << "\n        ulocPHealthMax = " << ulocPHealthMax;
+        if (PRINT_DEBUG_MESSAGES) {
+            std::cout << "\nDEBUG:\n        ulocRed = " << ulocRed;
+            std::cout << "\n        ulocGreen = " << ulocGreen;
+            std::cout << "\n        ulocBlue = " << ulocBlue;
+            std::cout << "\n        ulocPDamage = " << ulocPDamage;
+            std::cout << "\n        ulocPHealthMax = " << ulocPHealthMax;
+        }
+        //(I realize what I am doing here in this next bit of code is very sloppy, inadvisiable and may cause many headaches down the road. Sorry in advance, I really wanna just get something drawing to the screen)
+        std::cout << "                    Body shader ready!\n";
         
-        //(I realize what I am doing here in this next bit of code is very sloppy, inadvisiable and may cause many headaches down the road. Sorry in advance)
         
         //Add extra shaders for the engine effects to ShaderArray
-        std::cout << "\nDEBUG::Creating extra shaders required for PLAYER..." << std::endl;
         this->shaderArraySize = 4;
         ShaderWrapper ** temp = new ShaderWrapper * [shaderArraySize];
         temp[0] = this->shaderArray[0]; //ShaderArray was set to size 1, so need to make it bigger
@@ -328,7 +343,7 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         this->shaderArray[3] = new ShaderWrapper;
 
         //Set up the Line Shader:
-        std::cout << "    Creating outline shader...\n";
+        std::cout << "                Creating Outline shader...\n";
 //        this->shaderArray[1] = new ShaderWrapper;
         this->shaderArray[1]->attachVert((char *)PLAYERSHIP_LINE_VERT.c_str());
         this->shaderArray[1]->attachFrag((char *)PLAYERSHIP_LINE_FRAG.c_str());
@@ -352,21 +367,22 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         ulocThetaZLine = glGetUniformLocation(shaderID, "thetaZ");
         ulocPlayerRollLine = glGetUniformLocation(shaderID, "earlyThetaZ");
         
+        if (PRINT_DEBUG_MESSAGES) {
         std::cout << "    DEBUG::PlayerLineColorLocations: \n";
         std::cout << "ulocRedLine = " << ulocRedLine << std::endl;
         std::cout << "ulocGreenLine = " << ulocGreenLine << std::endl;
         std::cout << "ulocBlueLine = " << ulocBlueLine << std::endl;
-
+        }
         
         if (shaderArray[1]->checkIfReady()) {
-            std::cout << "\n       Outline shader ready!\n";
+            std::cout << "                    Outline shader ready!\n";
         }
         else {
-            std::cout << "\n      OOPS! For some reason Outline shader is showing not ready...\n";
+            std::cout << "                    OOPS! For some reason Outline shader is showing not ready...\n";
         }
         //Set up the main engine shader
 //        this->shaderArray[2] = new ShaderWrapper;
-        std::cout << "    Creating Main engine shader...\n";
+        std::cout << "                Creating Main Engine shader...\n";
         this->shaderArray[2]->attachVert((char *)PLAYERSHIP_ENGINE_VERT.c_str());
         this->shaderArray[2]->attachFrag((char *)PLAYERSHIP_ENGINE_FRAG.c_str());
         
@@ -386,13 +402,13 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         ulocThetaZEngine = glGetUniformLocation(shaderID, "thetaZ");
         //no ulocPlayerRoll = glGetUniformLocation(shaderID, "earlyThetaZ"); //Because main engine is symmetric about roll axis (I actually later hack this into place so I can use same shader for side and main engines)
         if (shaderArray[2]->checkIfReady()) {
-            std::cout << "\n       Main Engine shader ready!\n";
+            std::cout << "                    Main Engine shader ready!\n";
         }
         else {
-            std::cout << "\n      OOPS! For some reason Main Engine shader is showing not ready...\n";
+            std::cout << "                    OOPS! For some reason Main Engine shader is showing not ready...\n";
         }
         
-        std::cout << "    Creating Side engine shader...\n";
+        std::cout << "                Creating Side Engine shader...\n";
         //        this->shaderArray[3] = new ShaderWrapper;
         this->shaderArray[3]->attachVert((char *)PLAYERSHIP_ENGINE_VERT.c_str());
         this->shaderArray[3]->attachFrag((char *)PLAYERSHIP_ENGINE_FRAG.c_str());
@@ -413,13 +429,32 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         ulocPlayerRollEngineSide = glGetUniformLocation(shaderID, "earlyThetaZ");
         
         if (shaderArray[3]->checkIfReady()) {
-            std::cout << "\n       Side Engine shader ready!\n";
+            std::cout << "                    Side Engine shader ready!\n";
         }
         else {
-            std::cout << "\n      OOPS! For some reason Side Engine shader is showing not ready...\n";
+            std::cout << "                    OOPS! For some reason Side Engine shader is showing not ready...\n";
         }
-        std::cout << "\nAll shaders for Player finished building!\n";
+        
+        //Check all shaders to see if ready
+        bool allShadersGood = true;
+        for (int i = 0; i < this->shaderArraySize; ++i) {
+            if (!shaderArray[i]->checkIfReady()) {
+                allShadersGood = false;
+            }
+        }
+        
+        if (allShadersGood) {
+            std::cout << "            All shaders for Player finished building!\n";
+            std::cout << "        Player finished loading... \n";
+        }
+        else {
+            std::cout << "            OOPS! One or more Shaders for player did not load correctly!" << std::endl;
+            std::cout << "        Player failed to load completely... \n";
+        }
+        
+        //std::cout << "        Player finished loading... \n";
     }
+    
     else if (this->specialization == WEAPON) {
         //Set the uniform locations for WEAPON
     }

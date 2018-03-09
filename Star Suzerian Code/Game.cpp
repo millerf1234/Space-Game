@@ -11,7 +11,7 @@
 //Constructor
 Game::Game(MonitorData & mPtr) {
     //Make the rotation quaternions (4th parameter is starting theta)
-    std::cout << INDENT << "Generating Global Rotation Quaternions..." << std::endl;
+    std::cout << INDENT << "Generating Global Rotation Quaternions...";
     xRot = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f); //rotation about x axis
     yRot = new Quaternion(0.0f, 1.0f, 0.0f, 0.0f); //rotation about y axis
     zRot = new Quaternion(0.0f, 0.0f, 1.0f, 0.0f); //rotation about z axis
@@ -23,6 +23,7 @@ Game::Game(MonitorData & mPtr) {
     
     this->mWindow = mPtr.activeMonitor; //Set window to the active window 
     
+    std::cout << "Done" << std::endl;
 }
 
 //Destructor (basically does a 'delete x' for every 'new x' that was called in the constructor)
@@ -82,22 +83,23 @@ void Game::playIntroMovie() {  }
 //vector, the only way they will be deleted is also through the vector.
 void Game::loadGameObjects() {
     //Load the stages first
-    std::cout << std::endl << INDENT << "Loading Stage Models...\n";
+    std::cout << std::endl << std::endl << INDENT << "Loading Stage...\n";
     //for (int i = 0; i < NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD; ++i) {
         gEntities.push_back(new Stage);
-        std::cout << INDENT << "    Level " << /*i*/0+1 << " loaded..." << std::endl;
+        std::cout << INDENT << "Level " << /*i*/0+1 << " loaded..." << std::endl;
     //}
     //Since I am no longer doing the loop, do:
     stage = static_cast<Stage*> (gEntities[0]);
     
     //Then load all parts required for a PLAYER object
-    std::cout /* << std::endl */ << INDENT << "Loading PlayerModels...\n";
+    std::cout << std::endl << INDENT << "Loading Player...\n";
+    std::cout << INDENT << "    Loading Player Model...\n";
     gEntities.push_back(new PlayerManager);
     playerManager = static_cast<PlayerManager *>(gEntities[1]);
     
     //Then load all parts required to have Rockets
-    std::cout << "Loading Rockets...\n";
-    gEntities.push_back(new RocketManager);
+    std::cout << std::endl << INDENT << "Loading Weapons...\n";
+    //gEntities.push_back(new RocketManager);
     rocketManager = static_cast<RocketManager *>(gEntities[2]);
     
     

@@ -131,6 +131,7 @@ private:
     int adjacencyList[8][3]; //An Array containing the adjacent indices to each corner
     
 protected:
+    float zPlane2D, zMidpointOffset3D;
     //If the model is larger in one direction that in it's opposite, the longer
     //axis becomes the major and the shorter axis becomes the minor.
     aiVector3D xAxisMajor, yAxisMajor, zAxisMajor, xAxisMinor, yAxisMinor, zAxisMinor;
@@ -262,12 +263,15 @@ public:
     //--------------------------------------------------------------------------
     //                 Box Position Coordinate Functions (for drawing)
     //--------------------------------------------------------------------------
+    void setZPlaneValueForRect2D(float zValue); //Used for changing the zPlane
+    void setZMidpointValueForCuboid3D(float zValue); //Used for translating 3D box midpoint in z direction
+    
     void getRotatedMajorMinor3D(float * bufferOfThirtysixFloats) const;
     //Functions to help faciliate drawing the collision box
     void getRect2DCornerPoints2D(float * bufferOfEightFloats) const; //sets x,y values
     void getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const; //sets x,y,z values
     
-    void getCubiodTriangles3D(float * bufferOfThirtysixFloats) const;//(NOTE: HAVE TESTed THIS ONE, IT WORKS WELL. DONT CHANGE!)
+    void getCubiodTriangles3D(float * bufferOf108Floats) const;//(NOTE: HAVE TESTed THIS ONE, IT WORKS WELL. DONT CHANGE!)
     //These next two return formated position values for drawing various primatives
     void getRectCornersTriangles3D(float * bufferOfEighteenFloats) const; //sets x,y,z values
     void getRectCornersLines3D(float * bufferOfTwentyfourFloats) const; //sets x,y,z values

@@ -11,6 +11,8 @@ static const float STEP_SIZE = 0.01f; //Used for seperating two overlapping Coll
 static const int CUBOID_CORNERS = 8;
 static const int BOX_CORNERS = 4;
 static const int NOT_SET = -1;
+
+// (Note to self) FUDGE_FACTOR could probably be renaimed FLOP_TOLERANCE or just TOLERANCE
 //FUDGE_FACTOR is used to make there be a max/min x-y value in case there is a tie when generating 2D box
 static const float FUDGE_FACTOR = 0.00001f; //FUDGE_FACTOR should be at least an order of magnitude less than the
                                             //smallest rotation change amount
@@ -1042,25 +1044,25 @@ void AACollisionBox::getRect2DCornerPoints2D(float * bufferOfEightFloats) const 
 void AACollisionBox::getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const {
     bufferOfTwelveFloats[0] = this->corners2D[0].x;
     bufferOfTwelveFloats[1] = this->corners2D[0].y;
-    bufferOfTwelveFloats[2] = -0.5f;
+    bufferOfTwelveFloats[2] = zPlane2D;
     
     bufferOfTwelveFloats[3] = this->corners2D[1].x;
     bufferOfTwelveFloats[4] = this->corners2D[1].y;
-    bufferOfTwelveFloats[5] = -0.5f;
+    bufferOfTwelveFloats[5] = -zPlane2D;
     
     bufferOfTwelveFloats[6] = this->corners2D[2].x;
     bufferOfTwelveFloats[7] = this->corners2D[2].y;
-    bufferOfTwelveFloats[8] = -0.5f;
+    bufferOfTwelveFloats[8] = -zPlane2D;
     
     bufferOfTwelveFloats[9] = this->corners2D[3].x;
     bufferOfTwelveFloats[10] = this->corners2D[3].y;
-    bufferOfTwelveFloats[11] = -0.5f;
+    bufferOfTwelveFloats[11] = -zPlane2D;
 }
 
 //DEBUG::This one tested and it works
 void AACollisionBox::getCubiodTriangles3D(float * bufferOf108Floats) const {
     aiVector3D modelTranslantedCorners3D[8];
-    aiVector3D midpoint3D = aiVector3D(midpoint.x, midpoint.y, 0.0f);
+    aiVector3D midpoint3D = aiVector3D(midpoint.x, midpoint.y, zMidpointOffset3D);
     for (int i = 0; i < CUBOID_CORNERS; ++i) {
         //corners3D[i] = this->corners3D[i];
         modelTranslantedCorners3D[i] = (midpoint3D + this->corners3D[i]) * scale;
@@ -1309,6 +1311,8 @@ void AACollisionBox::initialize() {
     printDebugMessages = false; //Toggle printing out basic information to screen
     printDebugWarnings = true; //Toggle improper use/potentially unintended behavior warnings
     //Initialize object fields
+    zPlane2D = -0.5f;
+    zMidpointOffset3D = 0.0f;
     hasModelData = false;
     xAxisSymmetry = yAxisSymmetry = zAxisSymmetry = true; //because 0 vector has symmetry
     rotationOrder = nullptr;
@@ -1500,10 +1504,19 @@ bool AACollisionBox::hasNoArea() const {
     if (!hasModelData) {return true;}
     //Math note: This can be used to determine if three points are colinear (might be overkill?):
     //                http://mathworld.wolfram.com/Cayley-MengerDeterminant.html
-    return (abs(getQuadrilateralArea()) <= 0.000001f); //See if the quad area is (nearly) 0.0ƒ
+    return (getQuadrilateralArea() <= FUDGE_FACTOR); //See if the quad area is (nearly) 0.0f
 }
 
 float AACollisionBox::getQuadrilateralArea() const {
+    if (!hasModelData) {
+        if (printDebugWarnings || printDebugMessages) {
+            std::string message = " \nDEBUG::WARNING!:"
+            "getQuadrilateralArea called on this collision box\n"
+            "yet this collision box never had model data set to it!" ;
+            std::cout << message << std::endl;
+            return FUDGE_FACTOR; //Return a small number to prevent potential Divide By Zero errors
+        }
+    }
     //(x0,y0) will be point with maximum x value, (x1,y1) will be point with max y value, (x2,y2) min x value, (x3,y3) min y val
     float x0 = corners2D[0].x; //So 0 and 2 will be on opposite sides
     float y0 = corners2D[0].y;

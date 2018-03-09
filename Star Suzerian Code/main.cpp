@@ -33,20 +33,34 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     //looks like glGetString comes with a terminating new line. To remove this newline, do:
     //      str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());  //where str is a string
     
-    std::cout << std::endl << std::endl << "Launching Game..." << std::endl;
+    std::cout << std::endl << std::endl << "Preparing To Launch Game..." << std::endl;
     
     std::cout << "    Generating a new instance of the game..." << std::endl;
     Game Game(detectedDisplayInfo); //Create an instance of the game and tell
     //the instance about all the monitor setup that has been done thus far.
-    std::cout << "Done\n    Loading Models...";
-    Game.loadGameObjects();
-    std::cout << "Done\n    Loading Shaders...";
-   // Game.loadShaders();
-    std::cout << "Done\n    Loading Textures...";
-    //Game.loadTextures();
-    std::cout << "Done\n" << std::endl;
-    std::cout << "Game Launched." << std::endl << std::endl;
+    
+    
+    
+//    //How I initially imagined loading would work:
+//    std::cout << "Done\n    Loading Models...";
+//    Game.loadGameObjects();
+//    std::cout << "Done\n    Loading Shaders...";
+//   // Game.loadShaders();
+//    std::cout << "Done\n    Loading Textures...";
+//    //Game.loadTextures();
+//    std::cout << "Done\n" << std::endl;
+//    std::cout << "Game Launched." << std::endl << std::endl;
    
+    
+    
+    //How loading actually works:
+    std::cout << "    Loading Game Assets...";
+    Game.loadGameObjects();
+    std::cout << "    Finished Loading Game Assets.\n" << std::endl;
+    std::cout << "Game Launched." << std::endl << std::endl;
+    
+    
+    
     //Game.playIntroMovie(); //Implement later
     
     

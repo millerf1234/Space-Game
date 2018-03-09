@@ -12,6 +12,8 @@
 //  encompass the 3D object's screenspace, even as the 3D object undergoes rotations
 //  in 3D.
 //
+//
+//  TL;DR   Use the AACOllisionRectangle/Don't use this class
 //  CollisionRectangle.h
 //
 //  Created by Forrest Miller on 2/28/18.
