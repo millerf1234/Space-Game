@@ -11,6 +11,10 @@ static const float STEP_SIZE = 0.01f; //Used for seperating two overlapping Coll
 static const int CUBOID_CORNERS = 8;
 static const int BOX_CORNERS = 4;
 static const int NOT_SET = -1;
+//FUDGE_FACTOR is used to make there be a max/min x-y value in case there is a tie when generating 2D box
+static const float FUDGE_FACTOR = 0.00001f; //FUDGE_FACTOR should be at least an order of magnitude less than the
+                                            //smallest rotation change amount
+//              NOTE THAT FUDGE FACTOR OF 0.000001f causes a crash because value is too small
 
 //------------------------------------------------------------------------
 //              CONSTRUCTORS
@@ -541,6 +545,7 @@ void AACollisionBox::presetRotationOrderSize(int size) {
 }
 
 void AACollisionBox::addToRotationOrder(const Quaternion & rQuat) { //'rQuat' for rotation quaternion
+    useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     //Check to see if need to create a new rotationOrder array
     if (rotationOrder == nullptr) {
         rotationOrderSize = 1;
@@ -620,6 +625,7 @@ void AACollisionBox::addToRotationOrder(const Quaternion & rQuat) { //'rQuat' fo
     }
 }
 void AACollisionBox::changeRotationAt(int index, float theta) {
+    useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index >= rotationOrderSize || index < 0) {
         if (printDebugMessages || printDebugWarnings) {
             std::cout << "\nDEBUG::OOPS! YOU ARE TRYING TO CHANGE THE ROTATION OF A QUATERNION\n";
@@ -640,6 +646,7 @@ void AACollisionBox::changeRotationAt(int index, float theta) {
     doRotationsAndRecalculate();
 }
 void AACollisionBox::changeRotitationAxisAt(int index, const Quaternion & rQuat) {
+    useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index >= rotationOrderSize || index < 0) {
         if (printDebugMessages || printDebugWarnings) {
             std::cout << "\nDEBUG::OOPS! YOU ARE TRYING TO CHANGE THE ROTATION OF A QUATERNION\n";
@@ -661,6 +668,7 @@ void AACollisionBox::changeRotitationAxisAt(int index, const Quaternion & rQuat)
     doRotationsAndRecalculate();
 }
 void AACollisionBox::changeRotitationAxisAt(int index, const aiVector3D & axis, float theta) {
+    useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index >= rotationOrderSize || index < 0) {
         if (printDebugMessages || printDebugWarnings) {
             std::cout << "\nDEBUG::OOPS! YOU ARE TRYING TO CHANGE THE ROTATION OF A QUATERNION\n";
@@ -685,6 +693,7 @@ void AACollisionBox::changeRotitationAxisAt(int index, const aiVector3D & axis, 
     doRotationsAndRecalculate();
 }
 void AACollisionBox::changeRotitationAxisAt(int index, float x, float y, float z, float theta) {
+    useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index >= rotationOrderSize || index < 0) {
         if (printDebugMessages || printDebugWarnings) {
             std::cout << "\nDEBUG::OOPS! YOU ARE TRYING TO CHANGE THE ROTATION OF A QUATERNION\n";
@@ -732,6 +741,7 @@ float AACollisionBox::getRotationThetaAt(int index) {
 }
 
 void AACollisionBox::clearRotationOrder() {
+    useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     for (int i = 0; i < this->rotationOrderSize; ++i) {
         if (rotationOrder[i] != nullptr) {
             delete rotationOrder[i];
@@ -742,6 +752,7 @@ void AACollisionBox::clearRotationOrder() {
     doRotationsAndRecalculate();
 }
 void AACollisionBox::removeRotationAtIndex(int index) {
+    useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index < 0 || index > rotationOrderSize) { //If index given is bogus...
         if (printDebugMessages || printDebugWarnings) { //Print a debug message is debug messages turned on
             std::cout << "\nDEBUG::OOPS! Attempting to remove rotation at index " << index;
@@ -1326,6 +1337,8 @@ void AACollisionBox::initialize() {
     collisionSamplePointsAll = new std::vector<float>;
     collisionSamplePointsThis = new std::vector<float>;
     
+    hiddenRotation = Quaternion(0.0f, 0.0f, 1.0f, FUDGE_FACTOR); //Fudge factor
+    useHiddenRotation = false; //Only use the hidden rotation if it is needed
 }
 
 void AACollisionBox::buildCornerAdjacencyList() { //Note that this function must be called before any rotations occur
@@ -1417,11 +1430,20 @@ void AACollisionBox::doRotationsAndRecalculate() {
             }
         }
     }
+    if (useHiddenRotation) { //Then do the hidden rotation at the end
+        xAxisMajor = hiddenRotation.computeRotation(xAxisMajor);
+        xAxisMinor = hiddenRotation.computeRotation(xAxisMinor);
+        yAxisMajor = hiddenRotation.computeRotation(yAxisMajor);
+        yAxisMinor = hiddenRotation.computeRotation(yAxisMinor);
+        zAxisMajor = hiddenRotation.computeRotation(zAxisMajor);
+        zAxisMinor = hiddenRotation.computeRotation(zAxisMinor);
+    }
     setCorners3D(); //Set the 3D corners array to the rotated values
     calculateSelfAfterTranslations();
 }
 
 void AACollisionBox::calculateSelfAfterTranslations() {
+    if (!hasModelData) {return;}
     //We know that corners3D will have already been set, so construct 2D box directly from corners3D
     aiVector3D modelTranslatedCorners3D[8];
     aiVector3D midpoint3D = aiVector3D(midpoint.x, midpoint.y, 0.0f);
@@ -1455,13 +1477,23 @@ void AACollisionBox::calculateSelfAfterTranslations() {
             minYIndex = i;
         }
     }
-    //Note that constructing this way causes issues if two points tied for same max/min x or y value
-    //So to fix this boundary condition, check to see if any two points are th
     corners2D[0] = aiVector2D(modelTranslatedCorners3D[maxXIndex].x, modelTranslatedCorners3D[maxXIndex].y); //Max x
     corners2D[1] = aiVector2D(modelTranslatedCorners3D[maxYIndex].x, modelTranslatedCorners3D[maxYIndex].y); //Max y
     corners2D[2] = aiVector2D(modelTranslatedCorners3D[minXIndex].x, modelTranslatedCorners3D[minXIndex].y); //Min x
     corners2D[3] = aiVector2D(modelTranslatedCorners3D[minYIndex].x, modelTranslatedCorners3D[minYIndex].y); //Min y
 
+    //Note that constructing this way causes issues if two points tied for same max/min x or y value
+    //So to fix this boundary condition, check to see if any two corners were set to the same coordinates
+    if ((corners2D[0].x == corners2D[1].x && corners2D[0].y == corners2D[1].y) || //Don't need to check corners on opposite sides
+        (corners2D[1].x == corners2D[2].x && corners2D[1].y == corners2D[2].y) ||
+        (corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) ||
+        (corners2D[3].x == corners2D[0].x && corners2D[3].y == corners2D[0].y) ) {
+        //I could write a seperate algorithm to handle the case of the box being axis align with the basis vectors,
+        //or I could just do this:
+        //Add a hidden rotation
+        useHiddenRotation = true;
+        doRotationsAndRecalculate(); //Redo the 2D box formation process with the hidden rotation included
+    }
 }
 
 bool AACollisionBox::hasNoArea() const {

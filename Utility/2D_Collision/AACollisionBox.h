@@ -112,6 +112,9 @@ private:
     bool xAxisSymmetry, yAxisSymmetry, zAxisSymmetry;
 
     Quaternion ** rotationOrder; //Rotations to be performed, should match rotations on model
+    Quaternion hiddenRotation; //Used to fudge the collision rectangle to give max/min x-y values
+    bool useHiddenRotation; //Used to determine whether to fudge the collision rectangle
+    
     int numberOfRotations; //Number of rotations in the array
     int rotationOrderSize; //The size allocated for the array
 
