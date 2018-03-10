@@ -38,7 +38,7 @@
 #include "TextureWrapper.h" //Contains struct that handles textures
 #include "glad.h" //For GL types and functions
 #include "GameParameters.h"
-#include "AACollisionBox.h"
+#include "CollisionBox.h"
 //#include "PlayerData.h"
 //#include "WeaponData.h"
 //#include "PlayerManager.h" //lots of circular includes I got. Oh well...

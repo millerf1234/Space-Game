@@ -9,7 +9,7 @@
 
 //#include <stdio.h>
 #include "Object.h"
-#include "AACollisionBox.h"
+#include "CollisionBox.h"
 #include "Generator.h"
 #include "GameParameters.h"
 #include "GameEntityManager.h"
@@ -30,7 +30,7 @@ public:
     virtual void handleInput(GLFWwindow*) override;
     virtual void drawInstances() override;
     
-    AACollisionBox colBox;
+    CollisionBox colBox;
     
     Generator * generator;
     

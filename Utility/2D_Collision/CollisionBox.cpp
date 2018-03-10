@@ -4,7 +4,7 @@
 //  Created by Forrest Miller on 3/5/18.
 //
 
-#include "AACollisionBox.h"
+#include "CollisionBox.h"
 
 static const float STEP_SIZE = 0.01f; //Used for seperating two overlapping CollisionBoxes
 
@@ -21,7 +21,7 @@ static const float FUDGE_FACTOR = 0.00001f; //FUDGE_FACTOR should be at least an
 //------------------------------------------------------------------------
 //              CONSTRUCTORS
 //------------------------------------------------------------------------
-AACollisionBox::AACollisionBox() {
+CollisionBox::CollisionBox() {
     initialize();
 }
 
@@ -32,7 +32,7 @@ AACollisionBox::AACollisionBox() {
  @remark  The expected format of the array Data is model data in the form:
  x0,y0,z0,x1,y1,z1,x2,y2,z2,...
  */
-AACollisionBox::AACollisionBox(float * data, int dataPoints) {
+CollisionBox::CollisionBox(float * data, int dataPoints) {
     initialize();
     //Check to make sure model data is complete
     if (dataPoints % 3 != 0) {
@@ -167,7 +167,7 @@ AACollisionBox::AACollisionBox(float * data, int dataPoints) {
     doRotationsAndRecalculate(); //This will set up the box based off the axis data
 }
 
-AACollisionBox::AACollisionBox(aiVector3D * data, int numberOfVectors) {
+CollisionBox::CollisionBox(aiVector3D * data, int numberOfVectors) {
     initialize();
     if (numberOfVectors <= 0) {
         if (printDebugWarnings || printDebugMessages) {
@@ -287,7 +287,7 @@ AACollisionBox::AACollisionBox(aiVector3D * data, int numberOfVectors) {
 //------------------------------------------------------------------------
 //              DESTRUCTOR
 //------------------------------------------------------------------------
-AACollisionBox::~AACollisionBox() {
+CollisionBox::~CollisionBox() {
     //Clear up the dynamic array of rotation quaternions
     if (rotationOrder != nullptr) {
         for (int i = 0; i < rotationOrderSize; ++i) {
@@ -313,7 +313,7 @@ AACollisionBox::~AACollisionBox() {
 //------------------------------------------------------------------------
 //              Set Model Data Function
 //------------------------------------------------------------------------
-void AACollisionBox::setFromModelData(float * data, int dataPoints) {
+void CollisionBox::setFromModelData(float * data, int dataPoints) {
     //Should I call initialize again? No, I shouldn't, so rotationOrder doesn't memory leak
     bool dataWasNotTheRightSize = false;
     if (dataPoints % 3 != 0) {
@@ -506,7 +506,7 @@ void AACollisionBox::setFromModelData(float * data, int dataPoints) {
 //------------------------------------------------------------------------
 //              Rotation Functions
 //------------------------------------------------------------------------
-void AACollisionBox::presetRotationOrderSize(int size) {
+void CollisionBox::presetRotationOrderSize(int size) {
     //Allows for space to be allocated for all the rotations before adding them
     if (size <= 0 || size < this->rotationOrderSize) {
         if (printDebugMessages || printDebugWarnings) {
@@ -546,7 +546,7 @@ void AACollisionBox::presetRotationOrderSize(int size) {
     }
 }
 
-void AACollisionBox::addToRotationOrder(const Quaternion & rQuat) { //'rQuat' for rotation quaternion
+void CollisionBox::addToRotationOrder(const Quaternion & rQuat) { //'rQuat' for rotation quaternion
     useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     //Check to see if need to create a new rotationOrder array
     if (rotationOrder == nullptr) {
@@ -626,7 +626,7 @@ void AACollisionBox::addToRotationOrder(const Quaternion & rQuat) { //'rQuat' fo
         }
     }
 }
-void AACollisionBox::changeRotationAt(int index, float theta) {
+void CollisionBox::changeRotationAt(int index, float theta) {
     useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index >= rotationOrderSize || index < 0) {
         if (printDebugMessages || printDebugWarnings) {
@@ -647,7 +647,7 @@ void AACollisionBox::changeRotationAt(int index, float theta) {
     }
     doRotationsAndRecalculate();
 }
-void AACollisionBox::changeRotitationAxisAt(int index, const Quaternion & rQuat) {
+void CollisionBox::changeRotitationAxisAt(int index, const Quaternion & rQuat) {
     useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index >= rotationOrderSize || index < 0) {
         if (printDebugMessages || printDebugWarnings) {
@@ -669,7 +669,7 @@ void AACollisionBox::changeRotitationAxisAt(int index, const Quaternion & rQuat)
     }
     doRotationsAndRecalculate();
 }
-void AACollisionBox::changeRotitationAxisAt(int index, const aiVector3D & axis, float theta) {
+void CollisionBox::changeRotitationAxisAt(int index, const aiVector3D & axis, float theta) {
     useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index >= rotationOrderSize || index < 0) {
         if (printDebugMessages || printDebugWarnings) {
@@ -694,7 +694,7 @@ void AACollisionBox::changeRotitationAxisAt(int index, const aiVector3D & axis, 
     }
     doRotationsAndRecalculate();
 }
-void AACollisionBox::changeRotitationAxisAt(int index, float x, float y, float z, float theta) {
+void CollisionBox::changeRotitationAxisAt(int index, float x, float y, float z, float theta) {
     useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index >= rotationOrderSize || index < 0) {
         if (printDebugMessages || printDebugWarnings) {
@@ -719,7 +719,7 @@ void AACollisionBox::changeRotitationAxisAt(int index, float x, float y, float z
     doRotationsAndRecalculate();
 }
 
-float AACollisionBox::getRotationThetaAt(int index) {
+float CollisionBox::getRotationThetaAt(int index) {
     if (index < 0 || index >= rotationOrderSize) {
         if (printDebugMessages || printDebugWarnings) {
             std::cout << "\nDEBUG::OOPS! YOU ARE TRYING TO RETRIEVE THE ROTATION OF A QUATERNION\n";
@@ -742,7 +742,7 @@ float AACollisionBox::getRotationThetaAt(int index) {
     }
 }
 
-void AACollisionBox::clearRotationOrder() {
+void CollisionBox::clearRotationOrder() {
     useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     for (int i = 0; i < this->rotationOrderSize; ++i) {
         if (rotationOrder[i] != nullptr) {
@@ -753,7 +753,7 @@ void AACollisionBox::clearRotationOrder() {
     numberOfRotations = 0;
     doRotationsAndRecalculate();
 }
-void AACollisionBox::removeRotationAtIndex(int index) {
+void CollisionBox::removeRotationAtIndex(int index) {
     useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index < 0 || index > rotationOrderSize) { //If index given is bogus...
         if (printDebugMessages || printDebugWarnings) { //Print a debug message is debug messages turned on
@@ -785,7 +785,7 @@ void AACollisionBox::removeRotationAtIndex(int index) {
 //              Collision Detection Functions
 //------------------------------------------------------------------------
 
-bool AACollisionBox::isWithin(float x, float y) const {
+bool CollisionBox::isWithin(float x, float y) const {
     if (!hasModelData || hasNoArea()) {return false;}
     //I use the test that is outlined in this link: https://stackoverflow.com/questions/5922027/how-to-determine-if-a-point-is-within-a-quadrilateral
     //The idea is that if the point is inside the quadrilateral, then the sum of the areas of the triangles formed from the interior point to the four side points will equal the area of the quadrilateral. If the triangles area sum is greater, then the point is outside the quadrilateral.
@@ -798,7 +798,7 @@ bool AACollisionBox::isWithin(float x, float y) const {
     return (abs(triangleAreaSum - this->getQuadrilateralArea()) <= 0.00005f); //Just some floating point tolerance in case result is not exactly 0
 }
 
-bool AACollisionBox::isWithin(const aiVector2D & point) const {
+bool CollisionBox::isWithin(const aiVector2D & point) const {
     if (!hasModelData || hasNoArea()) {return false;}
     //See the other version of this function for comments on computation being performed
     float triangleAreaSum = getTriangleArea(corners2D[0], point, corners2D[1]) +
@@ -808,7 +808,7 @@ bool AACollisionBox::isWithin(const aiVector2D & point) const {
     return (abs(triangleAreaSum - this->getQuadrilateralArea()) <= 0.00005f); //Just some floating point tolerance in case result is not exactly 0
 }
 
-bool AACollisionBox::isOverlapping(const AACollisionBox& otherBox) const {
+bool CollisionBox::isOverlapping(const CollisionBox& otherBox) const {
     if (!hasModelData || !(otherBox.hasModelData)) {
         return false;
     }
@@ -876,7 +876,7 @@ bool AACollisionBox::isOverlapping(const AACollisionBox& otherBox) const {
     return false; //If both tests passed without returning, then boxes are not overlapping
 }
 
-void AACollisionBox::moveApartAlongAxisBetweenClosestDetectedPoints(AACollisionBox & other) {
+void CollisionBox::moveApartAlongAxisBetweenClosestDetectedPoints(CollisionBox & other) {
     int samplePoints;
     if (COLLISION_SAMPLE_POINTS % 2 != 0 || COLLISION_SAMPLE_POINTS < 10) {
         samplePoints = 10;
@@ -890,7 +890,7 @@ void AACollisionBox::moveApartAlongAxisBetweenClosestDetectedPoints(AACollisionB
     
 }
 
-void AACollisionBox::moveApartAlongAxisBetweenMidpoints(AACollisionBox & otherBox) {
+void CollisionBox::moveApartAlongAxisBetweenMidpoints(CollisionBox & otherBox) {
     if (!(this->hasModelData) || !(otherBox.hasModelData)) {
         if (printDebugWarnings || printDebugMessages) {
             std::cout << "\nDEBUG::WARNING! MoveApartAlongAxisBetweenMidpointsOtherOnly ";
@@ -916,7 +916,7 @@ void AACollisionBox::moveApartAlongAxisBetweenMidpoints(AACollisionBox & otherBo
 }
 
 
-void AACollisionBox::moveApartAlongAxisBetweenMidpointsThisOnly(AACollisionBox & otherBox) {
+void CollisionBox::moveApartAlongAxisBetweenMidpointsThisOnly(CollisionBox & otherBox) {
     if (!(this->hasModelData) || !(otherBox.hasModelData)) {
         if (printDebugWarnings || printDebugMessages) {
             std::cout << "\nDEBUG::WARNING! MoveApartAlongAxisBetweenMidpointsOtherOnly ";
@@ -938,7 +938,7 @@ void AACollisionBox::moveApartAlongAxisBetweenMidpointsThisOnly(AACollisionBox &
     } while (this->isOverlapping(otherBox));
 }
 
-void AACollisionBox::moveApartAlongAxisBetweenMidpointsOtherOnly(AACollisionBox & otherBox) {
+void CollisionBox::moveApartAlongAxisBetweenMidpointsOtherOnly(CollisionBox & otherBox) {
     if (!(this->hasModelData) || !(otherBox.hasModelData)) {
         if (printDebugWarnings || printDebugMessages) {
             std::cout << "\nDEBUG::WARNING! MoveApartAlongAxisBetweenMidpointsOtherOnly ";
@@ -963,7 +963,7 @@ void AACollisionBox::moveApartAlongAxisBetweenMidpointsOtherOnly(AACollisionBox 
 //              Getters for drawing AACollisionBox
 //------------------------------------------------------------------------
 
-void AACollisionBox::getRotatedMajorMinor3D(float * bufferOfThirtysixFloats) const {
+void CollisionBox::getRotatedMajorMinor3D(float * bufferOfThirtysixFloats) const {
     //Normalize the vectors
     aiVector3D xAxisMajor = this->xAxisMajor;
     //xAxisMajor.NormalizeSafe();
@@ -1027,7 +1027,7 @@ void AACollisionBox::getRotatedMajorMinor3D(float * bufferOfThirtysixFloats) con
     bufferOfThirtysixFloats[35] = 0.0f;
 }
 
-void AACollisionBox::getRect2DCornerPoints2D(float * bufferOfEightFloats) const {
+void CollisionBox::getRect2DCornerPoints2D(float * bufferOfEightFloats) const {
     bufferOfEightFloats[0] = this->corners2D[0].x;
     bufferOfEightFloats[1] = this->corners2D[0].y;
     
@@ -1041,7 +1041,7 @@ void AACollisionBox::getRect2DCornerPoints2D(float * bufferOfEightFloats) const 
     bufferOfEightFloats[7] = this->corners2D[3].y;
 }
 
-void AACollisionBox::getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const {
+void CollisionBox::getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const {
     bufferOfTwelveFloats[0] = this->corners2D[0].x;
     bufferOfTwelveFloats[1] = this->corners2D[0].y;
     bufferOfTwelveFloats[2] = zPlane2D;
@@ -1060,7 +1060,7 @@ void AACollisionBox::getRect2DCornerPoints3D(float * bufferOfTwelveFloats) const
 }
 
 //DEBUG::This one tested and it works
-void AACollisionBox::getCubiodTriangles3D(float * bufferOf108Floats) const {
+void CollisionBox::getCubiodTriangles3D(float * bufferOf108Floats) const {
     aiVector3D modelTranslantedCorners3D[8];
     aiVector3D midpoint3D = aiVector3D(midpoint.x, midpoint.y, zMidpointOffset3D);
     for (int i = 0; i < CUBOID_CORNERS; ++i) {
@@ -1190,7 +1190,7 @@ void AACollisionBox::getCubiodTriangles3D(float * bufferOf108Floats) const {
 }
 
 //These next two return formated position values for drawing various primatives
-void AACollisionBox::getRectCornersTriangles3D(float * bufferOfEighteenFloats) const {
+void CollisionBox::getRectCornersTriangles3D(float * bufferOfEighteenFloats) const {
     //Triangle 1
     bufferOfEighteenFloats[0] = this->corners2D[0].x;
     bufferOfEighteenFloats[1] = this->corners2D[0].y;
@@ -1215,7 +1215,7 @@ void AACollisionBox::getRectCornersTriangles3D(float * bufferOfEighteenFloats) c
 }
 
 //TESTED THIS ONE AND IT WORKS
-void AACollisionBox::getRectCornersLines3D(float * bufferOfTwentyfourFloats) const {
+void CollisionBox::getRectCornersLines3D(float * bufferOfTwentyfourFloats) const {
     bufferOfTwentyfourFloats[0] = this->corners2D[0].x;
     bufferOfTwentyfourFloats[1] = this->corners2D[0].y;
     bufferOfTwentyfourFloats[2] = -0.5f;
@@ -1260,7 +1260,7 @@ void AACollisionBox::getRectCornersLines3D(float * bufferOfTwentyfourFloats) con
 //    bufferOfThirtySixFloats[35] = 0.5f;
 }
 
-void AACollisionBox::resetCollisionDetectionSamplePoints() {
+void CollisionBox::resetCollisionDetectionSamplePoints() {
     if (collisionSamplePointsAll != nullptr) {
         delete collisionSamplePointsAll;
         collisionSamplePointsAll = nullptr; //Don't need this because setting it again on the very next line to a new mem location
@@ -1274,7 +1274,7 @@ void AACollisionBox::resetCollisionDetectionSamplePoints() {
     collisionSamplePointsThis = new std::vector<float>;
 }
 
-void AACollisionBox::getCollisionDetectionSamplePointsBoxMidpointToBoxMidpoint(float * bufferOfSixFloats, const AACollisionBox &otherBox) const {
+void CollisionBox::getCollisionDetectionSamplePointsBoxMidpointToBoxMidpoint(float * bufferOfSixFloats, const CollisionBox &otherBox) const {
     bufferOfSixFloats[0] = otherBox.midpoint.x;
     bufferOfSixFloats[1] = otherBox.midpoint.y;
     bufferOfSixFloats[2] = -0.75f;
@@ -1283,7 +1283,7 @@ void AACollisionBox::getCollisionDetectionSamplePointsBoxMidpointToBoxMidpoint(f
     bufferOfSixFloats[5] = -0.75f;
 }
 
-std::vector<float>* AACollisionBox::getCollisionDetectionSamplePoints() const {
+std::vector<float>* CollisionBox::getCollisionDetectionSamplePoints() const {
     if (collisionSamplePointsAll == nullptr) {
         if (printDebugWarnings) {
             std::cout << "\nDEBUG::WARNING collisionSamplePointsAll is null for this collision box!\n";
@@ -1293,7 +1293,7 @@ std::vector<float>* AACollisionBox::getCollisionDetectionSamplePoints() const {
     return collisionSamplePointsAll;
 }
 
-std::vector<float>* AACollisionBox::getCollisionDetectionSamplePointsThisOnly() const {
+std::vector<float>* CollisionBox::getCollisionDetectionSamplePointsThisOnly() const {
     if (collisionSamplePointsThis == nullptr) {
         if (printDebugWarnings) {
             std::cout << "\nDEBUG::WARNING collisionSamplePointsThis is null for this collision box!\n";
@@ -1306,7 +1306,7 @@ std::vector<float>* AACollisionBox::getCollisionDetectionSamplePointsThisOnly() 
 //------------------------------------------------------------------------
 //              Private Functions
 //------------------------------------------------------------------------
-void AACollisionBox::initialize() {
+void CollisionBox::initialize() {
     //Set debug variables
     printDebugMessages = false; //Toggle printing out basic information to screen
     printDebugWarnings = true; //Toggle improper use/potentially unintended behavior warnings
@@ -1345,7 +1345,7 @@ void AACollisionBox::initialize() {
     useHiddenRotation = false; //Only use the hidden rotation if it is needed
 }
 
-void AACollisionBox::buildCornerAdjacencyList() { //Note that this function must be called before any rotations occur
+void CollisionBox::buildCornerAdjacencyList() { //Note that this function must be called before any rotations occur
     if (!hasModelData) {return;}
     //It turns out that no matter which way the axes are set, the adjacency list remains the same
     adjacencyList[0][0] = 1;  //The list is derived by how the corners3D array will be set in setCorners3D()
@@ -1381,7 +1381,7 @@ void AACollisionBox::buildCornerAdjacencyList() { //Note that this function must
     adjacencyList[7][2] = 6;
 }
 
-void AACollisionBox::setCorners3D() {
+void CollisionBox::setCorners3D() {
     corners3D[0] = xAxisMajor + yAxisMajor + zAxisMajor;
     corners3D[1] = xAxisMajor + yAxisMajor + zAxisMinor;
     corners3D[2] = xAxisMajor + yAxisMinor + zAxisMajor;
@@ -1392,7 +1392,7 @@ void AACollisionBox::setCorners3D() {
     corners3D[7] = xAxisMinor + yAxisMinor + zAxisMinor;
 }
 
-void AACollisionBox::doRotationsAndRecalculate() {
+void CollisionBox::doRotationsAndRecalculate() {
     if (!hasModelData) {return;}
     //Set the major axes (these are the largest values along each axis for the model
     xAxisMajor = aiVector3D(originalMajorsFromModel.x, 0.0f, 0.0f);
@@ -1446,7 +1446,7 @@ void AACollisionBox::doRotationsAndRecalculate() {
     calculateSelfAfterTranslations();
 }
 
-void AACollisionBox::calculateSelfAfterTranslations() {
+void CollisionBox::calculateSelfAfterTranslations() {
     if (!hasModelData) {return;}
     //We know that corners3D will have already been set, so construct 2D box directly from corners3D
     aiVector3D modelTranslatedCorners3D[8];
@@ -1500,14 +1500,14 @@ void AACollisionBox::calculateSelfAfterTranslations() {
     }
 }
 
-bool AACollisionBox::hasNoArea() const {
+bool CollisionBox::hasNoArea() const {
     if (!hasModelData) {return true;}
     //Math note: This can be used to determine if three points are colinear (might be overkill?):
     //                http://mathworld.wolfram.com/Cayley-MengerDeterminant.html
     return (getQuadrilateralArea() <= FUDGE_FACTOR); //See if the quad area is (nearly) 0.0f
 }
 
-float AACollisionBox::getQuadrilateralArea() const {
+float CollisionBox::getQuadrilateralArea() const {
     if (!hasModelData) {
         if (printDebugWarnings || printDebugMessages) {
             std::string message = " \nDEBUG::WARNING!:"
@@ -1539,7 +1539,7 @@ float AACollisionBox::getQuadrilateralArea() const {
 This Code is for finding the largest absolute value in a collection of floats.
 @remark This just returns the maximum value in an array of floats using absolue value
 */
-float AACollisionBox::getMaxFromArray(float * data, int dataSize) {
+float CollisionBox::getMaxFromArray(float * data, int dataSize) {
     float max = 0.0f;
     for (int i = 0; i < dataSize; ++i) {
         if (abs(data[i]) > max) {
@@ -1549,7 +1549,7 @@ float AACollisionBox::getMaxFromArray(float * data, int dataSize) {
     return max;
 }
 
-float AACollisionBox::getMaxFromArrayPositiveOnly(float * data, int dataSize) {
+float CollisionBox::getMaxFromArrayPositiveOnly(float * data, int dataSize) {
     float max = 0.0f;
     for (int i = 0; i < dataSize; ++i) {
         //if (data[i] < 0.0f) {continue;} //
@@ -1560,7 +1560,7 @@ float AACollisionBox::getMaxFromArrayPositiveOnly(float * data, int dataSize) {
     return max;
 }
 //Finds the most negative value in an array of floats
-float AACollisionBox::getMaxFromArrayNegativeOnly(float * data, int dataSize) {
+float CollisionBox::getMaxFromArrayNegativeOnly(float * data, int dataSize) {
     float negMax = 0.0f;
     for (int i = 0; i < dataSize; ++i) {
         if (data[i] < negMax) {

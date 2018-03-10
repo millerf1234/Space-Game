@@ -103,7 +103,7 @@
 //----------------------------------------------------------------------------
 
 
-class AACollisionBox {
+class CollisionBox {
 private:
     //Private fields (variables)
     bool printDebugMessages;
@@ -188,16 +188,16 @@ public:
     //                      Construction/Initialization
     //--------------------------------------------------------------------------
     //Constructors
-    AACollisionBox();
-    AACollisionBox(float * data, int dataPoints); //dataPoints must be a multiple of 3
-    AACollisionBox(aiVector3D *, int numberOfVectors);
-    AACollisionBox(const AACollisionBox &) = delete;//No copy constructor
+    CollisionBox();
+    CollisionBox(float * data, int dataPoints); //dataPoints must be a multiple of 3
+    CollisionBox(aiVector3D *, int numberOfVectors);
+    CollisionBox(const CollisionBox &) = delete;//No copy constructor
 
     //Destructor
-    ~AACollisionBox();
+    ~CollisionBox();
 
     //No copy assignment operator
-    AACollisionBox& operator=(const AACollisionBox &) = delete;
+    CollisionBox& operator=(const CollisionBox &) = delete;
 
     void setFromModelData(float * data, int dataPoints); //Will cause rotationOrder to be cleared
     bool getHasModelData() const {return hasModelData;} //Check to see if box construction successful
@@ -234,11 +234,11 @@ public:
     //Collision Detection Functions
     bool isWithin(float x, float y) const;
     bool isWithin(const aiVector2D & point) const;
-    bool isOverlapping(const AACollisionBox&) const;
+    bool isOverlapping(const CollisionBox&) const;
 
     //CollisionBox Distance/Direction finding functions. Results are approximate
-    float getClosestDistanceToBox(const AACollisionBox & otherBox) const;
-    aiVector2D getClosestDirectionToBox(const AACollisionBox & otherBox) const;
+    float getClosestDistanceToBox(const CollisionBox & otherBox) const;
+    aiVector2D getClosestDirectionToBox(const CollisionBox & otherBox) const;
     float getClosestDistanceToPoint(const aiVector2D & point) const;
     aiVector2D getClosestDirectionToPoint(const aiVector2D & point) const;
     float getClosestDistanceToPoint(const float & x, const float & y) const;
@@ -246,18 +246,18 @@ public:
     //TODO Add more functions here once more Collision Detection shape classes are in place
 
     //CollisionBox Distance/Direction finding functions using boxes midpoint (instead of edges)
-    float getDistanceBetweenMidpoints(const AACollisionBox & otherBox) const;     //NEEDS TO BE IMPLEMENTED!
-    aiVector2D getVectorBetweenMidpoints (const AACollisionBox & otherBox) const; //NEEDS TO BE IMPLEMENTED
+    float getDistanceBetweenMidpoints(const CollisionBox & otherBox) const;     //NEEDS TO BE IMPLEMENTED!
+    aiVector2D getVectorBetweenMidpoints (const CollisionBox & otherBox) const; //NEEDS TO BE IMPLEMENTED
     float getDistanceFromMidpointToPoint(const aiVector2D & point) const; //NEEDS TO BE IMPLEMENTED
     aiVector2D getVectorFromMidpointToPoint(const aiVector2D & point) const; //NEEDS TO BE IMPLEMENTED
     float getDistanceFromMidpointToPoint(const float & x, const float & y) const; //NEEDS TO BE IMPLEMENTED
     aiVector2D getVectorFromMidpointToPoint(float x, float y) const; //NEEDS TO BE IMPLEMENTED
 
     //Function to facilitate seperating objects if their boxes overlap
-    void moveApartAlongAxisBetweenClosestDetectedPoints(AACollisionBox & other);
-    void moveApartAlongAxisBetweenMidpoints(AACollisionBox &);
-    void moveApartAlongAxisBetweenMidpointsThisOnly(AACollisionBox &);
-    void moveApartAlongAxisBetweenMidpointsOtherOnly(AACollisionBox &);
+    void moveApartAlongAxisBetweenClosestDetectedPoints(CollisionBox & other);
+    void moveApartAlongAxisBetweenMidpoints(CollisionBox &);
+    void moveApartAlongAxisBetweenMidpointsThisOnly(CollisionBox &);
+    void moveApartAlongAxisBetweenMidpointsOtherOnly(CollisionBox &);
 
 
     //--------------------------------------------------------------------------
@@ -278,7 +278,7 @@ public:
     
     //Gets the Sample points most recently used in collision detection
     void resetCollisionDetectionSamplePoints();
-    void getCollisionDetectionSamplePointsBoxMidpointToBoxMidpoint(float * bufferOfFourFloats, const AACollisionBox &) const;
+    void getCollisionDetectionSamplePointsBoxMidpointToBoxMidpoint(float * bufferOfFourFloats, const CollisionBox &) const;
     std::vector<float>* getCollisionDetectionSamplePoints() const;
     std::vector<float>* getCollisionDetectionSamplePointsThisOnly() const;
     

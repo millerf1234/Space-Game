@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include "GameEntityManager.h"
-#include "AACollisionBox.h"
+#include "CollisionBox.h"
 #include "Generator.h"
 #include "Quaternion.h"
 #include "GameParameters.h"

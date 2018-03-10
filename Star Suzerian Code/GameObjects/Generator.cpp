@@ -572,7 +572,7 @@ void Generator::generateSingle() {
         instances[newInstanceIndex]->identifierNumber = (nextObjID); //Not sure why this isn;t getting set...or is it...
         //Since the instance is a PLAYER instance, create the collisionBox for the instance
         //instances[newInstanceIndex]->colBox =  new CollisionRectangle(this->vertices, this->numberOfVertices);
-        instances[newInstanceIndex]->colBox = new AACollisionBox(this->vertices, this->numberOfVertices);
+        instances[newInstanceIndex]->colBox = new CollisionBox(this->vertices, this->numberOfVertices);
         instances[newInstanceIndex]->colBox->setScale(1.0f/(PLAYER_SIZE));
         //I will put the colBox rotations into place later, once they are actually set
 //        //Put the Player specific rotation order into place within CollisionRectangle
