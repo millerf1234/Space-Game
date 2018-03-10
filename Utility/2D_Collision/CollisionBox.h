@@ -286,7 +286,6 @@ public:
     //TODO Add more getters once different collision detection geometry is in place
 
     
-    
     //--------------------------------------------------------------------------
     //                Debug Message Activation/Deactivation
     //--------------------------------------------------------------------------

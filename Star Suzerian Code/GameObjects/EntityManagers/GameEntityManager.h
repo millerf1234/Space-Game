@@ -11,6 +11,7 @@
 #include "GameParameters.h"
 #include "Generator.h"
 #include "GLFW_Init.h"
+#include "Impact2D.h"
 
 class GameEntityManager {
 protected:

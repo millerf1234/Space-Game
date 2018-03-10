@@ -29,22 +29,25 @@ public:
     aiVector2D velocity; //Velocity is applied to position in each generator's upkeep function
     float zoom;
     float thetaX, thetaY, thetaZ; //Euler Rotation Angles
-    //collisionBox (eventually...)
+    float mass; //Might use this to make missle/projectile strikes affect player velocity
+    
     float timeAlive;
     InstanceType type;
-    //bool hasCollision; //This is set within EntityManager instead of being attached repeatedly to each instance
+    
     CollisionBox * colBox;
     
     //Constructors
     Instance() {//Construct an anonymous instance
         this->identifierNumber = -1;
         this->type = BASIC;
+        this->mass = 1.0f;
         this->velocity.x = this->velocity.y = 0.0f;
         this->colBox = nullptr;
     }
     Instance(int id) { //Construct an instance that has an ID number
         this->identifierNumber = id;
         this->type = BASIC;
+        this->mass = 1.0f;
         velocity.x = velocity.y = 0.0f;
         this->colBox = nullptr;
     }

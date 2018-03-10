@@ -477,6 +477,10 @@ void PlayerManager::processCollisions() {
     //Just gonna hardcode in something simple knowing I have only 2 players, can make this more robust later
     Instance ** players = generator->getArrayOfInstances();
     
+    Impact2D playerImpact(0.5f);
+    playerImpact.setMass1(100.0f);
+    playerImpact.setMass2(0.25f);
+    
     PlayerInstance * p1 = static_cast<PlayerInstance *>(players[0]);
     PlayerInstance * p2 = static_cast<PlayerInstance *>(players[1]);
     //See if player1 hit player 2
@@ -490,7 +494,10 @@ void PlayerManager::processCollisions() {
         
         p2->position.x = p2BoxMidpoint.x;
         p2->position.y = p2BoxMidpoint.y;
+        
+        playerImpact.computeCollisionSimple(p1->velocity, p2->velocity);
     }
+    
 }
 
 void PlayerManager::generateInitializationTemplate() {
