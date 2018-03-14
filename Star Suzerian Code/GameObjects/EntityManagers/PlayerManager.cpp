@@ -143,6 +143,19 @@ void PlayerManager::handleInput(GLFWwindow* mWindow) {
         if (glfwGetKey(mWindow, '.') == GLFW_PRESS) {
             p2->shoot = true;
         }
+        //Pushing both ',' and KEY_RIGHT while holding KEY_UP cancel eachother out...
+//        glfwPollEvents(); //Hmm seems to be an issue with GLFW!
+//        if (p2->turnRight) {
+//            if (glfwGetKey(mWindow, ',') == GLFW_PRESS) {
+//                p2->rollLeft = true;
+//            }
+//        }
+//        if (p2->rollLeft) {
+//            if (glfwGetKey(mWindow, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+//                p2->turnRight = true;
+//            }
+//        }
+        
     }
     else {
         std::cout << "\n\nAARG! This game (engine) is not that robust yet.\nPlease leave MAX_PLAYERS set to 2!\n";
@@ -347,6 +360,8 @@ void PlayerManager::processInput() {
     Instance ** players = generator->getArrayOfInstances();
     for (int i = 0; i < generator->getInstanceCount(); ++i) {
         PlayerInstance * player = static_cast<PlayerInstance *>(players[i]);
+        
+        //NOTE! rollThreshold is just for drawing engine flames, it is not an actual limit on rolling
         float rollThreshold = 0.5f * (PI / 2.0f); //Used in turnLeft and turnRight to check if rolled past threshhold
         
         //DEBUG:
@@ -421,31 +436,44 @@ void PlayerManager::processInput() {
         
         //So now forward should represent the actual direction the ship is facing.
         if (player->accelerate) {//The last term (the one with TIME_TICK_RATE) is to make speed change if time tick rate changes
-            player->velocity.x += PLAYER_MOVEMENT_SPEED_LINEAR * player->forward->x * (TIME_TICK_RATE / 0.01f);
-            player->velocity.y -= PLAYER_MOVEMENT_SPEED_LINEAR * player->forward->y * (TIME_TICK_RATE / 0.01f);
+            player->velocity.x += PLAYER_MOVEMEMT_ACCELERATION_LINEAR * player->forward->x * (TIME_TICK_RATE / 0.01f);
+            player->velocity.y -= PLAYER_MOVEMEMT_ACCELERATION_LINEAR * player->forward->y * (TIME_TICK_RATE / 0.01f);
             //Update translation history to make the engine flame grow as player accelerates
             player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z = PLAYER_ENGINE_FLAME_SIZE_INCREASE_FROM_VELOCITY * (player->velocity.Length() / PLAYER_MOVEMENT_MAX_SPEED);
         }
         if (player->decelerate) {
+            float velocityMagnitude = player->velocity.Length();
+            if (velocityMagnitude < 0.025f) {
+                velocityMagnitude = 0.0f;
+            }
+            else {
+                player->velocity.Normalize();
+            }
+            player->velocity *= velocityMagnitude * 0.95f;
+            player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z = max(0.08f, player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z);
+            
+            
+            
+            //This code is buggy, doesn't work evenly in all directions...
             //If applying the deceleration actually causes the ship's velocity to shrink
             //Method 1  (Note that method 1 is better in my opinion, though both have their shortcomings)
-            if (abs(player->velocity.x - PLAYER_MOVEMENT_SPEED_LINEAR * player->forward->x * (TIME_TICK_RATE / 0.01f)) < abs(player->velocity.x)) {
-                player->velocity.x -= 2.0f * PLAYER_MOVEMENT_SPEED_LINEAR * player->forward->x * (TIME_TICK_RATE / 0.01f);
-                player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z *= 0.8f;
-            }
-            else {
-                player->velocity.x = 0.0f;
-                //Don't let engine flame shrink smaller than 0.08f once engines are started
-                 player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z = max(0.08f, player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z);
-            }
-            if (abs(player->velocity.y + PLAYER_MOVEMENT_SPEED_LINEAR * player->forward->y * (TIME_TICK_RATE / 0.01f)) < abs(player->velocity.y)) {
-                player->velocity.y += 2.0f * PLAYER_MOVEMENT_SPEED_LINEAR * player->forward->y * (TIME_TICK_RATE / 0.01f);
-                player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z *= 0.8f; //Shrink by a small factor
-            }
-            else {
-                player->velocity.y = 0.0f;
-                player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z = max(0.08f, player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z);
-            }
+//            if (abs(player->velocity.x - PLAYER_MOVEMEMT_ACCELERATION_LINEAR /* * player->forward->x */ * (TIME_TICK_RATE / 0.01f)) < abs(player->velocity.x * TIME_TICK_RATE / 0.01f)) {
+//                player->velocity.x -= 1.0f * PLAYER_MOVEMEMT_ACCELERATION_LINEAR * player->forward->x * (TIME_TICK_RATE / 0.01f);
+//                player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z *= 0.8f;
+//            }
+//            else {
+//                player->velocity.x = 0.0f;
+//                //Don't let engine flame shrink smaller than 0.08f once engines are started
+//                 player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z = max(0.08f, player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z);
+//            }
+//            if (abs(player->velocity.y - PLAYER_MOVEMEMT_ACCELERATION_LINEAR /* * player->forward->y*/ * (TIME_TICK_RATE / 0.01f)) < abs(player->velocity.y * TIME_TICK_RATE / 0.01f)) {
+//                player->velocity.y += 2.0f * PLAYER_MOVEMEMT_ACCELERATION_LINEAR * player->forward->y * (TIME_TICK_RATE / 0.01f);
+//                player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z *= 0.8f; //Shrink by a small factor
+//            }
+//            else {
+//                player->velocity.y = 0.0f;
+//                player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z = max(0.08f, player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->z);
+            //}
         }
         
         
@@ -457,6 +485,22 @@ void PlayerManager::processInput() {
         //Update the players collisionBox
         aiVector3D tempMidpoint3D(player->position.x, player->position.y, player->position.z);
         aiVector2D tempMidpoint = aiVector2D(tempMidpoint3D.x, tempMidpoint3D.y);
+        
+        //I was getting problems here with having tempMidpoint getting set to NAN
+        if (isnan(tempMidpoint3D.x) || isnan(tempMidpoint3D.y)) {
+            players[0]->position = aiVector3D(PLAYER1_STARTOFFSET_X, PLAYER1_STARTOFFSET_Y, 0.0f);
+            players[1]->position = aiVector3D(PLAYER2_STARTOFFSET_X, PLAYER2_STARTOFFSET_Y, 0.0f);
+            
+//
+//            //See if translation history has any good positions that can be used
+//            for (int i = PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 3; i >= 0; i--) {
+//                if (!isnan((player->translationHistory[i])->x) && !isnan((player->translationHistory[i]->y))) {
+//                    player->position = *(player->translationHistory[i]);
+//
+//                }
+//            }
+        }
+        
         player->colBox->setMidpointTo(tempMidpoint);
         
         player->colBox->setCollisionBoxShrinkageFactor(PLAYER_COLLISION_BOX_TO_MODEL_SCALE_FACTOR); 
@@ -478,13 +522,32 @@ void PlayerManager::processCollisions() {
     Instance ** players = generator->getArrayOfInstances();
     
     Impact2D playerImpact(0.5f);
-    playerImpact.setMass1(100.0f);
+    playerImpact.setMass1(100.0f); //Using a large mass difference for testing
     playerImpact.setMass2(0.25f);
     
     PlayerInstance * p1 = static_cast<PlayerInstance *>(players[0]);
     PlayerInstance * p2 = static_cast<PlayerInstance *>(players[1]);
     //See if player1 hit player 2
     if (p1->colBox->isOverlapping(*(p2->colBox))) {
+        //p1->colBox->moveApartAlongAxisBetweenMidpoints(*(p2->colBox));
+        //aiVector2D p1BoxMidpoint = p1->colBox->getMidpoint();
+        //aiVector2D p2BoxMidpoint = p2->colBox->getMidpoint();
+        
+        //p1->position.x = p1BoxMidpoint.x;
+        //p1->position.y = p1BoxMidpoint.y;
+        
+        //p2->position.x = p2BoxMidpoint.x;
+        //p2->position.y = p2BoxMidpoint.y;
+        
+        //playerImpact.computeCollisionSimple(p1->velocity, p2->velocity);
+        float massP1 = 1.0f;
+        float massP2 = 1.0f;
+        float coefOfRestitution = 0.5f;
+        playerImpact.computeCollisionExperimentalWithEndingVeloctiyOutput(p1->velocity, p2->velocity,
+                                                                          massP1, massP2,
+                                                                          *(p1->colBox), *(p2->colBox),
+                                                                          coefOfRestitution);
+        
         p1->colBox->moveApartAlongAxisBetweenMidpoints(*(p2->colBox));
         aiVector2D p1BoxMidpoint = p1->colBox->getMidpoint();
         aiVector2D p2BoxMidpoint = p2->colBox->getMidpoint();
@@ -494,8 +557,6 @@ void PlayerManager::processCollisions() {
         
         p2->position.x = p2BoxMidpoint.x;
         p2->position.y = p2BoxMidpoint.y;
-        
-        playerImpact.computeCollisionSimple(p1->velocity, p2->velocity);
     }
     
 }

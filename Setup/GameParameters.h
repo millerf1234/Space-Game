@@ -1,7 +1,8 @@
 //  This is a file that just contains constants which affect all of the game parameters.
 //  GameParameters.h
 //
-//  Edited continuously up through 2/20/2018 as needed with added functionality
+//
+//  Edited continuously up through 3/20/2018 as needed with added functionality
 //  Created by Forrest Miller on 2/14/18.
 //
 
@@ -10,6 +11,9 @@
 
 //Put all this in a namespace?
 #include <string>
+#include "VectorOps.h" //I seem to be having problems with this getting included in multiple places,
+//so by placing it here I should be safe since this class has no need to include other classes and is
+//included almost everywhere
 
 //To update github repository, do the following two (1 {only need second}) lines while in the main project folder:
 //     git remote add origin https://github.com/millerf1234/Space-Game.git
@@ -44,11 +48,28 @@ static constexpr float ENDING_ZOOM = 5.0f; //This is probably way to large a cha
 //-----------------------------------------------------------------------------
 //   GAME PARAMETERS
 //-----------------------------------------------------------------------------
-static constexpr float PLAYER_MOVEMENT_SPEED_LINEAR = 0.015f;
-static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.45f;
+
+//Faster Gameplay
+static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.045f;
+static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 1.00f;
 //Rotation speed values are radians per frame
-static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/105.0f;//This means 120 frames to do full rotation (i.e. about 2 seconds)
-static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 frames to rotate 90 degrees
+static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/90.0f;//This means 95 frames to do full rotation (i.e. about 2 seconds)
+static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/25.0f; //So 30 frames to rotate 90 degrees
+
+//Fast Gameplay
+//static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.032f; //Was 0.035f when game developed
+//static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.95f; //Was 0.95f
+//Rotation speed values are radians per frame
+//static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/95.0f;//This means 95 frames to do full rotation (i.e. about 2 seconds)
+//static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/27.0f; //So 30 frames to rotate 90 degrees
+
+//Slower Gameplay (comment Fast Gameplay and uncomment these)
+//static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.015f; //Was 0.015f
+//static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.45f; //Was 0.45f
+////Rotation speed values are radians per frame
+//static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/120.0f;//This means 120 frames to do full rotation (i.e. about 2 seconds)
+//static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/17.0f; //So 30 frames to rotate 90 degrees
+
 
 static constexpr float STARTING_PLAYER_HEALTH = 10.0f; //Tweak as needed
 static constexpr float STARTING_PLAYER_SHIELDS = 4.0f; //Tweak as needed (if this gets implemented...)

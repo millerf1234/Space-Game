@@ -160,7 +160,7 @@ public:
 class WeaponInstance : public Instance {
 public:
     float damage;
-    //collision box
+    
     
     bool homing;
     
@@ -169,22 +169,22 @@ public:
 };
 
 
-class LazerDustParticleEffect : public Instance { //Do glDrawDots or whatever
-    float red, green, blue;
-    int framesRemaining;
-    aiVector2D * position;
-    
-    LazerDustParticleEffect() = delete;
-    LazerDustParticleEffect(float xMidpoint, float yMidpoint, float red, float green, float blue) {
-        position = new aiVector2D(xMidpoint, yMidpoint);
-    }
-    //Destructor
-    ~LazerDustParticleEffect() {
-        if (position != nullptr) {
-            delete position;
-            position = nullptr;
-        }
-    }
-};
+//class LazerDustParticleEffect : public Instance { //Do glDrawDots or whatever
+//    float red, green, blue;
+//    int framesRemaining;
+//    aiVector2D * position;
+//
+//    LazerDustParticleEffect() = delete;
+//    LazerDustParticleEffect(float xMidpoint, float yMidpoint, float red, float green, float blue) {
+//        position = new aiVector2D(xMidpoint, yMidpoint);
+//    }
+//    //Destructor
+//    ~LazerDustParticleEffect() {
+//        if (position != nullptr) {
+//            delete position;
+//            position = nullptr;
+//        }
+//    }
+//};
 
 #endif /* Instance_h */

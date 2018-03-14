@@ -234,6 +234,7 @@ public:
     //Collision Detection Functions
     bool isWithin(float x, float y) const;
     bool isWithin(const aiVector2D & point) const;
+    bool isInside(const CollisionBox& other) const;
     bool isOverlapping(const CollisionBox&) const;
 
     //CollisionBox Distance/Direction finding functions. Results are approximate
@@ -249,7 +250,7 @@ public:
     float getDistanceBetweenMidpoints(const CollisionBox & otherBox) const;     //NEEDS TO BE IMPLEMENTED!
     aiVector2D getVectorBetweenMidpoints (const CollisionBox & otherBox) const; //NEEDS TO BE IMPLEMENTED
     float getDistanceFromMidpointToPoint(const aiVector2D & point) const; //NEEDS TO BE IMPLEMENTED
-    aiVector2D getVectorFromMidpointToPoint(const aiVector2D & point) const; //NEEDS TO BE IMPLEMENTED
+    aiVector2D getVectorFromMidpointToPoint(const aiVector2D & point) const; //Implemented 3/13/2018
     float getDistanceFromMidpointToPoint(const float & x, const float & y) const; //NEEDS TO BE IMPLEMENTED
     aiVector2D getVectorFromMidpointToPoint(float x, float y) const; //NEEDS TO BE IMPLEMENTED
 

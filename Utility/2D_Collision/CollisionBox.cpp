@@ -867,13 +867,26 @@ bool CollisionBox::isOverlapping(const CollisionBox& otherBox) const {
             return true;
         }
     }
-    //Also then do the same check with otherBox's corners inside this one
-    for (int i = 0; i < BOX_CORNERS; ++i) {
-        if (isWithin(otherBox.corners2D[i])) {
-            return true;
-        }
-    }
+    //Only check to see if this box is overlapping the other, and then have another box check this one if need to check the opposite
+//    //Also then do the same check with otherBox's corners inside this one
+//    for (int i = 0; i < BOX_CORNERS; ++i) {
+//        if (isWithin(otherBox.corners2D[i])) {
+//            return true;
+//        }
+//    }
     return false; //If both tests passed without returning, then boxes are not overlapping
+}
+
+aiVector2D CollisionBox::getVectorFromMidpointToPoint(const aiVector2D & point) const {
+    if (this->midpoint == point) {
+        if (printDebugWarnings) {
+            std::cout << "\nDEBUG::Warning! getVectorFromMidpointToPoint called "
+                         "with midpoint and point\nare equal!\n";
+        }
+        return aiVector2D(0.0001f, 0.00001f);
+    }
+    return (point - midpoint);
+    
 }
 
 void CollisionBox::moveApartAlongAxisBetweenClosestDetectedPoints(CollisionBox & other) {
@@ -912,7 +925,7 @@ void CollisionBox::moveApartAlongAxisBetweenMidpoints(CollisionBox & otherBox) {
         otherBox.midpoint -= displacement * STEP_SIZE;
         this->calculateSelfAfterTranslations();
         otherBox.calculateSelfAfterTranslations();
-    } while (this->isOverlapping(otherBox));
+    } while (this->isOverlapping(otherBox) && otherBox.isOverlapping(*this));
 }
 
 
@@ -1495,7 +1508,12 @@ void CollisionBox::calculateSelfAfterTranslations() {
         //I could write a seperate algorithm to handle the case of the box being axis align with the basis vectors,
         //or I could just do this:
         //Add a hidden rotation
-        useHiddenRotation = true;
+        //if (!useHiddenRotation) {
+            useHiddenRotation = true;
+        // }
+        //else {
+           // return;
+        //}
         doRotationsAndRecalculate(); //Redo the 2D box formation process with the hidden rotation included
     }
 }

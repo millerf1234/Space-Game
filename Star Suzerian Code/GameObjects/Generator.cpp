@@ -822,20 +822,20 @@ void Generator::doDrawPlayerShipInstance(int i) {
         std::cout << std::endl;
     }
     
-    if (PRINT_DEBUG_MESSAGES) {
-        bool playersColliding = false;
-        for (int otherPlayerIndx = 0; otherPlayerIndx < this->getInstanceCount(); ++otherPlayerIndx) {
-            //This current way I am doing this only works with 2 players
-            if (otherPlayerIndx != i) { //Only check collisions between this player and other players
-                playersColliding = player->colBox->isOverlapping(*(instances[otherPlayerIndx]->colBox));
-                goto COLLISION_DETECTED; //I guess 'break' could work too
-            }
-        }
-    COLLISION_DETECTED:
-        if (playersColliding) {
-            std::cout << "\nDEBUG::Collision Detected beween players!\n";
-        }
-    }
+//    if (PRINT_DEBUG_MESSAGES) {
+//        bool playersColliding = false;
+//        for (int otherPlayerIndx = 0; otherPlayerIndx < this->getInstanceCount(); ++otherPlayerIndx) {
+//            //This current way I am doing this only works with 2 players
+//            if (otherPlayerIndx != i) { //Only check collisions between this player and other players
+//                playersColliding = player->colBox->isOverlapping(*(instances[otherPlayerIndx]->colBox));
+//               // goto COLLISION_DETECTED; //I guess 'break' could work too
+//            }
+//        }
+    //COLLISION_DETECTED:
+      //  if (playersColliding) {
+        //    std::cout << "\nDEBUG::Collision Detected beween players!\n";
+       // }
+    //}
         
         
 //        //Get the collision box rotation information
@@ -851,13 +851,13 @@ void Generator::doDrawPlayerShipInstance(int i) {
         //This current way I am doing this only works with 2 players
         if (otherPlayerIndx != i) { //Only check collisions between this player and other players
             playersColliding = player->colBox->isOverlapping(*(instances[otherPlayerIndx]->colBox));
-            goto COLLISION_DETECTED2; //I guess 'break' could work too
+            //goto COLLISION_DETECTED2; //I guess 'break' could work too
         }
     }
-COLLISION_DETECTED2:
-    if (playersColliding) {
-        std::cout << "\nDEBUG::Collision Detected beween players!\n";
-    }
+//COLLISION_DETECTED2:
+    //if (playersColliding) {
+        //std::cout << "\nDEBUG::Collision Detected beween players!\n";
+    //}
     //----------------------------------------------------
     //std::cout << "\nDEBUG::ColBox area is: " << player->colBox->getQuadrilateralArea() << std::endl;
     
