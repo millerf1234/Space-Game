@@ -54,7 +54,7 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     
     
     //How loading actually works:
-    std::cout << "    Loading Game Assets...";
+    std::cout << "\n    Loading Game Assets...";
     Game.loadGameObjects();
     std::cout << "    Finished Loading Game Assets.\n" << std::endl;
     std::cout << "Game Launched." << std::endl << std::endl;

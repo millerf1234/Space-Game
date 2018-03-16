@@ -16,7 +16,7 @@
 #include <chrono> //c++11 to get nano time accuratly
 #include <thread> //Used for thisThread::sleepFor() //(Bringing this whole thing is seems kinda overkill)
 
-#include "Object.h"
+//#include "Object.h"
 #include "Generator.h"
 #include "GameParameters.h"
 #include "GameEntityManager.h"
@@ -65,8 +65,8 @@ public:
     virtual void drawInstances() override;
     
     
-    aiVector3D getCenterWeaponLaunchpoint();
-    aiVector3D * getSideWeaponLaunchPoints();
+    //aiVector3D getCenterWeaponLaunchpoint();
+    //aiVector3D * getSideWeaponLaunchPoints();
     
     
 protected:
@@ -76,6 +76,7 @@ private:
     void processInput();
     
     float max(const float&, const float&);
+    
     
 };
 

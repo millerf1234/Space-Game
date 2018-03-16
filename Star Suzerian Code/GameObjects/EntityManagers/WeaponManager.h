@@ -19,13 +19,21 @@ public:
     WeaponManager();
     virtual ~WeaponManager() override {;} //Give empty function body for now...
     
-    virtual void doUpkeep() override {;}
+    virtual void doUpkeep() override;
     virtual void processCollisions() override{;}
     virtual void handleInput(GLFWwindow * mWin) override {;}
     
     virtual void drawInstances() override {;}
     
+   
+    
+protected:
+    virtual void initializeFromTemplate() override;
 private:
+    void generateInitializationTemplate();
+    void processInput();
+    
+    float max(const float&, const float&);
     
 };
 

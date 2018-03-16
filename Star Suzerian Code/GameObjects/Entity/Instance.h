@@ -15,6 +15,7 @@
 #include "Quaternion.h"
 #include "CollisionBox.h"
 #include "CollisionRectangle.h"
+#include "WeaponTracker.h"
 
 
 enum InstanceType {PLAYERINSTANCE, WEAPONINSTANCE, ENEMYINSTANCE, SCENEINSTANCE, BASIC};
@@ -36,6 +37,8 @@ public:
     
     CollisionBox * colBox;
     
+    //WeaponTracker * wepTracker; //To be attached and removed by WeaponManager
+    
     //Constructors
     Instance() {//Construct an anonymous instance
         this->identifierNumber = -1;
@@ -43,6 +46,7 @@ public:
         this->mass = 1.0f;
         this->velocity.x = this->velocity.y = 0.0f;
         this->colBox = nullptr;
+        //this->wepTracker = nullptr;
     }
     Instance(int id) { //Construct an instance that has an ID number
         this->identifierNumber = id;
@@ -50,6 +54,7 @@ public:
         this->mass = 1.0f;
         velocity.x = velocity.y = 0.0f;
         this->colBox = nullptr;
+       // this->wepTracker = nullptr;
     }
     
     ~Instance() {

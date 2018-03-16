@@ -50,18 +50,18 @@ static constexpr float ENDING_ZOOM = 5.0f; //This is probably way to large a cha
 //-----------------------------------------------------------------------------
 
 //Faster Gameplay
-static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.045f;
-static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 1.00f;
-//Rotation speed values are radians per frame
-static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/90.0f;//This means 95 frames to do full rotation (i.e. about 2 seconds)
-static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/25.0f; //So 30 frames to rotate 90 degrees
+//static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.045f;
+//static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 1.00f;
+////Rotation speed values are radians per frame
+//static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/90.0f;//This means 95 frames to do full rotation (i.e. about 2 seconds)
+//static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/25.0f; //So 30 frames to rotate 90 degrees
 
 //Fast Gameplay
-//static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.032f; //Was 0.035f when game developed
-//static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.95f; //Was 0.95f
+static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.032f; //Was 0.035f when game developed
+static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.93f; //Was 0.95f
 //Rotation speed values are radians per frame
-//static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/95.0f;//This means 95 frames to do full rotation (i.e. about 2 seconds)
-//static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/27.0f; //So 30 frames to rotate 90 degrees
+static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/100.0f;//This means 95 frames to do full rotation (i.e. about 2 seconds)
+static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 frames to rotate 90 degrees
 
 //Slower Gameplay (comment Fast Gameplay and uncomment these)
 //static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.015f; //Was 0.015f

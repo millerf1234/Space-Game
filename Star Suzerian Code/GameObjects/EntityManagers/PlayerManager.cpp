@@ -172,7 +172,7 @@ void PlayerManager::initializeFromTemplate() {
     generator->initializeFromTemplate(*initTemplate); //Sets generator up based off the initialization template
     if (MAX_PLAYERS < 1) {return;} //A game with 0 players doesn't need any player instances
     
-    //this->generator->setSpecialization(PLAYER); //I no longer use this function
+    
     for (int i = 0; i < MAX_PLAYERS; ++i) {
         generator->generateSingle();
     }
@@ -557,6 +557,14 @@ void PlayerManager::processCollisions() {
         
         p2->position.x = p2BoxMidpoint.x;
         p2->position.y = p2BoxMidpoint.y;
+        
+        //Have the players move a step based off their new velocity vectors
+        //Update every instances position with it's velocity
+        p1->position.x += p1->velocity.x;
+        p1->position.y += p1->velocity.y;
+        p2->position.x += p2->velocity.x;
+        p2->position.y += p2->velocity.y;
+        
     }
     
 }
@@ -584,10 +592,9 @@ void PlayerManager::generateInitializationTemplate() {
 }
 
                                                                                                         
-//Returns the larger of the two integers
-float PlayerManager::max(const float& i1, const float& i2) {
-    //    return ((float)(i1 >= i2) * i1); //compare i1 i2 and returns 0.0f if i2 is bigger
-    //return the larger integer
-    if (i1 >= i2) {return i1;}
-    else {return i2;}
+//Returns the larger of the two floats
+float PlayerManager::max(const float& x1, const float& x2) {
+    //return the larger
+    if (x1 >= x2) {return x1;}
+    else {return x2;}
 }

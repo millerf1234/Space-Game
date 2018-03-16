@@ -110,7 +110,7 @@ bool ShaderWrapper::attachVert(char * vertSource) {
         return false;
     }
     
-    //Load the source file text as a c++ string
+    //Load the source file text as a C++ string using function loadSource
     this->vert = loadSourceFile((char *)vertSource);
     //Need to convert C++ string to a GLchar C string to be compiled onto the GPU
     const GLchar* vertexShaderSource = (const GLchar *)vert.c_str();

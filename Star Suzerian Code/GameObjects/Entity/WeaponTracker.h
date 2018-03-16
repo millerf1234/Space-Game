@@ -14,8 +14,9 @@
 
 #include <iostream>
 //#include "PlayerManager"
-#include "WeaponManager.h"
-#include "AACollisionRectangle"
+//#include "GameEntityManager.h"
+//#include "WeaponManager.h"
+//#include "CollisionRectangle.h"
 #include "GameParameters.h"
 
 

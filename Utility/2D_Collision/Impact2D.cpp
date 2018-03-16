@@ -109,8 +109,11 @@ void Impact2D::checkIfMassIsZero() {
 
 
 void Impact2D::computeCollisionExperimentalWithEndingVeloctiyOutput(aiVector2D &va1, aiVector2D &vb1, const float &massA, const float &massB, const CollisionBox &cboxA, const CollisionBox &cboxB, float coeffOfRest) const {
-    aiVector2D aChange = va1;
-    aiVector2D bChange(vb1);
+    aiVector2D aChange = va1; //For some reason here I use both assignment operator
+    aiVector2D bChange(vb1); //and copy constructor
+    
+    aiVector2D va1copy = va1;
+    aiVector2D vb1copy = vb1;
     
     //Call the actual function
     computeCollisionExperimental(va1, vb1, massA, massB, cboxA, cboxB, coefRest);
@@ -119,6 +122,10 @@ void Impact2D::computeCollisionExperimentalWithEndingVeloctiyOutput(aiVector2D &
     bChange = vb1 - bChange; //Head - tail
     printf("Velocity a2 = [%.5f, %.5f], change = [%.5f, %.5f]\n", va1.x, va1.y, aChange.x, aChange.y);
     printf("Velocity b2 = [%.5f, %.5f], change = [%.5f, %.5f]\n", vb1.x, vb1.y, bChange.x, bChange.y);
+    
+    //Currently the collision I wrote is broken, so just swap vectors. Still print out what would have happened in the more advanced collision.
+    va1 = vb1copy;
+    vb1 = va1copy;
 }
 
 
@@ -147,7 +154,7 @@ void Impact2D::computeCollisionExperimental(aiVector2D & va1, aiVector2D & vb1, 
     if (massA == massB) { //Maybe make this check more general by seeing if masses are nearly equal instead of exactly equal
         //Check to see if one object has much greater speed than the other object
         if ( (va1.Length() < (vb1 * 0.1f).Length()) || (vb1.Length() < (va1 * 0.1f).Length()) ) {
-            std::cout << "One or both objects were nearly stationary. Doing basic momentum transfer collision.wd\n";
+            std::cout << "One or both objects were nearly stationary. Doing basic momentum transfer collision.\n";
             
             aiVector2D temp = va1 * restitution;
             if (temp.Length() < 0.01f) { //Need to give the faster ship a little bounce back

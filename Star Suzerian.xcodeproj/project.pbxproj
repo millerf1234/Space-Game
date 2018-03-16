@@ -143,6 +143,8 @@
 		9EFA4CA62053366600308177 /* Impact2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Impact2D.h; sourceTree = "<group>"; };
 		9EFA4CAA20533D7000308177 /* VectorOps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VectorOps.h; sourceTree = "<group>"; };
 		9EFA4CC02059A6E900308177 /* Kinetic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Kinetic.h; sourceTree = "<group>"; };
+		9EFA4CC22059A80B00308177 /* kinetic.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = kinetic.vert; sourceTree = "<group>"; };
+		9EFA4CC32059A81B00308177 /* kinetic.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = kinetic.frag; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -313,6 +315,7 @@
 		9E10D5CC2032CD3600F0F724 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				9EFA4CC12059A7E200308177 /* Weapons */,
 				9E0754E5203AD3AE009B6215 /* PlayerShip */,
 				9ED772152036EBD500D569A4 /* background.vert */,
 				9ED772162036EBE700D569A4 /* background.frag */,
@@ -462,6 +465,15 @@
 				9EFA4CC02059A6E900308177 /* Kinetic.h */,
 			);
 			path = Entity;
+			sourceTree = "<group>";
+		};
+		9EFA4CC12059A7E200308177 /* Weapons */ = {
+			isa = PBXGroup;
+			children = (
+				9EFA4CC22059A80B00308177 /* kinetic.vert */,
+				9EFA4CC32059A81B00308177 /* kinetic.frag */,
+			);
+			path = Weapons;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
