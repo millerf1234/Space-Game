@@ -15,7 +15,7 @@ void GameEntityManager::ageObjects() { //Function to make it so all game objects
         }
     }
     else if (PRINT_DEBUG_WARNING_MESSAGES) {
-        std::cout << "\nDEBUG::OOPS! ageObjects() in gameEntityManager was called within a gameEntityManager-type\nobject that has a null Generator!";
+        std::cout << "\nDEBUG::Warning! ageObjects() in gameEntityManager was called within a gameEntityManager-type\nobject that has a null Generator!";
         std::cout << std::endl;
     }
 }

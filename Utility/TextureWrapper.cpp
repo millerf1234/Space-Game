@@ -31,8 +31,8 @@ TextWrapr::TextWrapr(const std::string & imageFilePath) {
     //           FILTERING
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     //           MIPMAP GENERATION
     glGenerateMipmap(GL_TEXTURE_2D);
     
@@ -63,9 +63,12 @@ TextWrapr::TextWrapr(const std::string & imageFilePath) {
     this->image->resize(dataSize); //Preallocate the vector to the right size
     std::memcpy(this->image->data(), stbi_data.get(), dataSize); //Copy the data over
     
-    if (this->w == 915 && this->h == 609) {
-        fixTexture915x609(this);
-    }
+//    if (this->w == 915 && this->h == 609) {
+//        fixTexture915x609(this);
+//    }
+//    else { //Try to fix texture using the hint from the front of the openGL book
+//
+//    }
 }
 
 TextWrapr::~TextWrapr() {
@@ -86,13 +89,27 @@ void TextWrapr::activate() {
     //glGenerateMipmap; //Try uncommenting this once everything is working
     
     if(components == 3) {
+        
+        //Test:
+        //glPixelStorei(GL_PACK_ALIGNMENT, 1);
+        
         //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2745/3 - 3 , h, 0, GL_RGB, GL_UNSIGNED_BYTE, image_data.data());
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h-1, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image->data());
         //NOTE!!! Doing w-1 shouldn't cause the RGB values to shift...
         //glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB, w, h-1, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image_data.data());
+        
+        //glPixelStorei(GL_PACK_ALIGNMENT, 1);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        
+            
     }
     else if(components == 4) {
+        //Test:
+        //glPixelStorei(GL_PACK_ALIGNMENT, 1);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image->data());
+        
+         //glPixelStorei(GL_PACK_ALIGNMENT, 2);
+        
     }
     else {
         std::cout << "\nDEBUG::What the heck texture are you trying to load? Unable to load this texture...\n";
@@ -178,7 +195,7 @@ void TextWrapr::fixTexture915x609(TextureWrapper * tData) {
                     }
                     //There, after all this runs, you can hardly tell the tiny
                     //remaining differences between the actual file and what stb
-                    //loaded
+                    //loaded (Just don't look closely!)
                 }
             }
             tData->hasBeenFixed = true;

@@ -9,6 +9,20 @@
 WeaponManager::WeaponManager() : GameEntityManager() {
     //GameEntityManager's constructer will handle setting everything to null
     
+    
+    this->initTemplate = new InitializationTemplate;
+    this->generator = new Generator();
+    this->hasGenerator = true;
+    this->hasCollision = true;
+    this->requiresUserInput = false;
+    this->requiresAIInput = false;
+    this->specType = specializationType::WEAPON;
+    this->generator->specialization = specializationType::WEAPON;
+    this->generateInitializationTemplate();
+    
+    //Configure the generator based off the initialization Template()
+    this->initializeFromTemplate();
+    
     //from stage:
     //GameEntity's constructor will set everything to 0 or Nullptr
 //    this->initTemplate = new InitializationTemplate;
@@ -39,15 +53,37 @@ WeaponManager::WeaponManager() : GameEntityManager() {
 
 }
 
+WeaponManager::~WeaponManager() {
+    if (this->initTemplate != nullptr) {
+        if (this->initTemplate->hasVertsAlreadyLoaded) {
+            //Then delete heap data that was used
+            if (this->initTemplate->vertices != nullptr) {
+                delete [] initTemplate->vertices;
+                initTemplate->vertices = nullptr;
+            }
+            if (initTemplate->elements != nullptr) {
+                delete [] initTemplate->elements;
+                initTemplate->elements = nullptr;
+            }
+        }
+        delete this->initTemplate;
+        this->initTemplate = nullptr;
+    }
+    if (this->generator != nullptr) {
+        delete this->generator;
+        this->generator = nullptr;
+    }
+}
 void WeaponManager::generateInitializationTemplate() {
     
 }
 
 void WeaponManager::initializeFromTemplate() {
-    
+    generator->initializeFromTemplate(*initTemplate);
 }
 
 
 void WeaponManager::doUpkeep() {
-    
+    this->generator->doUpkeep(); //Handle object upkeep
+    processCollisions(); //
 }
