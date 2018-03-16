@@ -29,7 +29,7 @@ enum ImgFormat{JPEG, PNG}; //Might add more image formats in the future
 
 //Here is a small struct for wrapping up textures inside (it grew large unfortunatly)
 //-------------------------------------------------------------------------
-typedef struct TextWrapr {
+typedef struct TextWrapr { //This quickly became something that shouldn't be a struct.
     std::vector<unsigned char> *image;
     bool hasBeenFixed;
     int w, h, components; //width, height, componenents
@@ -43,7 +43,7 @@ typedef struct TextWrapr {
     //Destructor
     ~TextWrapr();
     
-    bool operator=(const TextWrapr &) = delete;
+    bool operator=(const TextWrapr &) = delete; //No assignment operator
     
     void activate(); //i.e. use
     void use() {this->activate();}

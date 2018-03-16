@@ -1,6 +1,9 @@
 //
 //  WeaponManager.h
 //
+//  Even though it is bad practice, this class is intended to be used as a singleton
+//  to handle holding all the weapon instance data.
+//
 //  Created by Forrest Miller on 3/8/18.
 //
 
@@ -13,32 +16,19 @@
 #include "Generator.h"
 #include "Quaternion.h"
 #include "GameParameters.h"
+#include "KineticWeaponManager.h"
 
-class WeaponManager : public GameEntityManager {
-public:
-    WeaponManager();
-    virtual ~WeaponManager() override;
-    
-    virtual void doUpkeep() override;
-    virtual void processCollisions() override{;}
-    virtual void handleInput(GLFWwindow * mWin) override {;}
-    
-    virtual void drawInstances() override {;}
-    
-    void generateAndAttactWeaponTracker(Instance *);
-    
-protected:
-    virtual void initializeFromTemplate() override;
-private:
-    void generateInitializationTemplate();
-    void processInput();
-    
-    WeaponTracker ** wepTrackers;
-    int numWepTrackers;
-    
-    float max(const float&, const float&);
+class WeaponManager {
     
 };
+
+
+//public:
+//void generateAndAttactWeaponTracker(Instance *);
+//private
+//WeaponTracker ** wepTrackers;
+//int numWepTrackers;
+
 
 
 #endif /* WeaponManager_h */

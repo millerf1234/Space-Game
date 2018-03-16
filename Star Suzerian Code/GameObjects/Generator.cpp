@@ -1,5 +1,7 @@
  //  Implementation for the Generator class
 //  This class should probably be called InstanceGenerator or InstanceFactory instead of just Generator. Oh well...
+//  Actually this class should be like a bunch of different classes. Right now this contains pretty much all the filler
+//  code that I haven't yet broken into classes. 
 //  Generator.cpp
 //  Created by Forrest Miller on 2/17/18.
 
@@ -26,7 +28,7 @@ Generator::Generator() {
     //Set pointers to nullptr
     this->shaderArray = nullptr;
     this->textureArray = nullptr;
-    this->vertexData = nullptr;
+    this->modelLoader = nullptr;
     this->instances = nullptr;
     this->activeInstances = 0;
     
@@ -34,16 +36,16 @@ Generator::Generator() {
     specialization  = specializationType::NOSPECIALIZATION; //No extra data by default
     
     //Set special uniform location variables to -1 (their default not_found code)
-    ulocRed = ulocGreen = ulocBlue = -1;
-    ulocRedLine = ulocGreenLine = ulocBlueLine = -1;
-    ulocTimeLine = ulocZoomLine = ulocXTransLine = ulocYTransLine = ulocZTransLine = ulocThetaXLine = ulocThetaYLine = ulocThetaZLine = -1;
-    ulocTimeEngine = ulocZoomEngine = ulocXTransEngine = ulocYTransEngine = ulocZTransEngine = ulocThetaXEngine = ulocThetaYEngine = ulocThetaZEngine = -1;
-    ulocTimeEngineSide = ulocZoomEngineSide = ulocXTransEngineSide = ulocYTransEngineSide = ulocZTransEngineSide = ulocThetaXEngineSide = ulocThetaYEngineSide = ulocThetaZEngineSide = -1;
-    ulocPDamage = ulocPHealthMax = -1;
-    ulocPlayerRoll = ulocPlayerRollLine = ulocPlayerRollEngineSide = -1;
+    pul.ulocRed = pul.ulocGreen = pul.ulocBlue = -1;
+    pul.ulocRedLine = pul.ulocGreenLine = pul.ulocBlueLine = -1;
+    pul.ulocTimeLine = pul.ulocZoomLine = pul.ulocXTransLine = pul.ulocYTransLine = pul.ulocZTransLine = pul.ulocThetaXLine = pul.ulocThetaYLine = pul.ulocThetaZLine = -1;
+    pul.ulocTimeEngine = pul.ulocZoomEngine = pul.ulocXTransEngine = pul.ulocYTransEngine = pul.ulocZTransEngine = pul.ulocThetaXEngine = pul.ulocThetaYEngine = pul.ulocThetaZEngine = -1;
+    pul.ulocTimeEngineSide = pul.ulocZoomEngineSide = pul.ulocXTransEngineSide = pul.ulocYTransEngineSide = pul.ulocZTransEngineSide = pul.ulocThetaXEngineSide = pul.ulocThetaYEngineSide = pul.ulocThetaZEngineSide = -1;
+    pul.ulocPDamage = pul.ulocPHealthMax = -1;
+    pul.ulocRoll = pul.ulocPlayerRollLine = pul.ulocPlayerRollEngineSide = -1;
     
-    this->drawTriangles = true;
-    this->drawLines = false;
+//    this->drawTriangles = true;
+//    this->drawLines = false;
 }
 //Destructor
 Generator::~Generator() { //Delete any memory being claimed by this generator
@@ -78,9 +80,9 @@ Generator::~Generator() { //Delete any memory being claimed by this generator
         delete [] this->textureArray;
         this->textureArray = nullptr;
     }
-    if (this->vertexData != nullptr) {
-        delete this->vertexData;
-        this->vertexData = nullptr;
+    if (this->modelLoader != nullptr) {
+        delete this->modelLoader;
+        this->modelLoader = nullptr;
     }
     
     if (this->activeInstances > 0 && this->instances != nullptr) {
@@ -127,7 +129,7 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
     
     //Check to see if we need to load a model from a file or it our initialization template came prepackaged with model data
     if (t.hasVertsAlreadyLoaded) {
-        this->vertexData = nullptr; //Make sure vertex data is nullptr
+        this->modelLoader = nullptr; //Make sure vertex data is nullptr
         this->vertices = new GLfloat[t.numVerts];
         this->numberOfVertices = t.numVerts;
         this->elements = new GLuint[t.numElems];
@@ -149,18 +151,18 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         if (t.vert3 || t.vert3tex2 || t.vert3tex3 || t.vert3norml3 || t.vert3norml3tex2 || t.vert3norml3tex3) {
             //Load Elements from face data
             int faceCounter = 0; //This counter is used inside loop to extract data from objLoader
-            this->vertexData = new SimpleObjLoader((char *)t.modelFilePath.c_str()); //Create the objLoader object
+            this->modelLoader = new SimpleObjLoader((char *)t.modelFilePath.c_str()); //Create the objLoader object
             
             //Copy over elements first (NOTE: Elements are independent of vertex format)
-            this->elements = new GLuint[vertexData->model.faces*3*2];
+            this->elements = new GLuint[modelLoader->model.faces*3*2];
             int numElementsToPrintForDebug = 9; //Part of debug messages even though it's outside the check for debug (need to do this so code inside will run)
             if (PRINT_DEBUG_MESSAGES) {
                 std::cout << "DEBUG::Here are the first " << numElementsToPrintForDebug << " values that were loaded into Elements: ";
             }
-            for (int i = 0; i < vertexData->model.faces * 3; i += 3) {
-                this->elements[i] = vertexData->faces[faceCounter][0] - 1;
-                this->elements[i+1] = vertexData->faces[faceCounter][3] - 1;
-                this->elements[i+2] = vertexData->faces[faceCounter][6] - 1;
+            for (int i = 0; i < modelLoader->model.faces * 3; i += 3) {
+                this->elements[i] = modelLoader->faces[faceCounter][0] - 1;
+                this->elements[i+1] = modelLoader->faces[faceCounter][3] - 1;
+                this->elements[i+2] = modelLoader->faces[faceCounter][6] - 1;
                 ++faceCounter;
                 //Print debug message giving first few Elements that were loaded
                 if (PRINT_DEBUG_MESSAGES && i < numElementsToPrintForDebug) {
@@ -168,19 +170,19 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
                 }
             }
     
-            this->numberOfElements = vertexData->model.faces * 3;
+            this->numberOfElements = modelLoader->model.faces * 3;
             
             //Load vertices
             if (t.vert3) { //This is easy, just copy the position data right over
-                vertices = new GLfloat [vertexData->model.positions*3];
+                vertices = new GLfloat [modelLoader->model.positions*3];
                 int vertPosCounter = 0;
-                for (int i = 0; i < vertexData->model.positions; ++i) {
-                    vertices[vertPosCounter] = vertexData->positions[i][0];
-                    vertices[vertPosCounter + 1] = vertexData->positions[i][1];
-                    vertices[vertPosCounter + 2] = vertexData->positions[i][2];
+                for (int i = 0; i < modelLoader->model.positions; ++i) {
+                    vertices[vertPosCounter] = modelLoader->positions[i][0];
+                    vertices[vertPosCounter + 1] = modelLoader->positions[i][1];
+                    vertices[vertPosCounter + 2] = modelLoader->positions[i][2];
                     vertPosCounter += 3;
                 }
-                this->numberOfVertices = vertexData->model.positions*3;
+                this->numberOfVertices = modelLoader->model.positions*3;
             }
             
             //NOTE ON vert3Normal3: This format does not work the way I thought it would. It looks like doing normals on faces with drawElements might not work at all. Might need to rethink how to send normal data to GPU?
@@ -218,8 +220,8 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
                 std::cout << std::endl;
             }
         }
-        if (vertexData->isLoaded) {
-            std::cout << "                Model loaded successfully. Model triangle count: " << this->vertexData->model.faces << std::endl;
+        if (modelLoader->isLoaded) {
+            std::cout << "                Model loaded successfully. Model triangle count: " << this->modelLoader->model.faces << std::endl;
         }
         else {
             std::cout << "                OPPS! There was an error loading this model!" << std::endl;
@@ -314,19 +316,19 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         std::cout << "            Loading Player Shaders..." << std::endl;
         std::cout << "                Creating Body shader...\n";
         //Set the uniform locations for PLAYER
-        ulocRed = glGetUniformLocation(shaderID, "red");
-        ulocGreen = glGetUniformLocation(shaderID, "green");
-        ulocBlue = glGetUniformLocation(shaderID, "blue");
-        ulocPDamage = glGetUniformLocation(shaderID, "damage");
-        ulocPHealthMax = glGetUniformLocation(shaderID, "maxHealth");
-        ulocPlayerRoll = glGetUniformLocation(shaderID, "earlyThetaZ");
+        pul.ulocRed = glGetUniformLocation(shaderID, "red");
+        pul.ulocGreen = glGetUniformLocation(shaderID, "green");
+        pul.ulocBlue = glGetUniformLocation(shaderID, "blue");
+        pul.ulocPDamage = glGetUniformLocation(shaderID, "damage");
+        pul.ulocPHealthMax = glGetUniformLocation(shaderID, "maxHealth");
+        pul.ulocRoll = glGetUniformLocation(shaderID, "earlyThetaZ");
         
         if (PRINT_DEBUG_MESSAGES) {
-            std::cout << "\nDEBUG:\n        ulocRed = " << ulocRed;
-            std::cout << "\n        ulocGreen = " << ulocGreen;
-            std::cout << "\n        ulocBlue = " << ulocBlue;
-            std::cout << "\n        ulocPDamage = " << ulocPDamage;
-            std::cout << "\n        ulocPHealthMax = " << ulocPHealthMax;
+            std::cout << "\nDEBUG:\n        ulocRed = " << pul.ulocRed;
+            std::cout << "\n        ulocGreen = " << pul.ulocGreen;
+            std::cout << "\n        ulocBlue = " << pul.ulocBlue;
+            std::cout << "\n        ulocPDamage = " << pul.ulocPDamage;
+            std::cout << "\n        ulocPHealthMax = " << pul.ulocPHealthMax;
         }
         //(I realize what I am doing here in this next bit of code is very sloppy, inadvisiable and may cause many headaches down the road. Sorry in advance, I really wanna just get something drawing to the screen)
         std::cout << "                    Body shader ready!\n";
@@ -354,24 +356,24 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         this->shaderArray[1]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
         //set uniforms for the line shader:
         shaderID = shaderArray[1]->getID();
-        ulocRedLine = glGetUniformLocation(shaderID, "red");
-        ulocGreenLine = glGetUniformLocation(shaderID, "green");
-        ulocBlueLine = glGetUniformLocation(shaderID, "blue");
-        ulocTimeLine = glGetUniformLocation(shaderID, "time");
-        ulocZoomLine = glGetUniformLocation(shaderID, "zoom");
-        ulocXTransLine = glGetUniformLocation(shaderID, "xTrans");
-        ulocYTransLine = glGetUniformLocation(shaderID, "yTrans");
-        ulocZTransLine = glGetUniformLocation(shaderID, "zTrans");
-        ulocThetaXLine = glGetUniformLocation(shaderID, "thetaX");
-        ulocThetaYLine = glGetUniformLocation(shaderID, "thetaY");
-        ulocThetaZLine = glGetUniformLocation(shaderID, "thetaZ");
-        ulocPlayerRollLine = glGetUniformLocation(shaderID, "earlyThetaZ");
+        pul.ulocRedLine = glGetUniformLocation(shaderID, "red");
+        pul.ulocGreenLine = glGetUniformLocation(shaderID, "green");
+        pul.ulocBlueLine = glGetUniformLocation(shaderID, "blue");
+        pul.ulocTimeLine = glGetUniformLocation(shaderID, "time");
+        pul.ulocZoomLine = glGetUniformLocation(shaderID, "zoom");
+        pul.ulocXTransLine = glGetUniformLocation(shaderID, "xTrans");
+        pul.ulocYTransLine = glGetUniformLocation(shaderID, "yTrans");
+        pul.ulocZTransLine = glGetUniformLocation(shaderID, "zTrans");
+        pul.ulocThetaXLine = glGetUniformLocation(shaderID, "thetaX");
+        pul.ulocThetaYLine = glGetUniformLocation(shaderID, "thetaY");
+        pul.ulocThetaZLine = glGetUniformLocation(shaderID, "thetaZ");
+        pul.ulocPlayerRollLine = glGetUniformLocation(shaderID, "earlyThetaZ");
         
         if (PRINT_DEBUG_MESSAGES) {
         std::cout << "    DEBUG::PlayerLineColorLocations: \n";
-        std::cout << "ulocRedLine = " << ulocRedLine << std::endl;
-        std::cout << "ulocGreenLine = " << ulocGreenLine << std::endl;
-        std::cout << "ulocBlueLine = " << ulocBlueLine << std::endl;
+        std::cout << "ulocRedLine = " << pul.ulocRedLine << std::endl;
+        std::cout << "ulocGreenLine = " << pul.ulocGreenLine << std::endl;
+        std::cout << "ulocBlueLine = " << pul.ulocBlueLine << std::endl;
         }
         
         if (shaderArray[1]->checkIfReady()) {
@@ -392,14 +394,14 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         this->shaderArray[2]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
         //Set uniforms for the main engine
         shaderID = shaderArray[2]->getID();
-        ulocTimeEngine = glGetUniformLocation(shaderID, "time");
-        ulocZoomEngine = glGetUniformLocation(shaderID, "zoom");
-        ulocXTransEngine = glGetUniformLocation(shaderID, "xTrans");
-        ulocYTransEngine = glGetUniformLocation(shaderID, "yTrans");
-        ulocZTransEngine = glGetUniformLocation(shaderID, "zTrans");
-        ulocThetaXEngine = glGetUniformLocation(shaderID, "thetaX");
-        ulocThetaYEngine = glGetUniformLocation(shaderID, "thetaY");
-        ulocThetaZEngine = glGetUniformLocation(shaderID, "thetaZ");
+        pul.ulocTimeEngine = glGetUniformLocation(shaderID, "time");
+        pul.ulocZoomEngine = glGetUniformLocation(shaderID, "zoom");
+        pul.ulocXTransEngine = glGetUniformLocation(shaderID, "xTrans");
+        pul.ulocYTransEngine = glGetUniformLocation(shaderID, "yTrans");
+        pul.ulocZTransEngine = glGetUniformLocation(shaderID, "zTrans");
+        pul.ulocThetaXEngine = glGetUniformLocation(shaderID, "thetaX");
+        pul.ulocThetaYEngine = glGetUniformLocation(shaderID, "thetaY");
+        pul.ulocThetaZEngine = glGetUniformLocation(shaderID, "thetaZ");
         //no ulocPlayerRoll = glGetUniformLocation(shaderID, "earlyThetaZ"); //Because main engine is symmetric about roll axis (I actually later hack this into place so I can use same shader for side and main engines)
         if (shaderArray[2]->checkIfReady()) {
             std::cout << "                    Main Engine shader ready!\n";
@@ -418,15 +420,15 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         this->shaderArray[3]->setVAOExternally(tempVAO);
         this->shaderArray[3]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
         shaderID = shaderArray[3]->getID();
-        ulocTimeEngineSide = glGetUniformLocation(shaderID, "time");
-        ulocZoomEngineSide = glGetUniformLocation(shaderID, "zoom");
-        ulocXTransEngineSide = glGetUniformLocation(shaderID, "xTrans");
-        ulocYTransEngineSide = glGetUniformLocation(shaderID, "yTrans");
-        ulocZTransEngineSide = glGetUniformLocation(shaderID, "zTrans");
-        ulocThetaXEngineSide = glGetUniformLocation(shaderID, "thetaX");
-        ulocThetaYEngineSide = glGetUniformLocation(shaderID, "thetaY");
-        ulocThetaZEngineSide = glGetUniformLocation(shaderID, "thetaZ");
-        ulocPlayerRollEngineSide = glGetUniformLocation(shaderID, "earlyThetaZ");
+        pul.ulocTimeEngineSide = glGetUniformLocation(shaderID, "time");
+        pul.ulocZoomEngineSide = glGetUniformLocation(shaderID, "zoom");
+        pul.ulocXTransEngineSide = glGetUniformLocation(shaderID, "xTrans");
+        pul.ulocYTransEngineSide = glGetUniformLocation(shaderID, "yTrans");
+        pul.ulocZTransEngineSide = glGetUniformLocation(shaderID, "zTrans");
+        pul.ulocThetaXEngineSide = glGetUniformLocation(shaderID, "thetaX");
+        pul.ulocThetaYEngineSide = glGetUniformLocation(shaderID, "thetaY");
+        pul.ulocThetaZEngineSide = glGetUniformLocation(shaderID, "thetaZ");
+        pul.ulocPlayerRollEngineSide = glGetUniformLocation(shaderID, "earlyThetaZ");
         
         if (shaderArray[3]->checkIfReady()) {
             std::cout << "                    Side Engine shader ready!\n";
@@ -681,21 +683,23 @@ void Generator::drawInstances() {
         
         //Generic draw for unspecified instances (in theory this code will never run if I did everything right)
         else if (specialization == specializationType::NOSPECIALIZATION) {
-            if (PRINT_DEBUG_MESSAGES) {
+            if (PRINT_DEBUG_MESSAGES || PRINT_DEBUG_WARNING_MESSAGES) {
                 std::cout << "\nDEBUG::Draw command called for an instance with no specialization type! Instance ID: " << instances[i]->getID() << std::endl;
             }
-            if (drawTriangles) {
+            //if (drawTriangles) {
                 glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
-            }
-            else if (drawLines) {
-                glDrawElements(GL_LINES, this->numberOfElements * 2, GL_UNSIGNED_INT, 0);
-            }
-            else {
-                glDrawElements(GL_POINTS, this->numberOfElements, GL_UNSIGNED_INT, 0);
-            }
+           // }
+           // else if (drawLines) {
+           //     glDrawElements(GL_LINES, this->numberOfElements * 2, GL_UNSIGNED_INT, 0);
+           // }
+           // else {
+           //     glDrawElements(GL_POINTS, this->numberOfElements, GL_UNSIGNED_INT, 0);
+           // }
         }
         else {
-            std::cout << "\nDEBUG::ERROR(sorta)! Generator's drawInstances command was called with an unrecognized (or just\ncurrently unimplemented) type! Please implement this type or fix error!\n\n";
+            if (PRINT_DEBUG_WARNING_MESSAGES || PRINT_DEBUG_MESSAGES) {
+                std::cout << "\nDEBUG::ERROR(sorta)! Generator's drawInstances command was called with an unrecognized (or just\ncurrently unimplemented) type! Please implement this type or fix error!\n\n";
+            }
         }
     }
     //It's generally a good idea to set these next two things to 0 after having used them
@@ -709,21 +713,12 @@ void Generator::removeInstance(const int & instantID) {
     std::vector<int>::iterator iter;
     iter = find (instancesCreatedByThisGenerator.begin(), instancesCreatedByThisGenerator.end(), instantID);
     if (iter == instancesCreatedByThisGenerator.end()) { //If iterator reached the end
-        //if ((*iter) != instantID) { //if the end value is not equal to the instanceID
-        std::cout << "\n    DEBUG::OOPS! removeInstance called for instance with id # ";
-        std::cout << instantID << " but that instance was not found\nwithin this generator!";
-        std::cout << std::endl;
+        if (PRINT_DEBUG_WARNING_MESSAGES) {
+            std::cout << "\n    DEBUG::OOPS! removeInstance called for instance with id # ";
+            std::cout << instantID << " but that instance was not found\nwithin this generator!";
+            std::cout << std::endl;
+        }
         return;
-        //}
-        //IT TURNS OUT THAT VECTOR.END() is the element past the last element in the vector
-//        //else instance is the final value in the vector, so just remove the final value from the array
-//        --activeInstances; //Decrement the number of active instances by 1
-//        Instance ** temp = new Instance*[activeInstances];
-//        for (int i = 0; i < activeInstances - 1; ++i) {
-//            temp[i] = this->instances[i];
-//        }
-//        delete [] this->instances;
-//        this->instances = temp; //Set instances to temp
     }
     //else the instance is located in the array somewhere besides the end
     bool found = false; //Need 'found' to keep array indexes lined up
@@ -735,7 +730,9 @@ void Generator::removeInstance(const int & instantID) {
             delete instances[i];
             instances[i] = nullptr;
             //DEBUG:
-            std::cout << "\nDEBUG::Deleted intance #" << instantID << std::endl;
+            if (PRINT_DEBUG_MESSAGES || true) { //I have a feeling my algorithm here could be wrong, so print out messages anyways
+                std::cout << "\nDEBUG::Deleted intance #" << instantID << std::endl;
+            }
         }
         else if (found) { //If we already deleted the instance, then just move the rest of the array over
             temp[i] = instances[i+1];
@@ -788,28 +785,28 @@ void Generator::doDrawPlayerShipInstance(int i) {
     PlayerInstance * player = static_cast<PlayerInstance*>(instances[i]);
     
     //Get playerBody specific uniforms (see shader code for what uniforms are in use for each program)
-    glUniform1f(ulocRed, player->red);
-    glUniform1f(ulocGreen, player->green);
-    glUniform1f(ulocBlue, player->blue);
-    glUniform1f(ulocPlayerRoll, player->rollAmount);
+    glUniform1f(pul.ulocRed, player->red);
+    glUniform1f(pul.ulocGreen, player->green);
+    glUniform1f(pul.ulocBlue, player->blue);
+    glUniform1f(pul.ulocRoll, player->rollAmount);
     
     //Draw the player body (using shader in shadderArray[0]
     glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
     
     //Set up to Draw Lines
     shaderArray[1]->use();
-    glUniform1f(ulocTimeLine, instances[i]->timeAlive);
-    glUniform1f(ulocZoomLine, instances[i]->zoom);
-    glUniform1f(ulocXTransLine, instances[i]->position.x);
-    glUniform1f(ulocYTransLine, instances[i]->position.y);
-    glUniform1f(ulocZTransLine, instances[i]->position.z);
-    glUniform1f(ulocThetaXLine, instances[i]->thetaX);
-    glUniform1f(ulocThetaYLine, instances[i]->thetaY);
-    glUniform1f(ulocThetaZLine, instances[i]->thetaZ);
-    glUniform1f(ulocRedLine, player->red * PLAYER_LINE_COLOR_BOOST_FACTOR);
-    glUniform1f(ulocGreenLine, player->green * PLAYER_LINE_COLOR_BOOST_FACTOR);
-    glUniform1f(ulocBlueLine, player->blue * PLAYER_LINE_COLOR_BOOST_FACTOR);
-    glUniform1f(ulocPlayerRollLine, player->rollAmount);
+    glUniform1f(pul.ulocTimeLine, instances[i]->timeAlive);
+    glUniform1f(pul.ulocZoomLine, instances[i]->zoom);
+    glUniform1f(pul.ulocXTransLine, instances[i]->position.x);
+    glUniform1f(pul.ulocYTransLine, instances[i]->position.y);
+    glUniform1f(pul.ulocZTransLine, instances[i]->position.z);
+    glUniform1f(pul.ulocThetaXLine, instances[i]->thetaX);
+    glUniform1f(pul.ulocThetaYLine, instances[i]->thetaY);
+    glUniform1f(pul.ulocThetaZLine, instances[i]->thetaZ);
+    glUniform1f(pul.ulocRedLine, player->red * PLAYER_LINE_COLOR_BOOST_FACTOR);
+    glUniform1f(pul.ulocGreenLine, player->green * PLAYER_LINE_COLOR_BOOST_FACTOR);
+    glUniform1f(pul.ulocBlueLine, player->blue * PLAYER_LINE_COLOR_BOOST_FACTOR);
+    glUniform1f(pul.ulocPlayerRollLine, player->rollAmount);
     
     //Some DEBUG code------------------------------
     if (PRINT_DEBUG_MESSAGES) {
@@ -929,17 +926,17 @@ void Generator::doDrawPlayerShipInstance(int i) {
 //    }
     glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
     
-    glUniform1f(ulocZoomLine, 1.0f);
-    glUniform1f(ulocXTransLine, 0.0f);
-    glUniform1f(ulocYTransLine, 0.0f);
-    glUniform1f(ulocZTransLine, 0.0f);
-    glUniform1f(ulocPlayerRollLine, 0.0f);
-    glUniform1f(ulocThetaXLine, 0.0f);
-    glUniform1f(ulocThetaYLine, 0.0f);
-    glUniform1f(ulocThetaZLine, 0.0f);
-    glUniform1f(ulocRedLine, 0.0f);
-    glUniform1f(ulocGreenLine, 1.0f);
-    glUniform1f(ulocBlueLine, 0.6f);
+    glUniform1f(pul.ulocZoomLine, 1.0f);
+    glUniform1f(pul.ulocXTransLine, 0.0f);
+    glUniform1f(pul.ulocYTransLine, 0.0f);
+    glUniform1f(pul.ulocZTransLine, 0.0f);
+    glUniform1f(pul.ulocPlayerRollLine, 0.0f);
+    glUniform1f(pul.ulocThetaXLine, 0.0f);
+    glUniform1f(pul.ulocThetaYLine, 0.0f);
+    glUniform1f(pul.ulocThetaZLine, 0.0f);
+    glUniform1f(pul.ulocRedLine, 0.0f);
+    glUniform1f(pul.ulocGreenLine, 1.0f);
+    glUniform1f(pul.ulocBlueLine, 0.6f);
     
         
         //Draw the 2D collision box
@@ -953,9 +950,9 @@ void Generator::doDrawPlayerShipInstance(int i) {
         glad_glDisable(GL_LINE_SMOOTH);
         
         //Draw the 3D collision box around the player model 
-        glUniform1f(ulocRedLine, 0.3f);
-        glUniform1f(ulocGreenLine, 0.3f);
-        glUniform1f(ulocBlueLine, 0.7f);
+        glUniform1f(pul.ulocRedLine, 0.3f);
+        glUniform1f(pul.ulocGreenLine, 0.3f);
+        glUniform1f(pul.ulocBlueLine, 0.7f);
         player->colBox->getCubiodTriangles3D(vertices);
         glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
         glDrawArrays(GL_LINE_STRIP, 0, 36);
@@ -974,14 +971,14 @@ void Generator::doDrawPlayerShipInstance(int i) {
     //DRAW MAIN ENGINE FLAME
     shaderArray[2]->use();
     //Note that I don't have 100% of the uniforms for the main engine that I have for the ship body and lines
-    glUniform1f(ulocTimeEngine, instances[i]->timeAlive);
-    glUniform1f(ulocZoomEngine, instances[i]->zoom);
-    glUniform1f(ulocXTransEngine, instances[i]->position.x);
-    glUniform1f(ulocYTransEngine, instances[i]->position.y);
-    glUniform1f(ulocZTransEngine, instances[i]->position.z);
-    glUniform1f(ulocThetaXEngine, instances[i]->thetaX);
-    glUniform1f(ulocThetaYEngine, instances[i]->thetaY);
-    glUniform1f(ulocThetaZEngine, instances[i]->thetaZ);
+    glUniform1f(pul.ulocTimeEngine, instances[i]->timeAlive);
+    glUniform1f(pul.ulocZoomEngine, instances[i]->zoom);
+    glUniform1f(pul.ulocXTransEngine, instances[i]->position.x);
+    glUniform1f(pul.ulocYTransEngine, instances[i]->position.y);
+    glUniform1f(pul.ulocZTransEngine, instances[i]->position.z);
+    glUniform1f(pul.ulocThetaXEngine, instances[i]->thetaX);
+    glUniform1f(pul.ulocThetaYEngine, instances[i]->thetaY);
+    glUniform1f(pul.ulocThetaZEngine, instances[i]->thetaZ);
     
     //            if (PRINT_DEBUG_MESSAGES) {
     //                printf("\nAll of these uloc's are for the main Engine uniforms:\nulocTime is %d\nulocZoom is %d\nulocXTrans is %d\nulocYTrans is %d\nulocZTrans is %d\nulocThetaX is %d\nulocThetaY is %d\nulocThetaX is %d\n", ulocTimeEngine, ulocZoomEngine, ulocXTransEngine, ulocYTransEngine, ulocZTransEngine, ulocThetaXEngine, ulocThetaYEngine, ulocThetaZEngine);
@@ -1056,15 +1053,15 @@ void Generator::doDrawPlayerShipInstance(int i) {
     //Draw side Engines
     shaderArray[3]->use();
     //get uniforms for side engines
-    glUniform1f(ulocTimeEngineSide, player->timeAlive);
-    glUniform1f(ulocZoomEngineSide, player->zoom);
-    glUniform1f(ulocXTransEngineSide, player->position.x);
-    glUniform1f(ulocYTransEngineSide, player->position.y);
-    glUniform1f(ulocZTransEngineSide, player->position.z);
-    glUniform1f(ulocThetaXEngineSide, player->thetaX);
-    glUniform1f(ulocThetaYEngineSide, player->thetaY);
-    glUniform1f(ulocThetaZEngineSide, player->thetaZ);
-    glUniform1f(ulocPlayerRollEngineSide, player->rollAmount);
+    glUniform1f(pul.ulocTimeEngineSide, player->timeAlive);
+    glUniform1f(pul.ulocZoomEngineSide, player->zoom);
+    glUniform1f(pul.ulocXTransEngineSide, player->position.x);
+    glUniform1f(pul.ulocYTransEngineSide, player->position.y);
+    glUniform1f(pul.ulocZTransEngineSide, player->position.z);
+    glUniform1f(pul.ulocThetaXEngineSide, player->thetaX);
+    glUniform1f(pul.ulocThetaYEngineSide, player->thetaY);
+    glUniform1f(pul.ulocThetaZEngineSide, player->thetaZ);
+    glUniform1f(pul.ulocPlayerRollEngineSide, player->rollAmount);
     
     //Draw left engine (gonna keep reusing first 3 positions in vertices)
     rear.x = -2.00213f; //From model data
@@ -1175,8 +1172,8 @@ void Generator::convertTrianglesIntoLines() {
     }
     delete [] this->elements;
     this->elements = temp; //move pointer to head of array 'elements' to the new heap data
-    drawLines = true;
-    drawTriangles = false;
+    //drawLines = true;
+    //drawTriangles = false;
     //Notice in next line that we are buffering (about) double the number of indicies
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements * 2 + 100, elements, GL_STATIC_DRAW);
 }
@@ -1193,8 +1190,8 @@ void Generator::convertLinesIntoTriangles() {
     }
     delete [] this->elements;
     this->elements = temp; //move pointer to head of array 'elements' to the new heap data
-    drawTriangles = true;
-    drawLines = false;
+    //drawTriangles = true;
+    //drawLines = false;
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements + 100, elements, GL_STATIC_DRAW);
 }
 

@@ -61,7 +61,7 @@ private:
     
     Stage * stage;
     PlayerManager * playerManager;
-    RocketManager * rocketManager;
+    
     
    // BackGroundGenerator *background;
     
@@ -76,6 +76,8 @@ private:
     void processUserInput();
     void doGameLogic(); //Do upkeep for game objects (upkeep)
     void processInterEntityEvents(); //Handle inter-entity instance collision/creation/destruction
+    
+    void initializeWeaponsManager();
 
     void doZoomIn(unsigned long long framesToHold); //The most important function
 };

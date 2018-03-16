@@ -80,7 +80,8 @@ Game::~Game() { //std::cout << "\nDEBUG::Game destructor was called...\n";
 void Game::playIntroMovie() {  }
 
 //Note that since dynamic memory to entityManager pointers are allocated into the
-//vector, the only way they will be deleted is also through the vector.
+//vector, the only way they will be deleted is also through the vector. i.e. the vector will
+//always have ownership over its entries
 void Game::loadGameObjects() {
     //Load the stages first
     std::cout << std::endl << std::endl << INDENT << "Loading Stage...\n";
@@ -91,16 +92,20 @@ void Game::loadGameObjects() {
     //Since I am no longer doing the loop, do:
     stage = static_cast<Stage*> (gEntities[0]);
     
+    
+    //Then load
+    std::cout << std::endl << INDENT << "Loading Weapons...\n";
+    
     //Then load all parts required for a PLAYER object
     std::cout << std::endl << INDENT << "Loading Player...\n";
     std::cout << INDENT << "    Loading Player Model...\n";
     gEntities.push_back(new PlayerManager);
     playerManager = static_cast<PlayerManager *>(gEntities[1]);
     
-    //Then load all parts required to have Rockets
-    std::cout << std::endl << INDENT << "Loading Weapons...\n";
+    
+    
     //gEntities.push_back(new RocketManager);
-    rocketManager = static_cast<RocketManager *>(gEntities[2]);
+    //rocketManager = static_cast<RocketManager *>(gEntities[2]);
     
     
     //std::cout << std::endl << INDENT <<  "Loading background...\n";

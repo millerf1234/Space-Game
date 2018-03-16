@@ -1,29 +1,27 @@
 //  Generator.h
 //
-//  I have rewritten/repurposed this class several times, and as a result it is a
-//  bit of a mess. This class also does a lot of the behind-the-scenes work for the
-//  game, so it is used a lot. At some point, this class ideally will be rewritten
+//  IMPORTANT!!! Generator will 'own' all of its dynamic memory at all times. It
+//               is very important to NEVER delete any pointers that are given
+//               out by Generator.
 //
-// *********************************************************************************
-//  Old comment headders:
+//  Description
+//  What is the Generator class, you might ask? Unfortunatly, the answer
+//  is not a simple one. In a broad sense, a generator is responsible for
+//  _______ (a lot). The idea is that every GameEntityManager class will have its own
+//  Generator from which it uses to initialize all the required information for
+//  that type of entity it is managing, and then can generate instances of that object on
+//  command. In reality though I've made so many changes to the design during the process
 //
-//  This is a redone version of my first ObjectGeneration class. I want to have there
-//  be a more distinct difference between an object (now called 'instance') and an objectGenerator.
+//
+//  Version history:
+//                   version -0.1 Created by Forrest Miller on 2/15/2018  (version is negative
+//                                            because I completely scrapped this version)
+//                   version 0.1  Rewrite started on 2/17/2018
+//                   version 1.0  Got it working with stage and Player managers by 2/28/2018
+//                   version 1.1  Started working on getting weapons working with generator  3/13/2018
 //
 //
-//  Here is the header I had written for ObjectGenerator:
-//     -------------------------------------------------------------------
-//       ObjectGenerator.h
 //
-//       The way an object generator works is when the Game is first launched, for each
-//       type of object in the game (player, ai-player, weapon, background, etc...)
-//       a corrosponding objectGenerator will be initialized. The object generator will
-//       load data from files for the object and will also handle making sure all of the
-//       necessary shaders for the object are good to go. Instances of an object can then be
-//       created on demand.
-//       (was) Created by Forrest Miller on 2/15/18.
-//     -------------------------------------------------------------------
-//  New version Created by Forrest Miller on 2/17/18.
 //
 
 #ifndef Generator_h
@@ -102,6 +100,8 @@ protected:
     //-------------------
     //Fields
     //-------------------
+    
+    //This section is all data necessary for rendering (shaders, models, textures, etc..)
     //Master Copy of Object's necessary data:
 public: //temporary for debug
     GLfloat * vertices; //Object's vertice data
@@ -113,13 +113,35 @@ protected: //temporary for debug
     //GLuint stackElements[500];
     
     //Textures and Shaders
-    ShaderWrapper ** shaderArray;
-    TextWrapr ** textureArray;
-    SimpleObjLoader * vertexData;
+    ShaderWrapper ** shaderArray; //Array of pointer to ShaderWrapper
+    TextWrapr ** textureArray; //array of pointer to TextWrapr
+    SimpleObjLoader * modelLoader;
     int shaderArraySize, textureArraySize;
     
-    bool drawTriangles, drawLines;
+    //bool drawTriangles, drawLines; //No longer used
     
+    
+    //Player uniform locations:
+    typedef struct PlayerUniformLocations {
+    GLint ulocRed, ulocGreen, ulocBlue; //Uniform locations for PLAYER rgb (color)
+    GLint ulocRedLine, ulocGreenLine, ulocBlueLine;
+    GLint ulocTimeLine, ulocZoomLine, ulocXTransLine, ulocYTransLine, ulocZTransLine, ulocThetaXLine, ulocThetaYLine, ulocThetaZLine;
+    GLint ulocTimeEngine, ulocZoomEngine, ulocXTransEngine, ulocYTransEngine, ulocZTransEngine, ulocThetaXEngine, ulocThetaYEngine, ulocThetaZEngine;
+    GLint ulocTimeEngineSide, ulocZoomEngineSide, ulocXTransEngineSide, ulocYTransEngineSide, ulocZTransEngineSide, ulocThetaXEngineSide, ulocThetaYEngineSide, ulocThetaZEngineSide;
+    GLint ulocPDamage, ulocPHealthMax;
+    GLint ulocRoll, ulocPlayerRollLine, ulocPlayerRollEngineSide; //Don't need to track roll for main engine
+    } PlayerUniformLocations;
+    
+    PlayerUniformLocations pul;
+    
+    //Weapon uniform locations:
+    //Kinetic weapons
+    typedef struct KineticUniformLocations {
+        
+    } KineticUniformLocations;
+    KineticUniformLocations kul;
+    
+    // This section
     //Instance data
     //int instanceCount; //Redundant with activeInstances
     Instance ** instances;
@@ -128,15 +150,7 @@ protected: //temporary for debug
     //Uniform location variables
     GLint ulocTime, ulocZoom, ulocXTrans, ulocYTrans, ulocZTrans, ulocThetaX, ulocThetaY, ulocThetaZ;
     
-    //Player uniform locations:
-    GLint ulocRed, ulocGreen, ulocBlue; //Uniform locations for PLAYER rgb (color)
-    GLint ulocRedLine, ulocGreenLine, ulocBlueLine;
-    GLint ulocTimeLine, ulocZoomLine, ulocXTransLine, ulocYTransLine, ulocZTransLine, ulocThetaXLine, ulocThetaYLine, ulocThetaZLine;
-    GLint ulocTimeEngine, ulocZoomEngine, ulocXTransEngine, ulocYTransEngine, ulocZTransEngine, ulocThetaXEngine, ulocThetaYEngine, ulocThetaZEngine;
-     GLint ulocTimeEngineSide, ulocZoomEngineSide, ulocXTransEngineSide, ulocYTransEngineSide, ulocZTransEngineSide, ulocThetaXEngineSide, ulocThetaYEngineSide, ulocThetaZEngineSide;
-    GLint ulocPDamage, ulocPHealthMax;
-    GLint ulocPlayerRoll, ulocPlayerRollLine, ulocPlayerRollEngineSide; //Don't need to track roll for main engine 
-    //Weapon uniform locations:
+   
     
     
     
