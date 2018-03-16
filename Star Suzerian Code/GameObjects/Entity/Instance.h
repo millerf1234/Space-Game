@@ -18,8 +18,8 @@
 #include "WeaponTracker.h"
 
 
-enum InstanceType {PLAYERINSTANCE, WEAPONINSTANCE, ENEMYINSTANCE, SCENEINSTANCE, BASIC};
-enum WeaponType {HEXAGON_BOMB, LAZER, ROCKET, HOMINGROCKET, UNINITIALIZED};
+enum InstanceType {PLAYERINSTANCE, WEAPONINSTANCE, ENEMYINSTANCE, SCENEINSTANCE, BASIC}; //Used for instance identification
+enum WeaponType {HEXAGON_BOMB, LAZER, ROCKET, HOMINGROCKET, KINETIC, UNINITIALIZED}; //Used in conjunction with WeapontypeManagers
 //Here is a typedef for an instance of what was generated
 
 class Instance{
@@ -169,8 +169,11 @@ public:
     
     bool homing;
     
+    
     WeaponType wepType;
     
+    //Add an abstract virtual function to make WeaponInstance abstract
+    virtual void getWeaponType() const = 0;
 };
 
 

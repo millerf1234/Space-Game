@@ -25,13 +25,16 @@ public:
     
     virtual void drawInstances() override {;}
     
-   
+    void generateAndAttactWeaponTracker(Instance *);
     
 protected:
     virtual void initializeFromTemplate() override;
 private:
     void generateInitializationTemplate();
     void processInput();
+    
+    WeaponTracker ** wepTrackers;
+    int numWepTrackers;
     
     float max(const float&, const float&);
     

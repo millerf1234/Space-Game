@@ -583,8 +583,8 @@ void Generator::generateSingle() {
         ++nextObjID;
     }
     else if (specialization == specializationType::WEAPON) {//Generate a weapon instance
-        instances[newInstanceIndex] = new WeaponInstance;
-        instances[newInstanceIndex]->identifierNumber = nextObjID++;
+        //instances[newInstanceIndex] = new WeaponInstance; //I  made WeaponInstance abstract base class
+        //instances[newInstanceIndex]->identifierNumber = nextObjID++;
     }
     else if (specialization == specializationType::STAGE) {
         instances[newInstanceIndex] = new Instance;

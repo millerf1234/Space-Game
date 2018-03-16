@@ -34,7 +34,7 @@ static constexpr bool DRAW_COLLISION_DETAILS = true;
 //-----------------------------------------------------------------------------
 // Control Bindings
 //-----------------------------------------------------------------------------
-
+// To do... Right now the controls are hardcoded in PlayerManager (with pause/escape defined within Game.cpp)
 
 //-----------------------------------------------------------------------------
 // ZOOM-IN PARAMETERS
@@ -210,7 +210,11 @@ static constexpr int LEVEL_TO_LOAD = 1; //The level to load (Note I index valye 
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/HubbleGalaxyHistory_915_609.jpg"; //I fixed to display properly, but it's sorta distorted now
 
 // Picture of the moon. Picture is the correct dimensions to be fixed to display properly.
-static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Cool_Picture_of_the_moon_915_609.jpg";
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Cool_Picture_of_the_moon_915_609.jpg";
+
+//Picture of the moon in original dimensions
+static std::string backgroundTextureFP = "/Users/forrestmiller/Documents/Cool_Picture_of_the_moon.jpg";
+
 
 //
 ////Picture of pluto:

@@ -58,7 +58,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9E0754E2203AD1F1009B6215 /* Galaxy_history_revealed_by_the_Hubble_Space_Telescope_(GOODS-ERS2).jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Galaxy_history_revealed_by_the_Hubble_Space_Telescope_(GOODS-ERS2).jpg"; sourceTree = "<group>"; };
 		9E0754E3203AD391009B6215 /* playership.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playership.frag; sourceTree = "<group>"; };
 		9E0754E4203AD3A4009B6215 /* playership.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playership.vert; sourceTree = "<group>"; };
 		9E0754E6203AD3C8009B6215 /* engineEffect.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = engineEffect.vert; sourceTree = "<group>"; };
@@ -73,7 +72,6 @@
 		9E0754F3203B9BE5009B6215 /* Instance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Instance.h; sourceTree = "<group>"; };
 		9E0754F5203B9E4E009B6215 /* Mibra_mine.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Mibra_mine.jpg; sourceTree = "<group>"; };
 		9E0754F8203CFCDC009B6215 /* Antarticata.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Antarticata.jpg; sourceTree = "<group>"; };
-		9E0754F9203CFDFD009B6215 /* HubbleGalaxyHistory_915_609.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = HubbleGalaxyHistory_915_609.jpg; sourceTree = "<group>"; };
 		9E0754FA203D0EC2009B6215 /* ID_008.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ID_008.jpg; sourceTree = "<group>"; };
 		9E10D596203234CC00F0F724 /* Star Suzerian */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Star Suzerian"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E10D599203234CC00F0F724 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -117,6 +115,7 @@
 		9E10D5ED20360AE500F0F724 /* ObjectGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectGenerator.h; sourceTree = "<group>"; };
 		9E8FF847204DDD29006E2392 /* CollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionBox.cpp; sourceTree = "<group>"; };
 		9E8FF848204DDD29006E2392 /* CollisionBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionBox.h; sourceTree = "<group>"; };
+		9EC84C3C205B9C3D00FC93B2 /* Cool_Picture_of_the_moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cool_Picture_of_the_moon.jpg; path = ../../../../Documents/Cool_Picture_of_the_moon.jpg; sourceTree = "<group>"; };
 		9ECC63852044C51300F7B703 /* RocketManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RocketManager.cpp; sourceTree = "<group>"; };
 		9ECC63862044C51300F7B703 /* RocketManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RocketManager.h; sourceTree = "<group>"; };
 		9ECC6389204640B600F7B703 /* RectangularCuboid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RectangularCuboid.cpp; sourceTree = "<group>"; };
@@ -387,9 +386,8 @@
 		9ED7720E2036B32F00D569A4 /* ShaderImages */ = {
 			isa = PBXGroup;
 			children = (
-				9E0754E2203AD1F1009B6215 /* Galaxy_history_revealed_by_the_Hubble_Space_Telescope_(GOODS-ERS2).jpg */,
-				9E0754F9203CFDFD009B6215 /* HubbleGalaxyHistory_915_609.jpg */,
 				9ED7720F2036B3D600D569A4 /* Cool_Picture_of_the_moon_915_609.jpg */,
+				9EC84C3C205B9C3D00FC93B2 /* Cool_Picture_of_the_moon.jpg */,
 				9ED772112036B3D600D569A4 /* CalibrationPicture_915_609.jpg */,
 				9E0754F5203B9E4E009B6215 /* Mibra_mine.jpg */,
 				9E0754F8203CFCDC009B6215 /* Antarticata.jpg */,

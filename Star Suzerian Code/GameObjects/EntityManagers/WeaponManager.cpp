@@ -18,6 +18,8 @@ WeaponManager::WeaponManager() : GameEntityManager() {
     this->requiresAIInput = false;
     this->specType = specializationType::WEAPON;
     this->generator->specialization = specializationType::WEAPON;
+    this->wepTrackers = nullptr;
+    this->numWepTrackers = 0;
     this->generateInitializationTemplate();
     
     //Configure the generator based off the initialization Template()
@@ -72,6 +74,14 @@ WeaponManager::~WeaponManager() {
     if (this->generator != nullptr) {
         delete this->generator;
         this->generator = nullptr;
+    }
+    if (this->numWepTrackers > 0 && this->wepTrackers != nullptr) {
+        for (int i = 0; i < numWepTrackers; i++) {
+            if (wepTrackers[i] != nullptr) {
+                delete wepTrackers[i];
+                wepTrackers[i] = nullptr;
+            }
+        }
     }
 }
 void WeaponManager::generateInitializationTemplate() {
