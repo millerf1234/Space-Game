@@ -140,7 +140,7 @@
 		9ED7721E203A2D7C00D569A4 /* debug.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = debug.vert; sourceTree = "<group>"; };
 		9EFA4CA02051D89D00308177 /* WeaponTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponTracker.h; sourceTree = "<group>"; };
 		9EFA4CA12051D9B000308177 /* WeaponManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = WeaponManager.cpp; sourceTree = "<group>"; };
-		9EFA4CA22051D9B000308177 /* WeaponManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponManager.h; sourceTree = "<group>"; };
+		9EFA4CA22051D9B000308177 /* WeaponOverseer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponOverseer.h; sourceTree = "<group>"; };
 		9EFA4CA52053366600308177 /* Impact2D.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Impact2D.cpp; sourceTree = "<group>"; };
 		9EFA4CA62053366600308177 /* Impact2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Impact2D.h; sourceTree = "<group>"; };
 		9EFA4CAA20533D7000308177 /* VectorOps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VectorOps.h; sourceTree = "<group>"; };
@@ -360,6 +360,8 @@
 				9EFA4CBF2059A6B400308177 /* Entity */,
 				9ED77217203930F100D569A4 /* Generator.cpp */,
 				9ED77218203930F100D569A4 /* Generator.h */,
+				9EFA4CA12051D9B000308177 /* WeaponManager.cpp */,
+				9EFA4CA22051D9B000308177 /* WeaponOverseer.h */,
 			);
 			path = GameObjects;
 			sourceTree = "<group>";
@@ -440,8 +442,6 @@
 				9ED7721B2039516500D569A4 /* Stage.cpp */,
 				9E10D5E220338FF000F0F724 /* PlayerManager.h */,
 				9E10D5E120338FF000F0F724 /* PlayerManager.cpp */,
-				9EFA4CA22051D9B000308177 /* WeaponManager.h */,
-				9EFA4CA12051D9B000308177 /* WeaponManager.cpp */,
 				9EC84C3D205C6F6B00FC93B2 /* KineticWeaponManager.cpp */,
 				9EC84C3E205C6F6B00FC93B2 /* KineticWeaponManager.h */,
 			);

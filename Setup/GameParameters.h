@@ -194,6 +194,11 @@ const std::string PLAYERSHIP_ENGINE_VERT = "/Users/forrestmiller/Desktop/xcode_t
 const std::string PLAYERSHIP_ENGINE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/PlayerShip/engineEffect.frag";
 
 
+//Weapon shaders
+//Kinetic
+const std::string KINETIC_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/Weapons/kinetic.vert";
+const std::string KINETIC_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/Weapons/kinetic.frag";
+
 //-----------------------------------------------------------------------------
 //   Texture Image Locations (preferably JPEGs that are 915 x 609)    //see: http://img-resize.com/   to resize images
 //-----------------------------------------------------------------------------

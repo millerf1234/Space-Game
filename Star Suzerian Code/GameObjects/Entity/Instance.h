@@ -37,7 +37,7 @@ public:
     
     CollisionBox * colBox;
     
-    //WeaponTracker * wepTracker; //To be attached and removed by WeaponManager
+    WeaponTracker * wepTracker; //To be attached and removed by WeaponManager
     
     //Constructors
     Instance() {//Construct an anonymous instance

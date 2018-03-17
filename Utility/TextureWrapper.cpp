@@ -101,7 +101,6 @@ void TextWrapr::activate() {
         //glPixelStorei(GL_PACK_ALIGNMENT, 1);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         
-            
     }
     else if(components == 4) {
         //Test:
@@ -109,6 +108,7 @@ void TextWrapr::activate() {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image->data());
         
          //glPixelStorei(GL_PACK_ALIGNMENT, 2);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         
     }
     else {

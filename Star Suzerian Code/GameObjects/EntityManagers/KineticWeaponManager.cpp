@@ -77,11 +77,46 @@ KineticWeaponManager::~KineticWeaponManager() {
    
 }
 void KineticWeaponManager::generateInitializationTemplate() {
+    //Set up the initializationTemplate for kinetic
+    initTemplate->hasTexture = false;
+    initTemplate->vertAttribName = "position";
+    initTemplate->vert3 = true;
+    
+    initTemplate->vertShaderPath = KINETIC_VERT;
+    initTemplate->hasVert = true;
+    initTemplate->fragShaderPath = KINETIC_FRAG;
+    initTemplate->hasFrag = true;
+    
+    
+    initTemplate->typeDataRequired = WEAPON;
+    
+    //Model data
+    initTemplate->hasVertsAlreadyLoaded = true;
+    initTemplate->numVerts = KINETIC_PROJECTILE_VERTS_COUNT * 2;
+    initTemplate->vertices = new GLfloat[initTemplate->numVerts];
+    //This should be done with draw arrays, but going to use an element buffer anyways
+    initTemplate->numElems = (KINETIC_PROJECTILE_VERTS_COUNT * 2) / 3;
+    initTemplate->elements = new GLuint[initTemplate->numElems];
+    
+    //Give initTemplate the actual vertex data
+    int halfPyrimidVertCount = initTemplate->numVerts / 2;
+    for (int i = 0; i < halfPyrimidVertCount / 2; i++) {
+        initTemplate->vertices[i] = KINETIC_PROJECTILE_VERTS[i];
+    }
+    //Flip to draw the other half of the pyrimid
+    for (int i = halfPyrimidVertCount; i < initTemplate->numVerts; i++) {
+        initTemplate->vertices[i] = KINETIC_PROJECTILE_VERTS[i - halfPyrimidVertCount] * -1.0f;
+    }
+    
+    //Fill in the element buffer as well
+    for (int i = 0; i < initTemplate->numElems; i++) {
+        initTemplate->elements[i] = (GLuint)i;
+    }
     
 }
 
 void KineticWeaponManager::initializeFromTemplate() {
-    //generator->initializeFromTemplate(*initTemplate);
+    generator->initializeFromTemplate(*initTemplate);
 }
 
 

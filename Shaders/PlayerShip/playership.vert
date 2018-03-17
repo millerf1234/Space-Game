@@ -35,9 +35,9 @@ float dg2Rad(float degrees) {
 
 //The earlyRotationMatrixZ is for doing roll and allowing the model to move around at the same time
 //(computing roll on a moving model would not be trival, but computing roll before doing other rotations/translations isn't that bad it turns out, can just use a basic rotation matrix to pre-set roll before everything else)
-mat3 earlyRotationMatrixZ = mat3(    cos(earlyThetaZ)    ,     -sin(earlyThetaZ)    ,  0.0f,
-                                     sin(earlyThetaZ)    ,      cos(earlyThetaZ)    ,  0.0f,
-                                             0.0f        ,             0.0f         ,  1.0f);
+mat3 earlyRotationMatrixZ = mat3(    cos(earlyThetaZ)    ,     -sin(earlyThetaZ)    ,      0.0f,
+                                     sin(earlyThetaZ)    ,      cos(earlyThetaZ)    ,      0.0f,
+                                             0.0f        ,             0.0f         ,      1.0f);
 
 mat3 aspectRatioMatrix = mat3(1.0f,       0.0f     , 0.0f,
                               0.0f, 2650.0f/1600.0f, 0.0f,
@@ -61,11 +61,6 @@ mat3 rotationMatrixY = mat3(cos(thetaY), 0.0f, -sin(thetaY),
 void main()
 {
     pos = position;
-    //normal = norml;
-    //normal = position; //I wrote this line after realizing normals don't work the way I thought/hoped they would work
-    
-    
-    //Rotate, translate, aspect ratio?  or a different order?
     
     //Rotate:
     pos = earlyRotationMatrixZ * pos; //Do the rotation with the early rotation matrix first
@@ -76,7 +71,7 @@ void main()
     pos = rotationMatrixY * pos;
     normal = rotationMatrixY * normal;
     
-    //translate:
+    //Translate:
     pos.x += xTrans;
     pos.y += yTrans;
     pos.z += zTrans;

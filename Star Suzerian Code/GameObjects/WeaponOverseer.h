@@ -18,16 +18,39 @@
 #include "GameParameters.h"
 #include "KineticWeaponManager.h"
 
-class WeaponManager {
+class WeaponOverseer {
+public:
+    WeaponOverseer();
+    ~WeaponOverseer();
     
+    void initializeWeapons();
+    bool getIsReady() const {return this->isReady;}
+    
+    
+    
+    
+    
+    void ageWeaponInstances();
+    void doUpkeep();
+    
+    
+    void generateAndAttactWeaponTracker(Instance *);
+    
+private:
+    bool isReady;
+    
+    //Weapon type managers
+    KineticWeaponManager * KineticWepManager;
+    
+    WeaponTracker ** wepTrackers;
+    int numWepTrackers;
 };
 
 
 //public:
-//void generateAndAttactWeaponTracker(Instance *);
+
 //private
-//WeaponTracker ** wepTrackers;
-//int numWepTrackers;
+
 
 
 

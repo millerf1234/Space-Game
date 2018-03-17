@@ -23,10 +23,12 @@
 #include "Object.h" //Abstract base class for any in-game objects
 //#include "Background.h"
 #include "GameEntityManager.h"
-#include "RocketManager.h"
+#include "WeaponOverseer.h"
+//#include "RocketManager.h"
 #include "PlayerManager.h"
 #include "Stage.h" //I replaced Background.h with Stage.h
 #include "GameParameters.h" //Get gameplay-affecting constants
+
 static const char * INDENT = "        ";
 
 class Game {
@@ -68,14 +70,25 @@ private:
     int numberOfLevels; //Number of levels
     Stage ** levels; //An array of pointers to level
     
-    std::vector<GameEntityManager *> gEntities;
+    
+    //Idea: What if a game entity is like a Player or a Background or an enemy ai ship, i.e. something 'static' or 'permanent'.
+    //Weapons will be a seperate thing because they aren't around that long and there could be a lot of them. They are still
+    //treated as instances though... hmm
+    
+    std::vector<GameEntityManager *> gEntities; //Backgrounds, Players
+    WeaponOverseer wepOverseer;
     bool shadersReady, texturesReady, objectGeneratorsReady;
+    
+    
+    
+    
     
     //Private Member Functions
     void draw();
     void processUserInput();
     void doGameLogic(); //Do upkeep for game objects (upkeep)
     void processInterEntityEvents(); //Handle inter-entity instance collision/creation/destruction
+    
     
     void initializeWeaponsManager();
 

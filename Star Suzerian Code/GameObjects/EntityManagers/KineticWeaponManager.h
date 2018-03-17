@@ -8,8 +8,10 @@
 #define KineticWeaponManager_h
 
 #include <iostream>
-#include "WeaponManager.h"
+//#include "WeaponManager.h"
 #include "Kinetic.h"
+#include "GameEntityManager.h"
+#include "GameParameters.h"
 
 class KineticWeaponManager : public GameEntityManager {
 public:
@@ -22,7 +24,7 @@ public:
     
     virtual void drawInstances() override {;}
     
-    
+    bool getIsReady() const {return isReady;}
     
 protected:
     virtual void initializeFromTemplate() override;
@@ -30,7 +32,7 @@ private:
     void generateInitializationTemplate();
     void processInput();
     
-    
+    bool isReady;
     float max(const float&, const float&);
     
 };

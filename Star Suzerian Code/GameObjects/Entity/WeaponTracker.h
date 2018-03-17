@@ -19,8 +19,23 @@
 //#include "CollisionRectangle.h"
 #include "GameParameters.h"
 
+constexpr int MAX_WEAPON_SPAWN_POINTS = 4;
+
 
 class WeaponTracker {
+private:
+    
+public:
+    
+    WeaponTracker() {
+        
+    }
+    
+    ~WeaponTracker() {
+        
+    }
+    
+    
     
 };
 

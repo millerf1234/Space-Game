@@ -95,6 +95,7 @@ void Game::loadGameObjects() {
     
     //Then load
     std::cout << std::endl << INDENT << "Loading Weapons...\n";
+    wepOverseer.initializeWeapons();
     
     //Then load all parts required for a PLAYER object
     std::cout << std::endl << INDENT << "Loading Player...\n";
@@ -208,19 +209,23 @@ bool Game::launch() {
          for (; entityLogicIterator < gEntities.end(); ++entityLogicIterator) {
              (*entityLogicIterator)->ageObjects();
          }
+        //Also tell the WeaponOverseer to age all currently active weapon instances
+        wepOverseer.ageWeaponInstances();
+        
         entityLogicIterator = gEntities.begin(); //Reset the iterator to the beginning of the vector
         //Loop through all the gameEntities and handle the rest of their required upkeep steps
         for (; entityLogicIterator < gEntities.end(); ++entityLogicIterator) {
             (*entityLogicIterator)->doUpkeep();
         }
+        wepOverseer.doUpkeep();
         
         entityLogicIterator = gEntities.begin(); //Reset the iterator to the beginning of the vector
         //Loop through all the gameEntities and process any collisions that occured after all object's movement has been computed
         for (; entityLogicIterator < gEntities.end(); ++entityLogicIterator) {
-            (*entityLogicIterator)->processCollisions();
+            (*entityLogicIterator)->processCollisions(); //this is collision between entities
         }
         
-        
+        //Need a way to do entity-weapon collisions...
         
         //----------------------------------------------------------------------
         //  Draw
