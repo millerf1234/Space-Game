@@ -33,8 +33,10 @@ public:
     void ageWeaponInstances();
     void doUpkeep();
     
+    void processWeaponTrackers();
     
-    void generateAndAttactWeaponTracker(Instance *);
+    
+    void generateAndAttachWeaponTrackerToInstance(Instance *);
     
 private:
     bool isReady;

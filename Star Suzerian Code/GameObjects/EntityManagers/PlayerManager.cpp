@@ -486,7 +486,7 @@ void PlayerManager::processInput() {
         aiVector3D tempMidpoint3D(player->position.x, player->position.y, player->position.z);
         aiVector2D tempMidpoint = aiVector2D(tempMidpoint3D.x, tempMidpoint3D.y);
         
-        //I was getting problems here with having tempMidpoint getting set to NAN
+        //I was getting problems here with having tempMidpoint getting set to NAN. If that happens, move position to the center
         if (isnan(tempMidpoint3D.x) || isnan(tempMidpoint3D.y)) {
             players[0]->position = aiVector3D(PLAYER1_STARTOFFSET_X, PLAYER1_STARTOFFSET_Y, 0.0f);
             players[1]->position = aiVector3D(PLAYER2_STARTOFFSET_X, PLAYER2_STARTOFFSET_Y, 0.0f);
@@ -513,6 +513,16 @@ void PlayerManager::processInput() {
         player->colBox->changeRotationAt(2, -1.0f * player->thetaZ + PI); //Box was backwards, this is a quick fix
         //player->colBox->changeRotationAt(3, player->thetaY); //This rotation actually never happens?
         
+        
+        //Lastly, set the flags within player's wepTracker for weapons being switched or fired
+        if (player->hasWeaponTracker) {
+            //player->wepTracker;
+        }
+        else {
+            if (PRINT_DEBUG_WARNING_MESSAGES) {
+                std::cout << "\nDEBUG::WARNING! THIS PLAYER DOES NOT HAVE A WEAPONS TRACKER ATTACHED!\n";
+            }
+        }
     }
     //Check to see if any player's playerboxes are overlapping, and if so, move them apart
 }
@@ -522,13 +532,15 @@ void PlayerManager::processCollisions() {
     Instance ** players = generator->getArrayOfInstances();
     
     Impact2D playerImpact(0.5f);
-    playerImpact.setMass1(100.0f); //Using a large mass difference for testing
-    playerImpact.setMass2(0.25f);
+//    playerImpact.setMass1(100.0f); //Using a large mass difference for testing
+//    playerImpact.setMass2(0.25f);
+    playerImpact.setMass1(1.0f);
+    playerImpact.setMass2(1.0f);
     
     PlayerInstance * p1 = static_cast<PlayerInstance *>(players[0]);
     PlayerInstance * p2 = static_cast<PlayerInstance *>(players[1]);
-    //See if player1 hit player 2
-    if (p1->colBox->isOverlapping(*(p2->colBox))) {
+    //See if player1 hit player2 (or if player2 hit player1)
+    if (p1->colBox->isOverlapping(*(p2->colBox)) || p2->colBox->isOverlapping(*(p1->colBox))) {
         //p1->colBox->moveApartAlongAxisBetweenMidpoints(*(p2->colBox));
         //aiVector2D p1BoxMidpoint = p1->colBox->getMidpoint();
         //aiVector2D p2BoxMidpoint = p2->colBox->getMidpoint();

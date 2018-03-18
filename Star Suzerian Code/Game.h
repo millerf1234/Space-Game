@@ -2,6 +2,12 @@
 // it calls a method (or methods) in this object that then takes over responibilty
 // for handling the game.
 //
+// Note that WeaponOverseer is a class that manages the weapon classes which in turn
+// manage their respective weapon types. As such, WeaponOverseer is not a GameEntityManager,
+// and does not appear in the same array as all the other game entity managers.
+// Currently all weaponTypeManagers are handled through WeaponOverseer, so they
+// will not be a part of the GameEntity array.
+//
 //  Game.h
 //
 //  Created by Forrest Miller on 2/12/18.
@@ -76,11 +82,7 @@ private:
     //treated as instances though... hmm
     
     std::vector<GameEntityManager *> gEntities; //Backgrounds, Players
-    WeaponOverseer wepOverseer;
-    bool shadersReady, texturesReady, objectGeneratorsReady;
-    
-    
-    
+    WeaponOverseer wepOverseer; //Is in charge of all aspects related to weaponry
     
     
     //Private Member Functions
@@ -90,7 +92,7 @@ private:
     void processInterEntityEvents(); //Handle inter-entity instance collision/creation/destruction
     
     
-    void initializeWeaponsManager();
+    void initializeWeaponsManager(); //
 
     void doZoomIn(unsigned long long framesToHold); //The most important function
 };

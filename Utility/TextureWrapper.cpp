@@ -122,7 +122,7 @@ void TextWrapr::deactivate() {
 
 //I wrote this function to fix a texture that is 915x609 pixels, so it gets most
 //of the image lined up. It still isn't perfect.
-void TextWrapr::fixTexture915x609(TextureWrapper * tData) { 
+void TextWrapr::fixTexture915x609(TextureWrapper * tData) {  //Technically I no longer need this function!
     if (tData == nullptr) { //If the data is a nullptr, don't try to do anything with it
         std::cout << "\nDEBUG: OOPS! fixTexture915x609 was given a nullptr to fix! This is most likely\ndue to an error in the TextureWrapper class!" << std::endl;
         return; //Leave function

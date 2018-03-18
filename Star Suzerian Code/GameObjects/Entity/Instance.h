@@ -28,6 +28,7 @@ public:
     //These are all basically just values to give the GPU for each instance
     aiVector3D position;
     aiVector2D velocity; //Velocity is applied to position in each generator's upkeep function
+    aiVector3D * forward; //Moving to have this be on all instances
     float zoom;
     float thetaX, thetaY, thetaZ; //Euler Rotation Angles
     float mass; //Might use this to make missle/projectile strikes affect player velocity
@@ -37,6 +38,7 @@ public:
     
     CollisionBox * colBox;
     
+    bool hasWeaponTracker;
     WeaponTracker * wepTracker; //To be attached and removed by WeaponManager
     
     //Constructors
@@ -45,24 +47,104 @@ public:
         this->type = BASIC;
         this->mass = 1.0f;
         this->velocity.x = this->velocity.y = 0.0f;
+        this->forward = nullptr;
         this->colBox = nullptr;
-        //this->wepTracker = nullptr;
+        this->wepTracker = nullptr;
+        this->hasWeaponTracker = false;
     }
     Instance(int id) { //Construct an instance that has an ID number
         this->identifierNumber = id;
         this->type = BASIC;
         this->mass = 1.0f;
         velocity.x = velocity.y = 0.0f;
+        this->forward = nullptr;
         this->colBox = nullptr;
-       // this->wepTracker = nullptr;
+        this->wepTracker = nullptr;
+        this->hasWeaponTracker = false;
     }
     
     ~Instance() {
         if (this->colBox != nullptr) {delete this->colBox; this->colBox = nullptr;}
     }
     
-    //One function attached to getID()
+    AmmoCount getAmmoCount() const {
+        if (!hasWeaponTracker) {
+            if (PRINT_DEBUG_WARNING_MESSAGES) {
+                std::cout << "\nDEBUG::WARNING! getAmmoCount called on an instance that does not have a weaponTracker attached to it!\n";
+            }
+            AmmoCount temp;
+            return temp; //Return a bogus AmmoCount to keep the function happy and not dereference a nullptr
+        }
+        return this->wepTracker->getAmmoCount();
+    }
+    
+    void attachWeaponTracker(WeaponTracker * wp) {
+        if (this->hasWeaponTracker) {
+            if (PRINT_DEBUG_WARNING_MESSAGES) {
+                std::cout << "\nDEBUG::WARNING! ATTEMPTING TO ATTACH WEAPON TRACKER TO AN INSTANCE THAT ALREADY HAS A WEAPON TRACKER!\n";
+            }
+            return;
+        }
+        if (wp != nullptr) {
+            this->wepTracker = wp;
+            this->hasWeaponTracker = true;
+        }
+        else {
+            if (PRINT_DEBUG_WARNING_MESSAGES) {
+                std::cout << "\nDEBUG::Warning! Attempting to attach a null weapon tracker to this instance\n";
+            }
+            this->hasWeaponTracker = false;
+        }
+        configureWeaponTracker();
+    }
+    
+    virtual void configureWeaponTracker() {
+        if (this->wepTracker->getHasWeponSpawnPointsSet()) {
+            if (PRINT_DEBUG_WARNING_MESSAGES) {
+                std::cout << "\nDEBUG::OOPS! Are you sure you want to configure this weapons tracker twice?\n";
+                return;
+            }
+        }
+        //Print a message just in case (can suppress this later if need be)
+        std::cout << "\nDEBUG::BASE INSTANCE configureWeaponTracker function called. Are you sure you didn't mean\n";
+        std::cout << "to call the instance-type-specific version of this function?\n";
+        
+        //Actually start configuring the WeaponsTracker now:
+        //Give's weaponTracker the weapon spawn point coordinates to launch from
+        aiVector3D spawnPointOffsets [1]; //Since this is just the base Instance class, no special offset points
+        *spawnPointOffsets = aiVector3D(0.0f, 0.0f, 0.0f);
+        this->wepTracker->setNewWeaponSpawnpoints(spawnPointOffsets, 1);
+        
+        //Set the rest of the data as well now
+        matchWepTrackerWithInstData();
+    }
+    
+    //Call this next function every loop iteration
+    virtual void updateWeaponTracker() {
+        this->wepTracker->resetWeaponsFired(); //Reset all weapons-fired flags
+        matchWepTrackerWithInstData();
+    }
+    
+    //Get the instance ID
     int getID() const {return this->identifierNumber;}
+    
+protected:
+    //This function will
+    void matchWepTrackerWithInstData() {
+        wepTracker->setPosition(aiVector2D(position.x, position.y));
+        wepTracker->setVelocity(velocity);
+        if (this->forward == nullptr) {
+            wepTracker->setForwardDirection(aiVector2D(0.0f, 1.0f)); //Give it a vector
+            std::cout << "\nWarning! Forward may not have been set correctly on this instance!\n";
+        }
+        else {
+            wepTracker->setForwardDirection(aiVector2D((*forward).x, (*forward).y));
+        }
+        wepTracker->setEarlyThetaZ(0.0f); //Note that if EarlyThetaZ is used, it will need to be set seperatly from this function
+        wepTracker->setThetaX(thetaX);
+        wepTracker->setThetaZ(thetaZ);
+        wepTracker->setInstanceZoomAmount(zoom);
+    }
 };
 
 class PlayerInstance : public Instance {
@@ -72,8 +154,8 @@ public:
     float energy;
     float fuel;
     int playerNumber;
-    int rocketCount;
-    int maxRockets;
+   // int rocketCount;
+  ///  int maxRockets;
     
     //Color information
     float red;
@@ -81,7 +163,7 @@ public:
     float blue;
     
     float rollAmount;
-    aiVector3D * forward;
+//    aiVector3D * forward; //Moving to have this be on all instances
     
     int currentAnimationFrame;
     int maxAnimationFrame;
@@ -112,8 +194,8 @@ public:
         shields = STARTING_PLAYER_SHIELDS;
         energy = STARTING_PLAYER_ENERGY;
         fuel = STARTING_PLAYER_FUEL;
-        rocketCount = STARTING_PLAYER_ROCKETS;
-        maxRockets = STARTING_PLAYER_ROCKET_COUNT_MAX;
+        //rocketCount = STARTING_PLAYER_ROCKETS;
+        //maxRockets = STARTING_PLAYER_ROCKET_COUNT_MAX;
         red = green = blue = 0.75f; //Setting all 3 equal will give a shade of gray (A good default color)
         rollAmount = 0.0f;
         currentAnimationFrame = maxAnimationFrame = 0;
@@ -158,6 +240,36 @@ public:
             delete [] translationHistory;
         }
     }
+    
+    /*virtual */ void configureWeaponTracker() override {
+        if (this->wepTracker->getHasWeponSpawnPointsSet()) {
+            if (PRINT_DEBUG_WARNING_MESSAGES) {
+                std::cout << "\nDEBUG::OOPS! Are you sure you want to configure this weapons tracker twice?\n";
+                return;
+            }
+        }
+        //Actually start configuring the WeaponsTracker now:
+        aiVector3D playerWepSpawnPoints[4];
+        float weaponZSpawnCoord = 3.25f; //max positive model Z is 3.85924
+        float weaponXSpawnCoordOuter = 2.1f; //max positive model X is 2.4450891
+        float weaponXSpawnCoordInner = 0.5f;
+        playerWepSpawnPoints[0] = aiVector3D(-weaponXSpawnCoordOuter, 0.0f, weaponZSpawnCoord); //Outer left side
+        playerWepSpawnPoints[1] = aiVector3D(-weaponXSpawnCoordInner, 0.0f, weaponZSpawnCoord); //Inner left side
+        playerWepSpawnPoints[2] = aiVector3D(weaponXSpawnCoordOuter, 0.0f, weaponZSpawnCoord); //Outer right side
+        playerWepSpawnPoints[3] = aiVector3D(weaponXSpawnCoordInner, 0.0f, weaponZSpawnCoord); //Inner right side
+        this->wepTracker->setNewWeaponSpawnpoints(playerWepSpawnPoints, 4);
+        
+        //Set the rest of the data as well now
+        matchWepTrackerWithInstData();
+        
+    }
+    
+    /*virtual */ void updateWeaponTracker() override {
+        this->wepTracker->resetWeaponsFired();
+        matchWepTrackerWithInstData();
+        this->wepTracker->setEarlyThetaZ(rollAmount); //
+    }
+    
 };
 
 
@@ -173,7 +285,7 @@ public:
     WeaponType wepType;
     
     //Add an abstract virtual function to make WeaponInstance abstract
-    virtual void getWeaponType() const = 0;
+    virtual WeaponType getWeaponType() const = 0;
 };
 
 

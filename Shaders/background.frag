@@ -2,8 +2,9 @@
 #version 400 core
 out vec4 color;
 
-//uniform float time;
+uniform float time;
 uniform sampler2D tex;
+
 
 in vec2 pos;
 in vec3 COLR;

@@ -98,11 +98,27 @@ void KineticWeaponManager::generateInitializationTemplate() {
     initTemplate->numElems = (KINETIC_PROJECTILE_VERTS_COUNT * 2) / 3;
     initTemplate->elements = new GLuint[initTemplate->numElems];
     
-    //Give initTemplate the actual vertex data
+    //Need to align the pyramid to shoot in the correct direction
+    Quaternion alignment(1.0f, 0.0f, 0.0f, -PI / 2.0f);
+    
     int halfPyrimidVertCount = initTemplate->numVerts / 2;
-    for (int i = 0; i < halfPyrimidVertCount / 2; i++) {
-        initTemplate->vertices[i] = KINETIC_PROJECTILE_VERTS[i];
+    aiVector3D vecsToRotate[halfPyrimidVertCount / 3];
+    int counter = 0;
+    for (int i = 0; i < halfPyrimidVertCount / 3; i++){
+        vecsToRotate[i] = aiVector3D(KINETIC_PROJECTILE_VERTS[counter], KINETIC_PROJECTILE_VERTS[counter+1], KINETIC_PROJECTILE_VERTS[counter + 2]);
+        
+        //Do the rotation on the vector as well to align the pyramid
+        vecsToRotate[i] = alignment.computeRotation(vecsToRotate[i]);
+        //Copy the rotated vector into the template's vertice array
+        initTemplate->vertices[counter] = vecsToRotate[i].x;
+        initTemplate->vertices[counter + 1] = vecsToRotate[i].y;
+        initTemplate->vertices[counter + 2] = vecsToRotate[i].z;
+        counter += 3;
     }
+    //If not rotating Pyramid, then just copy the data straight over
+//    for (int i = 0; i < halfPyrimidVertCount / 2; i++) {
+//        initTemplate->vertices[i] = KINETIC_PROJECTILE_VERTS[i];
+//    }
     //Flip to draw the other half of the pyrimid
     for (int i = halfPyrimidVertCount; i < initTemplate->numVerts; i++) {
         initTemplate->vertices[i] = KINETIC_PROJECTILE_VERTS[i - halfPyrimidVertCount] * -1.0f;
@@ -112,13 +128,26 @@ void KineticWeaponManager::generateInitializationTemplate() {
     for (int i = 0; i < initTemplate->numElems; i++) {
         initTemplate->elements[i] = (GLuint)i;
     }
-    
 }
 
 void KineticWeaponManager::initializeFromTemplate() {
     generator->initializeFromTemplate(*initTemplate);
 }
 
+void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
+    int newInstanceIndex = this->generator->getInstanceCount();
+    this->generator->generateSingle(); //Have generator create a new instance
+    Instance ** insts = this->generator->getArrayOfInstances();
+    
+    //Do special configuration to set up the newly created KineticInstance
+    Kinetic * newKinInst = static_cast<Kinetic*>(insts[newInstanceIndex]);
+    
+    newKinInst->mass = 0.01f;
+    newKinInst->zoom = PLAYER_SIZE * 5.0f;
+    newKinInst->colBox->setScale(1.0f / (newKinInst->zoom));
+    
+    
+}
 
 void KineticWeaponManager::doUpkeep() {
     this->generator->doUpkeep(); //Handle object upkeep

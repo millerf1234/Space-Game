@@ -137,7 +137,7 @@ protected: //temporary for debug
     //Weapon uniform locations:
     //Kinetic weapons
     typedef struct KineticUniformLocations {
-        
+        //No Kinetic Uniform Locations currently
     } KineticUniformLocations;
     KineticUniformLocations kul;
     

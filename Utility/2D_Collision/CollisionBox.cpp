@@ -964,7 +964,7 @@ void CollisionBox::moveApartAlongAxisBetweenMidpointsOtherOnly(CollisionBox & ot
     
     //The way I am going to write this is going to be terribly inefficient, kinda a brute force attemp
     aiVector2D displacement(this->midpoint.x - otherBox.midpoint.x, this->midpoint.y - otherBox.midpoint.y);
-    if (displacement.Length() == 0.0f) {return;} //If there is no displacement, then don't know which direction to move
+    if (displacement.Length() == 0.0f) {this->midpoint.x += 0.001f; moveApartAlongAxisBetweenMidpoints(otherBox);} //If there is no displacement, then don't know which direction to move. Fix by forcing a direction
     //Start moving the two rectangles apart until they are no longer overlapping
     do {
         //Move the other rectangle away also by step amount

@@ -76,6 +76,7 @@ static constexpr float STARTING_PLAYER_SHIELDS = 4.0f; //Tweak as needed (if thi
 static constexpr float STARTING_PLAYER_ENERGY = 25.0f; //Tweak as needed (if this ever gets implemented)
 static constexpr float STARTING_PLAYER_FUEL = 100.0f; //Tweak freely, as this will most likely never be implemented
 //Starting ammo:
+static constexpr int STARTING_PLAYER_KINETIC_AMMO = 50000; //Give a lot until I add picking up ammo
 static constexpr int STARTING_PLAYER_ROCKETS = 50; //TWEAK AS NEEDED PER GAMEPLAY CONDITIONS
 static constexpr int STARTING_PLAYER_ROCKET_COUNT_MAX = 500; //TWEAK AS NEEDED
 static constexpr int STARTING_PLAYER_HEXAGON_BOMBS = 6;

@@ -15,8 +15,7 @@
 static constexpr int KINETIC_PROJECTILE_VERTS_COUNT = 18*3;
 
 static constexpr GLfloat KINETIC_PROJECTILE_VERTS[] = {
-    
-    //Full
+    //Square Pyrimid
     //x        y        z
      1.0f,    0.0f,    1.0f, //Base
      1.0f,    0.0f,   -1.0f,
@@ -37,12 +36,14 @@ static constexpr GLfloat KINETIC_PROJECTILE_VERTS[] = {
      0.0f,    2.5f,    0.0f,
      1.0f,    0.0f,    1.0f,
     
-    
 };
 
 
 class Kinetic : public WeaponInstance {
-    
+    Kinetic() : WeaponInstance() {}
+    Kinetic(aiVector3D wepSpawnOffset, aiVector2D midpoint, float instanceZoom, aiVector2D velocity) : WeaponInstance() {
+        
+    }
 };
 
 #endif /* Kinetic_h */

@@ -65,6 +65,7 @@ public:
     virtual void drawInstances() override;
     
     
+    
     //aiVector3D getCenterWeaponLaunchpoint();
     //aiVector3D * getSideWeaponLaunchPoints();
     

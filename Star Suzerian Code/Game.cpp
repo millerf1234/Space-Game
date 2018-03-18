@@ -18,11 +18,8 @@ Game::Game(MonitorData & mPtr) {
     this->levels = nullptr;
     this->numberOfLevels = 0; //Start with 0 levels
     counter = 0.0f; //Set game clock to 0
-    
     p1Score = p2Score = frameNumber = frameUnpaused = 0ull;
-    
-    this->mWindow = mPtr.activeMonitor; //Set window to the active window 
-    
+    this->mWindow = mPtr.activeMonitor; //Set window to the active window
     std::cout << "Done" << std::endl;
 }
 
@@ -41,26 +38,6 @@ Game::~Game() { //std::cout << "\nDEBUG::Game destructor was called...\n";
         delete zRot;
         zRot = nullptr;
     }
-    //I replaced 'background' with 'stage', and 'stage' will be an array
-//    if (this->background != nullptr) {
-//        delete this->background;
-//        this->background = nullptr;
-//    }
-    
-    //Not sure if this next part should be removed or not?
-/*    //Delete levels
-    if (this->levels != nullptr) {
-        //Delete each level
-        for (int i = 0; i < this->numberOfLevels; ++i) {
-            if (this->levels[i] != nullptr) {
-                delete this->levels[i];
-                this->levels[i] = nullptr;
-            }
-        }
-        //Delete the array of levels
-        delete [] this->levels;
-        this->levels = nullptr;
-    } */
  
     //Delete game entities in the gameEntityManager array
     std::vector<GameEntityManager *>::iterator iter;
@@ -70,11 +47,7 @@ Game::~Game() { //std::cout << "\nDEBUG::Game destructor was called...\n";
             (*iter) = nullptr;
         }
     }
-    //Gotta delete the pointer at the end of the vector as well
-//    if (*iter != nullptr) {
-//        delete (*iter);
-//        (*iter) = nullptr;
-//    }
+    
 }
 
 void Game::playIntroMovie() {  }

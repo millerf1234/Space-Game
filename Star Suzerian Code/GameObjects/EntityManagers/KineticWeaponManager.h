@@ -24,6 +24,8 @@ public:
     
     virtual void drawInstances() override {;}
     
+    void spawnNewKineticInstance(WeaponTracker * wepTracker);
+    
     bool getIsReady() const {return isReady;}
     
 protected:
