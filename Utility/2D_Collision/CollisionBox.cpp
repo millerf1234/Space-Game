@@ -1494,6 +1494,8 @@ void CollisionBox::calculateSelfAfterTranslations() {
             minYIndex = i;
         }
     }
+    
+
     corners2D[0] = aiVector2D(modelTranslatedCorners3D[maxXIndex].x, modelTranslatedCorners3D[maxXIndex].y); //Max x
     corners2D[1] = aiVector2D(modelTranslatedCorners3D[maxYIndex].x, modelTranslatedCorners3D[maxYIndex].y); //Max y
     corners2D[2] = aiVector2D(modelTranslatedCorners3D[minXIndex].x, modelTranslatedCorners3D[minXIndex].y); //Min x
@@ -1506,31 +1508,124 @@ void CollisionBox::calculateSelfAfterTranslations() {
         (corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) ||
         (corners2D[3].x == corners2D[0].x && corners2D[3].y == corners2D[0].y) ) {
         
-        if (!useHiddenRotation) {
+        if (!useHiddenRotation) { //If it failed and we haven't tried the hidden rotation yet, try the hidden rotation
             useHiddenRotation = true;
+            doRotationsAndRecalculate(); //Redo the 2D box formation process with the hidden rotation included
         }
-        else {
-            //This may look like repeated code with the above, but here I am checking each case seperatly
-            //The hidden rotation didn't work, so need to change the shape even more (note this should rarely need to happen)
-            if ( corners2D[0].x == corners2D[1].x && corners2D[0].y == corners2D[1].y) {
-                corners2D[0].x += 0.0001f;
-                corners2D[0].y += 0.0001f;
+        
+        //Else if we already used the hidden-rotation fix and the box still wasn't formed correctly....
+        else { //The hidden rotation must have failed, so need to try to fix it another way
+            //Check all possible cases of how the box is degenerate and try to fix each one
+            //NOTE: Since there are 4 corners, there are (11.5) different cases of degeneracy we need to check for
+            
+            //Case 1:
+            //See if all 4 points are the same point (WORST CASE - FIX WILL NOT BE IDEAL)
+            if (corners2D[0].x == corners2D[1].x && corners2D[0].y == corners2D[1].y &&
+                corners2D[1].x == corners2D[2].x && corners2D[1].y == corners2D[2].y &&
+                corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) {
+                //Then we are screwed because all four corners were set to the same value...
+                //See if the corners are equal to the midpoint
+                if (corners2D[0].x == midpoint3D.x && corners2D[0].y == midpoint3D.y) {
+                    //then just make a really really tiny box to represent just the midpoint in space
+                    corners2D[0].x += 0.001f;  // Then form a box around the midpoint that looks like:
+                    corners2D[0].y += 0.001f;  //   corner3 +------------+  corner0
+                    corners2D[1].x += 0.001f;  //           |            |
+                    corners2D[1].y -= 0.001f;  //           |            |
+                    corners2D[2].x -= 0.001f;  //           |     mid    |
+                    corners2D[2].y -= 0.001f;  //           |            |
+                    corners2D[3].x -= 0.001f;  //           |            |
+                    corners2D[3].y += 0.001f;  //   corner2 +------------+  corner1
+                }
+                //Case 1.5:
+                else { //Else they all got set to a corner that is not equal to the midpoint
+                    //Figure out what Quadrant the corners got set to:
+                    std::cout << "\nAll corners set to point that was not midpoint!" << std::endl;
+                }
             }
-            if (corners2D[1].x == corners2D[2].x && corners2D[1].y == corners2D[2].y) {
-                corners2D[1].x -= 0.0001f;
-                corners2D[1].y -= 0.0001f;
+            //Else see if 3 corners got set to the same point
+            //Case 2:
+            //If 0 1 2 are the same
+            else if (corners2D[0].x == corners2D[1].x && corners2D[0].y == corners2D[1].y &&
+                corners2D[1].x == corners2D[2].x && corners2D[1].y == corners2D[2].y) {
+                std::cout << "\nCorners 0 1 2 set to same point!\n";
             }
-            if ( corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) {
-                corners2D[2].x += 0.0001f;
-                corners2D[2].y += 0.0001f;
+            //Case 3:
+            //If 0 1 3 are the same
+            else if (corners2D[0].x == corners2D[1].x && corners2D[0].y == corners2D[1].y &&
+                     corners2D[1].x == corners2D[3].x && corners2D[1].y == corners2D[3].y) {
+                std::cout << "\nCorners 0 1 3 set to same point!\n";
             }
-            else if (corners2D[3].x == corners2D[0].x && corners2D[3].y == corners2D[0].y) {
-                corners2D[3].x -= 0.0001f;
-                corners2D[3].y -= 0.0001f;
+            //Case 4:
+            //If 0 2 3 are the same
+            else if (corners2D[0].x == corners2D[2].x && corners2D[0].y == corners2D[2].y &&
+                     corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) {
+                std::cout << "\nCorners 0 2 3 set to same point!\n";
             }
-            return; //Don't redo rotations and recalculate...
+            //Case 5:
+            //If 1 2 3 are the same
+            else if (corners2D[1].x == corners2D[2].x && corners2D[1].y == corners2D[2].y &&
+                     corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) {
+                std::cout << "\nCorners 1 2 3 set to same point!\n";
+            }
+            
+            //Else check to see if just 2 corners were set to the same point
+            //Case 6:
+            //If just 0 and 1 are the same
+            else if (corners2D[0].x == corners2D[1].x && corners2D[0].y == corners2D[1].y) {
+                std::cout << "\nCorners 0 1 set to same point!\n";
+                
+            }
+            //Case 7:
+            //If just 0 and 2 are the same  (I don't think this case should ever happen...)
+            else if (corners2D[0].x == corners2D[2].x && corners2D[0].y == corners2D[2].y) {
+                std::cout << "\nCorners 0 2 set to same point!\n";
+            }
+            
+            //Case 8:
+            //If just 0 and 3 are the same
+            else if (corners2D[0].x == corners2D[3].x && corners2D[0].y == corners2D[3].y) {
+                std::cout << "\nCorners 0 3 set to same point!\n";
+            }
+            //Case 9:
+            //if just 1 and 2 are the same
+            else if (corners2D[1].x == corners2D[2].x && corners2D[1].y == corners2D[2].y) {
+                std::cout << "\nCorners 1 2 set to same point!\n";
+            }
+            //case 10:
+            //if just 1 and 3 are the same
+            else if (corners2D[1].x == corners2D[3].x && corners2D[1].y == corners2D[3].y) {
+                std::cout << "\nCorners 1 3 set to same point!\n";
+            }
+            //case 11:
+            //if just 2 and 3 are the same
+            else if (corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) {
+                std::cout << "\nCorners 2 3 set to same point!\n";
+            }
         }
-        doRotationsAndRecalculate(); //Redo the 2D box formation process with the hidden rotation included
+        
+        //This was my old way that didn't quite work, but it made sure code always ran...
+//        else { //I HAD a bug in my code and this here was to try to fix it...
+//            //This may look like repeated code with the above, but here I am checking each case seperatly
+//            //The hidden rotation didn't work, so need to change the shape even more (note this should rarely need to happen)
+//            if ( corners2D[0].x == corners2D[1].x && corners2D[0].y == corners2D[1].y) {
+//                corners2D[0].x += 0.0001f;
+//                corners2D[0].y += 0.0001f;
+//            }
+//            if (corners2D[1].x == corners2D[2].x && corners2D[1].y == corners2D[2].y) {
+//                corners2D[1].x -= 0.0001f;
+//                corners2D[1].y -= 0.0001f;
+//            }
+//            if ( corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) {
+//                corners2D[2].x += 0.0001f;
+//                corners2D[2].y += 0.0001f;
+//            }
+//            else if (corners2D[3].x == corners2D[0].x && corners2D[3].y == corners2D[0].y) {
+//                corners2D[3].x -= 0.0001f;
+//                corners2D[3].y -= 0.0001f;
+//            }
+//            return; //Don't redo rotations and recalculate...
+//        }
+        
     }
 }
 

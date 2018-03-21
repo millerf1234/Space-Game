@@ -126,7 +126,7 @@ void KineticWeaponManager::generateInitializationTemplate() {
     }
     
     //Scale the PyrimidVerts to be smaller by a factor
-    float pyramidShrinkFactor = 0.33f;
+    float pyramidShrinkFactor = 0.28f; //was 0.33f
     for (int i = 0; i < initTemplate->numVerts; i++) {
         initTemplate->vertices[i] = pyramidShrinkFactor * initTemplate->vertices[i];
     }
