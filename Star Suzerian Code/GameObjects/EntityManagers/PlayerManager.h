@@ -64,7 +64,8 @@ public:
     virtual void handleInput(GLFWwindow*) override;
     virtual void drawInstances() override;
     
-    
+    int getNumberOfPlayerInstances() const {return (this->generator->getInstanceCount());}
+    Instance** getPlayerInstances() const {return (this->generator->getArrayOfInstances());}
     
     //aiVector3D getCenterWeaponLaunchpoint();
     //aiVector3D * getSideWeaponLaunchPoints();

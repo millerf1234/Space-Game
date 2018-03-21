@@ -40,9 +40,25 @@ static constexpr GLfloat KINETIC_PROJECTILE_VERTS[] = {
 
 
 class Kinetic : public WeaponInstance {
-    Kinetic() : WeaponInstance() {}
-    Kinetic(aiVector3D wepSpawnOffset, aiVector2D midpoint, float instanceZoom, aiVector2D velocity) : WeaponInstance() {
-        
+public:
+    aiVector3D offsetForLaunchpoint;
+    
+    float earlyThetaZ;
+    Kinetic() = delete;
+    Kinetic(int id) : WeaponInstance(id) {
+        //this->velocityModelRelative = aiVector3D(0.0f, 0.0f, 0.0f);
+        this->offsetForLaunchpoint = aiVector3D(0.0f, 0.0f, 0.0f);
+        this->damage = KINETIC_WEP_DAMAGE;
+        this->wepType = KINETIC;
+        this->homing = false;
+        //this->modelOffsetLaunchPoint = aiVector3D(0.0f, 0.0f, 0.0f);
+    }
+    
+    ~Kinetic() {
+        if (this->forward != nullptr) {
+            delete this->forward;
+            this->forward = nullptr;
+        }
     }
 };
 

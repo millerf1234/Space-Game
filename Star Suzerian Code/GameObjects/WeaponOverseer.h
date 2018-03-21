@@ -32,7 +32,10 @@ public:
     
     void ageWeaponInstances();
     void doUpkeep();
-    
+    void drawInstances() {
+        KineticWepManager->drawInstances();
+        //otherWepManagers->drawInsances();
+    }
     void processWeaponTrackers();
     
     

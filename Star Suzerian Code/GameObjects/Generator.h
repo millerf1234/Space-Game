@@ -41,6 +41,7 @@
 //#include "WeaponData.h"
 //#include "PlayerManager.h" //lots of circular includes I got. Oh well...
 #include "Instance.h"
+#include "Kinetic.h"
 
 //constexpr int FILEPATH_BUFFER = 512;
 
@@ -86,6 +87,7 @@ typedef struct InitializationTemplate{
     }
 } InitializationTemplate;
 
+class Kinetic; //Why does this fix it?
 
 class Generator{
 private:
@@ -93,8 +95,10 @@ private:
     int activeInstances; //Number of active instances of this object
     
     //Special cases to be called within the drawInstances() function
-    void doDrawPlayerShipInstance(int);
-    void doDrawWeaponInstance(int);
+    void doDrawPlayerShipInstance(int); //This function currently
+    void doDrawWeaponInstance(int); //This function draws all instances at onces
+    //void drawKineticInstances(WeaponInstance **); //Called by doDrawWeaponInstances to draw the Kinetic instances
+    void drawKineticInstance(Kinetic *);
     
 protected:
     //-------------------
@@ -121,7 +125,7 @@ protected: //temporary for debug
     //bool drawTriangles, drawLines; //No longer used
     
     
-    //Player uniform locations:
+    //Player uniform locations (I need extra uniform locations to accomodate the extra shaders):
     typedef struct PlayerUniformLocations {
     GLint ulocRed, ulocGreen, ulocBlue; //Uniform locations for PLAYER rgb (color)
     GLint ulocRedLine, ulocGreenLine, ulocBlueLine;
@@ -137,7 +141,7 @@ protected: //temporary for debug
     //Weapon uniform locations:
     //Kinetic weapons
     typedef struct KineticUniformLocations {
-        //No Kinetic Uniform Locations currently
+        GLint ulocXSpawnOffset, ulocYSpawnOffset, ulocZSpawnOffset; //Not sure if I need these?
     } KineticUniformLocations;
     KineticUniformLocations kul;
     

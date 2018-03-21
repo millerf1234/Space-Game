@@ -261,6 +261,8 @@ void PlayerManager::initializeFromTemplate() {
             
             
             p->colBox->setMidpointTo(position); //Set midboxes position to match the player's position
+            
+            
         }
         return;
     }
@@ -398,7 +400,7 @@ void PlayerManager::processInput() {
         }
         if (!player->turnLeft && !player->turnRight) { //If not turning, set x to 0
              player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->y = 0.0f;
-            player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->y = 0.0f;
+            //player->translationHistory[PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1]->y = 0.0f;
         }
         
         if (player->rollLeft) {
@@ -476,6 +478,12 @@ void PlayerManager::processInput() {
             //}
         }
         
+        //Check for shooting at the bottom of this function now, with the rest of the weapontracker stuff
+//        //check for shooting
+//        if (player->shoot) {
+//            player->wepTracker->setKineticWasFired();
+//        }
+        
         
         //Update the translation history array for player (shift all the positions over 1)
         for (int i = 0; i < PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES - 1; ++i) {
@@ -516,7 +524,46 @@ void PlayerManager::processInput() {
         
         //Lastly, set the flags within player's wepTracker for weapons being switched or fired
         if (player->hasWeaponTracker) {
-            //player->wepTracker;
+            aiVector3D pos3D = player->position;
+            player->wepTracker->setPosition(aiVector2D(pos3D.x, pos3D.y));
+            
+            //Set the forward direction for the weapons tracker
+            aiVector3D tempForward3D = *(player->forward);
+            aiVector2D tempForward2D(tempForward3D.x, tempForward3D.y);
+            player->wepTracker->setForwardDirection(tempForward2D);
+            
+            //check for shooting
+            if (player->shoot) {
+                bool activeWeaponTypeFound = false;
+                //Get the active weapon type
+                if (player->wepTracker->getKineticActive()) {
+                    activeWeaponTypeFound = true;
+                    //Check to see if the player has enough ammo to shoot
+                    AmmoCount playerAmmo = player->wepTracker->getAmmoCount();
+                    if (playerAmmo.kinetic <= 0) {
+                        std::cout << "\nPlayer " << player->playerNumber << " out of Kinetic ammo!\n";
+                    }
+                    else {
+                        playerAmmo.kinetic--;
+                        player->wepTracker->setKineticWasFired(); //set the kinetic-fired flag
+                    }
+                    
+                }
+                //else if (player->wepTracker->getOtherWepTypeActive() {
+                    //Check for ammo in other weapon type
+                    //if there is ammo, decrease ammo and set the spawn flag
+                
+                //}
+                //else if  (other weapon types)
+                
+                //after checking all weapon types
+                if (!activeWeaponTypeFound) {
+                    if (PRINT_DEBUG_WARNING_MESSAGES) {
+                    std::cout << "\nDEBUG::OOS! No Active Weapon Type found in PlayerManager function processInput()...\n";
+                    }
+                }
+            }
+           
         }
         else {
             if (PRINT_DEBUG_WARNING_MESSAGES) {

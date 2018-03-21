@@ -16,7 +16,7 @@
 //If using ShaderWrapper within a project that has a GameParameters.h
 #include "GameParameters.h"
 
-//constexpr static int MAX_SHADERS = 75; //Just an arbitrary value
+//constexpr static int MAX_SHADERS = 75; //Just an arbitrary value (No need for a max...)
 
 //TO LEARN HOW TO ACTUALY DO NORMALS/TANGENTS/BITANGENTS, see: http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/
 

@@ -66,6 +66,14 @@ void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Instance * inst) {
         }
         return;
     }
+    
+    //Print a debug message:
+    std::cout << "\nWeaponTracker attached to instance " << inst->getID() << ".\n";
+    if (inst->type == InstanceType::PLAYERINSTANCE) {
+        PlayerInstance * pTemp = static_cast<PlayerInstance *>(inst);
+        std::cout << "Instance " << inst->getID() << " is Player " << pTemp->playerNumber << std::endl;
+    }
+    
     //Else check to see if this WeaponOverseer already has weaponTrackers in existance
     if (this->wepTrackers != nullptr) {
         //Need to make a bigger array to hold the additional weaponTracker
@@ -84,7 +92,6 @@ void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Instance * inst) {
          ++numWepTrackers; //Last but not least, increment the count of weapon trackers
         
         //Just a reality check message
-        std::cout << "\nWeaponTracker attached to instance " << inst->getID() << ".\n";
         std::cout << "\nThere are now " << numWepTrackers << " weapon trackers in existance and\n";
         std::cout << " being managed by the WeaponOverseer!\n";
         
@@ -99,4 +106,15 @@ void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Instance * inst) {
     }
 }
 
-
+void WeaponOverseer::processWeaponTrackers() {
+    if (this->numWepTrackers == 0) {return;}
+    for (int i = 0; i < numWepTrackers; ++i) {
+        WeaponTracker * currentWT = this->wepTrackers[i];
+        
+        //Check events on the currentWT
+        if (currentWT->getKineticWasFired()) {
+            this->KineticWepManager->spawnNewKineticInstance(currentWT);
+        }
+        //Check currentWT for additional flags of weapons being fired...
+    }
+}

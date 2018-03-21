@@ -20,6 +20,9 @@ uniform float thetaZ;
 
 
 void main() {
-    vec4 glow_color = vec4(1.0f, 0.8f, 1.0f, 1.0f) - exp(vec4(0.5f*time, 0.45*time, 0.0f, 0.0f));
-    color = clamp(glow_color, vec4(0.35f, 0.15f, 0.0f, 1.0f), glow_color); //Clamp makes it so color doesn't disappear completely
+    //Until I get kinetic working, make it easy to see by giving it a good color
+    color = vec4(0.9f, 0.45f, 0.75f, 1.0f);
+    //Once I get Kinetic working, use an effect like this:
+    //vec4 glow_color = vec4(1.0f, 0.8f, 1.0f, 1.0f) - exp(vec4(0.5f*time, 0.45*time, 0.0f, 0.0f));
+    //color = clamp(glow_color, vec4(0.35f, 0.15f, 0.0f, 1.0f), glow_color); //Clamp makes it so color doesn't disappear completely
 }

@@ -48,7 +48,7 @@ void main()
     pos = position;
     
     //Rotate:
-    pos = earlyTorationMatrixZ * pos;
+    pos = earlyRotationMatrixZ * pos;
     pos = rotationMatrixX * pos;
     pos = rotationMatrixZ * pos;
    // pos = rotationMatrixY * pos;

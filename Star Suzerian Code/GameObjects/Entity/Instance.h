@@ -19,7 +19,7 @@
 
 
 enum InstanceType {PLAYERINSTANCE, WEAPONINSTANCE, ENEMYINSTANCE, SCENEINSTANCE, BASIC}; //Used for instance identification
-enum WeaponType {HEXAGON_BOMB, LAZER, ROCKET, HOMINGROCKET, KINETIC, UNINITIALIZED}; //Used in conjunction with WeapontypeManagers
+enum WeaponType {HEXAGON_BOMB, LASER, ROCKET, HOMINGROCKET, KINETIC, UNINITIALIZED}; //Used in conjunction with WeapontypeManagers
 //Here is a typedef for an instance of what was generated
 
 class Instance{
@@ -190,6 +190,7 @@ public:
             std::cout << "DEBUG::PlayerInstance constructor was called!" << std::endl;
         }
         this->playerNumber = playerNumber;
+        this->type = PLAYERINSTANCE;
         health = STARTING_PLAYER_HEALTH;
         shields = STARTING_PLAYER_SHIELDS;
         energy = STARTING_PLAYER_ENERGY;
@@ -276,16 +277,31 @@ public:
 //WeaponInstance is managed by weaponManager
 class WeaponInstance : public Instance {
 public:
+    
     float damage;
+   // aiVector3D modelOffsetLaunchPoint;
     
     
     bool homing;
     
+    //aiVector3D velocityModelRelative;
+    //aiVector2D velocityScreenSpace;
+    
+    
+    //Constructor
+    WeaponInstance() = delete; //No default constructor
+    WeaponInstance(int instanceID) : Instance(instanceID) {
+        this->type = WEAPONINSTANCE;
+        this->wepType = WeaponType::UNINITIALIZED;
+    }
+    
+    aiVector2D collisionBoxMidpoint; //This is to be CPU transformed for collision box
     
     WeaponType wepType;
     
     //Add an abstract virtual function to make WeaponInstance abstract
-    virtual WeaponType getWeaponType() const = 0;
+    WeaponType getWeaponType() const {return this->wepType;}
+    
 };
 
 

@@ -107,7 +107,8 @@ public:
         }
     }
     bool getHasWeponSpawnPointsSet() const {return (this->weaponSpawnPoints != nullptr);}
-    AmmoCount getAmmoCount() const {return this->ammo;}
+    AmmoCount viewAmmoCount() const {return this->ammo;} //This function copies ammo
+    AmmoCount& getAmmoCount() {return this->ammo;} //This function gives a modifiable reference to ammo
     aiVector2D getPosition() const {return this->position;}
     aiVector2D getForwardDirection() const {return this->forwardDirection;}
     aiVector2D getVelocity() const {return this->velocity;}
@@ -115,6 +116,7 @@ public:
     float getThetaX() const {return this->thetaX;}
     float getThetaZ() const {return this->thetaZ;}
     bool getKineticActive() const {return this->kineticActive;}
+    bool getKineticWasFired() const {return this->kineticWasFired;}
     //bool get<otherWeaponType>Active() const {return otherWeaponTypeActive;} //Once more weapon types are implemented
     
     //Setter functions to be used by player instances
@@ -145,6 +147,7 @@ public:
     void setThetaX(float thetaX) {this->thetaX = thetaX;}
     void setThetaZ(float thetaZ) {this->thetaZ = thetaZ;}
     void setInstanceZoomAmount(float zoom) {this->instanceZoomAmount = zoom;}
+    
     
     //Set weapons that were fired
     void setKineticWasFired() {this->kineticWasFired = true;}

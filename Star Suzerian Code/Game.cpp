@@ -76,6 +76,14 @@ void Game::loadGameObjects() {
     gEntities.push_back(new PlayerManager);
     playerManager = static_cast<PlayerManager *>(gEntities[1]);
     
+    int numberOfPlayersThatNeedWeaponManagers = playerManager->getNumberOfPlayerInstances();
+    Instance ** playerInstances = playerManager->getPlayerInstances();
+    for (int i = 0; i < numberOfPlayersThatNeedWeaponManagers; i++) {
+        wepOverseer.generateAndAttachWeaponTrackerToInstance(playerInstances[i]);
+        PlayerInstance * pInst = static_cast<PlayerInstance*>(playerInstances[i]);
+        pInst->configureWeaponTracker(); //do extra configuration on the weapon tracker
+    }
+    
     
     
     //gEntities.push_back(new RocketManager);
@@ -173,6 +181,7 @@ bool Game::launch() {
             (*entityInputIterator)->handleInput(mWindow);
         }
         
+        
         //----------------------------------------------------------------------
         //  Perform Game Logic Calculation
         //----------------------------------------------------------------------
@@ -198,6 +207,9 @@ bool Game::launch() {
             (*entityLogicIterator)->processCollisions(); //this is collision between entities
         }
         
+        //Have the WeaponOverseer process all of the active WeaponTrackers to see if any flags were flagged
+        wepOverseer.processWeaponTrackers();
+        
         //Need a way to do entity-weapon collisions...
         
         //----------------------------------------------------------------------
@@ -220,6 +232,9 @@ bool Game::launch() {
         for (; entityDrawIterator < gEntities.end(); ++entityDrawIterator) {
             (*entityDrawIterator)->drawInstances();
         }
+        //Draw weapon instances as well
+        wepOverseer.drawInstances();
+        
         //glad_glDisable(GL_MULTISAMPLE);
         //
         glBindVertexArray(0); //Vertex attribute array

@@ -1505,15 +1505,31 @@ void CollisionBox::calculateSelfAfterTranslations() {
         (corners2D[1].x == corners2D[2].x && corners2D[1].y == corners2D[2].y) ||
         (corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) ||
         (corners2D[3].x == corners2D[0].x && corners2D[3].y == corners2D[0].y) ) {
-        //I could write a seperate algorithm to handle the case of the box being axis align with the basis vectors,
-        //or I could just do this:
-        //Add a hidden rotation
-        //if (!useHiddenRotation) {
+        
+        if (!useHiddenRotation) {
             useHiddenRotation = true;
-        // }
-        //else {
-           // return;
-        //}
+        }
+        else {
+            //This may look like repeated code with the above, but here I am checking each case seperatly
+            //The hidden rotation didn't work, so need to change the shape even more (note this should rarely need to happen)
+            if ( corners2D[0].x == corners2D[1].x && corners2D[0].y == corners2D[1].y) {
+                corners2D[0].x += 0.0001f;
+                corners2D[0].y += 0.0001f;
+            }
+            if (corners2D[1].x == corners2D[2].x && corners2D[1].y == corners2D[2].y) {
+                corners2D[1].x -= 0.0001f;
+                corners2D[1].y -= 0.0001f;
+            }
+            if ( corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) {
+                corners2D[2].x += 0.0001f;
+                corners2D[2].y += 0.0001f;
+            }
+            else if (corners2D[3].x == corners2D[0].x && corners2D[3].y == corners2D[0].y) {
+                corners2D[3].x -= 0.0001f;
+                corners2D[3].y -= 0.0001f;
+            }
+            return; //Don't redo rotations and recalculate...
+        }
         doRotationsAndRecalculate(); //Redo the 2D box formation process with the hidden rotation included
     }
 }

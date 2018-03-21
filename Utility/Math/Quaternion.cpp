@@ -197,6 +197,7 @@ aiVector3D Quaternion::computeRotation(aiVector3D p, float theta) const {
         aiVector3D zeroVec(0.0f, 0.0f, 0.0f);
         if (this->getRotationAxis() == zeroVec) {
             std::cout << "\nWARNING! Quaternion computeRotation called with rotation axis of\nthe zero vector! Check ya code!\n";
+            return zeroVec; //Return without running the rest of the function
         }
     }
     

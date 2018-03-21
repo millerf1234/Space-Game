@@ -21,6 +21,11 @@
 
 static constexpr float PI = 3.1415927f;
 
+//NOTE!  IN Generator under the function delete element, I set the value in the seperate array of element ID's that I track
+//       to some bogus large negative number to represent that that instance was deleted, this way I am not constantly
+//       resizing the array... wait...
+
+
 //-----------------------------------------------------------------------------
 // Debug Message Toggle Control (not complete)
 //-----------------------------------------------------------------------------
@@ -77,6 +82,7 @@ static constexpr float STARTING_PLAYER_ENERGY = 25.0f; //Tweak as needed (if thi
 static constexpr float STARTING_PLAYER_FUEL = 100.0f; //Tweak freely, as this will most likely never be implemented
 //Starting ammo:
 static constexpr int STARTING_PLAYER_KINETIC_AMMO = 50000; //Give a lot until I add picking up ammo
+static constexpr float KINETIC_WEP_DAMAGE = 0.5f;
 static constexpr int STARTING_PLAYER_ROCKETS = 50; //TWEAK AS NEEDED PER GAMEPLAY CONDITIONS
 static constexpr int STARTING_PLAYER_ROCKET_COUNT_MAX = 500; //TWEAK AS NEEDED
 static constexpr int STARTING_PLAYER_HEXAGON_BOMBS = 6;
