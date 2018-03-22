@@ -608,7 +608,15 @@ void Generator::generateSingle() {
         
         
         //Give it a colBox, right off the bat. The collisionBox will be managed by the weapon managers though later...
-        instances[newInstanceIndex]->colBox = new CollisionBox(this->vertices, this->numberOfVertices);
+        
+        //Shrink the vertices slightly
+        float verticeShrinkFactor = 0.75f;
+        GLfloat tempSmallerVerticesForCollisionBox [this->numberOfVertices];
+        for (int i = 0; i < this->numberOfVertices; ++i) {
+            tempSmallerVerticesForCollisionBox[i] = verticeShrinkFactor * this->vertices[i];
+        }
+      //  instances[newInstanceIndex]->colBox = new CollisionBox(this->vertices, this->numberOfVertices);
+        instances[newInstanceIndex]->colBox = new CollisionBox(tempSmallerVerticesForCollisionBox, this->numberOfVertices);
         //instances[newInstanceIndex]->colBox->setScale(1.0f/(PLAYER_SIZE));
         
         nextObjID++;

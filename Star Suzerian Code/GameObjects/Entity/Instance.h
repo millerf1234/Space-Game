@@ -142,7 +142,7 @@ protected:
         }
         wepTracker->setEarlyThetaZ(0.0f); //Note that if EarlyThetaZ is used, it will need to be set seperatly from this function
         wepTracker->setThetaX(thetaX);
-        wepTracker->setThetaZ(thetaZ);
+        wepTracker->setThetaZ(-thetaZ + PI); //For some reason it was off by PI
         wepTracker->setInstanceZoomAmount(zoom);
     }
 };
@@ -251,7 +251,7 @@ public:
         }
         //Actually start configuring the WeaponsTracker now:
         aiVector3D playerWepSpawnPoints[4];
-        float weaponZSpawnCoord = 3.25f; //max positive model Z is 3.85924
+        float weaponZSpawnCoord = 3.05f; //max positive model Z is 3.85924
         float weaponXSpawnCoordOuter = 2.1f; //max positive model X is 2.4450891
         float weaponXSpawnCoordInner = 0.5f;
         playerWepSpawnPoints[0] = aiVector3D(-weaponXSpawnCoordOuter, 0.0f, weaponZSpawnCoord); //Outer left side
@@ -262,6 +262,7 @@ public:
         
         //Set the rest of the data as well now
         matchWepTrackerWithInstData();
+        this->wepTracker->setEarlyThetaZ(rollAmount);
         
     }
     
@@ -283,6 +284,7 @@ public:
     
     
     bool homing;
+    
     
     //aiVector3D velocityModelRelative;
     //aiVector2D velocityScreenSpace;

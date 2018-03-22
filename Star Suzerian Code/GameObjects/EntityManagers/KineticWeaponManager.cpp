@@ -9,7 +9,6 @@
 KineticWeaponManager::KineticWeaponManager() : GameEntityManager() {
     //GameEntityManager's constructer will handle setting everything to null
     
-    
     this->initTemplate = new InitializationTemplate;
     this->generator = new Generator();
     this->hasGenerator = true;
@@ -100,7 +99,7 @@ void KineticWeaponManager::generateInitializationTemplate() {
     initTemplate->elements = new GLuint[initTemplate->numElems];
     
     //Need to align the pyramid to shoot in the correct direction
-    Quaternion alignment(1.0f, 0.0f, 0.0f, -PI / 2.0f);
+    Quaternion alignment(1.0f, 0.0f, 0.0f, PI / 2.0f);
     
     int halfPyrimidVertCount = initTemplate->numVerts / 2;
     aiVector3D vecsToRotate[halfPyrimidVertCount / 3];
@@ -126,7 +125,7 @@ void KineticWeaponManager::generateInitializationTemplate() {
     }
     
     //Scale the PyrimidVerts to be smaller by a factor
-    float pyramidShrinkFactor = 0.28f; //was 0.33f
+    float pyramidShrinkFactor = 0.25f; //was 0.33f
     for (int i = 0; i < initTemplate->numVerts; i++) {
         initTemplate->vertices[i] = pyramidShrinkFactor * initTemplate->vertices[i];
     }
@@ -150,19 +149,18 @@ void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
     Instance ** insts = this->generator->getArrayOfInstances();
     
     //Do special configuration to set up the newly created KineticInstance
-    Kinetic * newKinInst = static_cast<Kinetic*>(insts[newInstanceIndex]);
+    Kinetic * newKinInst = static_cast<Kinetic*>(insts[newInstanceIndex]); //Since newInstanceIndex was set before generating new, it will be set to the array position of the newly created instance
     
-    newKinInst->mass = 0.01f;
+    newKinInst->mass = 0.01f; //Give it a tiny mass
     newKinInst->zoom = PLAYER_SIZE; //I have to keep zoom the same for everything for position/velocity coordinates to line up
     //newKinInst->zoom = PLAYER_SIZE * 2.0f;
     //Need to figure out where to set colBox midpoint. Once midpoint and a velocity direction set, it
     //shouldn't need to be updated again...
-    newKinInst->colBox->setScale(1.0f / (newKinInst->zoom));
+    newKinInst->colBox->setScale( (1.0f / (newKinInst->zoom)));
+    
     
     //Set up the rotation order on the collision box
 
-    
-    
     
     //Set up the rest of the new Kinetic Instance from data from the wepTracker
     newKinInst->offsetForLaunchpoint = wepTracker->getNextSpawnPoint();
@@ -184,14 +182,17 @@ void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
     aiVector2D worldSpaceLaunchPointOffset2D = aiVector2D(worldSpaceLaunchPointOffset.x, worldSpaceLaunchPointOffset.y);
     //This hopefully will set the collisionBox to the correct midpoint
     newKinInst->collisionBoxMidpoint = wepTracker->getPosition() + worldSpaceLaunchPointOffset2D;
+    newKinInst->colBox->setMidpointTo(newKinInst->collisionBoxMidpoint);
     newKinInst->position = aiVector3D(newKinInst->collisionBoxMidpoint.x, newKinInst->collisionBoxMidpoint.y, 0.0f);
+    
+    //newKinInst->colBox->setScale(0.8);
     
     //Set forward for the kinetic projectile
     aiVector2D forward = wepTracker->getForwardDirection();
-    newKinInst->forward = new aiVector3D(forward.x, forward.y, 0.0f);
+    newKinInst->forward = new aiVector3D(forward.x, -forward.y, 0.0f);
     
     //Set velocity for the projectile (note velocity is calculated based off ship's direction and ships velocity
-    newKinInst->velocity = wepTracker->getForwardDirection();
+    newKinInst->velocity = aiVector2D(forward.x, -forward.y);
     if (newKinInst->velocity.Length() != 0.0f) {
         newKinInst->velocity = newKinInst->velocity.Normalize();
     }
@@ -222,9 +223,9 @@ void KineticWeaponManager::doUpkeep() {
             }
             
             //Update the rotations
-            k->colBox->changeRotationAt(0, k->earlyThetaZ);
-            k->colBox->changeRotationAt(1, -(k->thetaX));
-            k->colBox->changeRotationAt(2, k->thetaZ);
+            //k->colBox->changeRotationAt(0, k->earlyThetaZ);
+            //k->colBox->changeRotationAt(1, -(k->thetaX));
+            //k->colBox->changeRotationAt(2, k->thetaZ);
             //k->colBox->changeRotationAt(3, k->thetaY);
             
             //Translate the kinetic projectile by its velocity

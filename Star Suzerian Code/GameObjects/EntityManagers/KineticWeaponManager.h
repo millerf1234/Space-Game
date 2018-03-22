@@ -19,7 +19,7 @@ public:
     virtual ~KineticWeaponManager() override;
     
     virtual void doUpkeep() override;
-    virtual void processCollisions() override{std::cout << "\nKinetic collisions not yet being processed...\n";}
+    virtual void processCollisions() override{/*std::cout << "\nKinetic collisions not yet being processed...\n";*/}
     virtual void handleInput(GLFWwindow * mWin) override {;}
     
     virtual void drawInstances() override {

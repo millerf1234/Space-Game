@@ -537,6 +537,7 @@ void PlayerManager::processInput() {
                 bool activeWeaponTypeFound = false;
                 //Get the active weapon type
                 if (player->wepTracker->getKineticActive()) {
+                    player->updateWeaponTracker(); //Give the weapon tracker the latest player position information
                     activeWeaponTypeFound = true;
                     //Check to see if the player has enough ammo to shoot
                     AmmoCount playerAmmo = player->wepTracker->getAmmoCount();

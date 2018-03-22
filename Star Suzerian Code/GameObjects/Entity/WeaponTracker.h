@@ -63,6 +63,11 @@ private:
     bool kineticWasFired;
     
     AmmoCount ammo;
+    
+    void rotateWeaponSpawnPoint(aiVector3D & spawnPoint) { //To be called as rotations are updated
+        //Since rotations happen in each type of weapon entity manager, don't do rotations here...
+        //std::cout << "Words\n";
+    }
 public:
     WeaponTracker() {
         //Initialize everything
@@ -93,11 +98,18 @@ public:
     
     //Getters
     int getWeaponSpawnPointsCount() const {return this->weaponSpawnPointsCount;}
+    
     aiVector3D getNextSpawnPoint() {
         if (this->weaponSpawnPoints != nullptr) {
-            aiVector3D temp = weaponSpawnPoints[nextSpawnPoint];
+            aiVector3D wepSpawnPosition = (weaponSpawnPoints[nextSpawnPoint]);//For some reason this isn't setting the vector correctly
+//            //Try to do it manually...  (THE PROBLEM IS WITH XCODE's debugger)
+//            wepSpawnPosition.x = weaponSpawnPoints[nextSpawnPoint].x;
+//            wepSpawnPosition.y = weaponSpawnPoints[nextSpawnPoint].y;
+//            wepSpawnPosition.z = weaponSpawnPoints[nextSpawnPoint].z;
             nextSpawnPoint = (nextSpawnPoint + 1) % weaponSpawnPointsCount; //cycle through the spawn points
-            return temp;
+            
+            rotateWeaponSpawnPoint(wepSpawnPosition);
+            return wepSpawnPosition;
         }
         else {
             if (PRINT_DEBUG_WARNING_MESSAGES) {
@@ -132,6 +144,7 @@ public:
             this->weaponSpawnPoints = new aiVector3D[weaponSpawnPointsCount];
             for (int i = 0; i < weaponSpawnPointsCount; i++) {
                 weaponSpawnPoints[i] = spwnPointsArray[i];
+                std::cout << "Weapon spawn point set to: " << weaponSpawnPoints[i].x << ", " << weaponSpawnPoints[i].y << ", " << weaponSpawnPoints[i].z << std::endl;
             }
         }
         else {
@@ -149,6 +162,7 @@ public:
     void setInstanceZoomAmount(float zoom) {this->instanceZoomAmount = zoom;}
     
     
+    
     //Set weapons that were fired
     void setKineticWasFired() {this->kineticWasFired = true;}
     
@@ -161,6 +175,7 @@ public:
         //Turn off currently active
         //Turn on the next one to be activated
     }
+    
 };
 
 

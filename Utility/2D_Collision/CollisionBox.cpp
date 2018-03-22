@@ -505,6 +505,7 @@ void CollisionBox::setFromModelData(float * data, int dataPoints) {
 
 //------------------------------------------------------------------------
 //              Rotation Functions
+//     (I have tentative plans to create a whole seperate class for rotation order...)
 //------------------------------------------------------------------------
 void CollisionBox::presetRotationOrderSize(int size) {
     //Allows for space to be allocated for all the rotations before adding them
@@ -647,7 +648,7 @@ void CollisionBox::changeRotationAt(int index, float theta) {
     }
     doRotationsAndRecalculate();
 }
-void CollisionBox::changeRotitationAxisAt(int index, const Quaternion & rQuat) {
+void CollisionBox::changeRotationAxisAt(int index, const Quaternion & rQuat) {
     useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index >= rotationOrderSize || index < 0) {
         if (printDebugMessages || printDebugWarnings) {
@@ -669,7 +670,7 @@ void CollisionBox::changeRotitationAxisAt(int index, const Quaternion & rQuat) {
     }
     doRotationsAndRecalculate();
 }
-void CollisionBox::changeRotitationAxisAt(int index, const aiVector3D & axis, float theta) {
+void CollisionBox::changeRotationAxisAt(int index, const aiVector3D & axis, float theta) {
     useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index >= rotationOrderSize || index < 0) {
         if (printDebugMessages || printDebugWarnings) {
@@ -694,7 +695,7 @@ void CollisionBox::changeRotitationAxisAt(int index, const aiVector3D & axis, fl
     }
     doRotationsAndRecalculate();
 }
-void CollisionBox::changeRotitationAxisAt(int index, float x, float y, float z, float theta) {
+void CollisionBox::changeRotationAxisAt(int index, float x, float y, float z, float theta) {
     useHiddenRotation = false; //Set this to false each time any changes are made to other rotations
     if (index >= rotationOrderSize || index < 0) {
         if (printDebugMessages || printDebugWarnings) {
@@ -1513,33 +1514,61 @@ void CollisionBox::calculateSelfAfterTranslations() {
             doRotationsAndRecalculate(); //Redo the 2D box formation process with the hidden rotation included
         }
         
-        //Else if we already used the hidden-rotation fix and the box still wasn't formed correctly....
+        //Else if we already used the hidden-rotation fix and the box that still wasn't formed correctly....
         else { //The hidden rotation must have failed, so need to try to fix it another way
             //Check all possible cases of how the box is degenerate and try to fix each one
             //NOTE: Since there are 4 corners, there are (11.5) different cases of degeneracy we need to check for
             
-            //Case 1:
+            //Debug for testing cases:
+//            corners2D[0].x = -0.15f;     corners2D[0].y = 0.0f;
+//            corners2D[1].x = -0.15f;     corners2D[1].y = 0.15f;
+//            corners2D[2].x = -0.15f;     corners2D[2].y = 0.0f;
+//            corners2D[3].x = -0.15f;     corners2D[3].y = -0.15f;
+            
+            //Case 1: (NOTE THAT CASE 1 WILL BE LEAST LIKELY TO OCCUR, BUT NEED TO CHECK IT FIRST TO RULE IT OUT)
             //See if all 4 points are the same point (WORST CASE - FIX WILL NOT BE IDEAL)
             if (corners2D[0].x == corners2D[1].x && corners2D[0].y == corners2D[1].y &&
                 corners2D[1].x == corners2D[2].x && corners2D[1].y == corners2D[2].y &&
                 corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) {
                 //Then we are screwed because all four corners were set to the same value...
-                //See if the corners are equal to the midpoint
+                //See if the corners are equal to the midpoint or orgin
                 if (corners2D[0].x == midpoint3D.x && corners2D[0].y == midpoint3D.y) {
                     //then just make a really really tiny box to represent just the midpoint in space
                     corners2D[0].x += 0.001f;  // Then form a box around the midpoint that looks like:
-                    corners2D[0].y += 0.001f;  //   corner3 +------------+  corner0
-                    corners2D[1].x += 0.001f;  //           |            |
-                    corners2D[1].y -= 0.001f;  //           |            |
-                    corners2D[2].x -= 0.001f;  //           |     mid    |
-                    corners2D[2].y -= 0.001f;  //           |            |
-                    corners2D[3].x -= 0.001f;  //           |            |
-                    corners2D[3].y += 0.001f;  //   corner2 +------------+  corner1
+                    corners2D[0].y += 0.001f;  //   corner1 +------------+  corner0
+                    corners2D[1].x -= 0.001f;  //           |            |
+                    corners2D[1].y += 0.001f;  //           |            |
+                    corners2D[2].x -= 0.001f;  //           |     mid    |       This box follows the [0].x >= [2].x &&
+                    corners2D[2].y -= 0.001f;  //           |            |                            [1].y >= [3].y  requirement
+                    corners2D[3].x += 0.001f;  //           |            |
+                    corners2D[3].y -= 0.001f;  //   corner2 +------------+  corner3
                 }
                 //Case 1.5:
                 else { //Else they all got set to a corner that is not equal to the midpoint
-                    //Figure out what Quadrant the corners got set to:
-                    std::cout << "\nAll corners set to point that was not midpoint!" << std::endl;
+                    //Rotate this corner around the midpoint to create a square (which won't be perfect, but better than nothing)
+                    aiVector2D translation = aiVector2D(midpoint3D.x, midpoint3D.y);
+                    
+                    //Need to create a 3D vector for doing rotation
+                    aiVector3D tempForRotating(corners2D[0].x - translation.x, corners2D[0].y - translation.y, 0.0f);
+                    Quaternion rotation(0.0f, 0.0f, 1.0f, PI/2.0f);
+                    
+                    //Rotate 90 degrees (pi/2 radians)
+                    tempForRotating = rotation.computeRotation(tempForRotating);
+                    //Set corner 1
+                    corners2D[1] = aiVector2D(tempForRotating.x + translation.x, tempForRotating.y + translation.y);
+                    
+                    //Rotate 180 degrees (pi radians)
+                    tempForRotating = rotation.computeRotation(tempForRotating);
+                    //set corner 2
+                    corners2D[2] = aiVector2D(tempForRotating.x + translation.x, tempForRotating.y + translation.y);
+                    
+                    //Rotate 270 degrees (3 pi / 2 radians)
+                    tempForRotating = rotation.computeRotation(tempForRotating);
+                    //set corner 3
+                    corners2D[3] = aiVector2D(tempForRotating.x + translation.x, tempForRotating.y + translation.y);
+                    
+                    //Print a message announcing that degenerate case occured:
+                    //std::cout << "\nAll corners set to point that was not midpoint!" << std::endl;
                 }
             }
             //Else see if 3 corners got set to the same point
@@ -1572,34 +1601,136 @@ void CollisionBox::calculateSelfAfterTranslations() {
             //Case 6:
             //If just 0 and 1 are the same
             else if (corners2D[0].x == corners2D[1].x && corners2D[0].y == corners2D[1].y) {
-                std::cout << "\nCorners 0 1 set to same point!\n";
+                //std::cout << "\nCorners 0 1 set to same point!\n";
+                //This case is now handled (for the most part)
+                
+                //Do a quick direct fix to fix the specific problem I am experiencing. Can do more detailed fix later...
+                //Here is what is going wrong:
+                //
+                //        Corner 2  +-------+  Corners 0 and 1
+                //                  |       /
+                //                  |      /
+                //                  |     /
+                //                  |    /
+                //                  |   /
+                //                  |  /
+                //        Corner 3  + /
+                //
+                
+                //So just do this:
+                corners2D[0].y = corners2D[3].y;
+                
+                
+                //fixTwoCornersSetSame(0, 1, 2, 3); //First 2 parameters are the corners that are equal
+            }
+            
+            //Case 7:
+            // What I wrote below is wrong. Consider the case:
+            //                  • corner 1                    --+--
+            //                  |                               |
+            //                  |                               |  distance == abs (corner1.y - corner3.y)
+            //                  |                               |
+            //         corner 2 • corner 0                      |
+            //                  |                               |
+            //                  |                               |
+            //                  |                               |
+            //         corner 3 •                             --+--
+            //
+            // Solution:
+            //                 _•_ corner 1
+            //               _/   \_
+            //            _/         \_
+            //          _/             \_                       (push the middle corners out)
+            //corner 2 •                 • corner 0
+            //          \_             _/
+            //            \_         _/
+            //              \_     _/
+            //        corner 3 -•-
+            //
+            //
+            //
+            //  Alternative Case 7:                   Doing normal solution would then give:
+            //                  •  Corner 1                          _•_ corner 1
+            //                  |                                  _/   \_
+            //                  |                               _/         \_
+            //                  |                             _/             \_
+            //                  |                  corner 2 •---------•---------• corner 0
+            //                  |                                  corner 3
+            //                  |
+            //                  |
+            //         corner 2 * corner 0
+            //               corner 3
+            //
+            // So I need to check for this case and solve it differently
+            //    todo...
+            //
+            //
+            else if (corners2D[0].x == corners2D[2].x && corners2D[0].y == corners2D[2].y) {
+                //Find the distance between corners 1 and 3
+                //Note that we know the x coord of 1 and 3 has to be the same
+                ////Reason: cor2D[2].x <= cor2D[1].x <= cor2D[0].x  and   cor2D[2].x <= cor2D[3].x <= cor2D[0].x
+                //and we know that cor2D[2].x == cor2D[0].x
+                
+                //Thus distance will just be the absolute value of their y coordinates
+                float distance_c1c3 = abs(corners2D[1].y - corners2D[3].y);
+                //Multiply corners 0 and 2 by hald this distance to form a quadrilateral (more specifically, a square)
+                
+                //First, move corners2D[0] and [2] to be at the orgin
+//                float xDistanceToOrgin = corners2D[0].x; //just take any corners x value because all x values will be equal
+//                corners2D[0].x -= xDistanceToOrgin;
+//                corners2D[2].x -= xDistanceToOrgin;
+                //Then scale them outwards (don't multiply because their x component is 0
+                corners2D[0].x += 0.5f * distance_c1c3;
+                corners2D[2].x -= 0.5f * distance_c1c3;
+                //Then translate them back
+//                corners2D[0].x += xDistanceToOrgin;
+//                corners2D[2].x += xDistanceToOrgin;
+                
+                //Idea: Add a part to this class that tests to see if the box is a square, rectangle, parallolgram or quadrilateral (test in that order). If class is a square, then do this method I wrote above. If class is a rectangle, then the first time it is created, compute it's area. Have this area always be a few frames behind the actual moodel position/orientation, and then if a degenerate case arises, try to recreate the rectangle off the stored area. Do the same thing for the parallelogram case. If no area has been calculated yet, do the square case but don't save it's area. If shape is a quadrilateral, then store like the ratio of its sides, or something (think more about the quadrilateral case. see https://math.stackexchange.com/questions/1033834/finding-the-fourth-vertex-of-a-quadrilateral-of-given-area For quadrilateral area matching...
+                
+                //  see also: https://stackoverflow.com/questions/3306838/algorithm-for-reflecting-a-point-across-a-line for reflecting points across lines
+                
                 
             }
-            //Case 7:
-            //If just 0 and 2 are the same  (I don't think this case should ever happen...)
-            else if (corners2D[0].x == corners2D[2].x && corners2D[0].y == corners2D[2].y) {
-                std::cout << "\nCorners 0 2 set to same point!\n";
-            }
+            
+            
+            //Old comment from before I had considered this case thouroughly:
+            // //If just 0 and 2 are the same  (I don't think this case should ever happen...)
+            // //Reason: cor2D[2].x must be <= cor2D[1].x <= cor2D[0].x  and   cor2D[2].x must be <= cor2D[3].x <= cor2D[0].x
+            // So it is impossible for 1 and 3 to have x coordinates
+//             else if (corners2D[0].x == corners2D[2].x && corners2D[0].y == corners2D[2].y) {
+//                 std::cout << "\nCorners 0 2 set to same point!\n";
+//                 fixTwoCornersSetSame(0, 2, 1, 3);
+//             }
             
             //Case 8:
             //If just 0 and 3 are the same
             else if (corners2D[0].x == corners2D[3].x && corners2D[0].y == corners2D[3].y) {
                 std::cout << "\nCorners 0 3 set to same point!\n";
+                fixTwoCornersSetSame(0, 3, 1, 2);
             }
             //Case 9:
             //if just 1 and 2 are the same
             else if (corners2D[1].x == corners2D[2].x && corners2D[1].y == corners2D[2].y) {
                 std::cout << "\nCorners 1 2 set to same point!\n";
+                fixTwoCornersSetSame(1, 2, 0, 3);
             }
             //case 10:
-            //if just 1 and 3 are the same
-            else if (corners2D[1].x == corners2D[3].x && corners2D[1].y == corners2D[3].y) {
-                std::cout << "\nCorners 1 3 set to same point!\n";
-            }
+            //I have a proof of why this case will never happen, but it's too large for the comment margin here...
+            //if just 1 and 3 are the same (I don't think this case should ever happen...)
+            //else if (corners2D[1].x == corners2D[3].x && corners2D[1].y == corners2D[3].y) {
+            //    std::cout << "\nCorners 1 3 set to same point!\n";
+            //    fixTwoCornersSetSame(1, 3, 0, 2);
+            //}
             //case 11:
             //if just 2 and 3 are the same
             else if (corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) {
                 std::cout << "\nCorners 2 3 set to same point!\n";
+                fixTwoCornersSetSame(2, 3, 0, 1);
+            }
+            
+            else {
+                std::cout << "\nThe box did not form correctly and it did so in a way that the code did not handle!\n";
             }
         }
         
@@ -1627,6 +1758,29 @@ void CollisionBox::calculateSelfAfterTranslations() {
 //        }
         
     }
+}
+
+void CollisionBox::fixTwoCornersSetSame(int same1, int same2, int diff1, int diff2) {
+    //Quick fix algorithm that could be better:
+    aiVector2D vecFromDoubleCornerToMidpoint( -corners2D[same1].x,  -corners2D[same1].y);
+    //Just translate one of the double corners by 2 times this vector
+    corners2D[same1] += (.002f * vecFromDoubleCornerToMidpoint);
+    return;
+    
+    //Idea for better algorithm:
+    //Get lines/vectors between the three points
+    //Figure out which of these lines is closest to the midpoint
+    //Reflect the degenerate corner over this closest line to get the fourth point
+    
+    //I (could) used this as a reference:
+    // https://stackoverflow.com/questions/3306838/algorithm-for-reflecting-a-point-across-a-line
+    
+    //ANother idea: Could see if the quadrilateral had an area the previous frame, and then from that
+    //use it to calculate the new box.
+    //See also: https://math.stackexchange.com/questions/1033834/finding-the-fourth-vertex-of-a-quadrilateral-of-given-area
+    //Actually heck if I am going with the area-storing route, why not just save whatever the quadrilateral's points were on
+    //the previous frame and then if the box formation fails, just use the coordinates from the last frame (but like translate them
+    //and all that...)
 }
 
 bool CollisionBox::hasNoArea() const {
@@ -1698,6 +1852,3 @@ float CollisionBox::getMaxFromArrayNegativeOnly(float * data, int dataSize) {
     }
     return negMax;
 }
-
-
-

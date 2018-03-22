@@ -114,6 +114,7 @@ private:
     Quaternion ** rotationOrder; //Rotations to be performed, should match rotations on model
     Quaternion hiddenRotation; //Used to fudge the collision rectangle to give max/min x-y values
     bool useHiddenRotation; //Used to determine whether to fudge the collision rectangle
+    void fixTwoCornersSetSame(int, int, int, int); //Used to fix boxes that aren't forming correctly
     
     int numberOfRotations; //Number of rotations in the array
     int rotationOrderSize; //The size allocated for the array
@@ -217,9 +218,9 @@ public:
     void presetRotationOrderSize(int size); //Allows for space to be allocated for all the rotations before adding them
     void addToRotationOrder(const Quaternion &);
     void changeRotationAt(int index, float theta);
-    void changeRotitationAxisAt(int index, const Quaternion &);
-    void changeRotitationAxisAt(int index, const aiVector3D &, float theta);
-    void changeRotitationAxisAt(int index, float x, float y, float z, float theta);
+    void changeRotationAxisAt(int index, const Quaternion &);
+    void changeRotationAxisAt(int index, const aiVector3D &, float theta);
+    void changeRotationAxisAt(int index, float x, float y, float z, float theta);
     float getRotationThetaAt(int index);
     void clearRotationOrder();
     void removeRotationAtIndex(int index);

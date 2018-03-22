@@ -6,6 +6,12 @@
 //  Created by Forrest Miller on 2/14/18.
 //
 
+//-----------------------------------------------------------------------------
+//(On Mac) To TEST KEYBOARD INPUT FUNCTIONALITY, OPEN CONSOLE AND TYPE:
+//  open -a KeyboardViewer
+//-----------------------------------------------------------------------------
+
+
 #ifndef GameParameters_h
 #define GameParameters_h
 
