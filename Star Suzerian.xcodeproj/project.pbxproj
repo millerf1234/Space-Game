@@ -17,7 +17,7 @@
 		9E10D5AA203236A700F0F724 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5A9203236A700F0F724 /* OpenGL.framework */; };
 		9E10D5B4203237BB00F0F724 /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5B3203237BB00F0F724 /* glad.c */; };
 		9E10D5B72032390900F0F724 /* libIrrXML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5B62032390900F0F724 /* libIrrXML.a */; };
-		9E10D5BA20323CD200F0F724 /* assimp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5B920323CD200F0F724 /* assimp.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		9E10D5BA20323CD200F0F724 /* assimp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5B920323CD200F0F724 /* assimp.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		9E10D5C02032410600F0F724 /* libGLEW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5BF2032410600F0F724 /* libGLEW.a */; };
 		9E10D5C42032430800F0F724 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5C32032430800F0F724 /* libglfw3.a */; };
 		9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5C620324B8D00F0F724 /* GLFW_Init.cpp */; };

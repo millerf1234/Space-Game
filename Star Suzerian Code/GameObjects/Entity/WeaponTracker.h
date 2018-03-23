@@ -60,6 +60,7 @@ private:
     float instanceZoomAmount;
     
     bool kineticActive;
+    int framesSinceKineticWasLastFired;
     bool kineticWasFired;
     
     AmmoCount ammo;
@@ -87,6 +88,7 @@ public:
         //Set default starting active weapon
         kineticActive = true;
         kineticWasFired = false;
+        framesSinceKineticWasLastFired = 0;
         
     }
     ~WeaponTracker() {
@@ -98,6 +100,9 @@ public:
     
     //Getters
     int getWeaponSpawnPointsCount() const {return this->weaponSpawnPointsCount;}
+    
+    int getFramesSinceKineticWasFired() const {return this->framesSinceKineticWasLastFired;}
+    
     
     aiVector3D getNextSpawnPoint() {
         if (this->weaponSpawnPoints != nullptr) {
@@ -165,6 +170,7 @@ public:
     
     //Set weapons that were fired
     void setKineticWasFired() {this->kineticWasFired = true;}
+    
     
     void resetWeaponsFired() {
         this->kineticWasFired = false;

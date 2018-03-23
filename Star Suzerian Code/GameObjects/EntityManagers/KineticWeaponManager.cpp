@@ -104,7 +104,9 @@ void KineticWeaponManager::generateInitializationTemplate() {
     int halfPyrimidVertCount = initTemplate->numVerts / 2;
     aiVector3D vecsToRotate[halfPyrimidVertCount / 3];
     int counter = 0;
-    for (int i = 0; i < halfPyrimidVertCount / 3; i++){
+    
+    
+    for (int i = 0; i < halfPyrimidVertCount / 3; i++){ //was i++
         vecsToRotate[i] = aiVector3D(KINETIC_PROJECTILE_VERTS[counter], KINETIC_PROJECTILE_VERTS[counter+1], KINETIC_PROJECTILE_VERTS[counter + 2]);
         
         //Do the rotation on the vector as well to align the pyramid
@@ -121,11 +123,16 @@ void KineticWeaponManager::generateInitializationTemplate() {
 //    }
     //Flip to draw the other half of the pyrimid
     for (int i = halfPyrimidVertCount; i < initTemplate->numVerts; i++) {
-        initTemplate->vertices[i] = KINETIC_PROJECTILE_VERTS[i - halfPyrimidVertCount] * -1.0f;
+        if (i % 3 == 2) {
+            initTemplate->vertices[i] = KINETIC_PROJECTILE_VERTS[i - halfPyrimidVertCount] * -1.0f;
+        }
+        else {
+            initTemplate->vertices[i] = KINETIC_PROJECTILE_VERTS[i - halfPyrimidVertCount];
+        }
     }
     
     //Scale the PyrimidVerts to be smaller by a factor
-    float pyramidShrinkFactor = 0.25f; //was 0.33f
+    float pyramidShrinkFactor = 1.0 / PROJECTILE_SIZE;
     for (int i = 0; i < initTemplate->numVerts; i++) {
         initTemplate->vertices[i] = pyramidShrinkFactor * initTemplate->vertices[i];
     }
@@ -144,6 +151,7 @@ void KineticWeaponManager::initializeFromTemplate() {
 }
 
 void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
+    //if (wepTracker->getframesSinceKineticWasLastFired() == 0) //Do this when I have more time...
     int newInstanceIndex = this->generator->getInstanceCount();
     this->generator->generateSingle(); //Have generator create a new instance
     Instance ** insts = this->generator->getArrayOfInstances();
@@ -199,7 +207,8 @@ void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
     else { //Velocity was assigned the 0 vector, so must
         newKinInst->velocity = aiVector2D(0.0f, 1.0f); //Give it a direction
     }
-    newKinInst->velocity *= (wepTracker->getVelocity().Length() + 1.5 * PLAYER_MOVEMENT_MAX_SPEED);
+    
+    newKinInst->velocity *= (wepTracker->getVelocity().Length() + KINETIC_SPEED_FACTOR * PLAYER_MOVEMENT_MAX_SPEED);
     
     newKinInst->thetaX = wepTracker->getThetaX();
     newKinInst->thetaY = 0.0f;

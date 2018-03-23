@@ -770,11 +770,11 @@ void Generator::removeInstance(const int & instanceID) {
           std::vector<int>::iterator rear = instancesCreatedByThisGenerator.end();
         
         //for debug:
-        std::cout << "\nThe number of instance ID's being tracked by this generator: " << std::distance(front, rear) << std::endl;
+        //std::cout << "\nThe number of instance ID's being tracked by this generator: " << std::distance(front, rear) << std::endl;
         if (std::distance(front, rear) >= MAX_TRACKED_INSTANCES_LIST_SIZE) {
             //Delete all the extra dead instances from the vector
             instancesCreatedByThisGenerator.erase(std::remove(front, rear, WAS_DELETED), rear);
-            std::cout << "Vector size after deleting: ";
+            //std::cout << "Vector size after deleting: ";
             front = instancesCreatedByThisGenerator.begin();
             rear = instancesCreatedByThisGenerator.end();
             std::cout << std::distance(front, rear) << std::endl;
@@ -811,7 +811,7 @@ void Generator::removeInstance(const int & instanceID) {
                 temp[i] = instances[i+1]; //Shift the next instance over if i is not last instance
             }
             //Debug message:
-            if (PRINT_DEBUG_MESSAGES || true) { //I have a feeling my algorithm here could be wrong, so print out messages anyways
+            if (PRINT_DEBUG_MESSAGES ) { //I have a feeling my algorithm here could be wrong, so print out messages anyways
                 std::cout << "\nDEBUG::Deleted instance #" << instanceID << " at position " << i << std::endl;
             }
         }
@@ -1349,7 +1349,7 @@ void Generator::drawKineticInstance(Kinetic * kin) {
         
         glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
         
-        glUniform1f(ulocTime, 0.0f);
+        //glUniform1f(ulocTime, 0.0f);
         glUniform1f(ulocZoom, 1.0f);
         glUniform1f(ulocXTrans, 0.0f);
         glUniform1f(ulocYTrans, 0.0f);
@@ -1358,7 +1358,7 @@ void Generator::drawKineticInstance(Kinetic * kin) {
         glUniform1f(ulocThetaY, 0.0f);
         glUniform1f(ulocThetaZ, 0.0f);
         
-        glDrawArrays(GL_LINE_LOOP, 0, 8);
+        //glDrawArrays(GL_LINE_LOOP, 0, 8);
         
         //Put the vertices back
         for (int i = 0; i < verticesToReplace; ++i) {

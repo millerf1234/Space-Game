@@ -1706,14 +1706,29 @@ void CollisionBox::calculateSelfAfterTranslations() {
             //Case 8:
             //If just 0 and 3 are the same
             else if (corners2D[0].x == corners2D[3].x && corners2D[0].y == corners2D[3].y) {
-                std::cout << "\nCorners 0 3 set to same point!\n";
-                fixTwoCornersSetSame(0, 3, 1, 2);
+                //std::cout << "\nCorners 0 3 set to same point!\n";
+                //fixTwoCornersSetSame(0, 3, 1, 2);
+                
+                corners2D[3].x = corners2D[2].x;
             }
             //Case 9:
             //if just 1 and 2 are the same
             else if (corners2D[1].x == corners2D[2].x && corners2D[1].y == corners2D[2].y) {
-                std::cout << "\nCorners 1 2 set to same point!\n";
-                fixTwoCornersSetSame(1, 2, 0, 3);
+                
+                if (corners2D[0].y == corners2D[1].y) {
+                    corners2D[2].y = corners2D[3].y;
+                }
+                else {
+                    corners2D[1].x = corners2D[0].x;
+                }
+                //std::cout << "\nCorners 1 2 set to same point!\n";
+                //std::cout << "Fixed coordinates: [0] = <" << corners2D[0].x << "," << corners2D[0].y << ">" << std::endl;
+                //std::cout << "                   [1] = <" << corners2D[1].x << "," << corners2D[1].y << ">"<< std::endl;
+                //std::cout << "                   [2] = <" << corners2D[2].x << "," << corners2D[2].y << ">" << std::endl;
+                //std::cout << "                   [3] = <" << corners2D[3].x << "," <<corners2D[3].y << ">" << std::endl;
+                //fixTwoCornersSetSame(1, 2, 0, 3);
+                
+                
             }
             //case 10:
             //I have a proof of why this case will never happen, but it's too large for the comment margin here...
@@ -1725,8 +1740,8 @@ void CollisionBox::calculateSelfAfterTranslations() {
             //case 11:
             //if just 2 and 3 are the same
             else if (corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) {
-                std::cout << "\nCorners 2 3 set to same point!\n";
-                fixTwoCornersSetSame(2, 3, 0, 1);
+                //std::cout << "\nCorners 2 3 set to same point!\n";
+                //fixTwoCornersSetSame(2, 3, 0, 1);
             }
             
             else {

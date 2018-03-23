@@ -68,7 +68,7 @@ void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Instance * inst) {
     }
     
     //Print a debug message:
-    std::cout << "\nWeaponTracker attached to instance " << inst->getID() << ".\n";
+    std::cout << "\nWeaponTracker attached to Instance " << inst->getID() << ".\n";
     if (inst->type == InstanceType::PLAYERINSTANCE) {
         PlayerInstance * pTemp = static_cast<PlayerInstance *>(inst);
         std::cout << "Instance " << inst->getID() << " is Player " << pTemp->playerNumber << std::endl;

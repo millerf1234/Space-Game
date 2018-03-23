@@ -145,7 +145,12 @@ static constexpr float LAZER_SPEED = 1.5f * PLAYER_MOVEMENT_MAX_SPEED; //0.8f;
 static constexpr float LAZER_WIDTH = 0.05f;
 static constexpr bool LAZER_COLOR_MATCH_PLAYER_COLOR = true;
 
+//Kinetic
+static constexpr float PROJECTILE_SIZE = 06.0f; //Larger number means smaller. I would say about 4.0f
+//For velocity calculation of Kinetic see KineticWeaponManager.cpp around line 210
+static constexpr float KINETIC_SPEED_FACTOR = 1.25f; //formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
 
+static constexpr int KINETIC_FRAMES_BETWEEN_FIRING = 2;
 //Hexagon Bomb
 //static constexpr
 
