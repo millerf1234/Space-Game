@@ -35,12 +35,12 @@ static constexpr float PI = 3.1415927f;
 //-----------------------------------------------------------------------------
 // Debug Message Toggle Control (not complete)
 //-----------------------------------------------------------------------------
-static constexpr bool PRINT_DEBUG_WARNING_MESSAGES = false;
+static constexpr bool PRINT_DEBUG_WARNING_MESSAGES = true;
 static constexpr bool PRINT_DEBUG_MESSAGES = false; //Turn off if not in debug mode
 static constexpr bool PRINT_FRAME_PROCESS_TIME_INFORMATION = false; //Prints the process time for the frame to the console
 static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a test
 
-static constexpr bool DRAW_COLLISION_DETAILS = true;
+static constexpr bool DRAW_COLLISION_DETAILS = false;
 
 //-----------------------------------------------------------------------------
 // Control Bindings
@@ -82,13 +82,12 @@ static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 
 //static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/17.0f; //So 30 frames to rotate 90 degrees
 
 
-static constexpr float STARTING_PLAYER_HEALTH = 10.0f; //Tweak as needed
+static constexpr float STARTING_PLAYER_HEALTH = 100.0f; //Tweak as needed
 static constexpr float STARTING_PLAYER_SHIELDS = 4.0f; //Tweak as needed (if this gets implemented...)
 static constexpr float STARTING_PLAYER_ENERGY = 25.0f; //Tweak as needed (if this ever gets implemented)
 static constexpr float STARTING_PLAYER_FUEL = 100.0f; //Tweak freely, as this will most likely never be implemented
 //Starting ammo:
-static constexpr int STARTING_PLAYER_KINETIC_AMMO = 50000; //Give a lot until I add picking up ammo
-static constexpr float KINETIC_WEP_DAMAGE = 0.5f;
+
 static constexpr int STARTING_PLAYER_ROCKETS = 50; //TWEAK AS NEEDED PER GAMEPLAY CONDITIONS
 static constexpr int STARTING_PLAYER_ROCKET_COUNT_MAX = 500; //TWEAK AS NEEDED
 static constexpr int STARTING_PLAYER_HEXAGON_BOMBS = 6;
@@ -146,9 +145,14 @@ static constexpr float LAZER_WIDTH = 0.05f;
 static constexpr bool LAZER_COLOR_MATCH_PLAYER_COLOR = true;
 
 //Kinetic
-static constexpr float PROJECTILE_SIZE = 06.0f; //Larger number means smaller. I would say about 4.0f
+static constexpr float PROJECTILE_SIZE = 6.0f; //Larger number means smaller. I would say about 4.0f
 //For velocity calculation of Kinetic see KineticWeaponManager.cpp around line 210
 static constexpr float KINETIC_SPEED_FACTOR = 1.25f; //formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
+
+static constexpr int PLAYER_KINETIC_AMMO = 50000; //Give a lot until I add picking up ammo
+static constexpr float KINETIC_WEP_DAMAGE = 0.5f;
+
+static constexpr float KINETIC_VELOCITY_IMPACT = 0.05;
 
 static constexpr int KINETIC_FRAMES_BETWEEN_FIRING = 2;
 //Hexagon Bomb
@@ -186,6 +190,34 @@ static constexpr int COLLISION_SAMPLE_POINTS = 10; //Must be multiple of 2, shou
 
 //Don't change this next value from -2.94231f
 constexpr float PLAYER_ENGINE_FLAME_REAR_POSITION = -2.94231f;
+
+
+/*
+//-----------------------------------------------------------------------------
+//   Release Version FILE LOCATIONS
+//-----------------------------------------------------------------------------
+
+//see: https://stackoverflow.com/questions/7279100/c-ifstream-on-xcode-where-is-the-default-directory  (scroll down the page a bit) to see a description of a better way of doing this using Objective-C to get the actual filepath and then sendig that into the C++ code.
+
+//These filepaths currently expect to find a folder on the desktop called "TestBundle" that contains all the files.
+
+//Objects
+static const char * SPACESHIP_MODEL_FILE_PATH = "space_ship2.obj";
+//Shader Code
+const std::string BACKGROUND_VERT = "Desktop/TestBundle/Shaders/background.vert";
+const std::string BACKGROUND_FRAG = "Desktop/TestBundle/Shaders/background.frag";
+const std::string PLAYERSHIP_BODY_VERT = "Desktop/TestBundle/Shaders/PlayerShip/playership.vert";
+const std::string PLAYERSHIP_BODY_FRAG = "Desktop/TestBundle/Shaders/PlayerShip/playership.frag";
+const std::string PLAYERSHIP_LINE_VERT = PLAYERSHIP_BODY_VERT; //Use same vert shader to keep aligned
+const std::string PLAYERSHIP_LINE_FRAG = "Desktop/TestBundle/Shaders/PlayerShip/playershipLine.frag";
+const std::string PLAYERSHIP_ENGINE_VERT = "Desktop/TestBundle/Shaders/PlayerShip/engineEffect.vert";
+const std::string PLAYERSHIP_ENGINE_FRAG = "Desktop/TestBundle/Shaders/PlayerShip/engineEffect.frag";
+const std::string KINETIC_VERT = "Desktop/TestBundle/Shaders/Weapons/kinetic.vert";
+const std::string KINETIC_FRAG = "Desktop/TestBundle/Shaders/Weapons/kinetic.frag";
+static std::string backgroundTextureFP = "Desktop/TestBundle/Cool_Picture_of_the_moon.jpg";
+*/
+
+///*
 
 //-----------------------------------------------------------------------------
 //   FILE LOCATIONS  (For now they are all just .obj files)

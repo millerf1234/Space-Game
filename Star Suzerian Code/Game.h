@@ -89,7 +89,7 @@ private:
     void draw();
     void processUserInput();
     void doGameLogic(); //Do upkeep for game objects (upkeep)
-    void processInterEntityEvents(); //Handle inter-entity instance collision/creation/destruction
+    void processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponInstance*> activeWepInstances); //Handle inter-entity instance collision/creation/destruction
     
     
     void initializeWeaponsManager(); //

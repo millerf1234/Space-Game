@@ -12,7 +12,7 @@ WeaponOverseer::WeaponOverseer() {
     this->wepTrackers = nullptr;
     this->numWepTrackers = 0; //0 weapon trackers in existance initially
     
-    this->KineticWepManager = nullptr; //Will be nullptr until initializeWeapons() is called
+    this->kineticWepManager = nullptr; //Will be nullptr until initializeWeapons() is called
     
 }
 
@@ -34,8 +34,8 @@ void WeaponOverseer::initializeWeapons() {
     
     //Load Kinetic weapon type
     std::cout << "            Loading Kinetic...\n";
-    this->KineticWepManager = new KineticWeaponManager;
-    if (this->KineticWepManager->getIsReady()) {
+    this->kineticWepManager = new KineticWeaponManager;
+    if (this->kineticWepManager->getIsReady()) {
         std::cout << "                Kinetic weapon-type Ready!\n";
     }
     else {
@@ -48,13 +48,13 @@ void WeaponOverseer::initializeWeapons() {
 }
 
 void WeaponOverseer::ageWeaponInstances()  {
-    KineticWepManager->ageObjects();
+    kineticWepManager->ageObjects();
     //other wepManagers->ageObjects;
     
 }
 
 void WeaponOverseer::doUpkeep() {
-    KineticWepManager->doUpkeep();
+    kineticWepManager->doUpkeep();
     //other wepManagers->doUpkeep();
 }
 
@@ -113,7 +113,7 @@ void WeaponOverseer::processWeaponTrackers() {
         
         //Check events on the currentWT
         if (currentWT->getKineticWasFired()) {
-            this->KineticWepManager->spawnNewKineticInstance(currentWT);
+            this->kineticWepManager->spawnNewKineticInstance(currentWT);
         }
         //Check currentWT for additional flags of weapons being fired...
     }

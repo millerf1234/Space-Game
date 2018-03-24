@@ -26,18 +26,34 @@ public:
     void initializeWeapons();
     bool getIsReady() const {return this->isReady;}
     
-    
-    
-    
-    
     void ageWeaponInstances();
     void doUpkeep();
     void drawInstances() {
-        KineticWepManager->drawInstances();
+        kineticWepManager->drawInstances();
         //otherWepManagers->drawInsances();
     }
+    
     void processWeaponTrackers();
     
+    void getAllActiveWeaponInstances(std::vector<WeaponInstance *> & activeWepInsts) {
+        //Get all the active Kinetic weapon instances
+        int numActiveInstances = kineticWepManager->getNumberOfActiveInstances();
+        if (numActiveInstances > 0) {
+            Instance** insts = kineticWepManager->getActiveInstances();
+            //Cast each instance to a weapon instance, and then place it inside the vector
+            for (int i = 0; i < numActiveInstances; i++) {
+                WeaponInstance * wepInst = static_cast<WeaponInstance *>(insts[i]);
+                activeWepInsts.push_back(wepInst);
+            }
+        }
+        
+        //Get additional weapon instance types, and place them into the vector
+    }
+    
+    void deleteFlaggedWeaponInstances() {
+        kineticWepManager->deleteFlaggedWeaponInstances();
+        //Other weapon managers->deleteFlaggedWeaponInstances();
+    }
     
     void generateAndAttachWeaponTrackerToInstance(Instance *);
     
@@ -45,7 +61,7 @@ private:
     bool isReady;
     
     //Weapon type managers
-    KineticWeaponManager * KineticWepManager;
+    KineticWeaponManager * kineticWepManager;
     
     WeaponTracker ** wepTrackers;
     int numWepTrackers;

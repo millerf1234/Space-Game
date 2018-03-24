@@ -40,7 +40,21 @@ public:
         }
     }
     
+    int getNumberOfActiveInstances() const {return this->generator->getInstanceCount();}
+    Instance ** getActiveInstances() {
+        if (this->generator->getInstanceCount() == 0) {
+            //Print a warning message
+            std::cout << "\nDEBUG::getActiveInstances() called on KineticWeaponManager but this manager is not managing any active instances!\nNullptr will be returned, code should check to make sure there are active instances before calling this function!\n";
+            return nullptr;
+        }
+        else {
+            return this->generator->getArrayOfInstances();
+        }
+    }
+    
     void spawnNewKineticInstance(WeaponTracker * wepTracker);
+    
+    void deleteFlaggedWeaponInstances();
     
     bool getIsReady() const {return isReady;}
     

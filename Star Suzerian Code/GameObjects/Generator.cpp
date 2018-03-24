@@ -1,7 +1,7 @@
  //  Implementation for the Generator class
 //  This class should probably be called InstanceGenerator or InstanceFactory instead of just Generator. Oh well...
 //  Actually this class should be like a bunch of different classes. Right now this contains pretty much all the filler
-//  code that I haven't yet broken into classes.
+//  code that I haven't yet broken into classes. see header for more info
 //  Generator.cpp
 //  Created by Forrest Miller on 2/17/18.
 
@@ -637,7 +637,7 @@ void Generator::generateSingle() {
     //Keep track of all identifier numbers that are in use and were created by this generator
     instancesCreatedByThisGenerator.push_back(instances[newInstanceIndex]->identifierNumber);
     
-    //Set up the rest of the new instance
+    //Set up the rest of the new instance (this code executes for all instances no matter their type)
     this->instances[newInstanceIndex]->position = aiVector3D(0.0f, 0.0f, 0.0f);
     this->instances[newInstanceIndex]->zoom = 3.5f; //Higher zoom means farther from camera
     this->instances[newInstanceIndex]->timeAlive = 0.0f;
@@ -886,6 +886,8 @@ void Generator::doDrawPlayerShipInstance(int i) {
     glUniform1f(pul.ulocGreen, player->green);
     glUniform1f(pul.ulocBlue, player->blue);
     glUniform1f(pul.ulocRoll, player->rollAmount);
+    glUniform1f(pul.ulocPHealthMax, STARTING_PLAYER_HEALTH);
+    glUniform1f(pul.ulocPDamage, STARTING_PLAYER_HEALTH - player->health); //Subtract actual player health from expected health to get damage
     
     //Draw the player body (using shader in shadderArray[0]
     glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
@@ -1358,7 +1360,7 @@ void Generator::drawKineticInstance(Kinetic * kin) {
         glUniform1f(ulocThetaY, 0.0f);
         glUniform1f(ulocThetaZ, 0.0f);
         
-        //glDrawArrays(GL_LINE_LOOP, 0, 8);
+        glDrawArrays(GL_LINE_LOOP, 0, 8);
         
         //Put the vertices back
         for (int i = 0; i < verticesToReplace; ++i) {

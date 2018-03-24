@@ -243,7 +243,8 @@ public:
     }
     
     /*virtual */ void configureWeaponTracker() override {
-        if (this->wepTracker->getHasWeponSpawnPointsSet()) {
+        //I am adding in the second half of this statement (the part after the '&&') because it turns out I give a default weaponSPawnPoint array of size 1 to weapon trackers when they are created.
+        if (this->wepTracker->getHasWeponSpawnPointsSet() && this->wepTracker->getNextSpawnPoint() != this->wepTracker->getNextSpawnPoint()) {
             if (PRINT_DEBUG_WARNING_MESSAGES) {
                 std::cout << "\nDEBUG::OOPS! Are you sure you want to configure this weapons tracker twice?\n";
                 return;
@@ -287,6 +288,7 @@ public:
     
     bool homing;
     
+    bool shouldBeDestroyed;
     
     //aiVector3D velocityModelRelative;
     //aiVector2D velocityScreenSpace;
@@ -297,6 +299,7 @@ public:
     WeaponInstance(int instanceID) : Instance(instanceID) {
         this->type = WEAPONINSTANCE;
         this->wepType = WeaponType::UNINITIALIZED;
+        this->shouldBeDestroyed = false; //Probably not the best way to do this...
     }
     
     aiVector2D collisionBoxMidpoint; //This is to be CPU transformed for collision box

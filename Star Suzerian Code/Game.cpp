@@ -63,10 +63,10 @@ void Game::loadGameObjects() {
         std::cout << INDENT << "Level " << /*i*/0+1 << " loaded..." << std::endl;
     //}
     //Since I am no longer doing the loop, do:
-    stage = static_cast<Stage*> (gEntities[0]);
+    //stage = static_cast<Stage*> (gEntities[0]); //Note: Looking at this code a month after I wrote it and not sure why I do (did) this
     
     
-    //Then load
+    //Then load weapons next (i.e. initiailize them, but don't actually spawn any yet...) Just get them ready for drawing.
     std::cout << std::endl << INDENT << "Loading Weapons...\n";
     wepOverseer.initializeWeapons();
     
@@ -210,13 +210,19 @@ bool Game::launch() {
         //Have the WeaponOverseer process all of the active WeaponTrackers to see if any flags were flagged
         wepOverseer.processWeaponTrackers();
         
-        //Need a way to do entity-weapon collisions...
+        std::vector<WeaponInstance *> allActiveWeaponInstances;
+        wepOverseer.getAllActiveWeaponInstances(allActiveWeaponInstances); //Have weaponOverseer fill the vector will all active weapon instances
+        if (allActiveWeaponInstances.size() > 0) {  //Check to make sure there actually exist active weapon instances
+            processInterEntityEvents(playerManager, allActiveWeaponInstances); //Check to see if entities of different types are running into eachother
+        }
+        //Not sure yet if this next line should be inside the 'if' statement right before this line, or outside 'if' statement
+        wepOverseer.deleteFlaggedWeaponInstances(); //Delete any flagged weapon instances (they probably were flagged in Game.processInterEntityEvents() )
+        
         
         //----------------------------------------------------------------------
         //  Draw
         //----------------------------------------------------------------------
-        std::vector<GameEntityManager*>::iterator entityDrawIterator = gEntities.begin();
-        
+       
         //-------  MSAA NOT WORKING TEST? ---------------------
         //see: https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_fsaa/opengl_fsaa.html
         //glad_glEnable(GL_MULTISAMPLE);  //See also: https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing
@@ -228,7 +234,9 @@ bool Game::launch() {
             glad_glGetIntegerv(GL_SAMPLES, &samples);
             printf("\nMSAA Information: buffers available = %d, samples = %d\n", bufs, samples);
         }
+        //--------End of MSAA TEST CODE ------------------------
         
+        std::vector<GameEntityManager*>::iterator entityDrawIterator = gEntities.begin();
         for (; entityDrawIterator < gEntities.end(); ++entityDrawIterator) {
             (*entityDrawIterator)->drawInstances();
         }
@@ -247,12 +255,11 @@ bool Game::launch() {
         glfwPollEvents();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Reset depth/color buffer bits
         ++frameNumber;
-        if (PRINT_FRAME_PROCESS_TIME_INFORMATION) { //Might want to add more fame-time information
+        if (PRINT_FRAME_PROCESS_TIME_INFORMATION) { //Might want to add more frame-time information then just process time / frame
             auto frameEnd = std::chrono::high_resolution_clock::now(); //Note that time measurement is in nanoseconds
             std::cout << "\nFrame " << frameNumber << " processed in " << std::chrono::duration_cast<std::chrono::nanoseconds>(frameEnd-frameBegin).count()  << " nanoseconds.";
         }
     }
-    
     
     if (PRINT_DEBUG_MESSAGES) {
         std::cout << "\nDEBUG::Exiting Game Loop!" << std::endl;
@@ -260,3 +267,60 @@ bool Game::launch() {
     return true;
 }
 
+
+void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponInstance*> activeWepInstances) {
+    if (activeWepInstances.size() == 0) {return;}
+    int playerInstanceCount = pManag->getNumberOfPlayerInstances();
+    if (playerInstanceCount == 0) {
+        std::cout << "\n!DEBUG::OOPS! There are no player instances for some reason...!\n";
+        return;
+    }
+    //Get the player instances
+    Instance ** pInstances = pManag->getPlayerInstances();
+    PlayerInstance * player;
+    //For each player in playerManager
+    for (int i = 0; i < playerInstanceCount; i++) {
+        //Cast the instance to be a player instance
+        player = static_cast<PlayerInstance *> (pInstances[i]);
+        CollisionBox * playersColBox = player->colBox;
+        
+        //For each active weapon instance
+        std::vector<WeaponInstance*>::iterator wepIter = activeWepInstances.begin();
+        for (; wepIter != activeWepInstances.end(); wepIter++) {
+            WeaponType wt = (*wepIter)->getWeaponType();
+            switch (wt) {
+                case KINETIC:
+                {
+                    //cast to kinetic instance
+                    Kinetic * kWepInst = static_cast<Kinetic*>((*wepIter));
+                    CollisionBox * kineticColBox = kWepInst->colBox;
+                    //Check to see if this collisionBox and player's collisionBox are overlapping
+                    if (kineticColBox->isOverlapping(*playersColBox) && kWepInst->timeAlive > TIME_TICK_RATE * 2) {
+                        //Do damage to player
+                        player->health -= kWepInst->damage;
+                        //Have kinetic impacts affect other player's velocity
+                        aiVector2D velocityShift = kWepInst->velocity;
+                        velocityShift = velocityShift.Normalize();
+                        velocityShift *= KINETIC_VELOCITY_IMPACT;
+                        player->velocity += velocityShift;
+                        player->position = player->position + aiVector3D((velocityShift * 2.0f).x, (velocityShift * 2.0f).y, 0.0f);
+                        
+                        //player->wepTracker->  //No health in weapon tracker? What about shield?
+                        //Mark the Kinetic instance for destruction
+                        kWepInst->shouldBeDestroyed = true;
+                    }
+                    break;
+                }
+                case HEXAGON_BOMB:
+                case LASER:
+                case ROCKET:
+                case HOMINGROCKET:
+                    break;
+                case UNINITIALIZED:
+                default:
+                    std::cout << "\nDEBUG::WARNING! Detected a weapon instance that was never initialized with a weapon type!\n";
+                    break;
+            }
+        }
+    }
+}

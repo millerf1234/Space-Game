@@ -36,7 +36,7 @@ public:
     
     //Constructor (just pull paramters from GameParamters)
     AmmoCount() {
-        this->kinetic = STARTING_PLAYER_KINETIC_AMMO;
+        this->kinetic = PLAYER_KINETIC_AMMO;
         this->missles = STARTING_PLAYER_ROCKETS;
         this->hexagonBombs = STARTING_PLAYER_HEXAGON_BOMBS;
         this->energy = STARTING_PLAYER_ENERGY;

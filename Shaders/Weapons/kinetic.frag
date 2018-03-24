@@ -1,7 +1,7 @@
 //Good reference for future: http://www.shaderific.com/glsl-functions/
 //Want to make kinetic projectiles be orangish/redish, maybe with a flaming glow?
 
-#version 400 core
+#version 410 core
 
 /*layout(location = 0)*/ in vec3 pos;
 /*layout(location = 0)*/ out vec4 color;

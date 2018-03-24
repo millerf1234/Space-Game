@@ -249,7 +249,23 @@ void KineticWeaponManager::doUpkeep() {
                 //insts now points to invalid memory unfortunatly... So need to update all insts
                 insts = this->generator->getArrayOfInstances(); //Update insts to the new instants list
             }
+            
         }
     }
     processCollisions(); //
+}
+
+void KineticWeaponManager::deleteFlaggedWeaponInstances() {
+    if (this->generator->getInstanceCount() > 0) {
+        Instance ** arrayOfInstances = this->generator->getArrayOfInstances();
+        for (int i = 0; i < this->generator->getInstanceCount(); ++i) {
+            Kinetic * k = static_cast<Kinetic*> (arrayOfInstances[i]);
+            if (k->shouldBeDestroyed) {
+                this->generator->removeInstance(arrayOfInstances[i]);
+                i--; //The instance was removed, so account for its removal in the loop
+                //The array of instances was changed by generator, so need to get it again
+                arrayOfInstances = this->generator->getArrayOfInstances();
+            }
+        }
+    }
 }

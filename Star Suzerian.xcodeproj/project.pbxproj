@@ -17,7 +17,6 @@
 		9E10D5AA203236A700F0F724 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5A9203236A700F0F724 /* OpenGL.framework */; };
 		9E10D5B4203237BB00F0F724 /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5B3203237BB00F0F724 /* glad.c */; };
 		9E10D5B72032390900F0F724 /* libIrrXML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5B62032390900F0F724 /* libIrrXML.a */; };
-		9E10D5BA20323CD200F0F724 /* assimp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5B920323CD200F0F724 /* assimp.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		9E10D5C02032410600F0F724 /* libGLEW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5BF2032410600F0F724 /* libGLEW.a */; };
 		9E10D5C42032430800F0F724 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5C32032430800F0F724 /* libglfw3.a */; };
 		9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5C620324B8D00F0F724 /* GLFW_Init.cpp */; };
@@ -36,7 +35,6 @@
 		9ECC638B204640B600F7B703 /* RectangularCuboid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ECC6389204640B600F7B703 /* RectangularCuboid.cpp */; };
 		9ECC638F2046A6C000F7B703 /* CollisionRectangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ECC638D2046A6C000F7B703 /* CollisionRectangle.cpp */; };
 		9ECC63932047B65700F7B703 /* CollisionSphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ECC63912047B65700F7B703 /* CollisionSphere.cpp */; };
-		9ED562862042ACC600193697 /* assimp.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = 9E10D5B920323CD200F0F724 /* assimp.framework */; };
 		9ED772142036CE1600D569A4 /* TextureWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED772122036CE1600D569A4 /* TextureWrapper.cpp */; };
 		9ED77219203930F200D569A4 /* Generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED77217203930F100D569A4 /* Generator.cpp */; };
 		9ED7721D2039516500D569A4 /* Stage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED7721B2039516500D569A4 /* Stage.cpp */; };
@@ -51,7 +49,6 @@
 			dstPath = usr/share/man/man1;
 			dstSubfolderSpec = 16;
 			files = (
-				9ED562862042ACC600193697 /* assimp.framework in Copy Files */,
 			);
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,7 +84,6 @@
 		9E10D5B3203237BB00F0F724 /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glad.c; sourceTree = "<group>"; };
 		9E10D5B5203237CE00F0F724 /* ProjectSetup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectSetup.h; sourceTree = "<group>"; };
 		9E10D5B62032390900F0F724 /* libIrrXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libIrrXML.a; sourceTree = "<group>"; };
-		9E10D5B920323CD200F0F724 /* assimp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = assimp.framework; sourceTree = "<group>"; };
 		9E10D5BF2032410600F0F724 /* libGLEW.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGLEW.a; sourceTree = "<group>"; };
 		9E10D5C12032424100F0F724 /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glfw3.h; sourceTree = "<group>"; };
 		9E10D5C32032430800F0F724 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libglfw3.a; sourceTree = "<group>"; };
@@ -103,7 +99,7 @@
 		9E10D5D42032CEDB00F0F724 /* Quaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Quaternion.cpp; sourceTree = "<group>"; };
 		9E10D5D52032CEDB00F0F724 /* NGon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NGon.h; sourceTree = "<group>"; };
 		9E10D5D62032CEDC00F0F724 /* Quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quaternion.h; sourceTree = "<group>"; };
-		9E10D5DB2033823200F0F724 /* Rocket.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rocket.obj; sourceTree = "<group>"; };
+		9E10D5DB2033823200F0F724 /* space_ship21.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = space_ship21.obj; sourceTree = "<group>"; };
 		9E10D5DC2033826300F0F724 /* space_ship2.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = space_ship2.obj; sourceTree = "<group>"; };
 		9E10D5E120338FF000F0F724 /* PlayerManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerManager.cpp; sourceTree = "<group>"; };
 		9E10D5E220338FF000F0F724 /* PlayerManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerManager.h; sourceTree = "<group>"; };
@@ -157,7 +153,6 @@
 				9E10D5AA203236A700F0F724 /* OpenGL.framework in Frameworks */,
 				9E10D5A82032368600F0F724 /* GLUT.framework in Frameworks */,
 				9E10D5C02032410600F0F724 /* libGLEW.a in Frameworks */,
-				9E10D5BA20323CD200F0F724 /* assimp.framework in Frameworks */,
 				9E10D5A62032367800F0F724 /* Cocoa.framework in Frameworks */,
 				9E10D5B72032390900F0F724 /* libIrrXML.a in Frameworks */,
 				9E10D5A42032366700F0F724 /* IOKit.framework in Frameworks */,
@@ -240,7 +235,6 @@
 			children = (
 				9E10D5C32032430800F0F724 /* libglfw3.a */,
 				9E10D5BF2032410600F0F724 /* libGLEW.a */,
-				9E10D5B920323CD200F0F724 /* assimp.framework */,
 				9E10D5B62032390900F0F724 /* libIrrXML.a */,
 				9E10D5AC203237BB00F0F724 /* glad */,
 				9E10D5A9203236A700F0F724 /* OpenGL.framework */,
@@ -330,7 +324,7 @@
 			isa = PBXGroup;
 			children = (
 				9E10D5DC2033826300F0F724 /* space_ship2.obj */,
-				9E10D5DB2033823200F0F724 /* Rocket.obj */,
+				9E10D5DB2033823200F0F724 /* space_ship21.obj */,
 			);
 			path = ObjFiles;
 			sourceTree = "<group>";

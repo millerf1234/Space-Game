@@ -4,11 +4,15 @@
 #include <iostream>
 #include <stdlib.h>
 #include <cmath>
+#include <unistd.h>
 
 #include "GLFW_Init.h"
 #include "Game.h" //A wrapper to run the game inside of
 
 int main(int argc, const char * argv[]) { //Add command line arg to open in windowed mode?
+    
+    char * dir = getcwd(NULL, 0); // Platform-dependent, Not Necessarily Portable
+    printf("Current dir: %s\n\n", dir);
     
     std::cout << "Process Started... \n";
     

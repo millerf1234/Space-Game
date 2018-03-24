@@ -66,6 +66,7 @@ MonitorData GLFW_Init::initialize() {
     }
     
     std::cout << "    Configuring macOS specific window hints..." << std::endl;
+    //Turns out I don't actually set any macOS specific window hints...
     //Note that macOS specific window hints are just ignored if run on platforms
     //other than macOS
 //    glfwWindowHint(, GL_TRUE);//Allows access to a bigger framebuffer for retina displays
@@ -143,6 +144,7 @@ MonitorData GLFW_Init::initialize() {
         //                       before game loop)
         //
         glfwMakeContextCurrent(mWindow);
+        this->contextIsValid = true; 
         //gladLoadGL(); //I call the gladLoadGL stuff in main, since it is not part of GLFW
         //fprintf(stderr, "OpenGL %s\n", glGetString(GL_VERSION));
     }

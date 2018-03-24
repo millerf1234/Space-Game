@@ -70,6 +70,10 @@ public:
     //aiVector3D getCenterWeaponLaunchpoint();
     //aiVector3D * getSideWeaponLaunchPoints();
     
+    void givePlayerDamage(PlayerInstance * pInst, float damage) {
+        //Check to make sure pInst is a valid playerInstance managed by this manager
+        Instance ** activeInstances = this->generator->getArrayOfInstances();
+    }
     
 protected:
     virtual void initializeFromTemplate() override;
