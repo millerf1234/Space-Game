@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9E00AD97206651B700FEF9C2 /* Particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E00AD95206651B700FEF9C2 /* Particle.cpp */; };
 		9E0754ED203B892C009B6215 /* GameEntityManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E0754EB203B892C009B6215 /* GameEntityManager.cpp */; };
 		9E0754F1203B8B58009B6215 /* QuickHull.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E0754EF203B8B58009B6215 /* QuickHull.cpp */; };
 		9E10D59A203234CC00F0F724 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D599203234CC00F0F724 /* main.cpp */; };
@@ -56,6 +57,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9E00AD95206651B700FEF9C2 /* Particle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Particle.cpp; path = Utility/Particle.cpp; sourceTree = SOURCE_ROOT; };
+		9E00AD96206651B700FEF9C2 /* Particle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Particle.h; path = Utility/Particle.h; sourceTree = SOURCE_ROOT; };
 		9E0754E3203AD391009B6215 /* playership.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playership.frag; sourceTree = "<group>"; };
 		9E0754E4203AD3A4009B6215 /* playership.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playership.vert; sourceTree = "<group>"; };
 		9E0754E6203AD3C8009B6215 /* engineEffect.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = engineEffect.vert; sourceTree = "<group>"; };
@@ -225,6 +228,8 @@
 				9E10D5E020338FD000F0F724 /* GameObjects */,
 				9E10D599203234CC00F0F724 /* main.cpp */,
 				9E10D5C92032CC0100F0F724 /* Game.cpp */,
+				9E00AD95206651B700FEF9C2 /* Particle.cpp */,
+				9E00AD96206651B700FEF9C2 /* Particle.h */,
 				9E10D5CA2032CC0100F0F724 /* Game.h */,
 			);
 			path = "Star Suzerian Code";
@@ -543,6 +548,7 @@
 				9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */,
 				9ECC63872044C51300F7B703 /* RocketManager.cpp in Sources */,
 				9ECC638F2046A6C000F7B703 /* CollisionRectangle.cpp in Sources */,
+				9E00AD97206651B700FEF9C2 /* Particle.cpp in Sources */,
 				9E10D5CB2032CC0100F0F724 /* Game.cpp in Sources */,
 				9E10D5E320338FF000F0F724 /* PlayerManager.cpp in Sources */,
 				9ED772142036CE1600D569A4 /* TextureWrapper.cpp in Sources */,

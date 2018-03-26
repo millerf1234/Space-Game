@@ -80,8 +80,8 @@ void Game::loadGameObjects() {
     Instance ** playerInstances = playerManager->getPlayerInstances();
     for (int i = 0; i < numberOfPlayersThatNeedWeaponManagers; i++) {
         wepOverseer.generateAndAttachWeaponTrackerToInstance(playerInstances[i]);
-        PlayerInstance * pInst = static_cast<PlayerInstance*>(playerInstances[i]);
-        pInst->configureWeaponTracker(); //do extra configuration on the weapon tracker
+        PlayerEntity * pInst = static_cast<PlayerEntity*>(playerInstances[i]);
+        //pInst->configureWeaponTracker(); //do extra configuration on the weapon tracker
     }
     
     
@@ -277,11 +277,11 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
     }
     //Get the player instances
     Instance ** pInstances = pManag->getPlayerInstances();
-    PlayerInstance * player;
+    PlayerEntity * player;
     //For each player in playerManager
     for (int i = 0; i < playerInstanceCount; i++) {
         //Cast the instance to be a player instance
-        player = static_cast<PlayerInstance *> (pInstances[i]);
+        player = static_cast<PlayerEntity *> (pInstances[i]);
         CollisionBox * playersColBox = player->colBox;
         
         //For each active weapon instance

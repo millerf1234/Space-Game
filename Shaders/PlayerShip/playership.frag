@@ -20,6 +20,7 @@ uniform float maxHealth; //the players maxHealth
 
 out vec4 color;
 
+/*
 //test ambientCol:
 //vec3 ambientCol = vec3(0.15f, 0.25f, 0.25f);
 vec3 ambientCol = vec3(red - 0.2f, green - 0.2f, blue - 0.2f);
@@ -39,7 +40,7 @@ vec3 Ks = vec3(0.95f, 0.95f, 0.95f);
 float shiny = 0.15f;
 
 //Set normal to this sin function that will make ship blink faster the more damage it has taken
-vec3 N = vec3(0.0f, 0.0f, sin(time * 50.0f * damage /maxHealth  )); //No blinking when damage is 0, full blinking when damage == maxHealth
+vec3 N = vec3(0.0f, 0.0f, sin(time * 50.0f * damage /maxHealth  )); //No blinking when damage is 0, full blinking when damage == maxHealth          //Damage at -76 made it flash super fast (with 100 max health)
 //vec3 N = cross(vec3(0.0f, pos.y, -pos.z), eyePos);
 
 void main() {
@@ -64,7 +65,11 @@ void main() {
     
 }
 
-
+*/
+void main() {
+    float damageColorChange = damage / maxHealth ;
+    color = vec4((red + damageColorChange * (damageColorChange * (1.0f - red)), green + (damageColorChange * (1.0f - green)), blue + (damageColorChange * (1.0f - blue)), exp(damage - 1.0f)) );
+}
 //
 //#version 400 core
 //out vec4 color;

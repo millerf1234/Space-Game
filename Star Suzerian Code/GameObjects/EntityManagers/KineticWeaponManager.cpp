@@ -40,7 +40,7 @@ KineticWeaponManager::KineticWeaponManager() : GameEntityManager() {
     //    this->initTemplate = new InitializationTemplate;
     //    this->generator = new Generator;
     //    this->hasGenerator = true;
-    //    this->hasCollision = true;
+    // /Users/forrestmiller/Desktop/SpaceGameBuildTest/Star Suzerian 2018-03-25 13-00-50/Products/usr/local/bin/Star Suzerian   this->hasCollision = true;
     //    this->requiresUserInput = true; //Player controlled characters require user input
     //    //Set specialization type
     //    this->specType = specializationType::PLAYER;

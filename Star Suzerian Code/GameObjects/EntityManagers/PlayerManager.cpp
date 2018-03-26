@@ -64,9 +64,9 @@ void PlayerManager::handleInput(GLFWwindow* mWindow) {
         //Start by getting all playerInstances from generator:
         Instance ** players = generator->getArrayOfInstances();
         //Cast player1 from the instances:
-        PlayerInstance * p1 = static_cast<PlayerInstance*>(players[0]);
+        PlayerEntity * p1 = static_cast<PlayerEntity*>(players[0]);
         //Then get player2 from the instances
-        PlayerInstance * p2 = static_cast<PlayerInstance*>(players[1]);
+        PlayerEntity * p2 = static_cast<PlayerEntity*>(players[1]);
         
         //First need to reset all the input's from the last turn
         p1->accelerate = p1->decelerate = p1->turnLeft = p1->turnRight = p1->rollLeft = p1->rollRight = p1->shoot = false;
@@ -188,7 +188,7 @@ void PlayerManager::initializeFromTemplate() {
         }
         for (int i = 0; i < MAX_PLAYERS; ++i) {
             //For more info on static_cast, see: https://stackoverflow.com/questions/28002/regular-cast-vs-static-cast-vs-dynamic-cast
-            PlayerInstance * p = static_cast<PlayerInstance*>(players[i]);
+            PlayerEntity * p = static_cast<PlayerEntity*>(players[i]);
             p->zoom = PLAYER_SIZE;
             p->thetaX = PI / 2.0f; //Set starting x rotation
             p->playerNumber = i+1; //So player 1 get assigned playerNumber 1, player 2 gets playerNumber 2, etc...
@@ -200,27 +200,43 @@ void PlayerManager::initializeFromTemplate() {
             }
             
             //Set Player_Specific parameters based off position in array
-            if (i == 0) {
+            if (i == 0) { //i.e. if p is player 1
                 p->red = PLAYER_ONE_RED;
                 p->green = PLAYER_ONE_GREEN;
                 p->blue = PLAYER_ONE_BLUE;
-                p->thetaZ = PI / 2.0f; //Set this to pi/2 to get player1 oriented the correct way at start
-                //I have collisionBox fix itself if there is an issue, so don't need this next line
-                //p->thetaZ -= PLAYER_ROTATION_SPEED_TURNING / 11.0f; //Offset rotation by some small amount to prevent weird collision things from happeneing
-                p->position.x += PLAYER1_STARTOFFSET_X;
-                p->position.y += PLAYER1_STARTOFFSET_Y;
+                if (MOON_DRIFTER_MODE) {
+                    //Set moonDrifter spawn orientation for player 1
+                    p->thetaZ = mdPLAYER1SPAWNROTATION;
+                    //Then set the moodDrifter spawn points
+                    p->position.x += mdPLAYER1SPAWNXOFFSET;
+                    p->position.y += mdPLAYER1SPAWNYOFFSET;
+                }
+                else { //battle mode
+                    p->thetaZ = PI / 2.0f; //Set this to pi/2 to get player1 oriented the correct way at start for battle mode
+                    p->position.x += PLAYER1_STARTOFFSET_X;
+                    p->position.y += PLAYER1_STARTOFFSET_Y;
+                }
+                
             }
-            else if (i == 1) {
+            else if (i == 1) { //if p is player 2
                 p->red = PLAYER_TWO_RED;
                 p->green = PLAYER_TWO_GREEN;
                 p->blue = PLAYER_TWO_BLUE;
-                p->thetaZ = -PI / 2.0f; //Set this to -pi/2 to get player2 oriented the correct way at start
-                //I now have collisionBox fix itself if there is an issue, so don't need this next line
-                //p->thetaZ -= PLAYER_ROTATION_SPEED_TURNING / 11.0f; //Shift thetaZ by some tiny amont to fix collisionBox
-                p->position.x += PLAYER2_STARTOFFSET_X;
-                p->position.y += PLAYER2_STARTOFFSET_Y;
+                if (MOON_DRIFTER_MODE) { //MOON DRIFTER MODE!`
+                    //Set moonDrifter spawn orientation for player 2
+                    p->thetaZ = mdPLAYER2SPAWNROTATION;
+                    //then set moonDrifter spawns
+                    p->position.x += mdPLAYER2SPAWNXOFFSET;
+                    p->position.y += mdPLAYER2SPAWNYOFFSET;
+                }
+                else { //battle mode
+                    p->thetaZ = -PI / 2.0f; //Set this to -pi/2 to get player2 oriented the correct way at start
+                    p->position.x += PLAYER2_STARTOFFSET_X;
+                    p->position.y += PLAYER2_STARTOFFSET_Y;
+
+                }
             }
-            else if (i == 2) {
+            else if (i == 2) { //Battle mode only below here (and not fully implemented either)
                 p->red = PLAYER_THREE_RED;
                 p->green = PLAYER_THREE_GREEN;
                 p->blue = PLAYER_THREE_BLUE;
@@ -361,7 +377,7 @@ void PlayerManager::initializeFromTemplate() {
 void PlayerManager::processInput() {
     Instance ** players = generator->getArrayOfInstances();
     for (int i = 0; i < generator->getInstanceCount(); ++i) {
-        PlayerInstance * player = static_cast<PlayerInstance *>(players[i]);
+        PlayerEntity * player = static_cast<PlayerEntity *>(players[i]);
         
         //NOTE! rollThreshold is just for drawing engine flames, it is not an actual limit on rolling
         float rollThreshold = 0.5f * (PI / 2.0f); //Used in turnLeft and turnRight to check if rolled past threshhold
@@ -585,8 +601,8 @@ void PlayerManager::processCollisions() {
     playerImpact.setMass1(1.0f);
     playerImpact.setMass2(1.0f);
     
-    PlayerInstance * p1 = static_cast<PlayerInstance *>(players[0]);
-    PlayerInstance * p2 = static_cast<PlayerInstance *>(players[1]);
+    PlayerEntity * p1 = static_cast<PlayerEntity *>(players[0]);
+    PlayerEntity * p2 = static_cast<PlayerEntity *>(players[1]);
     //See if player1 hit player2 (or if player2 hit player1)
     if (p1->colBox->isOverlapping(*(p2->colBox)) || p2->colBox->isOverlapping(*(p1->colBox))) {
         //p1->colBox->moveApartAlongAxisBetweenMidpoints(*(p2->colBox));

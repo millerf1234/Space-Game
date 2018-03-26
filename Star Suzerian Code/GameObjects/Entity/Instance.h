@@ -18,11 +18,20 @@
 #include "WeaponTracker.h"
 
 
-enum InstanceType {PLAYERINSTANCE, WEAPONINSTANCE, ENEMYINSTANCE, SCENEINSTANCE, BASIC}; //Used for instance identification
+enum InstanceType {PLAYERINSTANCE, WEAPONINSTANCE, ENEMYINSTANCE, SCENEINSTANCE, SCENECOLLISIONINSTANCE, BASIC}; //Used for instance identification
 enum WeaponType {HEXAGON_BOMB, LASER, ROCKET, HOMINGROCKET, KINETIC, UNINITIALIZED}; //Used in conjunction with WeapontypeManagers
 //Here is a typedef for an instance of what was generated
 
-class Instance{
+class Renderable {
+    aiVector3D position;
+    aiVector3D velocity;
+    float zoom;
+    
+    float timeAlive;
+    
+};
+
+class Instance : public Renderable {
 public:
     int identifierNumber; //Unique number attached to each instance of any object
     //These are all basically just values to give the GPU for each instance
@@ -147,7 +156,12 @@ protected:
     }
 };
 
-class PlayerInstance : public Instance {
+class Entity : public Instance {
+    
+    
+};
+
+class PlayerEntity : public Entity {
 public:
     float health;
     float shields;
@@ -175,7 +189,7 @@ public:
     aiVector3D ** translationHistory;
     Quaternion * xRot, * yRot, * zRot;
     
-    PlayerInstance() = delete;
+    PlayerEntity() = delete;
 //    PlayerInstance() {
 //        if (PRINT_DEBUG_MESSAGES) {
 //            std::cout << "DEBUG::OOPS! IT looks like the wrong PlayerInstance constructor was called";
@@ -185,7 +199,7 @@ public:
 //
 //    }
     
-    PlayerInstance(int playerNumber) {
+    PlayerEntity(int playerNumber) {
         if (PRINT_DEBUG_MESSAGES) {
             std::cout << "DEBUG::PlayerInstance constructor was called!" << std::endl;
         }
@@ -212,7 +226,7 @@ public:
         }
     }
     
-    ~PlayerInstance() {
+    ~PlayerEntity() {
         if (this->rear != nullptr) {
             delete this->rear;
             this->rear = nullptr;

@@ -576,7 +576,7 @@ void Generator::generateSingle() {
     int newInstanceIndex = activeInstances - 1;
     //Create an instance based off generator type (note that special types will have their values set correctly by their constructors (at least in theory they will)
     if (specialization == specializationType::PLAYER) {//Generate a player instance
-        instances[newInstanceIndex] = new PlayerInstance(nextObjID);
+        instances[newInstanceIndex] = new PlayerEntity(nextObjID);
         instances[newInstanceIndex]->type = PLAYERINSTANCE;
         instances[newInstanceIndex]->identifierNumber = (nextObjID); //Not sure why this isn;t getting set...or is it...
         //Since the instance is a PLAYER instance, create the collisionBox for the instance
@@ -879,7 +879,7 @@ void Generator::doDrawPlayerShipInstance(int i) {
     //All of the code for the engine flames (aside from the translationHistory array managment) is contained within
     //this function.
     
-    PlayerInstance * player = static_cast<PlayerInstance*>(instances[i]);
+    PlayerEntity * player = static_cast<PlayerEntity*>(instances[i]);
     
     //Get playerBody specific uniforms (see shader code for what uniforms are in use for each program)
     glUniform1f(pul.ulocRed, player->red);

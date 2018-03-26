@@ -70,7 +70,7 @@ void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Instance * inst) {
     //Print a debug message:
     std::cout << "\nWeaponTracker attached to Instance " << inst->getID() << ".\n";
     if (inst->type == InstanceType::PLAYERINSTANCE) {
-        PlayerInstance * pTemp = static_cast<PlayerInstance *>(inst);
+        PlayerEntity * pTemp = static_cast<PlayerEntity *>(inst);
         std::cout << "Instance " << inst->getID() << " is Player " << pTemp->playerNumber << std::endl;
     }
     
@@ -82,6 +82,7 @@ void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Instance * inst) {
         for (int i = 0; i < numWepTrackers ; i++) {
             temp[i] = wepTrackers[i];
         }
+        
         //Delete the no-longer-needed array
         delete [] wepTrackers;
         wepTrackers = temp; //Set the tracked array to be the new array

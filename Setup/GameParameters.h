@@ -43,6 +43,50 @@ static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a 
 static constexpr bool DRAW_COLLISION_DETAILS = false;
 
 //-----------------------------------------------------------------------------
+// Gamemode types
+//-----------------------------------------------------------------------------
+static constexpr bool MOON_DRIFTER_MODE = false;
+//Battle mode by default
+
+//-----------------------------------------------------------------------------
+// Moondrifter constants
+//-----------------------------------------------------------------------------
+constexpr short mdSCORE_TO_WIN = 100;
+constexpr short mdSCORE_PER_LAP = 1;
+
+constexpr float mdPLAYER1SPAWNXOFFSET = -10.0f;
+constexpr float mdPLAYER1SPAWNYOFFSET = 20.0f;
+constexpr float mdPLAYER2SPAWNXOFFSET = 30.0f;
+constexpr float mdPLAYER2SPAWNYOFFSET = -23.0f;
+
+constexpr float mdPLAYER1SPAWNROTATION =  PI;
+constexpr float mdPLAYER2SPAWNROTATION = 0.0f;
+
+//Left inner circle
+constexpr float mdINNERZONE_LEFT_CENTER_X = -20.0f;
+constexpr float mdINNERZONE_LEFT_CENTER_Y = 0.0f;
+constexpr float mdINNERZONE_LEFT_STARTRADIUS = 30.0F;
+constexpr float mdINNERZONE_LEFT_LOWERTHETA = - PI / 7.0f;
+constexpr float mdINNERZONE_LEFT_UPPERTHETA = PI / 7.0f;
+
+//Right inner circle
+constexpr float mdINNERZONE_RIGHT_CENTER_X = -20.0f;
+constexpr float mdINNERZONE_RIGHT_CENTER_Y = 0.0f;
+constexpr float mdINNERZONE_RIGHT_STARTRADIUS = 30.0F;
+constexpr float mdINNERZONE_RIGHT_LOWERTHETA = - PI / 7.0f;
+constexpr float mdINNERZONE_RIGHT_UPPERTHETA = PI / 7.0f;
+
+//OUTER CIRCLE
+constexpr float mdOUTERZONE_CENTER_X = -20.0f;
+constexpr float mdOUTERZONE_CENTER_Y = 0.0f;
+constexpr float mdOUTERZONE_STARTRADIUS = 30.0F;
+constexpr float mdOUTERZONE_LOWERTHETA = - PI / 7.0f;
+constexpr float mdOUTERZONE_UPPERTHETA = PI / 7.0f;
+
+
+
+
+//-----------------------------------------------------------------------------
 // Control Bindings
 //-----------------------------------------------------------------------------
 // To do... Right now the controls are hardcoded in PlayerManager (with pause/escape defined within Game.cpp)
@@ -68,10 +112,10 @@ static constexpr float ENDING_ZOOM = 5.0f; //This is probably way to large a cha
 //static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/25.0f; //So 30 frames to rotate 90 degrees
 
 //Fast Gameplay
-static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.032f; //Was 0.035f when game developed
-static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.93f; //Was 0.95f
-//Rotation speed values are radians per frame
-static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/100.0f;//This means 95 frames to do full rotation (i.e. about 2 seconds)
+static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.031f; //Was 0.035f when game developed  //was also 0.032f for a while
+static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 1.13f; //Was 0.95f //Was also 0.93f
+//Rotation speed values are radians per frame                 // 100.0f for rotation turning was old value
+static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/90.0f;//This means 95 frames to do full rotation (i.e. about 2 seconds)
 static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 frames to rotate 90 degrees
 
 //Slower Gameplay (comment Fast Gameplay and uncomment these)
@@ -161,7 +205,7 @@ static constexpr int KINETIC_FRAMES_BETWEEN_FIRING = 2;
 
 
 //-----------------------------------------------------------------------------
-//   SYSTEM PARAMETERS   (Graphics Settings)
+//   SYSTEM PARAETERS   (Graphics Settings)
 //-----------------------------------------------------------------------------
 static constexpr bool RUNNING_ON_MAC_MAC = true; //Does some overrides that are optimized specifically for my laptop
 
@@ -200,9 +244,10 @@ constexpr float PLAYER_ENGINE_FLAME_REAR_POSITION = -2.94231f;
 //see: https://stackoverflow.com/questions/7279100/c-ifstream-on-xcode-where-is-the-default-directory  (scroll down the page a bit) to see a description of a better way of doing this using Objective-C to get the actual filepath and then sendig that into the C++ code.
 
 //These filepaths currently expect to find a folder on the desktop called "TestBundle" that contains all the files.
+//NOTE!!! THESE FILEPATHS WON'T WORK IF PROJECT IS BUILT IN XCODE! INSTEAD, MUST ARCHIVE PROJECT (
 
 //Objects
-static const char * SPACESHIP_MODEL_FILE_PATH = "space_ship2.obj";
+static const char * SPACESHIP_MODEL_FILE_PATH = "/Desktop/TestBundle/space_ship2.obj";
 //Shader Code
 const std::string BACKGROUND_VERT = "Desktop/TestBundle/Shaders/background.vert";
 const std::string BACKGROUND_FRAG = "Desktop/TestBundle/Shaders/background.frag";
@@ -215,7 +260,7 @@ const std::string PLAYERSHIP_ENGINE_FRAG = "Desktop/TestBundle/Shaders/PlayerShi
 const std::string KINETIC_VERT = "Desktop/TestBundle/Shaders/Weapons/kinetic.vert";
 const std::string KINETIC_FRAG = "Desktop/TestBundle/Shaders/Weapons/kinetic.frag";
 static std::string backgroundTextureFP = "Desktop/TestBundle/Cool_Picture_of_the_moon.jpg";
-*/
+//*/
 
 ///*
 
@@ -243,6 +288,7 @@ const std::string PLAYERSHIP_LINE_FRAG = "/Users/forrestmiller/Desktop/xcode_tes
 const std::string PLAYERSHIP_ENGINE_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/PlayerShip/engineEffect.vert";
 const std::string PLAYERSHIP_ENGINE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/PlayerShip/engineEffect.frag";
 
+ 
 
 //Weapon shaders
 //Kinetic
@@ -286,5 +332,6 @@ static std::string backgroundTextureFP = "/Users/forrestmiller/Documents/Cool_Pi
 //  Just the calibration Picture I used to fix the 915x609 resolution textures for them to display (usually) correctly.
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/CalibrationPicture_915_609.jpg";
 
+ //*/
 
 #endif /* GameParameters_h */
