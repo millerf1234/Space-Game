@@ -477,7 +477,7 @@ void Generator::doUpkeep() {
     if (instances == nullptr) {return;}
     for (int i = 0; i < activeInstances; ++i) {
         //instances[i]->timeAlive += TIME_TICK_RATE; //I moved this to it's own function so all objects have their age incremented together
-        bool isPlayerInstance = (instances[i]->type == InstanceType::PLAYERINSTANCE); //Set a bool variable since I need to do this check multiple times
+        bool isPlayerInstance = (instances[i]->type == InstanceType::PLAYERENTITY); //Set a bool variable since I need to do this check multiple times
         
         if (isPlayerInstance) { //Do additional checking on velocity if instance is a playerInstance
             aiVector2D tempForMaxSpeedCheck(instances[i]->velocity.x, instances[i]->velocity.y);
@@ -577,7 +577,7 @@ void Generator::generateSingle() {
     //Create an instance based off generator type (note that special types will have their values set correctly by their constructors (at least in theory they will)
     if (specialization == specializationType::PLAYER) {//Generate a player instance
         instances[newInstanceIndex] = new PlayerEntity(nextObjID);
-        instances[newInstanceIndex]->type = PLAYERINSTANCE;
+        instances[newInstanceIndex]->type = PLAYERENTITY;
         instances[newInstanceIndex]->identifierNumber = (nextObjID); //Not sure why this isn;t getting set...or is it...
         //Since the instance is a PLAYER instance, create the collisionBox for the instance
         //instances[newInstanceIndex]->colBox =  new CollisionRectangle(this->vertices, this->numberOfVertices);

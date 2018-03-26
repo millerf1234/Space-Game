@@ -58,9 +58,9 @@ void WeaponOverseer::doUpkeep() {
     //other wepManagers->doUpkeep();
 }
 
-void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Instance * inst) {
+void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Entity * entity) {
     //Check to see if the instance already has a weaponTracker
-    if (inst->hasWeaponTracker) {
+    if (entity->hasWeaponTracker) {
         if (PRINT_DEBUG_WARNING_MESSAGES) {
             std::cout << "\nDEBUG::\nWARNING! This instance already has a Weapons Tracker attached!\n";
         }
@@ -68,10 +68,10 @@ void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Instance * inst) {
     }
     
     //Print a debug message:
-    std::cout << "\nWeaponTracker attached to Instance " << inst->getID() << ".\n";
-    if (inst->type == InstanceType::PLAYERINSTANCE) {
-        PlayerEntity * pTemp = static_cast<PlayerEntity *>(inst);
-        std::cout << "Instance " << inst->getID() << " is Player " << pTemp->playerNumber << std::endl;
+    std::cout << "\nWeaponTracker attached to Instance " << entity->getID() << ".\n";
+    if (entity->type == InstanceType::PLAYERENTITY) {
+        PlayerEntity * pTemp = static_cast<PlayerEntity *>(entity);
+        std::cout << "Instance " << entity->getID() << " is Player " << pTemp->playerNumber << std::endl;
     }
     
     //Else check to see if this WeaponOverseer already has weaponTrackers in existance
@@ -89,7 +89,7 @@ void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Instance * inst) {
         
         wepTrackers[numWepTrackers] = new WeaponTracker;
         
-        inst->attachWeaponTracker(wepTrackers[numWepTrackers]); //Give the WeaponTracker to inst, and have inst handle configuring/attaching the WeaponTracker to itself
+        entity->attachWeaponTracker(wepTrackers[numWepTrackers]); //Give the WeaponTracker to inst, and have inst handle configuring/attaching the WeaponTracker to itself
          ++numWepTrackers; //Last but not least, increment the count of weapon trackers
         
         //Just a reality check message
@@ -103,7 +103,7 @@ void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Instance * inst) {
         this->numWepTrackers = 1;
         this->wepTrackers = new WeaponTracker* [numWepTrackers];
         this->wepTrackers[0] = new WeaponTracker;
-        inst->attachWeaponTracker(wepTrackers[0]);
+        entity->attachWeaponTracker(wepTrackers[0]);
     }
 }
 

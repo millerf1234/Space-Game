@@ -192,7 +192,7 @@ void PlayerManager::initializeFromTemplate() {
             p->zoom = PLAYER_SIZE;
             p->thetaX = PI / 2.0f; //Set starting x rotation
             p->playerNumber = i+1; //So player 1 get assigned playerNumber 1, player 2 gets playerNumber 2, etc...
-            p->type = PLAYERINSTANCE;
+            p->type = PLAYERENTITY;
             p->accelerate = p->decelerate = p->turnLeft = p->turnRight = p->rollLeft = p->rollRight = p->shoot = false;
             //Set up the array of engineTranslationHistory that make engine flames grow/shrink dynamically with movement
             for (int i = 0; i < PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES; ++i) {
@@ -539,7 +539,7 @@ void PlayerManager::processInput() {
         
         
         //Lastly, set the flags within player's wepTracker for weapons being switched or fired
-        if (player->hasWeaponTracker) {
+        if (player->hasWeaponTracker && player->wepTracker->getHasWeponSpawnPointsSet()) {
             aiVector3D pos3D = player->position;
             player->wepTracker->setPosition(aiVector2D(pos3D.x, pos3D.y));
             

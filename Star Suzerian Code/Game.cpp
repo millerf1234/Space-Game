@@ -78,9 +78,17 @@ void Game::loadGameObjects() {
     
     int numberOfPlayersThatNeedWeaponManagers = playerManager->getNumberOfPlayerInstances();
     Instance ** playerInstances = playerManager->getPlayerInstances();
+    
     for (int i = 0; i < numberOfPlayersThatNeedWeaponManagers; i++) {
-        wepOverseer.generateAndAttachWeaponTrackerToInstance(playerInstances[i]);
-        PlayerEntity * pInst = static_cast<PlayerEntity*>(playerInstances[i]);
+        //Cast the playerInstance to a playerInstance
+        if (playerInstances[i]->type != PLAYERENTITY) {
+            if (PRINT_DEBUG_WARNING_MESSAGES) {
+                std::cout << "\nDEBUG::WARNING! PlayerManager has a non-player instance at position" << i << " !\n";
+            }
+            continue;
+        }
+        Entity * pEnt = static_cast<Entity*>(playerInstances[i]);
+        wepOverseer.generateAndAttachWeaponTrackerToInstance(pEnt);
         //pInst->configureWeaponTracker(); //do extra configuration on the weapon tracker
     }
     

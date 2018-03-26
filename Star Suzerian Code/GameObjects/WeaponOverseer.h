@@ -55,7 +55,7 @@ public:
         //Other weapon managers->deleteFlaggedWeaponInstances();
     }
     
-    void generateAndAttachWeaponTrackerToInstance(Instance *);
+    void generateAndAttachWeaponTrackerToInstance(Entity *);
     
 private:
     bool isReady;

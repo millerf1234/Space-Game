@@ -18,13 +18,70 @@
 #include "WeaponTracker.h"
 
 
-enum InstanceType {PLAYERINSTANCE, WEAPONINSTANCE, ENEMYINSTANCE, SCENEINSTANCE, SCENECOLLISIONINSTANCE, BASIC}; //Used for instance identification
+enum InstanceType {PLAYERENTITY, WEAPONINSTANCE, ENEMYINSTANCE, SCENEINSTANCE, SCENECOLLISIONINSTANCE, BASIC}; //Used for instance identification
 enum WeaponType {HEXAGON_BOMB, LASER, ROCKET, HOMINGROCKET, KINETIC, UNINITIALIZED}; //Used in conjunction with WeapontypeManagers
 //Here is a typedef for an instance of what was generated
 
+
+//------------------------------------------------------------------------------
+//                              Hierarchy
+//
+// top            +---------------------+
+//                |     Renderable      |
+//                |         -Position   |
+//                |         -Velocity   |    ------------------>  Particles
+//                |         -Time Alive |
+//                |         -Zoom       |
+//                +---------------------+
+//                           |
+//                           |
+//                           |
+//                           v
+//              +---------------------------+
+//              |     Instance              |
+//              |        -ID Number         |
+//              |        -Forward direction |
+//              |        -Orientation       |-------------------+
+//              |        -Collision Box     |                   |
+//              |        -Mass              |                   |
+//              +---------------------------+                   |
+//                           |                                  |
+//                           |                                  |
+//                           |                                  |
+//                           v                                  |
+//              +---------------------------+                   |
+//              |       Entity              |                   |
+//              |        - Weapon Tracker   |   (Note that WeaponTracker should only be created/destroyed by WeaponManager)
+//              +---------------------------+                   |
+//                  /
+//                 /                                            +------------------------------+
+//              \ /                                                                            |
+//               V___                                                                          |
+//    +-----------------------+                                                                |
+//    |   Player Entity       |                                                   +------------------------------+
+//    |      -Colors          |                                                   |         Weapon Instance      |
+//    |      -Health          |                                                   |             -Weapon Type     |
+//    |      -Shields         |                                                   |             -Damage          |
+//    |      -Player number   |                                                   |             -Homing          |
+//    |      -Animation Frame |                                                   |                              |
+//    +-----------------------+                                                   +------------------------------+
+//                                                                                     /
+//                                                                                    /
+//                                                                                 \ /
+//                                                                                  V___
+//                                                                          +------------+
+//                                                                          |   Kinetic  |
+//                                                                          |            |
+//                                                                          |            |
+//                                                                          +------------+
+//------------------------------------------------------------------------------
+
+
+
 class Renderable {
+public:
     aiVector3D position;
-    aiVector3D velocity;
+    aiVector2D velocity;
     float zoom;
     
     float timeAlive;
@@ -35,20 +92,20 @@ class Instance : public Renderable {
 public:
     int identifierNumber; //Unique number attached to each instance of any object
     //These are all basically just values to give the GPU for each instance
-    aiVector3D position;
-    aiVector2D velocity; //Velocity is applied to position in each generator's upkeep function
+    //aiVector3D position;
+    //aiVector2D velocity; //Velocity is applied to position in each generator's upkeep function
     aiVector3D * forward; //Moving to have this be on all instances
-    float zoom;
+    //float zoom;
     float thetaX, thetaY, thetaZ; //Euler Rotation Angles
     float mass; //Might use this to make missle/projectile strikes affect player velocity
     
-    float timeAlive;
+    //float timeAlive;
     InstanceType type;
     
     CollisionBox * colBox;
     
-    bool hasWeaponTracker;
-    WeaponTracker * wepTracker; //To be attached and removed by WeaponManager
+   // bool hasWeaponTracker;
+   // WeaponTracker * wepTracker; //To be attached and removed by WeaponManager
     
     //Constructors
     Instance() {//Construct an anonymous instance
@@ -58,8 +115,8 @@ public:
         this->velocity.x = this->velocity.y = 0.0f;
         this->forward = nullptr;
         this->colBox = nullptr;
-        this->wepTracker = nullptr;
-        this->hasWeaponTracker = false;
+        //this->wepTracker = nullptr;
+       // this->hasWeaponTracker = false;
     }
     Instance(int id) { //Construct an instance that has an ID number
         this->identifierNumber = id;
@@ -68,12 +125,103 @@ public:
         velocity.x = velocity.y = 0.0f;
         this->forward = nullptr;
         this->colBox = nullptr;
-        this->wepTracker = nullptr;
-        this->hasWeaponTracker = false;
+       // this->wepTracker = nullptr;
+       // this->hasWeaponTracker = false;
     }
     
     ~Instance() {
         if (this->colBox != nullptr) {delete this->colBox; this->colBox = nullptr;}
+    }
+    
+//    AmmoCount getAmmoCount() const {
+//        if (!hasWeaponTracker) {
+//            if (PRINT_DEBUG_WARNING_MESSAGES) {
+//                std::cout << "\nDEBUG::WARNING! getAmmoCount called on an instance that does not have a weaponTracker attached to it!\n";
+//            }
+//            AmmoCount temp;
+//            return temp; //Return a bogus AmmoCount to keep the function happy and not dereference a nullptr
+//        }
+//        return this->wepTracker->getAmmoCount();
+//    }
+//
+//    void attachWeaponTracker(WeaponTracker * wp) {
+//        if (this->hasWeaponTracker) {
+//            if (PRINT_DEBUG_WARNING_MESSAGES) {
+//                std::cout << "\nDEBUG::WARNING! ATTEMPTING TO ATTACH WEAPON TRACKER TO AN INSTANCE THAT ALREADY HAS A WEAPON TRACKER!\n";
+//            }
+//            return;
+//        }
+//        if (wp != nullptr) {
+//            this->wepTracker = wp;
+//            this->hasWeaponTracker = true;
+//        }
+//        else {
+//            if (PRINT_DEBUG_WARNING_MESSAGES) {
+//                std::cout << "\nDEBUG::Warning! Attempting to attach a null weapon tracker to this instance\n";
+//            }
+//            this->hasWeaponTracker = false;
+//        }
+//        configureWeaponTracker();
+//    }
+//
+//    virtual void configureWeaponTracker() {
+//        if (this->wepTracker->getHasWeponSpawnPointsSet()) {
+//            if (PRINT_DEBUG_WARNING_MESSAGES) {
+//                std::cout << "\nDEBUG::OOPS! Are you sure you want to configure this weapons tracker twice?\n";
+//                return;
+//            }
+//        }
+//        //Print a message just in case (can suppress this later if need be)
+//        std::cout << "\nDEBUG::BASE INSTANCE configureWeaponTracker function called. Are you sure you didn't mean\n";
+//        std::cout << "to call the instance-type-specific version of this function?\n";
+//
+//        //Actually start configuring the WeaponsTracker now:
+//        //Give's weaponTracker the weapon spawn point coordinates to launch from
+//        aiVector3D spawnPointOffsets [1]; //Since this is just the base Instance class, no special offset points
+//        *spawnPointOffsets = aiVector3D(0.0f, 0.0f, 0.0f);
+//        this->wepTracker->setNewWeaponSpawnpoints(spawnPointOffsets, 1);
+//
+//        //Set the rest of the data as well now
+//        matchWepTrackerWithInstData();
+//    }
+//
+//    //Call this next function every loop iteration
+//    virtual void updateWeaponTracker() {
+//        this->wepTracker->resetWeaponsFired(); //Reset all weapons-fired flags
+//        matchWepTrackerWithInstData();
+//    }
+    
+    //Get the instance ID
+    int getID() const {return this->identifierNumber;}
+    
+//protected:
+//    //This function will
+//    void matchWepTrackerWithInstData() {
+//        wepTracker->setPosition(aiVector2D(position.x, position.y));
+//        wepTracker->setVelocity(velocity);
+//        if (this->forward == nullptr) {
+//            wepTracker->setForwardDirection(aiVector2D(0.0f, 1.0f)); //Give it a vector
+//            std::cout << "\nWarning! Forward may not have been set correctly on this instance!\n";
+//        }
+//        else {
+//            wepTracker->setForwardDirection(aiVector2D((*forward).x, (*forward).y));
+//        }
+//        wepTracker->setEarlyThetaZ(0.0f); //Note that if EarlyThetaZ is used, it will need to be set seperatly from this function
+//        wepTracker->setThetaX(thetaX);
+//        wepTracker->setThetaZ(-thetaZ + PI); //For some reason it was off by PI
+//        wepTracker->setInstanceZoomAmount(zoom);
+//    }
+};
+
+class Entity : public Instance {
+public:
+    bool hasWeaponTracker;
+    WeaponTracker * wepTracker; //To be attached and removed by WeaponManager
+    
+    
+    //Constructor
+    Entity() : Instance() {
+        
     }
     
     AmmoCount getAmmoCount() const {
@@ -134,9 +282,6 @@ public:
         matchWepTrackerWithInstData();
     }
     
-    //Get the instance ID
-    int getID() const {return this->identifierNumber;}
-    
 protected:
     //This function will
     void matchWepTrackerWithInstData() {
@@ -154,11 +299,6 @@ protected:
         wepTracker->setThetaZ(-thetaZ + PI); //For some reason it was off by PI
         wepTracker->setInstanceZoomAmount(zoom);
     }
-};
-
-class Entity : public Instance {
-    
-    
 };
 
 class PlayerEntity : public Entity {
@@ -204,7 +344,7 @@ public:
             std::cout << "DEBUG::PlayerInstance constructor was called!" << std::endl;
         }
         this->playerNumber = playerNumber;
-        this->type = PLAYERINSTANCE;
+        this->type = PLAYERENTITY;
         health = STARTING_PLAYER_HEALTH;
         shields = STARTING_PLAYER_SHIELDS;
         energy = STARTING_PLAYER_ENERGY;
