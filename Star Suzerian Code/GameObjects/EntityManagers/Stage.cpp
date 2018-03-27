@@ -28,6 +28,10 @@ Stage::Stage() : GameEntityManager() {
 }
 
 Stage::~Stage() {
+    if (PRINT_DESTRUCTOR_CALLS) {
+        std::cout << "\nDEBUG:STAGE destructor called";
+    }
+    
     //Since I have stage's vertices and elements hardcoded into the headder, need to
     //delete the dynamic memory that was used to hold these values
     if (this->initTemplate->hasVertsAlreadyLoaded) {

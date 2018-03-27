@@ -181,6 +181,9 @@ public:
     specializationType specialization ;
     void setSpecialization(specializationType expansionType);
     
+    bool shouldGenerateEntities;
+    
+    
     //--------------------
     // Instance Controls
     //--------------------

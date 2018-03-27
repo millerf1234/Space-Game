@@ -39,6 +39,7 @@ static constexpr bool PRINT_DEBUG_WARNING_MESSAGES = true;
 static constexpr bool PRINT_DEBUG_MESSAGES = false; //Turn off if not in debug mode
 static constexpr bool PRINT_FRAME_PROCESS_TIME_INFORMATION = false; //Prints the process time for the frame to the console
 static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a test
+static constexpr bool PRINT_DESTRUCTOR_CALLS = true;
 
 static constexpr bool DRAW_COLLISION_DETAILS = false;
 

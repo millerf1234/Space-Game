@@ -54,6 +54,9 @@ KineticWeaponManager::KineticWeaponManager() : GameEntityManager() {
 }
 
 KineticWeaponManager::~KineticWeaponManager() {
+    if (PRINT_DESTRUCTOR_CALLS) {
+        std::cout << "\nDEBUG:KineticWeaponsManager destructor called!";
+    }
     if (this->initTemplate != nullptr) {
         if (this->initTemplate->hasVertsAlreadyLoaded) {
             //Then delete heap data that was used
@@ -92,10 +95,10 @@ void KineticWeaponManager::generateInitializationTemplate() {
     
     //Model data
     initTemplate->hasVertsAlreadyLoaded = true;
-    initTemplate->numVerts = KINETIC_PROJECTILE_VERTS_COUNT * 2;
+    initTemplate->numVerts = KINETIC_PROJECTILE_VERSION0_VERTS_COUNT * 2;
     initTemplate->vertices = new GLfloat[initTemplate->numVerts];
     //This should be done with draw arrays, but going to use an element buffer anyways
-    initTemplate->numElems = (KINETIC_PROJECTILE_VERTS_COUNT * 2) / 3;
+    initTemplate->numElems = (KINETIC_PROJECTILE_VERSION0_VERTS_COUNT * 2) / 3;
     initTemplate->elements = new GLuint[initTemplate->numElems];
     
     //Need to align the pyramid to shoot in the correct direction
@@ -107,7 +110,7 @@ void KineticWeaponManager::generateInitializationTemplate() {
     
     
     for (int i = 0; i < halfPyrimidVertCount / 3; i++){ //was i++
-        vecsToRotate[i] = aiVector3D(KINETIC_PROJECTILE_VERTS[counter], KINETIC_PROJECTILE_VERTS[counter+1], KINETIC_PROJECTILE_VERTS[counter + 2]);
+        vecsToRotate[i] = aiVector3D(KINETIC_PROJECTILE_VERSION0_VERTS[counter], KINETIC_PROJECTILE_VERSION0_VERTS[counter+1], KINETIC_PROJECTILE_VERSION0_VERTS[counter + 2]);
         
         //Do the rotation on the vector as well to align the pyramid
         vecsToRotate[i] = alignment.computeRotation(vecsToRotate[i]);
@@ -124,10 +127,10 @@ void KineticWeaponManager::generateInitializationTemplate() {
     //Flip to draw the other half of the pyrimid
     for (int i = halfPyrimidVertCount; i < initTemplate->numVerts; i++) {
         if (i % 3 == 2) {
-            initTemplate->vertices[i] = KINETIC_PROJECTILE_VERTS[i - halfPyrimidVertCount] * -1.0f;
+            initTemplate->vertices[i] = KINETIC_PROJECTILE_VERSION0_VERTS[i - halfPyrimidVertCount] * -1.0f;
         }
         else {
-            initTemplate->vertices[i] = KINETIC_PROJECTILE_VERTS[i - halfPyrimidVertCount];
+            initTemplate->vertices[i] = KINETIC_PROJECTILE_VERSION0_VERTS[i - halfPyrimidVertCount];
         }
     }
     

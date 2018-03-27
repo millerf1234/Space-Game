@@ -23,6 +23,9 @@ PlayerManager::PlayerManager() : GameEntityManager() {
 }
 
 PlayerManager::~PlayerManager() {
+    if (PRINT_DESTRUCTOR_CALLS) {
+        std::cout << "\nDEBUG:PlayerManager destructor called!";
+    }
     if (this->initTemplate != nullptr) {
         if (this->initTemplate->hasVertsAlreadyLoaded) {
             //Then delete heap data that was used
@@ -170,6 +173,7 @@ void PlayerManager::drawInstances() {
 
 void PlayerManager::initializeFromTemplate() {
     generator->initializeFromTemplate(*initTemplate); //Sets generator up based off the initialization template
+    generator->shouldGenerateEntities = true; //Set this to true for player manager
     if (MAX_PLAYERS < 1) {return;} //A game with 0 players doesn't need any player instances
     
     

@@ -53,7 +53,7 @@ public:
     static int numberOfStages;
     int stageNumber;
     
-    ~Stage();
+    virtual ~Stage() override;
     //Add some way to switch textures for background
     virtual void doUpkeep() override ;
     //virtual void handleInput() override; //Stage doesn't care about handling input

@@ -297,7 +297,7 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
         for (; wepIter != activeWepInstances.end(); wepIter++) {
             WeaponType wt = (*wepIter)->getWeaponType();
             switch (wt) {
-                case KINETIC:
+                case KINETIC: //If the weapon is a kinetic weapon
                 {
                     //cast to kinetic instance
                     Kinetic * kWepInst = static_cast<Kinetic*>((*wepIter));

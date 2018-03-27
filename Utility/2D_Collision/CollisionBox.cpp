@@ -288,6 +288,10 @@ CollisionBox::CollisionBox(aiVector3D * data, int numberOfVectors) {
 //              DESTRUCTOR
 //------------------------------------------------------------------------
 CollisionBox::~CollisionBox() {
+    if (PRINT_DESTRUCTOR_CALLS) {
+        std::cout << "\nDEBUG:COLLISIONBOX Destructor called!";
+    }
+    
     //Clear up the dynamic array of rotation quaternions
     if (rotationOrder != nullptr) {
         for (int i = 0; i < rotationOrderSize; ++i) {
@@ -818,11 +822,35 @@ bool CollisionBox::isOverlapping(const CollisionBox& otherBox) const {
     
     //Idea: It will be easier to do some quick checks to rule out cases where it isn't possible for the two rectangles to be overlapping
     
-    //Check to see if all four points of one rectangle lie beyond the max/min of the other
-    //Start with all points of other having x coords greater than this rectangles x0
-    bool allPointsOfOtherBoxBeyondThisBoxExtrema = true;
-    for (int i = 0; i < BOX_CORNERS; ++i) {
-        if (otherBox.corners2D[i].x <= corners2D[0].x) {
+    //New quick way of checking that takes advantage of the specific rules on how the corners are formed
+    
+    //Check to see if otherBox's min x coor is greater than this box's max x coor
+    if (otherBox.corners2D[2].x > corners2D[0].x) {
+        return false;
+    }
+    //Check to see if the otherBox's min y coor is greater than this box's max y coor
+    if (otherBox.corners2D[3].y > corners2D[1].y) {
+        return false;
+    }
+    //Check to see if the otherBox's max x coordinate is less than this box's min x coor
+    if (otherBox.corners2D[0].x < corners2D[2].x) {
+        return false;
+    }
+    //Check to see if the otherBox's max y coordinate is less than this box's min y coor
+    if (otherBox.corners2D[1].y < corners2D[3].y) {
+        return false;
+    }
+    
+    /* //Old inefficient code that tests conditions generally. Since I know there is an ordering to the way
+    //   x and y values are assigned to corners, I only need to do one check for each corner instead of 4
+     
+     //Check to see if all four points of the otherBox rectangle lie beyond the max/min of this rectangles corner coords
+     //Start with all points of other having x coords greater than this rectangles x0
+     bool allPointsOfOtherBoxBeyondThisBoxExtrema = true;
+     
+     
+    for (int i = 1; i < BOX_CORNERS; ++i) {
+        if (otherBox.corners2D[i].x <= corners2D[0].x) { //corners2D[0].x will always be the maximum x of all corners
             allPointsOfOtherBoxBeyondThisBoxExtrema = false;
             break;
         }
@@ -858,7 +886,7 @@ bool CollisionBox::isOverlapping(const CollisionBox& otherBox) const {
         }
     }
     if (allPointsOfOtherBoxBeyondThisBoxExtrema) {return false;} //Then boxes can't be overlapping
-    
+    */
     //I haven't definitivly proved it, but I am pretty sure that combining that last check with
     //this next one will always determine if there is any overlap
     
@@ -868,13 +896,16 @@ bool CollisionBox::isOverlapping(const CollisionBox& otherBox) const {
             return true;
         }
     }
+     
+    
+    //I can't decide whether to check to see if any of the other box's corners are within this box.
     //Only check to see if this box is overlapping the other, and then have another box check this one if need to check the opposite
 //    //Also then do the same check with otherBox's corners inside this one
-//    for (int i = 0; i < BOX_CORNERS; ++i) {
-//        if (isWithin(otherBox.corners2D[i])) {
-//            return true;
-//        }
-//    }
+    for (int i = 0; i < BOX_CORNERS; ++i) {
+        if (isWithin(otherBox.corners2D[i])) {
+            return true;
+        }
+    }
     return false; //If both tests passed without returning, then boxes are not overlapping
 }
 
@@ -1586,6 +1617,24 @@ void CollisionBox::calculateSelfAfterTranslations() {
             }
             //Case 4:
             //If 0 2 3 are the same
+            //
+            //   What this would look like:                To Fix, Push corners 0 and 2 out by distance between 1 and 3
+            //
+            //                  •  Corner 1                             _•_ corner 1
+            //                  |                                     _/   \_
+            //                  |                                  _/         \_
+            //                  |                                _/             \_
+            //                  |                     corner 2 •---------•---------• corner 0
+            //                  |                                     corner 3
+            //                  |
+            //                  |
+            //         corner 2 • corner 0
+            //               corner 3
+            //
+            //
+            //
+            //
+            
             else if (corners2D[0].x == corners2D[2].x && corners2D[0].y == corners2D[2].y &&
                      corners2D[2].x == corners2D[3].x && corners2D[2].y == corners2D[3].y) {
                 std::cout << "\nCorners 0 2 3 set to same point!\n";
@@ -1648,21 +1697,6 @@ void CollisionBox::calculateSelfAfterTranslations() {
             //        corner 3 -•-
             //
             //
-            //
-            //  Alternative Case 7:                   Doing normal solution would then give:
-            //                  •  Corner 1                          _•_ corner 1
-            //                  |                                  _/   \_
-            //                  |                               _/         \_
-            //                  |                             _/             \_
-            //                  |                  corner 2 •---------•---------• corner 0
-            //                  |                                  corner 3
-            //                  |
-            //                  |
-            //         corner 2 * corner 0
-            //               corner 3
-            //
-            // So I need to check for this case and solve it differently
-            //    todo...
             //
             //
             else if (corners2D[0].x == corners2D[2].x && corners2D[0].y == corners2D[2].y) {

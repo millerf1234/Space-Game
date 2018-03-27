@@ -80,6 +80,9 @@ enum WeaponType {HEXAGON_BOMB, LASER, ROCKET, HOMINGROCKET, KINETIC, UNINITIALIZ
 
 class Renderable {
 public:
+    virtual ~Renderable() {
+        if (PRINT_DESTRUCTOR_CALLS) {std::cout << "\nDEBUG:Renderable destructor called!";}
+    }
     aiVector3D position;
     aiVector2D velocity;
     float zoom;
@@ -129,7 +132,8 @@ public:
        // this->hasWeaponTracker = false;
     }
     
-    ~Instance() {
+    virtual ~Instance() {
+        if (PRINT_DESTRUCTOR_CALLS) {std::cout << "\nDEBUG:Instance destructor called!";}
         if (this->colBox != nullptr) {delete this->colBox; this->colBox = nullptr;}
     }
     
@@ -221,7 +225,20 @@ public:
     
     //Constructor
     Entity() : Instance() {
-        
+         this->wepTracker = nullptr;
+         this->hasWeaponTracker = false;
+    }
+    
+    virtual ~Entity() {
+        if (PRINT_DESTRUCTOR_CALLS) {
+            std::cout << "\nDEBUG:Entity destructor called! Entity had an attached weapons tracker: ";
+            if (hasWeaponTracker) {
+                std::cout << "true";
+            }
+            else {
+                std::cout << "false";
+            }
+        }
     }
     
     AmmoCount getAmmoCount() const {
@@ -366,7 +383,16 @@ public:
         }
     }
     
-    ~PlayerEntity() {
+    virtual ~PlayerEntity() {
+        if (PRINT_DESTRUCTOR_CALLS) {
+            std::cout << "\nDEBUG:PlayerEntity destructor called! PlayerEntity had a weapon tracker attached: ";
+            if (hasWeaponTracker) {
+                std::cout << "true";
+            }
+            else {
+                std::cout << "false";
+            }
+        }
         if (this->rear != nullptr) {
             delete this->rear;
             this->rear = nullptr;
@@ -456,6 +482,11 @@ public:
         this->shouldBeDestroyed = false; //Probably not the best way to do this...
     }
     
+    virtual ~WeaponInstance() {
+        if (PRINT_DESTRUCTOR_CALLS) {
+            std::cout << "\nDEBUG::WeaponInstance destructor called!\n";
+        }
+    }
     aiVector2D collisionBoxMidpoint; //This is to be CPU transformed for collision box
     
     WeaponType wepType;
