@@ -33,7 +33,7 @@ float dg2Rad(float degrees) {
 //The earlyRotationMatrixZ is for doing roll and allowing the model to move around at the same time
 //(computing roll on a moving model would not be trival, but computing roll before doing other rotations/translations isn't that bad it turns out, can just use a basic rotation matrix to pre-set roll before everything else)
 mat3 earlyRotationMatrixZ = mat3(    cos(earlyThetaZ)   ,     -sin(earlyThetaZ)    ,  0.0f,
-                                    sin(earlyThetaZ)    ,      cos(earlyThetaZ)    ,  0.0f,
+                                     sin(earlyThetaZ)   ,      cos(earlyThetaZ)    ,  0.0f,
                                             0.0f        ,             0.0f         ,  1.0f);
 
 mat3 aspectRatioMatrix = mat3(1.0f,       0.0f     , 0.0f,
@@ -48,7 +48,7 @@ mat3 rotationMatrixX = mat3(    1.0f  ,       0.0f         ,       0.0f         
 
 mat3 rotationMatrixZ = mat3(    cos(thetaZ), -sin(thetaZ),  0.0f,
                                 sin(thetaZ),  cos(thetaZ),  0.0f,
-                                   0.0f    ,     0.0f   ,  1.0f);
+                                   0.0f    ,     0.0f    ,  1.0f);
 
 mat3 rotationMatrixY = mat3(cos(thetaY), 0.0f, -sin(thetaY),
                                 0.0f   , 1.0f,      0.0f   ,

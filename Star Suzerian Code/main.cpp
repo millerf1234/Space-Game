@@ -4,7 +4,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include <cmath>
-#include <unistd.h>
+
+#include <unistd.h> //Only use on unix systems
 
 #include "GLFW_Init.h"
 #include "Game.h" //A wrapper to run the game inside of

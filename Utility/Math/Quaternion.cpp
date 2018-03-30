@@ -302,7 +302,7 @@ void Quaternion::changeRotationAxis(const aiVector3D & u) {
 //-----------------------------------------------------------------------------
 // Private Functions
 //-----------------------------------------------------------------------------
-void Quaternion::computeSelf() { //Computes self from parameters
+void Quaternion::computeSelf() { //Computes self from parameters    (ux, uy, uz, theta)
     float halfTheta = theta/2.0f;
     
     //This next bit prevents theta from growing too big to try to keep floating point error in check

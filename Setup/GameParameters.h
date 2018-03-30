@@ -17,7 +17,7 @@
 
 //Put all this in a namespace?
 #include <string>
-#include "VectorOps.h" //I seem to be having problems with this getting included in multiple places,
+//#include "VectorOps.h" //I seem to be having problems with this getting included in multiple places,
 //so by placing it here I should be safe since this class has no need to include other classes and is
 //included almost everywhere
 
@@ -39,9 +39,11 @@ static constexpr bool PRINT_DEBUG_WARNING_MESSAGES = true;
 static constexpr bool PRINT_DEBUG_MESSAGES = false; //Turn off if not in debug mode
 static constexpr bool PRINT_FRAME_PROCESS_TIME_INFORMATION = false; //Prints the process time for the frame to the console
 static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a test
-static constexpr bool PRINT_DESTRUCTOR_CALLS = true;
+static constexpr bool PRINT_DESTRUCTOR_CALLS = false; //For debug
 
 static constexpr bool DRAW_COLLISION_DETAILS = false;
+
+static constexpr bool PRINT_PLAYER_DAMAGE_MESSAGES = true; //Print a message each time a player takes damage
 
 //-----------------------------------------------------------------------------
 // Gamemode types
@@ -113,8 +115,8 @@ static constexpr float ENDING_ZOOM = 5.0f; //This is probably way to large a cha
 //static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/25.0f; //So 30 frames to rotate 90 degrees
 
 //Fast Gameplay
-static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.031f; //Was 0.035f when game developed  //was also 0.032f for a while
-static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 1.13f; //Was 0.95f //Was also 0.93f
+static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.03225f; //Was 0.035f when game developed  //was also 0.032f for a while
+static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.9367f; //Was 0.95f //Was also 0.93f
 //Rotation speed values are radians per frame                 // 100.0f for rotation turning was old value
 static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/90.0f;//This means 95 frames to do full rotation (i.e. about 2 seconds)
 static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 frames to rotate 90 degrees
@@ -146,9 +148,13 @@ static constexpr float PLAYER2_STARTOFFSET_X = 65.0f;
 static constexpr float PLAYER2_STARTOFFSET_Y = -40.5f;
 //I think I hardcoded in starting offsets for players beyond player 2, but currently controls are only implemented for 2 players...
 
-//Edge of screen limits for player movement:
-static constexpr float XLIMIT = 74.0f;
-static constexpr float YLIMIT = 45.0f;
+//Suggested to leave scale at 75.0f. Changing GAME_SCALE will cause all models to be resized (except for the background)
+static constexpr float GAME_SCALE = 75.0f; //Larger numbers means smaller player size
+static constexpr int PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES = 18; //~15 is a good value
+
+//Edge of screen limits for player movement: (Suggested to leave these at 74.0f, 45.0f and change GAME_SCALE instead)
+static constexpr float XLIMIT = 74.0f*(GAME_SCALE/75.0f); //Divide by 75 to scale screen limits with changes to GAME_ENTITY_SCALE
+static constexpr float YLIMIT = 45.0f*(GAME_SCALE/75.0f); //Divide by 75 to scale screen limits with changes to GAME_ENTITY_SCALE;
 
 //Max Players (I currently have some things hardcoded for 2 players, so don't chnage this number)
 static constexpr short MAX_PLAYERS = 2; //Shouldn't be set higher than 2... really don't do it....
@@ -192,12 +198,12 @@ static constexpr bool LAZER_COLOR_MATCH_PLAYER_COLOR = true;
 //Kinetic
 static constexpr float PROJECTILE_SIZE = 6.0f; //Larger number means smaller. I would say about 4.0f
 //For velocity calculation of Kinetic see KineticWeaponManager.cpp around line 210
-static constexpr float KINETIC_SPEED_FACTOR = 1.25f; //formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
+static constexpr float KINETIC_SPEED_FACTOR = 1.75f; //formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
 
 static constexpr int PLAYER_KINETIC_AMMO = 50000; //Give a lot until I add picking up ammo
-static constexpr float KINETIC_WEP_DAMAGE = 0.5f;
+static constexpr float KINETIC_WEP_DAMAGE = 0.005f;
 
-static constexpr float KINETIC_VELOCITY_IMPACT = 0.05;
+static constexpr float KINETIC_VELOCITY_IMPACT = 0.05f;
 
 static constexpr int KINETIC_FRAMES_BETWEEN_FIRING = 2;
 //Hexagon Bomb
@@ -226,9 +232,6 @@ static constexpr float PLAYER_LINE_COLOR_BOOST_FACTOR = 1.5f; //Increases the co
 static const int DEFAULT_OPENGL_VERSION_MAJOR = 4;  //4.x
 static const int DEFAULT_OPENGL_VERSION_MINOR = 1;  //x.1
 
-//Suggested to leave player size at 75.0f, because other sizes will probably mess up collision detection
-static constexpr float PLAYER_SIZE = 75.0f; //Larger numbers means smaller player size
-static constexpr int PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES = 18; //~15 is a good value
 
 //Collision Sample points currently unused because my advanced collision algorithm never worked correctly
 static constexpr int COLLISION_SAMPLE_POINTS = 10; //Must be multiple of 2, should be 10 or greater
@@ -299,6 +302,9 @@ const std::string KINETIC_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projec
 //-----------------------------------------------------------------------------
 //   Texture Image Locations (preferably JPEGs that are 915 x 609)    //see: http://img-resize.com/   to resize images
 //-----------------------------------------------------------------------------
+
+static constexpr bool CENTER_AND_FULLSCREEN_IMAGE = true;
+
 static constexpr int NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD = 1; //Increase this as more backgrounds are added
 
 static constexpr int LEVEL_TO_LOAD = 1; //The level to load (Note I index valye down by 1 to match arrayIndex)
@@ -315,12 +321,14 @@ static constexpr int LEVEL_TO_LOAD = 1; //The level to load (Note I index valye 
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Cool_Picture_of_the_moon_915_609.jpg";
 
 //Picture of the moon in original dimensions
-static std::string backgroundTextureFP = "/Users/forrestmiller/Documents/Cool_Picture_of_the_moon.jpg";
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Documents/Cool_Picture_of_the_moon.jpg";
 
 
-//
-////Picture of pluto:
-//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Pluto_4000_4000_JPEG.jpeg";
+//Picture of jupiter I got from NASA JPL's website: https://photojournal.jpl.nasa.gov/catalog/PIA21774
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/JupiterPicture.jpg";
+
+//Another hubble photo
+static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/AnotherHubblePic.jpg";
 
 
 //Picture of antartica:

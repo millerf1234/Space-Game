@@ -2,15 +2,30 @@
 //
 //  IMPORTANT!!! Generator will 'own' all of its dynamic memory at all times. It
 //               is very important to NEVER delete any pointers that are given
-//               out by Generator.
+//               out by Generator. Additionally, if you get instance pointers from Generator
+//               and you ask generator to delete one of them, this will invalidate
+//               every pointer given out by Generator, so all the current instance
+//               pointers in use outside of generator must be reaquired. (could
+//               move aquiring instance pointers into a wrapper class interface
+//               (i.e. a wrapper for each pointer) such that it can be marked
+//               whenever all of the pointers given out by generator are invalidated)
 //
 //  Description
 //  What is the Generator class, you might ask? Unfortunatly, the answer
 //  is not a simple one. In a broad sense, a generator is responsible for
-//  _______ (a lot). The idea is that every GameEntityManager class will have its own
-//  Generator from which it uses to initialize all the required information for
-//  that type of entity it is managing, and then can generate instances of that object on
-//  command. In reality though I've made so many changes to the design during the process
+//  _______ (Too many things to write). Yes, I realize that generator is not at all
+//  good design and eventually if/when I get time I will break up Generator into
+//  more distinct classes. Until then, the idea behind the architecture is that
+//  every GameEntityManager class will have its own Generator from which it uses
+//  to initialize all the required information for that type of entity it is managing,
+//  and then can generate instances of that object on command. In reality though
+//  I've made so many changes to the design during the process that right now generator is a huge mess.
+//
+//  Currently initialization templates only support 1 texture, 1 shader program,
+//  1 model and 1 collision box. Since each player requires multiple shaders, I
+//  wound up hardcoding a lot of the extra stuff required for player right into
+//  the generator code. Eventually this will all be moved out into a special loader
+//  class or something else like that.
 //
 //
 //  Version history:
@@ -18,11 +33,10 @@
 //                                            because I completely scrapped this version)
 //                   version 0.1  Rewrite started on 2/17/2018
 //                   version 1.0  Got it working with stage and Player managers by 2/28/2018
-//                   version 1.1  Started working on getting weapons working with generator  3/13/2018
-//
-//
-//
-//
+//                   version 1.09 Started working on getting weapons working with generator  3/13/2018
+//                   version 1.1  Got weapons working on 3/21/2018 (on Wednesday of finals week!)
+//                   version 1.11 Added rng to weapon spawning 3/27/2018
+
 
 #ifndef Generator_h
 #define Generator_h
@@ -30,6 +44,7 @@
 #include <iostream>
 #include <assimp/Importer.hpp> //Gives access to the aiVector3D
 #include <vector>
+#include <random>
 
 #include "ShaderWrapper.h" //Contains class that provides interface for shaders
 #include "SimpleObjLoader.h" //Contains class that handles '.obj' files
@@ -37,6 +52,7 @@
 #include "glad.h" //For GL types and functions
 #include "GameParameters.h"
 #include "CollisionBox.h"
+
 //#include "PlayerData.h"
 //#include "WeaponData.h"
 //#include "PlayerManager.h" //lots of circular includes I got. Oh well...
@@ -46,10 +62,11 @@
 //constexpr int FILEPATH_BUFFER = 512;
 
 //Note:
-//InstanceType is assigned to individual instances to identify them
+//specializationType is assigned to individual instances to identify them
 //specializationType is assigned to a GameEntityManager-derived class
 enum specializationType {PLAYER, WEAPON, STAGE, NOSPECIALIZATION};
 
+//The idea here is to have this large class called Generator that
 typedef struct InitializationTemplate{
     bool hasVert, hasTessl, hasFrag, hasGeom;
     bool hasVertsAlreadyLoaded;
@@ -87,7 +104,6 @@ typedef struct InitializationTemplate{
     }
 } InitializationTemplate;
 
-class Kinetic; //Why does this fix it?
 
 class Generator{
 private:
@@ -141,7 +157,7 @@ protected: //temporary for debug
     //Weapon uniform locations:
     //Kinetic weapons
     typedef struct KineticUniformLocations {
-        GLint ulocXSpawnOffset, ulocYSpawnOffset, ulocZSpawnOffset; //Not sure if I need these?
+        //GLint ulocXSpawnOffset, ulocYSpawnOffset, ulocZSpawnOffset; //Not sure if I need these?
     } KineticUniformLocations;
     KineticUniformLocations kul;
     
@@ -153,10 +169,6 @@ protected: //temporary for debug
     
     //Uniform location variables
     GLint ulocTime, ulocZoom, ulocXTrans, ulocYTrans, ulocZTrans, ulocThetaX, ulocThetaY, ulocThetaZ;
-    
-   
-    
-    
     
 public:
     //-------------------
@@ -182,7 +194,6 @@ public:
     void setSpecialization(specializationType expansionType);
     
     bool shouldGenerateEntities;
-    
     
     //--------------------
     // Instance Controls

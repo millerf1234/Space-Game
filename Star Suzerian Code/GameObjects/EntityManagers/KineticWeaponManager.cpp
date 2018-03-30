@@ -95,13 +95,15 @@ void KineticWeaponManager::generateInitializationTemplate() {
     
     //Model data
     initTemplate->hasVertsAlreadyLoaded = true;
-    initTemplate->numVerts = KINETIC_PROJECTILE_VERSION0_VERTS_COUNT * 2;
+    initTemplate->numVerts = KINETIC_PROJECTILE_VERSION0_VERTS_COUNT; //Don't change until collision box is reimplemented for each different Kinetic Projectile Shape
+    //initTemplate->numVerts = KINETIC_PROJECTILE_VERSION6_VERTSSTART + KINETIC_PROJECTILE_VERSION6_VERTS_COUNT;
     initTemplate->vertices = new GLfloat[initTemplate->numVerts];
+    //I actually changed it to do drawArrays only now, but haven't gotten around yet to removing the old element set-up code
     //This should be done with draw arrays, but going to use an element buffer anyways
     initTemplate->numElems = (KINETIC_PROJECTILE_VERSION0_VERTS_COUNT * 2) / 3;
     initTemplate->elements = new GLuint[initTemplate->numElems];
     
-    //Need to align the pyramid to shoot in the correct direction
+    //Need to align the pyramid to shoot in the correct direction (and so collision box forms correctly)
     Quaternion alignment(1.0f, 0.0f, 0.0f, PI / 2.0f);
     
     int halfPyrimidVertCount = initTemplate->numVerts / 2;
@@ -163,7 +165,7 @@ void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
     Kinetic * newKinInst = static_cast<Kinetic*>(insts[newInstanceIndex]); //Since newInstanceIndex was set before generating new, it will be set to the array position of the newly created instance
     
     newKinInst->mass = 0.01f; //Give it a tiny mass
-    newKinInst->zoom = PLAYER_SIZE; //I have to keep zoom the same for everything for position/velocity coordinates to line up
+    newKinInst->zoom = GAME_SCALE; //I have to keep zoom the same for everything for position/velocity coordinates to line up
     //newKinInst->zoom = PLAYER_SIZE * 2.0f;
     //Need to figure out where to set colBox midpoint. Once midpoint and a velocity direction set, it
     //shouldn't need to be updated again...
@@ -211,8 +213,9 @@ void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
         newKinInst->velocity = aiVector2D(0.0f, 1.0f); //Give it a direction
     }
     
-    newKinInst->velocity *= (wepTracker->getVelocity().Length() + KINETIC_SPEED_FACTOR * PLAYER_MOVEMENT_MAX_SPEED);
-    
+    newKinInst->velocity += wepTracker->getVelocity();
+                             //* KINETIC_SPEED_FACTOR * PLAYER_MOVEMENT_MAX_SPEED;
+    newKinInst->velocity *= KINETIC_SPEED_FACTOR * PLAYER_MOVEMENT_MAX_SPEED;
     newKinInst->thetaX = wepTracker->getThetaX();
     newKinInst->thetaY = 0.0f;
     newKinInst->thetaZ = wepTracker->getThetaZ();
@@ -228,10 +231,20 @@ void KineticWeaponManager::doUpkeep() {
         for (int i = 0; i < this->generator->getInstanceCount(); ++i) {
             Kinetic * k = static_cast<Kinetic*> (insts[i]);
             
-            //Debug code
+            //Debug code 
             if (k->colBox == nullptr) {
                 std::cout << "Something is wrong!\n\n";
+                
                 return;
+            }
+            
+            //Put some changing rotation on the projectiles
+            k->thetaY += PI / 24.0f;
+            k->thetaZ += PI / 24.0f;
+            k->thetaX -= PI / 24.0f;
+            if ( ((int) (floor(k->timeAlive * 100.0f))) % 5 == 3) {
+                k->thetaZ -= PI / 33.0f;
+                k->thetaX -= PI / 31.0f;
             }
             
             //Update the rotations
@@ -244,7 +257,7 @@ void KineticWeaponManager::doUpkeep() {
             k->colBox->translate(k->velocity);
             //see if the kinetic projectile went off the side of the map
             aiVector2D kMidpoint = k->colBox->getMidpoint();
-            if (kMidpoint.x > XLIMIT || kMidpoint.x < -XLIMIT || kMidpoint.y > YLIMIT || kMidpoint.y < -YLIMIT) {
+            if (kMidpoint.x > XLIMIT + 5.0f || kMidpoint.x < -XLIMIT - 5.0f || kMidpoint.y > YLIMIT + 5.0f || kMidpoint.y < -YLIMIT - 5.0f) {
                 this->generator->removeInstance(insts[i]); //Remove the instance
                 //This caused me many problems, but since I have deleted the instance here I need to shift
                 //i back by one since all of the other instances will have shifted too

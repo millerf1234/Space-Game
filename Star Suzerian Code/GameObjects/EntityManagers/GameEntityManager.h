@@ -52,6 +52,9 @@ public:
         specType = NOSPECIALIZATION;
     }
     virtual ~GameEntityManager() {
+        if (PRINT_DESTRUCTOR_CALLS) {
+            std::cout << "\nDEBUG:GameEntityManager destructor called!\n";
+        }
         //Have children destruct what they construct
 //        if (this->generator != nullptr) {
 //            delete this->generator;

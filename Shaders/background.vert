@@ -1,6 +1,6 @@
 #version 400 core
 
-layout(location = 0) in vec2 position;
+/*layout(location = 0)*/ in vec2 position;
 layout(location = 1) in vec3 colr;
 layout(location = 2) in vec2 texCoord;
 
@@ -22,7 +22,7 @@ out vec2 pos;
 out vec3 COLR;
 out vec2 TexCoor;
 
-vec3 BACKGROUND_OFFSET = vec3(0.0f, 0.0f, 1.0f);
+vec3 BACKGROUND_OFFSET = vec3(0.0f, 0.0f, 1.0f); //Place Background in the furthest back plane before culling
 
 void main()
 {
@@ -44,9 +44,9 @@ void main()
     
     //pos = vec3( aspectRatioMatrix * vec3(position.x, position.y, 0.1f));
     
-    temp = vec3( aspectRatioMatrix * vec3(position.x + 0.5f, position.y, 1.1f));
+    temp = vec3( aspectRatioMatrix * vec3(position.x + 0.5f + xTrans, position.y + yTrans, 0.0f) + BACKGROUND_OFFSET);
     
-    //time = time + 1;
+    
     
     //gl_Position = vec4(temp /*+ vec3(xCoor, yCoor, 0.0f)*/, 1.0 + zoom);
     

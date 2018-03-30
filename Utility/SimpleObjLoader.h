@@ -102,16 +102,7 @@ public:
         for (int i = 0; i < model.faces; ++i) {
             faces[i] = new int[9];
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+    
         
         this->extractOBJdata(filePath, positions, texels, normals, faces);
         
@@ -149,7 +140,7 @@ public:
     Model getOBJinfo(std::string fp)
     {
         // 2
-        Model model = {0};
+        Model model = {0}; //The ' = {0}; '  means to initialize all of model's fields to 0
         
         // 3
         // Open OBJ file
@@ -165,9 +156,10 @@ public:
         
         // 4
         // Read OBJ file
-        while(!inOBJ.eof())
+        while(!inOBJ.eof()) //while not end of file
         {
             // 5
+            //Get the first 2 characters of each line
             std::string line;
             getline(inOBJ, line);
             std::string type = line.substr(0,2);

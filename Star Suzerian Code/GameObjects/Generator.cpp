@@ -34,8 +34,8 @@ Generator::Generator() {
     this->modelLoader = nullptr;
     this->instances = nullptr;
     this->activeInstances = 0;
-    
     this->shouldGenerateEntities = false;
+    
     //Set specialization type for this generator
     specialization  = specializationType::NOSPECIALIZATION; //No extra data by default
     
@@ -144,6 +144,68 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
             //this->stackVertices[i] = t.vertices[i]; //For debug
             // std::cout << vertices[i] << " "; //FOR DEBUG!
         }
+        
+        
+        //For Now, handle kinetic as a special case of multiple objects being stored in the same vertices
+        if (t.typeDataRequired == specializationType::WEAPON) {
+            if (t.fragShaderPath == KINETIC_FRAG) { //I'm going to cheat for now and test part of the template to see if it matches what I expect to see for KINETIC
+                //Load the remaining Kinetic models into verts
+                int vertSizeAllKineticModels = KINETIC_PROJECTILE_VERSION6_VERTSSTART + KINETIC_PROJECTILE_VERSION6_VERTS_COUNT;
+                std::vector<GLfloat> allKineticModels;
+                allKineticModels.resize(vertSizeAllKineticModels);
+                
+                //Copy over the first model data that was already set
+                for (int i = 0; i < t.numVerts; i++) {
+                    
+                    allKineticModels.assign(1, vertices[i]);
+                    //std::cout << "\n\nf is " << vertices[i];
+                }
+                delete [] this->vertices; //Delete the old array of vertices
+                //Append in the extra models to the data
+                float pyramidShrinkFactor = 1.0 / PROJECTILE_SIZE; //Shrink all the additional models
+                for (GLfloat f : KINETIC_PROJECTILE_VERSION1_VERTS) {
+                    //std::cout << "\n\nf is " << f;
+                    f *= pyramidShrinkFactor;
+                    allKineticModels.push_back(f);
+                }
+                for (GLfloat f : KINETIC_PROJECTILE_VERSION2_VERTS) {
+                    f *= pyramidShrinkFactor;
+                    allKineticModels.push_back(f);
+                }
+                for (GLfloat f : KINETIC_PROJECTILE_VERSION3_VERTS) {
+                    f *= pyramidShrinkFactor;
+                    allKineticModels.push_back(f);
+                }
+                for (GLfloat f : KINETIC_PROJECTILE_VERSION4_VERTS) {
+                    f *= pyramidShrinkFactor;
+                    allKineticModels.push_back(f);
+                }
+                for (GLfloat f : KINETIC_PROJECTILE_VERSION5_VERTS) {
+                    f *= pyramidShrinkFactor;
+                    allKineticModels.push_back(f);
+                }
+                for (GLfloat f : KINETIC_PROJECTILE_VERSION6_VERTS) {
+                    f *= pyramidShrinkFactor;
+                    allKineticModels.push_back(f);
+                }
+                
+                this->vertices = new GLfloat[allKineticModels.size()];
+                //Copy the data into this generators array of vertices
+                std::copy(allKineticModels.begin(), allKineticModels.end(), this->vertices);
+                
+                ////This code prints out model data
+                //short counter = 0;
+                //for (GLfloat f : allKineticModels) {
+                //    std::cout << " " << f << ", ";
+                //    counter++;
+                //    if (counter % 3 == 0) {
+                //        std::cout << "\n";
+                //    }
+                //}
+            }
+            
+        }
+        
         //Load Element array
         for (int i = 0; i < t.numElems; ++i) {
             this->elements[i] = t.elements[i];
@@ -583,7 +645,7 @@ void Generator::generateSingle() {
         //Since the instance is a PLAYER instance, create the collisionBox for the instance
         //instances[newInstanceIndex]->colBox =  new CollisionRectangle(this->vertices, this->numberOfVertices);
         instances[newInstanceIndex]->colBox = new CollisionBox(this->vertices, this->numberOfVertices);
-        instances[newInstanceIndex]->colBox->setScale(1.0f/(PLAYER_SIZE));
+        instances[newInstanceIndex]->colBox->setScale(1.0f/(GAME_SCALE));
         //I will put the colBox rotations into place later, once they are actually set
 //        //Put the Player specific rotation order into place within CollisionRectangle
 //        instances[newInstanceIndex]->colBox->addToRotationOrder()
@@ -596,6 +658,12 @@ void Generator::generateSingle() {
         
         //I need to have some way for Generator to know right here what specific type of weapon instance it is generating. Going to just assume it is a kinetic for now because Kinetic is the only type I have working...
         instances[newInstanceIndex] = new Kinetic(nextObjID);
+        //I am going to have the kinetic projectiles have a random spawn angle
+        std::default_random_engine randGen;
+        std::uniform_real_distribution<float> distribution(0.0, 2.0 * PI);
+        instances[newInstanceIndex]->thetaZ = distribution(randGen);
+        instances[newInstanceIndex]->thetaX = distribution(randGen);
+        instances[newInstanceIndex]->thetaY = distribution(randGen);
         
         //I have the weaponManagers do special configuration themselves off the new value generated by generator...
         
@@ -720,6 +788,12 @@ void Generator::drawInstances() {
             doDrawWeaponInstance(i);
         }
         else if (specialization == specializationType::STAGE) {
+            if (CENTER_AND_FULLSCREEN_IMAGE) {
+                float zoomAmount = 1.105f - 0.0005f * instances[i]->timeAlive;
+                zoomAmount = (zoomAmount > 1.05f ? zoomAmount : 1.05f);
+                glUniform1f(ulocZoom, zoomAmount);
+                glUniform1f(ulocXTrans, -0.5f);
+            }
             glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
         }
         
@@ -1008,8 +1082,12 @@ void Generator::doDrawPlayerShipInstance(int i) {
 //        player->colBox->setMidpointTo(temp);
 //        //------------------------------------------------------------
         
+        
+        
     player->colBox->getRectCornersLines3D(vertices);
     
+        
+        
         //Debug test to see if the point (0,0) is within a collisionBox
     //std::cout << "\nDEBUG::Is within for (0.0, 0.0) is: " << player->colBox->isWithin(0.0f, 0.0f) << "\n\n";
         
@@ -1337,8 +1415,38 @@ void Generator::drawKineticInstance(Kinetic * kin) {
     //Set any kinetic-specific parameters...
     //std::cout << "Draw KineticInstance was called by the code!\n";
     
-    glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
-    
+    switch (kin->getModelVersion()) {
+        
+        default:
+        case 0:
+            glDrawArrays(GL_TRIANGLES, 0,  KINETIC_PROJECTILE_VERSION0_VERTS_COUNT / 3);
+            break;
+        case 1:
+            //Change the size of the data being buffered
+            glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION2_VERTSSTART, vertices, GL_STREAM_DRAW);
+            glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION1_VERTSSTART, KINETIC_PROJECTILE_VERSION1_VERTS_COUNT / 3);
+            break;
+        case 2:
+             glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION3_VERTSSTART, vertices, GL_STREAM_DRAW);
+           glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION2_VERTSSTART, KINETIC_PROJECTILE_VERSION2_VERTS_COUNT / 3);
+            break;
+        case 3:
+             glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION4_VERTSSTART, vertices, GL_STREAM_DRAW);
+            glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION3_VERTSSTART, KINETIC_PROJECTILE_VERSION3_VERTS_COUNT / 3);
+            break;
+        case 4:
+             glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION5_VERTSSTART, vertices, GL_STREAM_DRAW);
+            glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION4_VERTSSTART, KINETIC_PROJECTILE_VERSION4_VERTS_COUNT / 3);
+            break;
+        case 5:
+            glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION6_VERTSSTART, vertices, GL_STREAM_DRAW);
+            glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION5_VERTSSTART, KINETIC_PROJECTILE_VERSION5_VERTS_COUNT / 3);
+            break;
+        case 6:
+             glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION2_VERTSSTART + KINETIC_PROJECTILE_VERSION6_VERTS_COUNT, vertices, GL_STREAM_DRAW);
+            glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION6_VERTSSTART, KINETIC_PROJECTILE_VERSION6_VERTS_COUNT / 3) ;
+            break;
+    }
     //Draw the collision box as well if drawCollisionDetails is true
     if (DRAW_COLLISION_DETAILS) {
         int verticesToReplace = 24;

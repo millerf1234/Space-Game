@@ -15,7 +15,7 @@
 //    do rotation
 //
 //  Created by Forrest Miller on 1/16/18.
-//  Copyright © 2018 Forrest Miller. Not released under any liscense, because I
+//  Not released under any liscense, because I
 //  have not debugged this that much, and therefor this should not be used for any reason
 //  by anyone.
 //
@@ -35,11 +35,11 @@
 #define Quaternion_h
 
 #include "glad.h"
-#include <assimp/Importer.hpp> //Gives access to the aiVector3D
+#include <assimp/Importer.hpp> //aiVector3D
 #include <cmath>
-//#include <sstream> //
 
-#include <iostream> //For debug, can remove eventually
+
+#include <iostream>
 
 
 constexpr double e = 2.7182818284590452353602875; //probably don't need this many digits. Oh well...

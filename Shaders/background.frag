@@ -41,7 +41,7 @@ void main() {
     
    // color = texture(tex, TexCoor) + vec4(sin(0.75 + gl_FragCoord.x + time / 100.0f), 0.6 + tan(sqrt((abs(pos.x + pos.y)))), 0.6 * abs(sin(pos.x-pos.y)), 0.9);
     
-    color = texture(tex, TexCoor) + vec4(COLR, 0.25);
+    color = texture(tex, TexCoor) + vec4(COLR, -0.25f);
     
     //color = vec4(1.0, 0.5, 0.5f, 1.0f);
 }

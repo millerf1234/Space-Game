@@ -30,6 +30,7 @@
 		9E10D5E62034BEBD00F0F724 /* Background.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E42034BEBD00F0F724 /* Background.cpp */; };
 		9E10D5EA2035485000F0F724 /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E82035485000F0F724 /* Object.cpp */; };
 		9E10D5EE20360AE500F0F724 /* ObjectGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */; };
+		9E3DD990206D7C8100B2ED86 /* CollisionCircle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */; };
 		9E8FF849204DDD29006E2392 /* CollisionBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8FF847204DDD29006E2392 /* CollisionBox.cpp */; };
 		9EC84C3F205C6F6B00FC93B2 /* KineticWeaponManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EC84C3D205C6F6B00FC93B2 /* KineticWeaponManager.cpp */; };
 		9ECC63872044C51300F7B703 /* RocketManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ECC63852044C51300F7B703 /* RocketManager.cpp */; };
@@ -113,6 +114,10 @@
 		9E10D5E92035485000F0F724 /* Object.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
 		9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectGenerator.cpp; sourceTree = "<group>"; };
 		9E10D5ED20360AE500F0F724 /* ObjectGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectGenerator.h; sourceTree = "<group>"; };
+		9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionCircle.cpp; sourceTree = "<group>"; };
+		9E3DD98F206D7C8100B2ED86 /* CollisionCircle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionCircle.h; sourceTree = "<group>"; };
+		9E3DD991206E1FC900B2ED86 /* JupiterPicture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = JupiterPicture.jpg; sourceTree = "<group>"; };
+		9E3DD992206E214900B2ED86 /* AnotherHubblePic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = AnotherHubblePic.jpg; sourceTree = "<group>"; };
 		9E8FF847204DDD29006E2392 /* CollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionBox.cpp; sourceTree = "<group>"; };
 		9E8FF848204DDD29006E2392 /* CollisionBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionBox.h; sourceTree = "<group>"; };
 		9EC84C3C205B9C3D00FC93B2 /* Cool_Picture_of_the_moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cool_Picture_of_the_moon.jpg; path = ../../../../Documents/Cool_Picture_of_the_moon.jpg; sourceTree = "<group>"; };
@@ -136,7 +141,6 @@
 		9ED77218203930F100D569A4 /* Generator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Generator.h; sourceTree = "<group>"; };
 		9ED7721B2039516500D569A4 /* Stage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Stage.cpp; sourceTree = "<group>"; };
 		9ED7721C2039516500D569A4 /* Stage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Stage.h; sourceTree = "<group>"; };
-		9ED7721E203A2D7C00D569A4 /* debug.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = debug.vert; sourceTree = "<group>"; };
 		9EFA4CA02051D89D00308177 /* WeaponTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponTracker.h; sourceTree = "<group>"; };
 		9EFA4CA12051D9B000308177 /* WeaponOverseer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = WeaponOverseer.cpp; sourceTree = "<group>"; };
 		9EFA4CA22051D9B000308177 /* WeaponOverseer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponOverseer.h; sourceTree = "<group>"; };
@@ -228,9 +232,9 @@
 				9E10D5E020338FD000F0F724 /* GameObjects */,
 				9E10D599203234CC00F0F724 /* main.cpp */,
 				9E10D5C92032CC0100F0F724 /* Game.cpp */,
+				9E10D5CA2032CC0100F0F724 /* Game.h */,
 				9E00AD95206651B700FEF9C2 /* Particle.cpp */,
 				9E00AD96206651B700FEF9C2 /* Particle.h */,
-				9E10D5CA2032CC0100F0F724 /* Game.h */,
 			);
 			path = "Star Suzerian Code";
 			sourceTree = "<group>";
@@ -320,7 +324,6 @@
 				9E0754E5203AD3AE009B6215 /* PlayerShip */,
 				9ED772152036EBD500D569A4 /* background.vert */,
 				9ED772162036EBE700D569A4 /* background.frag */,
-				9ED7721E203A2D7C00D569A4 /* debug.vert */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -365,6 +368,14 @@
 			path = GameObjects;
 			sourceTree = "<group>";
 		};
+		9E3DD98D206D7BC200B2ED86 /* IncompleteOrBuggyMath */ = {
+			isa = PBXGroup;
+			children = (
+				9EFA4CAA20533D7000308177 /* VectorOps.h */,
+			);
+			path = IncompleteOrBuggyMath;
+			sourceTree = "<group>";
+		};
 		9ECC638C2046A6A200F7B703 /* 2D_Collision */ = {
 			isa = PBXGroup;
 			children = (
@@ -372,6 +383,8 @@
 				9ECC638E2046A6C000F7B703 /* CollisionRectangle.h */,
 				9E8FF847204DDD29006E2392 /* CollisionBox.cpp */,
 				9E8FF848204DDD29006E2392 /* CollisionBox.h */,
+				9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */,
+				9E3DD98F206D7C8100B2ED86 /* CollisionCircle.h */,
 				9EFA4CA52053366600308177 /* Impact2D.cpp */,
 				9EFA4CA62053366600308177 /* Impact2D.h */,
 			);
@@ -392,6 +405,8 @@
 			children = (
 				9ED7720F2036B3D600D569A4 /* Cool_Picture_of_the_moon_915_609.jpg */,
 				9EC84C3C205B9C3D00FC93B2 /* Cool_Picture_of_the_moon.jpg */,
+				9E3DD991206E1FC900B2ED86 /* JupiterPicture.jpg */,
+				9E3DD992206E214900B2ED86 /* AnotherHubblePic.jpg */,
 				9ED772112036B3D600D569A4 /* CalibrationPicture_915_609.jpg */,
 				9E0754F5203B9E4E009B6215 /* Mibra_mine.jpg */,
 				9E0754F8203CFCDC009B6215 /* Antarticata.jpg */,
@@ -426,6 +441,7 @@
 		9EFA4C9F2051D7F500308177 /* Unfinished_or_Not_Used */ = {
 			isa = PBXGroup;
 			children = (
+				9E3DD98D206D7BC200B2ED86 /* IncompleteOrBuggyMath */,
 				9ED7721A20394CD000D569A4 /* OldStyleObjectGeneration */,
 				9EFA4C9E2051D63400308177 /* Experimental_Weapon_Code */,
 			);
@@ -454,7 +470,6 @@
 				9E10D5D52032CEDB00F0F724 /* NGon.h */,
 				9E10D5D42032CEDB00F0F724 /* Quaternion.cpp */,
 				9E10D5D62032CEDC00F0F724 /* Quaternion.h */,
-				9EFA4CAA20533D7000308177 /* VectorOps.h */,
 			);
 			path = Math;
 			sourceTree = "<group>";
@@ -561,6 +576,7 @@
 				9ECC63932047B65700F7B703 /* CollisionSphere.cpp in Sources */,
 				9ED7721D2039516500D569A4 /* Stage.cpp in Sources */,
 				9E10D5E62034BEBD00F0F724 /* Background.cpp in Sources */,
+				9E3DD990206D7C8100B2ED86 /* CollisionCircle.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,8 +7,130 @@
 
 #include "ShaderWrapper.h"
 
+//Some utility stuff for handling uniform locations (I don't support uniform arrays yet)
+//I have an enum for each type of supported Uniform Location
+enum UniformType{byteUniform, intUniform, floatUniform, unspecified};
+
+//This is a tiny wrapper class that is used to track uniform locations internally
+typedef struct ULInfo { //Struct of Uniform Location Information
+private:
+    int hashkey; //For matching
+    GLuint location;
+    std::string ulName; //uniform location name
+public:
+    UniformType uniformType;
+    //Constructors
+    ULInfo() {
+        this->hashkey = NOT_SET;
+        uniformType = unspecified;
+        ulName = "";
+    }
+    ULInfo(std::string ulName, UniformType ulType, GLuint programID) : ULInfo() { //Call the default constructor
+        this->set(ulName, ulType, programID); //set self using function
+    }
+    //Interface functions
+    void set(std::string ulName, UniformType type, GLuint programID) {
+        //Check to make sure this wasn't already set for some reason
+        if (this->checkIfLocationValid()) { //i.e. check to see if a valid location has already been set
+            printf("\nDEBUG::WARNING! Attempting to overwrite uniform location for ");
+            if (uniformType == byteUniform) {
+                printf("Byte ");
+            }
+            else if (uniformType == intUniform) {
+                printf("Integer ");
+            }
+            else if (uniformType == floatUniform) {
+                printf("Float ");
+            }
+            else {
+                printf("!!!Unspecified!!! ");
+            }
+            printf("Uniform %s\n", ulName.c_str());
+            return;
+        }
+        
+        //Else, try to set the uniform location
+        location = glGetUniformLocation(programID, ulName.c_str());
+        if (!checkIfLocationValid()) {
+            std::cout << "\nError retrieving uniform location for " << ulName << std::endl;
+            return;
+        }
+        this->hashkey = computeHashkey(ulName);
+        this->uniformType = type;
+        this->ulName = ulName;
+    }
+    int computeHashkey(std::string name) const {
+        if (name.length() == 0ul) {
+            std::cout << "\nDEBUG:WARNING! computeHashKey called on an empty string!\n";
+            return NOT_SET;
+        }
+        //convert name to be all lowercase
+        std::transform(name.begin(), name.end(), name.begin(), tolower); //Third parameter is target to write to
+        
+        int firstLetterValue = (int) name.at(0) - (int)'a';
+        //Scale the first Letter Value to fit in the hash table
+        firstLetterValue *= LOCATIONS_PER_LETTER;
+        
+        //Check to see if name contains additional letters
+        if (name.length() == 1ul) {
+            return firstLetterValue;
+        }
+        
+        //Calculate the rest of the hashKey from the second letter
+        int hashKey = firstLetterValue + (((name.at(1) - 'a') * (26 / LOCATIONS_PER_LETTER)));
+        std::cout << "\nDEBUG::Computed hash key " << hashKey << " for uniform name " << name << "\n";
+        if (hashKey < 0) {
+            hashKey = UL_HASHTABLE_SIZE + hashKey;
+            std::cout << "\nDEBUG:Negative Hash key wrapped around to give key value: " << hashKey;
+        }
+        return hashKey;
+    }
+    int getHashKey() const {return this->hashkey;}
+    std::string getName() const {return this->ulName;}
+    bool checkIfLocationValid() const {return (this->location != NOT_SET);}
+    UniformType getType() const {return this->uniformType;}
+    
+    //Equals operator
+    bool operator==(const ULInfo & other) {
+        if (this->location == other.location) {
+            if (this->getHashKey() == other.getHashKey()) {
+                return true;
+            }
+        } //else:
+        return false;
+    }
+    //Not Equal operator
+    bool operator!=(const ULInfo & other) {
+        if (this->location == other.location && this->getName() == other.getName()) {
+            return false;
+        }
+        return true;
+    }
+    
+} ULInfo;
+
+
+//Another struct for wrapping up each ULInfo struct
+
+typedef struct ULHashbucket {
+    int hashKey;
+    ULInfo data;
+    ULHashbucket * next; //For chaining the hash table if necessary
+    
+    //Constructor:
+    ULHashbucket() { //Give parameters?
+        //this
+    }
+    
+} ULHashbucket;
+
 //Constructors:
 ShaderWrapper::ShaderWrapper() {
+    //debug (DELETE THESE NEXT FEW LINES AFTER DONE DEBUG):
+    //ULInfo tempForDebug;
+    //tempForDebug.computeHashkey("a-HelloWorld");
+    
+    
     this->isReady = false;
     this->hasVert = this->hasGeom = this->hasFrag = this->hasTessl = false;
     this->vertSuccess = this->geomSuccess = this->fragSuccess = this->tesslSuccess = false;
@@ -32,6 +154,9 @@ ShaderWrapper::ShaderWrapper() {
     this->colAttrib = nullptr;
     this->texAttrib = nullptr;
     this->normAttrib = nullptr;
+    
+    //Set up the variables used in tracking the uniform locations
+    this->numberOfTrackedUniformLocations = 0;
     
     vaoWasSetExternally = false;
 }

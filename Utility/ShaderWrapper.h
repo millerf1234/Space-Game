@@ -16,29 +16,45 @@
 //If using ShaderWrapper within a project that has a GameParameters.h
 #include "GameParameters.h"
 
-//constexpr static int MAX_SHADERS = 75; //Just an arbitrary value (No need for a max...)
+#define MAX_TRACKED_UNIFORM_LOCATIONS 256  //
 
+
+//Note to self:
 //TO LEARN HOW TO ACTUALY DO NORMALS/TANGENTS/BITANGENTS, see: http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/
+//
+
+constexpr unsigned long LOCATIONS_PER_LETTER = 13ul;
+constexpr unsigned long UL_HASHTABLE_SIZE = 26ul * LOCATIONS_PER_LETTER; //26 letters in alphabet * 6 locations per letter
+static constexpr int NOT_SET = -1;
+
+
 
 class ShaderWrapper {
 private:
+    //Fields
     bool isLinked;
     bool isReady;
     bool hasVert, hasGeom, hasFrag, hasTessl;
     bool vertSuccess, geomSuccess, fragSuccess, tesslSuccess;
     
     bool vertLayoutSet;
-    //int uniformCount; //NOT USED CURRENTLY...
     std::string vert;
     std::string geom;
     std::string frag;
     std::string tessl;
+    
+    int numberOfTrackedUniformLocations;
     
     //Add static to track number of programs in use? (Actually programID will already be this counter)
     std::string loadSourceFile(char* filename) {  //I didn't write this function, it's from Glitter.
         std::ifstream infile{ filename };
         return{ std::istreambuf_iterator<char>(infile), std::istreambuf_iterator<char>() };
     }
+    
+    
+    
+    
+
     
 public:
     //Enum for vertexLayoutFormats
@@ -79,6 +95,8 @@ public:
     bool attachGeom(char * geomSource);
     bool attachFrag(char * fragSource);
     bool attachTessl(char * tesslSource);
+    
+   
     
     //These next 4 functions are for letting this object know what the 'in' variables
     //in the vert shader are called
@@ -132,6 +150,51 @@ public:
     bool specifyVertexLayout(vertLayoutFormat);
     bool specifyVertexLayout(vertLayoutFormat, GLuint& vertData, GLuint& elemData);
     void turnOffVertexLayout(vertLayoutFormat);
+    
+    
+    //--------------------------------------------------------------------------
+    //       UNIFORM UPDATING FUNCTIONS
+    //--------------------------------------------------------------------------
+
+    //This code below is from my attempt at using a container of unique pointers.
+    //The compiler doesn't seem to like me creating an empty container of unique_ptr's though...
+    //Hmm the use of unique_ptr's here might not make sense. I'm just going to do it old-school
+//    typedef struct ULDataVector
+//    {
+//    public:
+//        ULDataVector(std::vector<std::unique_ptr<ULInfo>> ulData) : vec(std::move(ulData)) {;}
+//        // Delete default copy constructor + assignment operator to allow use of unique_ptr
+//        ULDataVector(const ULDataVector &) = delete;
+//        ULDataVector& operator= (const ULDataVector &) = delete;
+//    private:
+//        std::vector<std::unique_ptr<ULInfo> > vec;
+//    } ULDataVector;
+    
+    
+    
+    /*
+     typedef struct ULInfo { //Struct of Uniform Location Information
+     private:
+     int hashtag; //For matching
+     GLuint location;
+     public:
+     UniformType uniformType;
+     ULInfo()
+     
+     } ULInfo;
+     */
+    
+    //Use raw pointers on the heap:
+    
+    
+    
+public:
+    
+    
+    
+    //--------------------------------------------------------------------------
+    //
+    //--------------------------------------------------------------------------
     
     void use() {
         if (!this->isReady) {

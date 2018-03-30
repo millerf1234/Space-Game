@@ -8,6 +8,8 @@
 
 #include "Game.h"
 
+
+
 //Constructor
 Game::Game(MonitorData & mPtr) {
     //Make the rotation quaternions (4th parameter is starting theta)
@@ -21,6 +23,21 @@ Game::Game(MonitorData & mPtr) {
     p1Score = p2Score = frameNumber = frameUnpaused = 0ull;
     this->mWindow = mPtr.activeMonitor; //Set window to the active window
     std::cout << "Done" << std::endl;
+    
+    //Some debug code for testing (Delete this eventually)
+//    //ColloisionBox formation test (Pathological case)
+//    float modelVerts [] = {
+//        //x0 ,    y ,   z
+//         1.5f,  1.5f,  1.0f,
+//        -1.0f,  1.0f,  1.0f,
+//        -1.0f, -1.0f,  1.0f,
+//         1.0f, -1.0f,  1.0f,
+//         1.5f,  1.5f, -1.0f,
+//        -1.0f,  1.0f, -1.0f,
+//        -1.0f, -1.0f, -1.0f,
+//         1.0f, -1.0f, -1.0f,
+//    };
+//    CollisionBox temp(modelVerts, 24);
 }
 
 //Destructor (basically does a 'delete x' for every 'new x' that was called in the constructor)
@@ -152,6 +169,7 @@ bool Game::launch() {
                 std::cout << "\nDEBUG::ESC KEY PRESS DETECTED. GAME WILL EXIT!\n";
             }
             glfwSetWindowShouldClose(mWindow, true); //This tells the render loop that this iteration will be its last
+            continue; //Run the next loop iteration (which should close the program)
         }
         //Check to see if game should pause (pausing causes control to remain inside this block until an unpause occurs)
         //Need to put a delay so unpausing doesn't cause pausing on the next few frames
@@ -169,6 +187,10 @@ bool Game::launch() {
             while (true) { //Infinite loop of checking if unpaused key get's pressed
                 glfwPollEvents();
                 if (glfwGetKey(mWindow, GLFW_KEY_SPACE) == GLFW_PRESS) {
+                    goto unpause;
+                }
+                else if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+                    glfwSetWindowShouldClose(mWindow, true);
                     goto unpause;
                 }
                 else {
@@ -269,6 +291,9 @@ bool Game::launch() {
         }
     }
     
+    std::cout << "\nGame Exiting! Thanks for playing!" << std::endl; //Player Healths:\n"; //todo.. Implement a message that announces a winner
+    
+    
     if (PRINT_DEBUG_MESSAGES) {
         std::cout << "\nDEBUG::Exiting Game Loop!" << std::endl;
     }
@@ -303,9 +328,16 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
                     Kinetic * kWepInst = static_cast<Kinetic*>((*wepIter));
                     CollisionBox * kineticColBox = kWepInst->colBox;
                     //Check to see if this collisionBox and player's collisionBox are overlapping
-                    if (kineticColBox->isOverlapping(*playersColBox) && kWepInst->timeAlive > TIME_TICK_RATE * 2) {
+                    if (kineticColBox->isOverlapping(*playersColBox) && kWepInst->timeAlive > TIME_TICK_RATE * 3) {
                         //Do damage to player
                         player->health -= kWepInst->damage;
+                        //Print the player's damage amount!
+                        if (PRINT_PLAYER_DAMAGE_MESSAGES) {
+                            std::cout << "Player " << player->playerNumber << " was hit! Player ";
+                            std::cout << player->playerNumber << " has now taken ";
+                            printf("%.4f", STARTING_PLAYER_HEALTH - player->health);
+                            std::cout << " of damage!\n";
+                        }
                         //Have kinetic impacts affect other player's velocity
                         aiVector2D velocityShift = kWepInst->velocity;
                         velocityShift = velocityShift.Normalize();

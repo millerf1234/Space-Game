@@ -37,6 +37,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
+#include <random> //Give random functionality to pretty much every class
 //#include <btBulletDynamicsCommon.h>
 //#define GLEW_STATIC
 //#include <GL/glew.h> //Guess I don't need GLEW?

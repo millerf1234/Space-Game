@@ -13,6 +13,22 @@
 //  Created by Forrest Miller on 2/12/18.
 //
 
+//
+// NOTE TO SELF: CHANGE ARCHITECTURE TO HAVE GENERATORS THAT GENERATE UNIQUE_PTS
+//               and then move those unique_pointers to storage containers.
+//           see: https://eli.thegreenplace.net/2012/06/20/c11-using-unique_ptr-with-standard-library-containers
+//
+//  From: http://en.cppreference.com/w/cpp/memory/unique_ptr
+// a function consuming a unique_ptr can take it by value or by rvalue reference
+//  std::unique_ptr<D> pass_through(std::unique_ptr<D> p)
+//  {
+//      p->bar();
+//      return p;
+//  }
+//
+//
+//
+
 #ifndef Game_h
 #define Game_h
 

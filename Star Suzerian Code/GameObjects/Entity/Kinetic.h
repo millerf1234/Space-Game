@@ -9,7 +9,7 @@
 
 #include "GameParameters.h"
 #include "Instance.h"
-#include "Generator.h"
+
 
 
 constexpr int KINETIC_PROJECTILE_MODEL_VARIATIONS = 7;
@@ -21,10 +21,16 @@ static constexpr int KINETIC_PROJECTILE_VERSION4_VERTS_COUNT = 18*3;
 static constexpr int KINETIC_PROJECTILE_VERSION5_VERTS_COUNT = 18*3;
 static constexpr int KINETIC_PROJECTILE_VERSION6_VERTS_COUNT = 18*3;
 
+static constexpr GLuint KINETIC_PROJECTILE_VERSION1_VERTSSTART = 18 * 3;
+static constexpr GLuint KINETIC_PROJECTILE_VERSION2_VERTSSTART = 18 * 3 + KINETIC_PROJECTILE_VERSION1_VERTSSTART;
+static constexpr GLuint KINETIC_PROJECTILE_VERSION3_VERTSSTART = 18 * 3 + KINETIC_PROJECTILE_VERSION2_VERTSSTART;;
+static constexpr GLuint KINETIC_PROJECTILE_VERSION4_VERTSSTART = 18 * 3 + KINETIC_PROJECTILE_VERSION3_VERTSSTART;;
+static constexpr GLuint KINETIC_PROJECTILE_VERSION5_VERTSSTART = 18 * 3 + KINETIC_PROJECTILE_VERSION4_VERTSSTART;;
+static constexpr GLuint KINETIC_PROJECTILE_VERSION6_VERTSSTART = 18 * 3 + KINETIC_PROJECTILE_VERSION5_VERTSSTART;;
 
 //Square Pyrimid Top Half
 static constexpr GLfloat KINETIC_PROJECTILE_VERSION0_VERTS[] = {
-    //Square Pyrimid
+    //Square Pyrimid pointing towards positive Y
     //x        y        z
      1.0f,    0.0f,    1.0f, //Base
      1.0f,    0.0f,   -1.0f,
@@ -50,24 +56,24 @@ static constexpr GLfloat KINETIC_PROJECTILE_VERSION0_VERTS[] = {
 static constexpr GLfloat KINETIC_PROJECTILE_VERSION1_VERTS[] = {
     //Square Pyrimid
     //x        y        z
-    1.0f,    0.0f,    1.0f, //Base
-    1.0f,    0.0f,   -1.0f,
-    -1.0f,    0.0f,   -1.0f,
-    1.0f,    0.0f,    1.0f,
-    -1.0f,    0.0f,   -1.0f,
-    -1.0f,    0.0f,    1.0f, //end base
-    1.0f,    0.0f,    1.0f, //vertical triangle 1
-    0.0f,    2.5f,    0.0f,
-    1.0f,    0.0f,   -1.0f,
-    1.0f,    0.0f,   -1.0f, //vertical triangle 2
-    0.0f,    2.5f,    0.0f,
-    -1.0f,    0.0f,   -1.0f,
-    -1.0f,    0.0f,   -1.0f, //Vertical triangle 3
-    0.0f,    2.5f,    0.0f,
-    -1.0f,    0.0f,    1.0f,
-    -1.0f,    0.0f,    1.0f, //vertical triangle 4
-    0.0f,    2.5f,    0.0f,
-    1.0f,    0.0f,    1.0f,
+        0.0f,  1.0f,   1.0f, //Base
+        0.0f,  1.0f, -1.0f,
+        0.0f, -1.0f,  -1.0f,
+        0.0f,  1.0f,  1.0f,
+        0.0f, -1.0f,  -1.0f,
+        0.0f, -1.0f,   1.0f, //end base
+        0.0f,  1.0f,  1.0f, //vertical triangle 1
+        2.5f,  0.0f,  0.0f,
+        0.0f,  1.0f, -1.0f,
+        0.0f,  1.0f, -1.0f, //vertical triangle 2
+        2.5f,  0.0f,  0.0f,
+        0.0f, -1.0f,  -1.0f,
+        0.0f, -1.0f,  -1.0f, //Vertical triangle 3
+        2.5f,  0.0f,  0.0f,
+        0.0f, -1.0f,   1.0f,
+        0.0f, -1.0f,   1.0f, //vertical triangle 4
+        2.5f,  0.0f,  0.0f,
+        0.0f,  1.0f,  1.0f,
     
 };
 

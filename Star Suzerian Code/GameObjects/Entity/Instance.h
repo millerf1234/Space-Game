@@ -57,7 +57,7 @@ enum WeaponType {HEXAGON_BOMB, LASER, ROCKET, HOMINGROCKET, KINETIC, UNINITIALIZ
 //                 /                                            +------------------------------+
 //              \ /                                                                            |
 //               V___                                                                          |
-//    +-----------------------+                                                                |
+//    +-----------------------+                                                                v
 //    |   Player Entity       |                                                   +------------------------------+
 //    |      -Colors          |                                                   |         Weapon Instance      |
 //    |      -Health          |                                                   |             -Weapon Type     |

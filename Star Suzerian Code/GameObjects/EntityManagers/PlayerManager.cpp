@@ -193,7 +193,7 @@ void PlayerManager::initializeFromTemplate() {
         for (int i = 0; i < MAX_PLAYERS; ++i) {
             //For more info on static_cast, see: https://stackoverflow.com/questions/28002/regular-cast-vs-static-cast-vs-dynamic-cast
             PlayerEntity * p = static_cast<PlayerEntity*>(players[i]);
-            p->zoom = PLAYER_SIZE;
+            p->zoom = GAME_SCALE;
             p->thetaX = PI / 2.0f; //Set starting x rotation
             p->playerNumber = i+1; //So player 1 get assigned playerNumber 1, player 2 gets playerNumber 2, etc...
             p->type = PLAYERENTITY;

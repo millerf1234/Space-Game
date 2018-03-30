@@ -43,6 +43,11 @@ mat3 aspectRatioMatrix = mat3(1.0f,       0.0f     , 0.0f,
                               0.0f, 2650.0f/1600.0f, 0.0f,
                               0.0f,       0.0f     , 1.0f );
 
+//This makes the ships a lot more flat (Not for gameplay use):
+//mat3 aspectRatioMatrix = mat3(1.0f,       1.1f + 50.0f * sin(2.5f*time)     , 0.0f,
+//                              -5.0f,       1.0f     , 0.0f,
+//                              0.0f,       0.0f     , 1.0f );
+
 mat3 rotationMatrixX = mat3(    1.0f  ,       0.0f         ,       0.0f         ,
                                //0.0f  , cos(dg2Rad(90.0f)) , -sin(dg2Rad(90.0f)),  //was 18.0f
                                //0.0f  , sin(dg2Rad(90.0f)) ,  cos(dg2Rad(90.0f)));
