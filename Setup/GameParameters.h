@@ -40,6 +40,7 @@ static constexpr bool PRINT_DEBUG_MESSAGES = false; //Turn off if not in debug m
 static constexpr bool PRINT_FRAME_PROCESS_TIME_INFORMATION = false; //Prints the process time for the frame to the console
 static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a test
 static constexpr bool PRINT_DESTRUCTOR_CALLS = false; //For debug
+static constexpr bool PRINT_WEAPON_SPAWN_POINT_COORDS = false; //More debug stuff
 
 static constexpr bool DRAW_COLLISION_DETAILS = false;
 
@@ -129,7 +130,7 @@ static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 
 //static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/17.0f; //So 30 frames to rotate 90 degrees
 
 
-static constexpr float STARTING_PLAYER_HEALTH = 100.0f; //Tweak as needed
+static constexpr float STARTING_PLAYER_HEALTH = 1000.0f; //Tweak as needed
 static constexpr float STARTING_PLAYER_SHIELDS = 4.0f; //Tweak as needed (if this gets implemented...)
 static constexpr float STARTING_PLAYER_ENERGY = 25.0f; //Tweak as needed (if this ever gets implemented)
 static constexpr float STARTING_PLAYER_FUEL = 100.0f; //Tweak freely, as this will most likely never be implemented
@@ -303,7 +304,7 @@ const std::string KINETIC_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projec
 //   Texture Image Locations (preferably JPEGs that are 915 x 609)    //see: http://img-resize.com/   to resize images
 //-----------------------------------------------------------------------------
 
-static constexpr bool CENTER_AND_FULLSCREEN_IMAGE = true;
+static constexpr bool CENTER_AND_FULLSCREEN_IMAGE = false;
 
 static constexpr int NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD = 1; //Increase this as more backgrounds are added
 
@@ -321,14 +322,14 @@ static constexpr int LEVEL_TO_LOAD = 1; //The level to load (Note I index valye 
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Cool_Picture_of_the_moon_915_609.jpg";
 
 //Picture of the moon in original dimensions
-//static std::string backgroundTextureFP = "/Users/forrestmiller/Documents/Cool_Picture_of_the_moon.jpg";
+static std::string backgroundTextureFP = "/Users/forrestmiller/Documents/Cool_Picture_of_the_moon.jpg";
 
 
 //Picture of jupiter I got from NASA JPL's website: https://photojournal.jpl.nasa.gov/catalog/PIA21774
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/JupiterPicture.jpg";
 
 //Another hubble photo
-static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/AnotherHubblePic.jpg";
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/AnotherHubblePic.jpg";
 
 
 //Picture of antartica:

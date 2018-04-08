@@ -20,7 +20,6 @@
 //#include "CollisionRectangle.h"
 #include "GameParameters.h"
 
-
 //This is a struct for tracking ammo counts all in the same place
 typedef struct AmmoCount{
 public:
@@ -107,7 +106,7 @@ public:
     aiVector3D getNextSpawnPoint() {
         if (this->weaponSpawnPoints != nullptr) {
             aiVector3D wepSpawnPosition = (weaponSpawnPoints[nextSpawnPoint]);//For some reason this isn't setting the vector correctly
-//            //Try to do it manually...  (THE PROBLEM IS WITH XCODE's debugger)
+//            //Try to do it manually...  (THE PROBLEM was WITH XCODE's debugger showing the wrong values, the variables were still set correctly)
 //            wepSpawnPosition.x = weaponSpawnPoints[nextSpawnPoint].x;
 //            wepSpawnPosition.y = weaponSpawnPoints[nextSpawnPoint].y;
 //            wepSpawnPosition.z = weaponSpawnPoints[nextSpawnPoint].z;
@@ -149,7 +148,9 @@ public:
             this->weaponSpawnPoints = new aiVector3D[weaponSpawnPointsCount];
             for (int i = 0; i < weaponSpawnPointsCount; i++) {
                 weaponSpawnPoints[i] = spwnPointsArray[i];
-                std::cout << "Weapon spawn point set to: " << weaponSpawnPoints[i].x << ", " << weaponSpawnPoints[i].y << ", " << weaponSpawnPoints[i].z << std::endl;
+                if (PRINT_WEAPON_SPAWN_POINT_COORDS) {
+                    std::cout << "Weapon spawn point set to: " << weaponSpawnPoints[i].x << ", " << weaponSpawnPoints[i].y << ", " << weaponSpawnPoints[i].z << std::endl;
+                }
             }
         }
         else {
@@ -166,8 +167,6 @@ public:
     void setThetaZ(float thetaZ) {this->thetaZ = thetaZ;}
     void setInstanceZoomAmount(float zoom) {this->instanceZoomAmount = zoom;}
     
-    
-    
     //Set weapons that were fired
     void setKineticWasFired() {this->kineticWasFired = true;}
     
@@ -180,6 +179,8 @@ public:
     void switchActive() {
         //Turn off currently active
         //Turn on the next one to be activated
+        
+        //(Currently does nothing becuase there is only 1 implemented weapon type)
     }
     
 };

@@ -1,7 +1,7 @@
 #version 400 core
 
 in vec3 pos;
-//in vec2 engineTex;
+
 
 uniform float time;
 uniform float zoom;
@@ -12,17 +12,16 @@ uniform float thetaX;
 uniform float thetaY;
 uniform float thetaZ;
 
-//uniform float red; //These uniforms are unique to player:
-//uniform float green;
-//uniform float blue;
 
 out vec4 color;
 
 void main() {
+    //For more indepth info on gl_FragCoord use
+    //See: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/gl_FragCoord.xhtml
+    
     
     //color = vec4(enginePosition, 1.0f);// + vec4 (engineTex, engineTex);
     
-    //Switch the fragCoords to enginePosition
     color = vec4(0.8f + 0.25f*(gl_FragCoord.x * gl_FragCoord.x + gl_FragCoord.y * gl_FragCoord.y) + cos(-time*5.0f), 0.95f * cos(-(pos.x * pos.x - pos.y * pos.y + time*10.0f)), 0.2f, 1.0f);
     
     
