@@ -64,10 +64,10 @@ private:
     
     AmmoCount ammo;
     
-    void rotateWeaponSpawnPoint(aiVector3D & spawnPoint) { //To be called as rotations are updated
-        //Since rotations happen in each type of weapon entity manager, don't do rotations here...
-        //std::cout << "Words\n";
-    }
+//    void rotateWeaponSpawnPoint(aiVector3D & spawnPoint) { //To be called as rotations are updated
+//        //Since rotations happen in each type of weapon entity manager, don't do rotations here...
+//    }
+    
 public:
     WeaponTracker() {
         //Initialize everything
@@ -112,7 +112,7 @@ public:
 //            wepSpawnPosition.z = weaponSpawnPoints[nextSpawnPoint].z;
             nextSpawnPoint = (nextSpawnPoint + 1) % weaponSpawnPointsCount; //cycle through the spawn points
             
-            rotateWeaponSpawnPoint(wepSpawnPosition);
+            //rotateWeaponSpawnPoint(wepSpawnPosition); //Rotations happen elsewhere now
             return wepSpawnPosition;
         }
         else {

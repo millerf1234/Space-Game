@@ -9,8 +9,8 @@
 
 //Note that in GLFW3.h these are defined, might want to make the curser invisible when game launches...
 // #define GLFW_CURSOR_NORMAL          0x00034001
-//#define GLFW_CURSOR_HIDDEN          0x00034002
-//#define GLFW_CURSOR_DISABLED        0x00034003
+// #define GLFW_CURSOR_HIDDEN          0x00034002
+// #define GLFW_CURSOR_DISABLED        0x00034003
 
 
 //Do window setup routines and return a struct representing information on detected monitors

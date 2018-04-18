@@ -41,10 +41,12 @@ static constexpr bool PRINT_FRAME_PROCESS_TIME_INFORMATION = false; //Prints the
 static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a test
 static constexpr bool PRINT_DESTRUCTOR_CALLS = false; //For debug
 static constexpr bool PRINT_WEAPON_SPAWN_POINT_COORDS = false; //More debug stuff
+static constexpr bool PRINT_WEAPON_SPAWN_ANGLES = true; //Mostly for debug, 
 
 static constexpr bool DRAW_COLLISION_DETAILS = false;
 
 static constexpr bool PRINT_PLAYER_DAMAGE_MESSAGES = true; //Print a message each time a player takes damage
+
 
 //-----------------------------------------------------------------------------
 // Gamemode types
@@ -165,7 +167,7 @@ static const char * NAME_OF_GAME = "SPACE ___! The Omega Occurance"; //Working N
 static const bool curserVisible = false; //Experimental still... (i.e. it doesn't work at all)
 
 //Game was written with an expected base TIME_TICK_RATE of 0.01f
-constexpr float TIME_TICK_RATE = 0.01f; //Time step per loop iteration, tweak wisely...
+constexpr float TIME_TICK_RATE = 0.001f; //Time step per loop iteration, tweak wisely...
 
 //Player COLORS
 //Player 1     (0.7f red, 0.48f green, 0.15f blue) is what I have been going with
@@ -293,7 +295,6 @@ const std::string PLAYERSHIP_LINE_FRAG = "/Users/forrestmiller/Desktop/xcode_tes
 const std::string PLAYERSHIP_ENGINE_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/PlayerShip/engineEffect.vert";
 const std::string PLAYERSHIP_ENGINE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/PlayerShip/engineEffect.frag";
 
- 
 
 //Weapon shaders
 //Kinetic
@@ -312,36 +313,35 @@ static constexpr int LEVEL_TO_LOAD = 1; //The level to load (Note I index valye 
 
 //Have array of background texture images
 //But for now:
-
-// Hubble shot of the galaxy. Huge resolution! Has not been fixed to display properly
-// from:
-//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Galaxy_history_revealed_by_the_Hubble_Space_Telescope_(GOODS-ERS2).jpg";
-//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/HubbleGalaxyHistory_915_609.jpg"; //I fixed to display properly, but it's sorta distorted now
-
-// Picture of the moon. Picture is the correct dimensions to be fixed to display properly.
-//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Cool_Picture_of_the_moon_915_609.jpg";
-
+//~~~~~~~~~~~~~~~~
+//GOOD BACKGROUNDS
+//~~~~~~~~~~~~~~~~
 //Picture of the moon in original dimensions
 static std::string backgroundTextureFP = "/Users/forrestmiller/Documents/Cool_Picture_of_the_moon.jpg";
-
-
-//Picture of jupiter I got from NASA JPL's website: https://photojournal.jpl.nasa.gov/catalog/PIA21774
-//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/JupiterPicture.jpg";
 
 //Another hubble photo
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/AnotherHubblePic.jpg";
 
-
 //Picture of antartica:
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Antarticata.jpg";
 
-//Another test picture:
-//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Mibra_mine.jpg";
+//~~~~~~~~~~~~~~~~
+//Less GOOD BACKGROUNDS
+//~~~~~~~~~~~~~~~~
+// Hubble shot of the galaxy. Huge resolution! Has not been fixed to display properly. CAUSES MUCH LAG!
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Galaxy_history_revealed_by_the_Hubble_Space_Telescope_(GOODS-ERS2).jpg";
 
+//Picture of jupiter I got from NASA JPL's website: https://photojournal.jpl.nasa.gov/catalog/PIA21774
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/JupiterPicture.jpg";
 
+//~~~~~~~~~~~~~~~~
+//Test BACKGROUNDS
+//~~~~~~~~~~~~~~~~
 //  Just the calibration Picture I used to fix the 915x609 resolution textures for them to display (usually) correctly.
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/CalibrationPicture_915_609.jpg";
 
- //*/
+//Another test picture I had on my laptop:
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Mibra_mine.jpg";
+
 
 #endif /* GameParameters_h */

@@ -12,7 +12,7 @@
 
 int main(int argc, const char * argv[]) { //Add command line arg to open in windowed mode?
     
-    char * dir = getcwd(NULL, 0); // Platform-dependent, Not Necessarily Portable
+    char * dir = getcwd(NULL, 0); // Platform-dependent, Not Necessarily Portable. This is more to help me figure out where to load files from by getting the directory where the executable will be looking for files.
     printf("Current dir: %s\n\n", dir);
     
     std::cout << "Process Started... \n";
