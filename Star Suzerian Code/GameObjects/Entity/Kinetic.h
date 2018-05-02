@@ -11,10 +11,9 @@
 #include "Instance.h"
 
 
-
 constexpr int KINETIC_PROJECTILE_MODEL_VARIATIONS = 7;
 static constexpr int KINETIC_PROJECTILE_VERSION0_VERTS_COUNT = 18*3;
-static constexpr int KINETIC_PROJECTILE_VERSION1_VERTS_COUNT = 18*3;
+static constexpr int KINETIC_PROJECTILE_VERSION1_VERTS_COUNT = 18*4;
 static constexpr int KINETIC_PROJECTILE_VERSION2_VERTS_COUNT = 18*3;
 static constexpr int KINETIC_PROJECTILE_VERSION3_VERTS_COUNT = 18*3;
 static constexpr int KINETIC_PROJECTILE_VERSION4_VERTS_COUNT = 18*3;
@@ -54,8 +53,10 @@ static constexpr GLfloat KINETIC_PROJECTILE_VERSION0_VERTS[] = {
 };
 
 static constexpr GLfloat KINETIC_PROJECTILE_VERSION1_VERTS[] = {
+    
+    /*
     //Square Pyrimid
-    //x        y        z
+    //   x        y     z
         0.0f,  1.0f,   1.0f, //Base
         0.0f,  1.0f, -1.0f,
         0.0f, -1.0f,  -1.0f,
@@ -74,6 +75,29 @@ static constexpr GLfloat KINETIC_PROJECTILE_VERSION1_VERTS[] = {
         0.0f, -1.0f,   1.0f, //vertical triangle 4
         2.5f,  0.0f,  0.0f,
         0.0f,  1.0f,  1.0f,
+    */
+    
+    
+    //This isn't working right...
+    //x        y        z
+     0.0f,  4.0f,  0.0f, //t1
+     4.0f,  0.0f,  0.0f,
+     0.0f, -4.0f,  0.0f,
+     0.0f, -4.0f,  0.0f, //t2
+    -4.0f,  0.0f,  0.0f,
+     0.0f,  4.0f,  0.0f,
+     0.0f,  4.0f,  0.0f, //triangle 3
+     0.0f,  0.0f,  4.0f,
+     0.0f,  4.0f,  0.0f,
+     0.0f, -4.0f, -0.0f, // triangle 4
+     0.0f,  0.0f, -4.0f,
+     0.0f,  4.0f,  0.0f,
+     0.0f,  0.0f,  4.0f, //triangle 5
+     4.0f,  0.0f,  0.0f,
+     0.0f,  0.0f, -4.0f,
+     0.0f,  0.0f, -4.0f, //triangle 6
+    -4.0f,  0.0f,  0.0f,
+     0.0f,  0.0f,  4.0f,
     
 };
 
@@ -219,7 +243,7 @@ public:
     }
     
     Kinetic(int id, int modelVersion) : Kinetic(id) {
-        
+        //to implement...  have different models spawn at random to give different shaped projectiles
     }
     
     ~Kinetic() {

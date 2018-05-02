@@ -733,11 +733,7 @@ void Generator::generateSingle() {
 void Generator::drawInstances() {
     if (!wasInitialized || this->activeInstances == 0) {return;} //Make sure we can actually draw
     
-    //Turn on shader effect (actually turn it on inside the loop
-//    this->shaderArray[0]->use();
-//    if (this->hasTexture()){
-//        this->textureArray[0]->activate();
-//    }
+
     
    // glGetActiveAttrib;
     //this->textureArray[0]->tex[0] = 0; //This might fix it? No, I had 2 different tex's
@@ -1142,7 +1138,7 @@ void Generator::doDrawPlayerShipInstance(int i) {
         //Draw the 3D collision box around the player model 
         glUniform1f(pul.ulocRedLine, 0.3f);
         glUniform1f(pul.ulocGreenLine, 0.3f);
-        glUniform1f(pul.ulocBlueLine, 0.7f);
+        glUniform1f(pul.ulocBlueLine, 0.95f);
         player->colBox->getCubiodTriangles3D(vertices);
         glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
         glDrawArrays(GL_LINE_STRIP, 0, 36);

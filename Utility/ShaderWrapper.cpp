@@ -586,7 +586,7 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
 void ShaderWrapper::turnOffVertexLayout(vertLayoutFormat vlf) {
     std::cout << "Warning! Don't call this function because it should never be ";
     std::cout << "needed if you\nare using the VAO correctly." << std::endl;
-    std::cout << "(UNLESS YOU IMPLEMENT A PROPER CLEAN-UP ON EXITING THE PROGRAM... YOU SHOULD LOOK INTO IF THIS IS NECESSARY AT SOME POINT!" << std::endl;
+    std::cout << "(UNLESS YOU IMPLEMENT A PROPER CLEAN-UP ON EXITING THE PROGRAM... YOU SHOULD LOOK INTO IF THIS IS NECESSARY AT SOME POINT!)" << std::endl;
     if (vlf == VERT3) {
         glDisableVertexAttribArray(*(this->posAttrib));
     }

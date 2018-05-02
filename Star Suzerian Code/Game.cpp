@@ -132,7 +132,7 @@ void Game::loadGameObjects() {
     
     //void Game::loadShaders() {  }
     //void Game::loadTextures() {
-    //Turns out I need a to bind an objectGenerators ->tex first before setting parameters on it
+    //Turns out I need a to bind an objectGenerators ->tex first before setting parameters on it (which makes sense)
     //    std::cout << std::endl << INDENT << "Configuring Texture Parameters..." << std::endl;
     //    std::cout << INDENT << "    " << "Setting Edge-Wrap: Set to CLAMP_TO_EDGE" << std::endl;
     
@@ -145,7 +145,7 @@ bool Game::launch() {
     ////////////////////////////////////////////////////////////////////////////
     ///////////////////////////    GAME LOOP     ///////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-
+    
     while (glfwWindowShouldClose(mWindow) == false) {
         
         auto frameBegin = std::chrono::high_resolution_clock::now();
@@ -153,9 +153,8 @@ bool Game::launch() {
         //----------------------------------------------------------------------
         //  RESET OpenGL states to prepare for rendering next frame
         //----------------------------------------------------------------------
-        glClear(GL_COLOR_BUFFER_BIT); //clear the color buffer
-        glEnable(GL_DEPTH_TEST); //Turn on the depth test for z-culling
-        glDepthFunc(GL_LESS); //Explicity tell the z-culling which direction to cull
+        
+        glDepthFunc(GL_LESS); //Explicity tell the z-culling operation which direction to cull
         
         
         //----------------------------------------------------------------------
@@ -279,7 +278,7 @@ bool Game::launch() {
         glUseProgram(0);
         
         //----------------------------------------------------------------------
-        // Flip buffers and get reader for the next frame
+        // Flip buffers and get ready for the next frame
         //----------------------------------------------------------------------
         glfwSwapBuffers(mWindow);
         glfwPollEvents();
@@ -320,6 +319,11 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
         //For each active weapon instance
         std::vector<WeaponInstance*>::iterator wepIter = activeWepInstances.begin();
         for (; wepIter != activeWepInstances.end(); wepIter++) {
+            //Check to make sure the weapon has existed for long enough to have left the collision box of the ship that fired it
+            
+            if ((*wepIter)->timeAlive < 2.0f * TIME_TICK_RATE )  {
+                continue;
+            }
             WeaponType wt = (*wepIter)->getWeaponType();
             switch (wt) {
                 case KINETIC: //If the weapon is a kinetic weapon
@@ -327,8 +331,8 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
                     //cast to kinetic instance
                     Kinetic * kWepInst = static_cast<Kinetic*>((*wepIter));
                     CollisionBox * kineticColBox = kWepInst->colBox;
-                    //Check to see if this collisionBox and player's collisionBox are overlapping
-                    if (kineticColBox->isOverlapping(*playersColBox) && kWepInst->timeAlive > TIME_TICK_RATE * 3) {
+                    //Check to see if the weapon's collisionBox and the player's collisionBox are overlapping
+                    if (kineticColBox->isOverlapping(*playersColBox) ){
                         //Do damage to player
                         player->health -= kWepInst->damage;
                         //Print the player's damage amount!

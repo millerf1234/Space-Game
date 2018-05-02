@@ -34,6 +34,13 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     gladLoadGL();
     
     fprintf(stderr, "    Graphics Language loaded.\n    Graphics Language version: OpenGL %s", glGetString(GL_VERSION));
+    //set OpenGl global state parameters
+    fprintf(stderr, "\nInitializing GL StateMachine...\n");
+    std::cout << "    Activating GL depth-test\n";
+    glEnable(GL_DEPTH_TEST); //Turn on the depth test for z-culling
+    //std::cout << "    Activating GL scissor-test\n";
+    //glEnable(GL_SCISSOR_TEST);
+    
     
     //looks like glGetString comes with a terminating new line. To remove this newline, do:
     //      str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());  //where str is a string

@@ -33,15 +33,21 @@ static constexpr float PI = 3.1415927f;
 
 
 //-----------------------------------------------------------------------------
+//                       OPEN FULL SCREEN OR WINDOWED
+//-----------------------------------------------------------------------------
+static const bool USE_FULLSCREEN = true;
+
+
+//-----------------------------------------------------------------------------
 // Debug Message Toggle Control (not complete)
 //-----------------------------------------------------------------------------
 static constexpr bool PRINT_DEBUG_WARNING_MESSAGES = true;
 static constexpr bool PRINT_DEBUG_MESSAGES = false; //Turn off if not in debug mode
-static constexpr bool PRINT_FRAME_PROCESS_TIME_INFORMATION = false; //Prints the process time for the frame to the console
-static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a test
+static constexpr bool PRINT_FRAME_PROCESS_TIME_INFORMATION = false; //Prints the process time for the frame to the console  (question: How does out-of-order execution optimization affect the timing functions? Are they always guarenteed to execute at the point they appear in the code?)
+static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a test (it looks like my laptop refuses to allow MSAA)
 static constexpr bool PRINT_DESTRUCTOR_CALLS = false; //For debug
 static constexpr bool PRINT_WEAPON_SPAWN_POINT_COORDS = false; //More debug stuff
-static constexpr bool PRINT_WEAPON_SPAWN_ANGLES = true; //Mostly for debug, 
+static constexpr bool PRINT_WEAPON_SPAWN_ANGLES = false; //Mostly for debug
 
 static constexpr bool DRAW_COLLISION_DETAILS = false;
 
@@ -167,7 +173,7 @@ static const char * NAME_OF_GAME = "SPACE ___! The Omega Occurance"; //Working N
 static const bool curserVisible = false; //Experimental still... (i.e. it doesn't work at all)
 
 //Game was written with an expected base TIME_TICK_RATE of 0.01f
-constexpr float TIME_TICK_RATE = 0.001f; //Time step per loop iteration, tweak wisely...
+constexpr float TIME_TICK_RATE = 0.01f; //Time step per loop iteration, tweak wisely...
 
 //Player COLORS
 //Player 1     (0.7f red, 0.48f green, 0.15f blue) is what I have been going with
@@ -222,7 +228,7 @@ static constexpr bool RUNNING_ON_MAC_MAC = true; //Does some overrides that are 
 static const int DEFAULT_AA_SAMPLES = 2; //This is for global anti-aliasing done by GLFW (NOT SURE THIS DOES ANYTHING?)
 static const bool USE_VSYNC = true; //Should VSync be off/on
 static const int DEFAULT_MONITOR = 1; //The primary monitor is 0, so 1 will be the next monitor after the primary monitor
-static const bool USE_FULLSCREEN = true;
+//static const bool USE_FULLSCREEN = false; //Moving to be at the top of this file
 
 //NOTE:I noticed that my macbook will still only run at 1080p if told to run at 4k, so these are usless if running on my laptop
 static const bool USE_CUSTOM_RESOLUTION = false;   //Common display resolutions: 3840x2160 (4k),

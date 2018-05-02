@@ -66,6 +66,8 @@ void main() {
 }
 
 */
+
+
 float damageColorChange = damage / maxHealth ;
 void main() {
     
@@ -74,6 +76,8 @@ void main() {
                    blue + (damageColorChange * (1.0f - blue)),
                    exp(damage - 1.0f)) );
 }
+
+
 //
 //#version 400 core
 //out vec4 color;
