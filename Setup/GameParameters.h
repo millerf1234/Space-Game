@@ -27,7 +27,7 @@
 
 static constexpr float PI = 3.1415927f;
 
-//NOTE!  IN Generator under the function delete element, I set the value in the seperate array of element ID's that I track
+//NOTE!  IN Generator under the function./ delete element, I set the value in the seperate array of element ID's that I track
 //       to some bogus large negative number to represent that that instance was deleted, this way I am not constantly
 //       resizing the array... wait...
 
@@ -198,18 +198,18 @@ static constexpr bool DRAW_LINES_PLAYER_MODELS = true;
 //-----------------------------------------------------------------------------
 //   WEAPON PARAMETERS
 //-----------------------------------------------------------------------------
-//Lazer
-static constexpr float LAZER_ENERGY_DRAIN = STARTING_PLAYER_ENERGY / 200.0f; //Gives 200 shots
-static constexpr float LAZER_SPEED = 1.5f * PLAYER_MOVEMENT_MAX_SPEED; //0.8f;
-static constexpr float LAZER_WIDTH = 0.05f;
-static constexpr bool LAZER_COLOR_MATCH_PLAYER_COLOR = true;
+//Laser
+static constexpr float LASER_ENERGY_DRAIN = STARTING_PLAYER_ENERGY / 200.0f; //Gives 200 shots
+static constexpr float LASER_SPEED = 1.5f * PLAYER_MOVEMENT_MAX_SPEED; //0.8f;
+static constexpr float LASER_WIDTH = 0.05f;
+static constexpr bool LASER_COLOR_MATCH_PLAYER_COLOR = true;
 
 //Kinetic
 static constexpr float PROJECTILE_SIZE = 6.0f; //Larger number means smaller. I would say about 4.0f
 //For velocity calculation of Kinetic see KineticWeaponManager.cpp around line 210
-static constexpr float KINETIC_SPEED_FACTOR = 1.75f; //formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
+static constexpr float KINETIC_SPEED_FACTOR = 1.75f; //1.75f is good value, formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
 
-static constexpr int PLAYER_KINETIC_AMMO = 50000; //Give a lot until I add picking up ammo
+static constexpr int PLAYER_KINETIC_AMMO = 500000; //Give a lot until I add picking up ammo
 static constexpr float KINETIC_WEP_DAMAGE = 0.005f;
 
 static constexpr float KINETIC_VELOCITY_IMPACT = 0.05f;

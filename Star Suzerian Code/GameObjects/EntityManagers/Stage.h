@@ -21,8 +21,8 @@ static constexpr int STAGE_VERTS_SIZE = 4*(2+3+2);
 static constexpr GLfloat STAGE_VERTS[] = {
     
     // Position                     Color                     Texture (U/V)
-    -1.0f,  1.0f,            0.0f,   0.0f,   0.0f,            0.0f, 0.0f, //  Top-left corner   //0
-     1.0f,  1.0f,            0.0f,   0.0f,   0.0f,            1.0f, 0.0f, //  Top-right corner  //1
+    -1.0f,  1.0f,            0.0f,   0.0f,   0.0f,            0.0f, -0.05f, //  Top-left corner   //0
+     1.0f,  1.0f,            0.0f,   0.0f,   0.0f,            1.0f, -0.05f, //  Top-right corner  //1
      1.0f, -1.0f,            0.0f,   0.0f,   0.0f,            1.0f, 1.0f, // Lower-right corner //2
     -1.0f, -1.0f,            0.0f,   0.0f,   0.0f,            0.0f, 1.0f  // Lower-left corner  //3
     

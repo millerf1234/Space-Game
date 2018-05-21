@@ -7,122 +7,139 @@
 
 #include "ShaderWrapper.h"
 
-//Some utility stuff for handling uniform locations (I don't support uniform arrays yet)
-//I have an enum for each type of supported Uniform Location
-enum UniformType{byteUniform, intUniform, floatUniform, unspecified};
 
-//This is a tiny wrapper class that is used to track uniform locations internally
-typedef struct ULInfo { //Struct of Uniform Location Information
-private:
-    int hashkey; //For matching
-    GLuint location;
-    std::string ulName; //uniform location name
-public:
-    UniformType uniformType;
-    //Constructors
-    ULInfo() {
-        this->hashkey = NOT_SET;
-        uniformType = unspecified;
-        ulName = "";
-    }
-    ULInfo(std::string ulName, UniformType ulType, GLuint programID) : ULInfo() { //Call the default constructor
-        this->set(ulName, ulType, programID); //set self using function
-    }
-    //Interface functions
-    void set(std::string ulName, UniformType type, GLuint programID) {
-        //Check to make sure this wasn't already set for some reason
-        if (this->checkIfLocationValid()) { //i.e. check to see if a valid location has already been set
-            printf("\nDEBUG::WARNING! Attempting to overwrite uniform location for ");
-            if (uniformType == byteUniform) {
-                printf("Byte ");
-            }
-            else if (uniformType == intUniform) {
-                printf("Integer ");
-            }
-            else if (uniformType == floatUniform) {
-                printf("Float ");
-            }
-            else {
-                printf("!!!Unspecified!!! ");
-            }
-            printf("Uniform %s\n", ulName.c_str());
-            return;
-        }
-        
-        //Else, try to set the uniform location
-        location = glGetUniformLocation(programID, ulName.c_str());
-        if (!checkIfLocationValid()) {
-            std::cout << "\nError retrieving uniform location for " << ulName << std::endl;
-            return;
-        }
-        this->hashkey = computeHashkey(ulName);
-        this->uniformType = type;
-        this->ulName = ulName;
-    }
-    int computeHashkey(std::string name) const {
-        if (name.length() == 0ul) {
-            std::cout << "\nDEBUG:WARNING! computeHashKey called on an empty string!\n";
-            return NOT_SET;
-        }
-        //convert name to be all lowercase
-        std::transform(name.begin(), name.end(), name.begin(), tolower); //Third parameter is target to write to
-        
-        int firstLetterValue = (int) name.at(0) - (int)'a';
-        //Scale the first Letter Value to fit in the hash table
-        firstLetterValue *= LOCATIONS_PER_LETTER;
-        
-        //Check to see if name contains additional letters
-        if (name.length() == 1ul) {
-            return firstLetterValue;
-        }
-        
-        //Calculate the rest of the hashKey from the second letter
-        int hashKey = firstLetterValue + (((name.at(1) - 'a') * (26 / LOCATIONS_PER_LETTER)));
-        std::cout << "\nDEBUG::Computed hash key " << hashKey << " for uniform name " << name << "\n";
-        if (hashKey < 0) {
-            hashKey = UL_HASHTABLE_SIZE + hashKey;
-            std::cout << "\nDEBUG:Negative Hash key wrapped around to give key value: " << hashKey;
-        }
-        return hashKey;
-    }
-    int getHashKey() const {return this->hashkey;}
-    std::string getName() const {return this->ulName;}
-    bool checkIfLocationValid() const {return (this->location != NOT_SET);}
-    UniformType getType() const {return this->uniformType;}
-    
-    //Equals operator
-    bool operator==(const ULInfo & other) {
-        if (this->location == other.location) {
-            if (this->getHashKey() == other.getHashKey()) {
-                return true;
-            }
-        } //else:
-        return false;
-    }
-    //Not Equal operator
-    bool operator!=(const ULInfo & other) {
-        if (this->location == other.location && this->getName() == other.getName()) {
-            return false;
-        }
-        return true;
-    }
-    
-} ULInfo;
-
-
-//Another struct for wrapping up each ULInfo struct
-
-typedef struct ULHashbucket {
-    int hashKey;
-    ULInfo data;
-    ULHashbucket * next; //For chaining the hash table if necessary
-    
-    //Constructor:
-    ULHashbucket() { //Give parameters?
-        //this
-    }
-    
-} ULHashbucket;
+/*  I started to integrate the storage of uniform locations within the ShaderWrapper class
+    on day before work, but unfortuantly I got only about half way through and then
+    wasn't able to work on this project for a few days. So there is a class in place
+    here that was intended to be local to this object which would handle 'remembering'
+    a uniform location once one was specified. This would happen by the user calling
+    the function set() with three parameters:
+    1) a string for the name of the uniform in the shader,
+    2) an enumeration so that the type of the object knew which OpenGL function to call,
+    3) the program ID.
+ 
+    There was also a hash table involved so that if a bunch of uniforms were stored on an object,
+    lookup time would improve, but this really wasn't necessary because there is a small
+    limit on the number of uniforms that can be passed this way without a buffer.
+ 
+////Some utility stuff for handling uniform locations (I don't support uniform arrays yet)
+////I have an enum for each type of supported Uniform Location
+//enum UniformType{byteUniform, intUniform, floatUniform, unspecified};
+//
+////This is a tiny wrapper class that is used to track uniform locations internally
+//typedef struct ULInfo { //Struct of Uniform Location Information
+//private:
+//    int hashkey; //For matching
+//    GLuint location;
+//    std::string ulName; //uniform location name
+//public:
+//    UniformType uniformType;
+//    //Constructors
+//    ULInfo() {
+//        this->hashkey = NOT_SET;
+//        uniformType = unspecified;
+//        ulName = "";
+//    }
+//    ULInfo(std::string ulName, UniformType ulType, GLuint programID) : ULInfo() { //Call the default constructor
+//        this->set(ulName, ulType, programID); //set self using function
+//    }
+//    //Interface functions
+//    void set(std::string ulName, UniformType type, GLuint programID) {
+//        //Check to make sure this wasn't already set for some reason
+//        if (this->checkIfLocationValid()) { //i.e. check to see if a valid location has already been set
+//            printf("\nDEBUG::WARNING! Attempting to overwrite uniform location for ");
+//            if (uniformType == byteUniform) {
+//                printf("Byte ");
+//            }
+//            else if (uniformType == intUniform) {
+//                printf("Integer ");
+//            }
+//            else if (uniformType == floatUniform) {
+//                printf("Float ");
+//            }
+//            else {
+//                printf("!!!Unspecified!!! ");
+//            }
+//            printf("Uniform %s\n", ulName.c_str());
+//            return;
+//        }
+//
+//        //Else, try to set the uniform location
+//        location = glGetUniformLocation(programID, ulName.c_str());
+//        if (!checkIfLocationValid()) {
+//            std::cout << "\nError retrieving uniform location for " << ulName << std::endl;
+//            return;
+//        }
+//        this->hashkey = computeHashkey(ulName);
+//        this->uniformType = type;
+//        this->ulName = ulName;
+//    }
+//    int computeHashkey(std::string name) const {
+//        if (name.length() == 0ul) {
+//            std::cout << "\nDEBUG:WARNING! computeHashKey called on an empty string!\n";
+//            return NOT_SET;
+//        }
+//        //convert name to be all lowercase
+//        std::transform(name.begin(), name.end(), name.begin(), tolower); //Third parameter is target to write to
+//
+//        int firstLetterValue = (int) name.at(0) - (int)'a';
+//        //Scale the first Letter Value to fit in the hash table
+//        firstLetterValue *= LOCATIONS_PER_LETTER;
+//
+//        //Check to see if name contains additional letters
+//        if (name.length() == 1ul) {
+//            return firstLetterValue;
+//        }
+//
+//        //Calculate the rest of the hashKey from the second letter
+//        int hashKey = firstLetterValue + (((name.at(1) - 'a') * (26 / LOCATIONS_PER_LETTER)));
+//        std::cout << "\nDEBUG::Computed hash key " << hashKey << " for uniform name " << name << "\n";
+//        if (hashKey < 0) {
+//            hashKey = UL_HASHTABLE_SIZE + hashKey;
+//            std::cout << "\nDEBUG:Negative Hash key wrapped around to give key value: " << hashKey;
+//        }
+//        return hashKey;
+//    }
+//    int getHashKey() const {return this->hashkey;}
+//    std::string getName() const {return this->ulName;}
+//    bool checkIfLocationValid() const {return (this->location != NOT_SET);}
+//    UniformType getType() const {return this->uniformType;}
+//
+//    //Equals operator
+//    bool operator==(const ULInfo & other) {
+//        if (this->location == other.location) {
+//            if (this->getHashKey() == other.getHashKey()) {
+//                return true;
+//            }
+//        } //else:
+//        return false;
+//    }
+//    //Not Equal operator
+//    bool operator!=(const ULInfo & other) {
+//        if (this->location == other.location && this->getName() == other.getName()) {
+//            return false;
+//        }
+//        return true;
+//    }
+//
+//} ULInfo;
+//
+//
+////Another struct for wrapping up each ULInfo struct
+//
+//typedef struct ULHashbucket {
+//    int hashKey;
+//    ULInfo data;
+//    ULHashbucket * next; //For chaining the hash table if necessary
+//
+//    //Constructor:
+//    ULHashbucket() { //Give parameters?
+//        //this
+//    }
+//
+//} ULHashbucket;
+ 
+ */
 
 //Constructors:
 ShaderWrapper::ShaderWrapper() {
@@ -162,6 +179,11 @@ ShaderWrapper::ShaderWrapper() {
 }
 
 ShaderWrapper::~ShaderWrapper() {
+    
+    if (PRINT_DESTRUCTOR_CALLS) {
+        std::cout << "\nDEBUG::ShaderWrapper Destructor Called!\n";
+    }
+    
     //Delete dynamic memory claimed by this object
     
     if (this->vertexShader != nullptr) {
@@ -369,6 +391,19 @@ bool ShaderWrapper::link() {
     }
     //So for all code beyond this point, we know that the shader program has
     //successfully been created
+    
+    //Detach shaders if they are linked
+    glDetachShader(*programID, *vertexShader);
+    if (hasTessl) {
+        //Detatch the tesselation shaders
+        //glDetachShader control
+        //glDetachShader Evaluation
+    }
+    if (hasGeom) {
+        //Detatch the Geometry Shaders
+        glDetachShader(*programID, *geometryShader);
+    }
+    glDetachShader(*programID, *fragmentShader);
     
     //Delete shaders once they are linked
     if (vertexShader != nullptr) { //These nullptr checks aren't necessary but might as well, just to guarentee no issues down the road
@@ -600,6 +635,7 @@ void ShaderWrapper::turnOffVertexLayout(vertLayoutFormat vlf) {
         std::cout << "Please implement this format before you try to turn it off!" << std::endl;
     }
 }
+
 
 
 

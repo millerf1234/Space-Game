@@ -9,7 +9,7 @@
 #include "Generator.h"
 
 static constexpr int WAS_DELETED = -1000; //Used to represent deleted instances
-static constexpr int MAX_TRACKED_INSTANCES_LIST_SIZE = 10000;
+static constexpr int MAX_TRACKED_INSTANCES_LIST_SIZE = 10000; //Maximum limit on renderable objects
 
 //Set static variable
 int Generator::nextObjID = 1; //Starts out at 1
@@ -1110,6 +1110,8 @@ void Generator::doDrawPlayerShipInstance(int i) {
 ////        }
 ////    }
 //    }
+        
+        //see: https://www.khronos.org/opengl/wiki/Vertex_Specification_Best_Practices
     glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
     
     glUniform1f(pul.ulocZoomLine, 1.0f);

@@ -51,7 +51,7 @@ private:
         return{ std::istreambuf_iterator<char>(infile), std::istreambuf_iterator<char>() };
     }
     
-    
+    void Detatch(); //Handles cleaning up shader
     
     
 
