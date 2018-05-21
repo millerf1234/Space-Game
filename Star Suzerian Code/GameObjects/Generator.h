@@ -144,12 +144,12 @@ protected: //temporary for debug
     //Player uniform locations (I need extra uniform locations to accomodate the extra shaders):
     typedef struct PlayerUniformLocations {
     GLint ulocRed, ulocGreen, ulocBlue; //Uniform locations for PLAYER rgb (color)
-    GLint ulocRedLine, ulocGreenLine, ulocBlueLine;
-    GLint ulocTimeLine, ulocZoomLine, ulocXTransLine, ulocYTransLine, ulocZTransLine, ulocThetaXLine, ulocThetaYLine, ulocThetaZLine;
+    GLint ulocRed_Line, ulocGreen_Line, ulocBlue_Line;
+    GLint ulocTime_Line, ulocZoom_Line, ulocXTrans_Line, ulocYTrans_Line, ulocZTrans_Line, ulocThetaX_Line, ulocThetaY_Line, ulocThetaZ_Line;
     GLint ulocTimeEngine, ulocZoomEngine, ulocXTransEngine, ulocYTransEngine, ulocZTransEngine, ulocThetaXEngine, ulocThetaYEngine, ulocThetaZEngine;
     GLint ulocTimeEngineSide, ulocZoomEngineSide, ulocXTransEngineSide, ulocYTransEngineSide, ulocZTransEngineSide, ulocThetaXEngineSide, ulocThetaYEngineSide, ulocThetaZEngineSide;
     GLint ulocPDamage, ulocPHealthMax;
-    GLint ulocRoll, ulocPlayerRollLine, ulocPlayerRollEngineSide; //Don't need to track roll for main engine
+    GLint ulocRoll, ulocPlayerRoll_Line, ulocPlayerRollEngineSide; //Don't need to track roll for main engine
     } PlayerUniformLocations;
     
     PlayerUniformLocations pul;

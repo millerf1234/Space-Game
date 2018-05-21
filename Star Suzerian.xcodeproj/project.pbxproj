@@ -40,6 +40,7 @@
 		9ED772142036CE1600D569A4 /* TextureWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED772122036CE1600D569A4 /* TextureWrapper.cpp */; };
 		9ED77219203930F200D569A4 /* Generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED77217203930F100D569A4 /* Generator.cpp */; };
 		9ED7721D2039516500D569A4 /* Stage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ED7721B2039516500D569A4 /* Stage.cpp */; };
+		9EF2856E20B33C1000F46DC7 /* BufferFacilitator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EF2856C20B33C1000F46DC7 /* BufferFacilitator.cpp */; };
 		9EFA4CA32051D9B000308177 /* WeaponOverseer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EFA4CA12051D9B000308177 /* WeaponOverseer.cpp */; };
 		9EFA4CA72053366600308177 /* Impact2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EFA4CA52053366600308177 /* Impact2D.cpp */; };
 /* End PBXBuildFile section */
@@ -142,6 +143,8 @@
 		9ED77218203930F100D569A4 /* Generator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Generator.h; sourceTree = "<group>"; };
 		9ED7721B2039516500D569A4 /* Stage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Stage.cpp; sourceTree = "<group>"; };
 		9ED7721C2039516500D569A4 /* Stage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Stage.h; sourceTree = "<group>"; };
+		9EF2856C20B33C1000F46DC7 /* BufferFacilitator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BufferFacilitator.cpp; sourceTree = "<group>"; };
+		9EF2856D20B33C1000F46DC7 /* BufferFacilitator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BufferFacilitator.h; sourceTree = "<group>"; };
 		9EFA4CA02051D89D00308177 /* WeaponTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponTracker.h; sourceTree = "<group>"; };
 		9EFA4CA12051D9B000308177 /* WeaponOverseer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = WeaponOverseer.cpp; sourceTree = "<group>"; };
 		9EFA4CA22051D9B000308177 /* WeaponOverseer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponOverseer.h; sourceTree = "<group>"; };
@@ -431,6 +434,15 @@
 			path = OldStyleObjectGeneration;
 			sourceTree = "<group>";
 		};
+		9EF2856F20B3503000F46DC7 /* Half_Finished_UnifiedBufferManager */ = {
+			isa = PBXGroup;
+			children = (
+				9EF2856C20B33C1000F46DC7 /* BufferFacilitator.cpp */,
+				9EF2856D20B33C1000F46DC7 /* BufferFacilitator.h */,
+			);
+			path = Half_Finished_UnifiedBufferManager;
+			sourceTree = "<group>";
+		};
 		9EFA4C9E2051D63400308177 /* Experimental_Weapon_Code */ = {
 			isa = PBXGroup;
 			children = (
@@ -443,6 +455,7 @@
 		9EFA4C9F2051D7F500308177 /* Unfinished_or_Not_Used */ = {
 			isa = PBXGroup;
 			children = (
+				9EF2856F20B3503000F46DC7 /* Half_Finished_UnifiedBufferManager */,
 				9E3DD98D206D7BC200B2ED86 /* IncompleteOrBuggyMath */,
 				9ED7721A20394CD000D569A4 /* OldStyleObjectGeneration */,
 				9EFA4C9E2051D63400308177 /* Experimental_Weapon_Code */,
@@ -554,6 +567,7 @@
 			files = (
 				9E0754F1203B8B58009B6215 /* QuickHull.cpp in Sources */,
 				9EFA4CA72053366600308177 /* Impact2D.cpp in Sources */,
+				9EF2856E20B33C1000F46DC7 /* BufferFacilitator.cpp in Sources */,
 				9ED77219203930F200D569A4 /* Generator.cpp in Sources */,
 				9E8FF849204DDD29006E2392 /* CollisionBox.cpp in Sources */,
 				9E10D5D72032CEDC00F0F724 /* SimpleObjLoader.cpp in Sources */,

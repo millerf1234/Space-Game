@@ -41,12 +41,12 @@ Generator::Generator() {
     
     //Set special uniform location variables to -1 (their default not_found code)
     pul.ulocRed = pul.ulocGreen = pul.ulocBlue = -1; //PlayerUniformLocaition.UniformLOCationRED
-    pul.ulocRedLine = pul.ulocGreenLine = pul.ulocBlueLine = -1;
-    pul.ulocTimeLine = pul.ulocZoomLine = pul.ulocXTransLine = pul.ulocYTransLine = pul.ulocZTransLine = pul.ulocThetaXLine = pul.ulocThetaYLine = pul.ulocThetaZLine = -1;
+    pul.ulocRed_Line = pul.ulocGreen_Line = pul.ulocBlue_Line = -1;
+    pul.ulocTime_Line = pul.ulocZoom_Line = pul.ulocXTrans_Line = pul.ulocYTrans_Line = pul.ulocZTrans_Line = pul.ulocThetaX_Line = pul.ulocThetaY_Line = pul.ulocThetaZ_Line = -1;
     pul.ulocTimeEngine = pul.ulocZoomEngine = pul.ulocXTransEngine = pul.ulocYTransEngine = pul.ulocZTransEngine = pul.ulocThetaXEngine = pul.ulocThetaYEngine = pul.ulocThetaZEngine = -1;
     pul.ulocTimeEngineSide = pul.ulocZoomEngineSide = pul.ulocXTransEngineSide = pul.ulocYTransEngineSide = pul.ulocZTransEngineSide = pul.ulocThetaXEngineSide = pul.ulocThetaYEngineSide = pul.ulocThetaZEngineSide = -1;
     pul.ulocPDamage = pul.ulocPHealthMax = -1;
-    pul.ulocRoll = pul.ulocPlayerRollLine = pul.ulocPlayerRollEngineSide = -1;
+    pul.ulocRoll = pul.ulocPlayerRoll_Line = pul.ulocPlayerRollEngineSide = -1;
     
 //    this->drawTriangles = true;
 //    this->drawLines = false;
@@ -422,24 +422,24 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         this->shaderArray[1]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
         //set uniforms for the line shader:
         shaderID = shaderArray[1]->getID();
-        pul.ulocRedLine = glGetUniformLocation(shaderID, "red");
-        pul.ulocGreenLine = glGetUniformLocation(shaderID, "green");
-        pul.ulocBlueLine = glGetUniformLocation(shaderID, "blue");
-        pul.ulocTimeLine = glGetUniformLocation(shaderID, "time");
-        pul.ulocZoomLine = glGetUniformLocation(shaderID, "zoom");
-        pul.ulocXTransLine = glGetUniformLocation(shaderID, "xTrans");
-        pul.ulocYTransLine = glGetUniformLocation(shaderID, "yTrans");
-        pul.ulocZTransLine = glGetUniformLocation(shaderID, "zTrans");
-        pul.ulocThetaXLine = glGetUniformLocation(shaderID, "thetaX");
-        pul.ulocThetaYLine = glGetUniformLocation(shaderID, "thetaY");
-        pul.ulocThetaZLine = glGetUniformLocation(shaderID, "thetaZ");
-        pul.ulocPlayerRollLine = glGetUniformLocation(shaderID, "earlyThetaZ");
+        pul.ulocRed_Line = glGetUniformLocation(shaderID, "red");
+        pul.ulocGreen_Line = glGetUniformLocation(shaderID, "green");
+        pul.ulocBlue_Line = glGetUniformLocation(shaderID, "blue");
+        pul.ulocTime_Line = glGetUniformLocation(shaderID, "time");
+        pul.ulocZoom_Line = glGetUniformLocation(shaderID, "zoom");
+        pul.ulocXTrans_Line = glGetUniformLocation(shaderID, "xTrans");
+        pul.ulocYTrans_Line = glGetUniformLocation(shaderID, "yTrans");
+        pul.ulocZTrans_Line = glGetUniformLocation(shaderID, "zTrans");
+        pul.ulocThetaX_Line = glGetUniformLocation(shaderID, "thetaX");
+        pul.ulocThetaY_Line = glGetUniformLocation(shaderID, "thetaY");
+        pul.ulocThetaZ_Line = glGetUniformLocation(shaderID, "thetaZ");
+        pul.ulocPlayerRoll_Line = glGetUniformLocation(shaderID, "earlyThetaZ");
         
         if (PRINT_DEBUG_MESSAGES) {
         std::cout << "    DEBUG::PlayerLineColorLocations: \n";
-        std::cout << "ulocRedLine = " << pul.ulocRedLine << std::endl;
-        std::cout << "ulocGreenLine = " << pul.ulocGreenLine << std::endl;
-        std::cout << "ulocBlueLine = " << pul.ulocBlueLine << std::endl;
+        std::cout << "ulocRedLine = " << pul.ulocRed_Line << std::endl;
+        std::cout << "ulocGreenLine = " << pul.ulocGreen_Line << std::endl;
+        std::cout << "ulocBlueLine = " << pul.ulocBlue_Line << std::endl;
         }
         
         if (shaderArray[1]->checkIfReady()) {
@@ -977,18 +977,18 @@ void Generator::doDrawPlayerShipInstance(int i) {
     
     //Set up to Draw Lines
     shaderArray[1]->use();
-    glUniform1f(pul.ulocTimeLine, instances[i]->timeAlive);
-    glUniform1f(pul.ulocZoomLine, instances[i]->zoom);
-    glUniform1f(pul.ulocXTransLine, instances[i]->position.x);
-    glUniform1f(pul.ulocYTransLine, instances[i]->position.y);
-    glUniform1f(pul.ulocZTransLine, instances[i]->position.z);
-    glUniform1f(pul.ulocThetaXLine, instances[i]->thetaX);
-    glUniform1f(pul.ulocThetaYLine, instances[i]->thetaY);
-    glUniform1f(pul.ulocThetaZLine, instances[i]->thetaZ);
-    glUniform1f(pul.ulocRedLine, player->red * PLAYER_LINE_COLOR_BOOST_FACTOR);
-    glUniform1f(pul.ulocGreenLine, player->green * PLAYER_LINE_COLOR_BOOST_FACTOR);
-    glUniform1f(pul.ulocBlueLine, player->blue * PLAYER_LINE_COLOR_BOOST_FACTOR);
-    glUniform1f(pul.ulocPlayerRollLine, player->rollAmount);
+    glUniform1f(pul.ulocTime_Line, instances[i]->timeAlive);
+    glUniform1f(pul.ulocZoom_Line, instances[i]->zoom);
+    glUniform1f(pul.ulocXTrans_Line, instances[i]->position.x);
+    glUniform1f(pul.ulocYTrans_Line, instances[i]->position.y);
+    glUniform1f(pul.ulocZTrans_Line, instances[i]->position.z);
+    glUniform1f(pul.ulocThetaX_Line, instances[i]->thetaX);
+    glUniform1f(pul.ulocThetaY_Line, instances[i]->thetaY);
+    glUniform1f(pul.ulocThetaZ_Line, instances[i]->thetaZ);
+    glUniform1f(pul.ulocRed_Line, player->red * PLAYER_LINE_COLOR_BOOST_FACTOR);
+    glUniform1f(pul.ulocGreen_Line, player->green * PLAYER_LINE_COLOR_BOOST_FACTOR);
+    glUniform1f(pul.ulocBlue_Line, player->blue * PLAYER_LINE_COLOR_BOOST_FACTOR);
+    glUniform1f(pul.ulocPlayerRoll_Line, player->rollAmount);
     
     //Some DEBUG code------------------------------
     if (PRINT_DEBUG_MESSAGES) {
@@ -1114,17 +1114,17 @@ void Generator::doDrawPlayerShipInstance(int i) {
         //see: https://www.khronos.org/opengl/wiki/Vertex_Specification_Best_Practices
     glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
     
-    glUniform1f(pul.ulocZoomLine, 1.0f);
-    glUniform1f(pul.ulocXTransLine, 0.0f);
-    glUniform1f(pul.ulocYTransLine, 0.0f);
-    glUniform1f(pul.ulocZTransLine, 0.0f);
-    glUniform1f(pul.ulocPlayerRollLine, 0.0f);
-    glUniform1f(pul.ulocThetaXLine, 0.0f);
-    glUniform1f(pul.ulocThetaYLine, 0.0f);
-    glUniform1f(pul.ulocThetaZLine, 0.0f);
-    glUniform1f(pul.ulocRedLine, 0.0f);
-    glUniform1f(pul.ulocGreenLine, 1.0f);
-    glUniform1f(pul.ulocBlueLine, 0.6f);
+    glUniform1f(pul.ulocZoom_Line, 1.0f);
+    glUniform1f(pul.ulocXTrans_Line, 0.0f);
+    glUniform1f(pul.ulocYTrans_Line, 0.0f);
+    glUniform1f(pul.ulocZTrans_Line, 0.0f);
+    glUniform1f(pul.ulocPlayerRoll_Line, 0.0f);
+    glUniform1f(pul.ulocThetaX_Line, 0.0f);
+    glUniform1f(pul.ulocThetaY_Line, 0.0f);
+    glUniform1f(pul.ulocThetaZ_Line, 0.0f);
+    glUniform1f(pul.ulocRed_Line, 0.0f);
+    glUniform1f(pul.ulocGreen_Line, 1.0f);
+    glUniform1f(pul.ulocBlue_Line, 0.6f);
     
         
         //Draw the 2D collision box
@@ -1138,9 +1138,9 @@ void Generator::doDrawPlayerShipInstance(int i) {
         glad_glDisable(GL_LINE_SMOOTH);
         
         //Draw the 3D collision box around the player model 
-        glUniform1f(pul.ulocRedLine, 0.3f);
-        glUniform1f(pul.ulocGreenLine, 0.3f);
-        glUniform1f(pul.ulocBlueLine, 0.95f);
+        glUniform1f(pul.ulocRed_Line, 0.3f);
+        glUniform1f(pul.ulocGreen_Line, 0.3f);
+        glUniform1f(pul.ulocBlue_Line, 0.95f);
         player->colBox->getCubiodTriangles3D(vertices);
         glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
         glDrawArrays(GL_LINE_STRIP, 0, 36);
@@ -1426,7 +1426,6 @@ void Generator::drawKineticInstance(Kinetic * kin) {
     //std::cout << "Draw KineticInstance was called by the code!\n";
     
     switch (kin->getModelVersion()) {
-        
         default:
         case 0:
             glDrawArrays(GL_TRIANGLES, 0,  KINETIC_PROJECTILE_VERSION0_VERTS_COUNT / 3);
