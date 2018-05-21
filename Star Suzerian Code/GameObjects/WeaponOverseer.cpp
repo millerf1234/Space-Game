@@ -110,7 +110,8 @@ void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Entity * entity) {
 void WeaponOverseer::processWeaponTrackers() {
     if (this->numWepTrackers == 0) {return;}
     
-    //Without checking for time between firing just do the following:
+    /*
+    //Without checking for time between firing just do the following (7) lines:
     for (int i = 0; i < numWepTrackers; ++i) {
         WeaponTracker * currentWT = this->wepTrackers[i];
         //Check events on the currentWT
@@ -118,10 +119,16 @@ void WeaponOverseer::processWeaponTrackers() {
             this->kineticWepManager->spawnNewKineticInstance(currentWT);
         }
     }
+    */
+     
     
-    /*
     //To check for time between firing (This code really should be done somewhere else)...
     //I hacked this together quickly to get it so players can only shoot so much so often.
+    
+    //Parameters
+    constexpr int COOLDOWN_TIMER_IN_FRAMES = 8;
+    constexpr int SHOTS_BEFORE_COOLDOWN = 4;
+    
     //This is really NOT the way to implement this because its confusing and is bad design
     //(I should replace this with a better solution if I ever get time)
     static short player1ShotsFired = 0;
@@ -135,14 +142,14 @@ void WeaponOverseer::processWeaponTrackers() {
         //Increment the timers
         if (i == 0) {
             player1ShotsCooldownTimer++;
-            if (player1ShotsCooldownTimer >= 14) {
+            if (player1ShotsCooldownTimer >= COOLDOWN_TIMER_IN_FRAMES) {
                 player1OnCooldown = false;
                 player1ShotsFired = 0;
             }
         }
         else if (i == 1) {
             player2ShotsCooldownTimer++;
-            if (player2ShotsCooldownTimer >= 14) {
+            if (player2ShotsCooldownTimer >= COOLDOWN_TIMER_IN_FRAMES) {
                 player2OnCooldown = false;
                 player2ShotsFired = 0;
             }
@@ -158,11 +165,14 @@ void WeaponOverseer::processWeaponTrackers() {
             }
             else {
                 if (currentWT->getKineticWasFired()) {
-                    this->kineticWepManager->spawnNewKineticInstance(currentWT);
                     player1ShotsFired++;
                     player1ShotsCooldownTimer = 0;
-                    if (player1ShotsFired > 2) {
+                    if (player1ShotsFired > SHOTS_BEFORE_COOLDOWN) {
+                        currentWT->resetWeaponsFired();
                         player1OnCooldown = true;
+                    }
+                    else {
+                        this->kineticWepManager->spawnNewKineticInstance(currentWT);
                     }
                 }
                 else {
@@ -179,11 +189,14 @@ void WeaponOverseer::processWeaponTrackers() {
             }
             else {
                 if (currentWT->getKineticWasFired()) {
-                    this->kineticWepManager->spawnNewKineticInstance(currentWT);
                     player2ShotsFired++;
                     player2ShotsCooldownTimer = 0;
-                    if (player2ShotsFired > 2) {
+                    if (player2ShotsFired > SHOTS_BEFORE_COOLDOWN) {
+                        currentWT->resetWeaponsFired();
                         player2OnCooldown = true;
+                    }
+                    else {
+                        this->kineticWepManager->spawnNewKineticInstance(currentWT);
                     }
                 }
                 else {
@@ -195,7 +208,7 @@ void WeaponOverseer::processWeaponTrackers() {
         }
      
      }
-     */
+    
     
     
     

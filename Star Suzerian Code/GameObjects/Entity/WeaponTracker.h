@@ -64,6 +64,8 @@ private:
     
     AmmoCount ammo;
     
+    int numKineticSpawnedAtSpawnPoint;
+    
 //    void rotateWeaponSpawnPoint(aiVector3D & spawnPoint) { //To be called as rotations are updated
 //        //Since rotations happen in each type of weapon entity manager, don't do rotations here...
 //    }
@@ -89,6 +91,8 @@ public:
         kineticWasFired = false;
         framesSinceKineticWasLastFired = 0;
         
+        numKineticSpawnedAtSpawnPoint = 0;
+        
     }
     ~WeaponTracker() {
         if (weaponSpawnPoints != nullptr) {
@@ -104,13 +108,22 @@ public:
     
     
     aiVector3D getNextSpawnPoint() {
+        
         if (this->weaponSpawnPoints != nullptr) {
             aiVector3D wepSpawnPosition = (weaponSpawnPoints[nextSpawnPoint]);//For some reason this isn't setting the vector correctly
 //            //Try to do it manually...  (THE PROBLEM was WITH XCODE's debugger showing the wrong values, the variables were still set correctly)
 //            wepSpawnPosition.x = weaponSpawnPoints[nextSpawnPoint].x;
 //            wepSpawnPosition.y = weaponSpawnPoints[nextSpawnPoint].y;
 //            wepSpawnPosition.z = weaponSpawnPoints[nextSpawnPoint].z;
-            nextSpawnPoint = (nextSpawnPoint + 1) % weaponSpawnPointsCount; //cycle through the spawn points
+            
+            
+            if (this->numKineticSpawnedAtSpawnPoint > KINTETIC_PROJECTILES_FIRE_BURST_SIZE) {
+                this->numKineticSpawnedAtSpawnPoint = 0;
+                nextSpawnPoint = (nextSpawnPoint + 1) % weaponSpawnPointsCount; //cycle through the spawn points
+            }
+            else {
+                this->numKineticSpawnedAtSpawnPoint++;
+            }
             
             //rotateWeaponSpawnPoint(wepSpawnPosition); //Rotations happen elsewhere now
             return wepSpawnPosition;

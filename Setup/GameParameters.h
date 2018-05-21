@@ -214,7 +214,7 @@ static constexpr float KINETIC_WEP_DAMAGE = 0.005f;
 
 static constexpr float KINETIC_VELOCITY_IMPACT = 0.05f;
 
-static constexpr int KINETIC_FRAMES_BETWEEN_FIRING = 2;
+constexpr int KINTETIC_PROJECTILES_FIRE_BURST_SIZE = 4; 
 //Hexagon Bomb
 //static constexpr
 
