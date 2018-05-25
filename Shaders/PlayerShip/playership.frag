@@ -24,6 +24,7 @@ out vec4 color;
 //#define DISABLE_DAMAGE_FLASH
 
 float damageColorChange = damage / maxHealth ;
+
 void main() {
     
 #ifdef DISABLE_DAMAGE_FLASH
@@ -37,22 +38,24 @@ void main() {
     //If player is going to flash faster as more damage is taken:
     vec4 baseColor = vec4(red, green, blue, 1.0f);
     
-    float flashSpeed = time * 25.0f;
+    //Flash parameters:
+    float linearFlashSpeedIncrease = 25.0f;
+    float exponentialFlashSpeedIncrease = 2.0f;
+    
+    
+    float speedIncrease = pow((linearFlashSpeedIncrease * time), exponentialFlashSpeedIncrease);
     
     float redAmplitude = damageColorChange * (damageColorChange * (1.0f - red));
-    float redFlash = abs(redAmplitude *
-                         sin( (damageColorChange * (damageColorChange * (1.0f - red)) * flashSpeed) /
-                                            (maxHealth * (maxHealth * (1.0f - red)))));
+    float redFlash = abs(redAmplitude * sin( redAmplitude * speedIncrease /
+                                                          (pow(maxHealth, 2.0f) * (1.0f - red))));
     
     float greenAmplitude = damageColorChange * (damageColorChange * (1.0f - green));
-    float greenFlash = abs(greenAmplitude *
-                           sin( (damageColorChange * (damageColorChange * (1.0f - green))* flashSpeed) /
-                                            (maxHealth * (maxHealth * (1.0f - green)))));
+    float greenFlash = abs(greenAmplitude * sin(greenAmplitude * speedIncrease /
+                                                          (pow(maxHealth, 2.0f) * (1.0f - green))));
     
     float blueAmplitude = damageColorChange * (damageColorChange * (1.0f - blue));
-    float blueFlash = abs(blueAmplitude *
-                          sin( (damageColorChange * (damageColorChange * (1.0f - blue)) * flashSpeed) /
-                                                (maxHealth * (maxHealth * (1.0f - blue)))));
+    float blueFlash = abs(blueAmplitude * sin( blueAmplitude * speedIncrease /
+                                                          (pow(maxHealth, 2.0f) * (1.0f - blue))));
     
     color = baseColor + vec4(redFlash, greenFlash, blueFlash, 0.0f);
     
@@ -259,5 +262,38 @@ void main() {
 //    //    color = texture(tex3D, TexCoor3D.xy) + vec4(ambient + diffuse + specular, 1.0f);
 //    //
 //}
+//
+
+
+
+////
+
+//
+//AN older version of player flashing:
+////If player is going to flash faster as more damage is taken:
+//vec4 baseColor = vec4(red, green, blue, 1.0f);
+//
+//float linearFlashSpeedIncrease = time * 25.0f;
+//
+//float redAmplitude = damageColorChange * (damageColorChange * (1.0f - red));
+//float redFlash = abs(redAmplitude *
+//                     sin( (damageColorChange * (damageColorChange * (1.0f - red)) *
+//                           linearFlashSpeedIncrease) /
+//                         (maxHealth * (maxHealth * (1.0f - red)))));
+//
+//float greenAmplitude = damageColorChange * (damageColorChange * (1.0f - green));
+//float greenFlash = abs(greenAmplitude *
+//                       sin( (damageColorChange * (damageColorChange * (1.0f - green)) *
+//                             linearFlashSpeedIncrease) /
+//                           (maxHealth * (maxHealth * (1.0f - green)))));
+//
+//float blueAmplitude = damageColorChange * (damageColorChange * (1.0f - blue));
+//float blueFlash = abs(blueAmplitude *
+//                      sin( (damageColorChange * (damageColorChange * (1.0f - blue)) * flashSpeed) /
+//                          (maxHealth * (maxHealth * (1.0f - blue)))));
+//
+//color = baseColor + vec4(redFlash, greenFlash, blueFlash, 0.0f);
+
+//
 //
 //
