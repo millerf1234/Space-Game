@@ -201,22 +201,22 @@ static constexpr bool DRAW_LINES_PLAYER_MODELS = true;
 //   WEAPON PARAMETERS
 //-----------------------------------------------------------------------------
 //Laser
-static constexpr float LASER_ENERGY_DRAIN = STARTING_PLAYER_ENERGY / 200.0f; //Gives 200 shots
-static constexpr float LASER_SPEED = 1.5f * PLAYER_MOVEMENT_MAX_SPEED; //0.8f;
-static constexpr float LASER_WIDTH = 0.05f;
-static constexpr bool LASER_COLOR_MATCH_PLAYER_COLOR = true;
+//static constexpr float LASER_ENERGY_DRAIN = STARTING_PLAYER_ENERGY / 200.0f; //Gives 200 shots
+//static constexpr float LASER_SPEED = 1.5f * PLAYER_MOVEMENT_MAX_SPEED; //0.8f;
+//static constexpr float LASER_WIDTH = 0.05f;
+//static constexpr bool LASER_COLOR_MATCH_PLAYER_COLOR = true;
 
 //Kinetic
 static constexpr float PROJECTILE_SIZE = 6.0f; //Larger number means smaller. I would say about 4.0f
 //For velocity calculation of Kinetic see KineticWeaponManager.cpp around line 210
 static constexpr float KINETIC_SPEED_FACTOR = 1.95f; //1.75f is good value, formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
 
-static constexpr int PLAYER_KINETIC_AMMO = 500000; //Give a lot until I add picking up ammo
+static constexpr int PLAYER_KINETIC_AMMO = 600000; //Give a lot until I add picking up ammo
 static constexpr float KINETIC_WEP_DAMAGE = 0.005f;
 
-static constexpr float KINETIC_VELOCITY_IMPACT = 0.04f;
+static constexpr float KINETIC_VELOCITY_IMPACT = 0.04f; //0.04
 
-constexpr int KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN = 7;
+constexpr int KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN = 9; //7
 //Hexagon Bomb
 //static constexpr
 
@@ -230,12 +230,11 @@ static constexpr bool RUNNING_ON_MY_MAC = true; //Does some overrides that are o
 static const int DEFAULT_AA_SAMPLES = 2; //This is for global anti-aliasing done by GLFW (NOT SURE THIS DOES ANYTHING?)
 static const bool USE_VSYNC = true; //Should VSync be off/on
 static const int DEFAULT_MONITOR = 1; //The primary monitor is 0, so 1 will be the next monitor after the primary monitor
-//static const bool USE_FULLSCREEN = false; //Moving to be at the top of this file
 
 //NOTE:I noticed that my macbook will still only run at 1080p if told to run at 4k, so these are usless if running on my laptop
 static const bool USE_CUSTOM_RESOLUTION = false;   //Common display resolutions: 3840x2160 (4k),
-static const int CUSTOM_DISPLAY_WIDTH = 3840;
-static const int CUSTOM_DISPLAY_HEIGHT = 2160;
+static const int CUSTOM_DISPLAY_WIDTH = 3840; //1920
+static const int CUSTOM_DISPLAY_HEIGHT = 2160; //1080
 
 static constexpr float PLAYER_LINE_COLOR_BOOST_FACTOR = 1.5f; //Increases the color of the outline of the player ship models (from the base color of their body colors)
 
@@ -259,7 +258,7 @@ constexpr float PLAYER_ENGINE_FLAME_REAR_POSITION = -2.94231f;
 //see: https://stackoverflow.com/questions/7279100/c-ifstream-on-xcode-where-is-the-default-directory  (scroll down the page a bit) to see a description of a better way of doing this using Objective-C to get the actual filepath and then sendig that into the C++ code.
 
 //These filepaths currently expect to find a folder on the desktop called "TestBundle" that contains all the files.
-//NOTE!!! THESE FILEPATHS WON'T WORK IF PROJECT IS BUILT IN XCODE! INSTEAD, MUST ARCHIVE PROJECT (
+//NOTE!!! THESE FILEPATHS WON'T WORK IF PROJECT IS BUILT IN XCODE! INSTEAD, MUST ARCHIVE PROJECT
 
 //Objects
 static const char * SPACESHIP_MODEL_FILE_PATH = "/Desktop/TestBundle/space_ship2.obj";
@@ -310,7 +309,7 @@ const std::string KINETIC_VERT = "/Users/forrestmiller/Desktop/xcode_test_projec
 const std::string KINETIC_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/Weapons/kinetic.frag";
 
 //-----------------------------------------------------------------------------
-//   Texture Image Locations (preferably JPEGs that are 915 x 609)    //see: http://img-resize.com/   to resize images
+//   Texture Image Locations    //see: http://img-resize.com/   to resize images
 //-----------------------------------------------------------------------------
 
 static constexpr bool CENTER_AND_FULLSCREEN_IMAGE = false;

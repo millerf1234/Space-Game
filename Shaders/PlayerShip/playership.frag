@@ -20,7 +20,53 @@ uniform float maxHealth; //the players maxHealth
 
 out vec4 color;
 
-/*
+//Comment this out of have player's flash when taking damage:
+//#define DISABLE_DAMAGE_FLASH
+
+float damageColorChange = damage / maxHealth ;
+void main() {
+    
+#ifdef DISABLE_DAMAGE_FLASH
+    //If player is going to turn progressivly more white:
+    color = vec4( red +  damageColorChange * (damageColorChange * (1.0f - red)),
+                 green + (damageColorChange * damageColorChange * (1.0f - green)),
+                 blue + (damageColorChange * (1.0f - blue)),
+                 1.0f );//exp(damage - 1.0f)  );//1.0f );//exp(damage - 1.0f)) );
+    
+#else
+    //If player is going to flash faster as more damage is taken:
+    vec4 baseColor = vec4(red, green, blue, 1.0f);
+    
+    float flashSpeed = time * 25.0f;
+    
+    float redAmplitude = damageColorChange * (damageColorChange * (1.0f - red));
+    float redFlash = abs(redAmplitude *
+                         sin( (damageColorChange * (damageColorChange * (1.0f - red)) * flashSpeed) /
+                                            (maxHealth * (maxHealth * (1.0f - red)))));
+    
+    float greenAmplitude = damageColorChange * (damageColorChange * (1.0f - green));
+    float greenFlash = abs(greenAmplitude *
+                           sin( (damageColorChange * (damageColorChange * (1.0f - green))* flashSpeed) /
+                                            (maxHealth * (maxHealth * (1.0f - green)))));
+    
+    float blueAmplitude = damageColorChange * (damageColorChange * (1.0f - blue));
+    float blueFlash = abs(blueAmplitude *
+                          sin( (damageColorChange * (damageColorChange * (1.0f - blue)) * flashSpeed) /
+                                                (maxHealth * (maxHealth * (1.0f - blue)))));
+    
+    color = baseColor + vec4(redFlash, greenFlash, blueFlash, 0.0f);
+    
+#endif //DISABLE_DAMAGE_FLASH
+    
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+////                    EVERYTHING BELOW HERE IS JUNK                       ////
+////////////////////////////////////////////////////////////////////////////////
+
+/*  Blinn-phong test:
 //test ambientCol:
 //vec3 ambientCol = vec3(0.15f, 0.25f, 0.25f);
 vec3 ambientCol = vec3(red - 0.2f, green - 0.2f, blue - 0.2f);
@@ -66,16 +112,6 @@ void main() {
 }
 
 */
-
-
-float damageColorChange = damage / maxHealth ;
-void main() {
-    
-    color = vec4( red +  damageColorChange * (damageColorChange * (1.0f - red)),
-                  green + (damageColorChange * damageColorChange * (1.0f - green)),
-                  blue + (damageColorChange * (1.0f - blue)),
-                  1.0f );//exp(damage - 1.0f)  );//1.0f );//exp(damage - 1.0f)) );
-}
 
 
 //

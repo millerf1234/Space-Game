@@ -9,7 +9,7 @@
 #include "Generator.h"
 
 static constexpr int WAS_DELETED = -1000; //Used to represent deleted instances
-static constexpr int MAX_TRACKED_INSTANCES_LIST_SIZE = 10000; //Maximum limit on renderable objects
+static constexpr int MAX_TRACKED_INSTANCES_LIST_SIZE = 10000; //Maximum limit on renderable objects per frame
 
 //Set static variable
 int Generator::nextObjID = 1; //Starts out at 1

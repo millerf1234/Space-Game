@@ -164,7 +164,7 @@ void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
     //Do special configuration to set up the newly created KineticInstance
     Kinetic * newKinInst = static_cast<Kinetic*>(insts[newInstanceIndex]); //Since newInstanceIndex was set before generating new, it will be set to the array position of the newly created instance
     
-    newKinInst->mass = 0.01f; //Give it a tiny mass
+    newKinInst->mass = 0.01f; //Give it a tiny mass (mass doesn't actually do anything)
     newKinInst->zoom = GAME_SCALE; //I have to keep zoom the same for everything for position/velocity coordinates to line up
     //newKinInst->zoom = PLAYER_SIZE * 2.0f;
     //Need to figure out where to set colBox midpoint. Once midpoint and a velocity direction set, it

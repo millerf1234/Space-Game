@@ -154,7 +154,8 @@ bool Game::launch() {
         //  RESET OpenGL states to prepare for rendering next frame
         //----------------------------------------------------------------------
         
-        glDepthFunc(GL_LESS); //Explicity tell the z-culling operation which direction to cull
+        //I don't need to do this inside the loop because it never changes in the loop
+        // glDepthFunc(GL_LESS); //Explicity tell the z-culling operation which direction to cull
         
         
         //----------------------------------------------------------------------
