@@ -35,7 +35,7 @@ static constexpr float PI = 3.1415927f;
 //-----------------------------------------------------------------------------
 //                       OPEN FULL SCREEN OR WINDOWED
 //-----------------------------------------------------------------------------
-static const bool USE_FULLSCREEN = false;
+static const bool USE_FULLSCREEN = true;
 
 
 //-----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ static constexpr bool PRINT_PLAYER_DAMAGE_MESSAGES = true; //Print a message eac
 //-----------------------------------------------------------------------------
 // Gamemode types
 //-----------------------------------------------------------------------------
-static constexpr bool MOON_DRIFTER_MODE = false;
+static constexpr bool MOON_DRIFTER_MODE = true;
 //Battle mode by default
 
 //-----------------------------------------------------------------------------

@@ -11,7 +11,7 @@
 
 #define FLOATING_POINT_TOLERANCE 0.0000001f //i just made this value up as a value close to 0 to check for cancelation error (i.e. any result that comes out smaller than this is just automatically changed to 0.0f)
 
-const bool PRINT_WARNING = true; //Print a warning if using this class in an unexpected way (such as rotation about axis <0,0,0>) 
+const bool PRINT_WARNING = true; //Print a warning if using this class in an unexpected way (such as rotation about axis <0,0,0>) (Which i totally was doing for almost a month without realizing)
 
 //-----------------------------------------------------------------------------
 // Constructors
