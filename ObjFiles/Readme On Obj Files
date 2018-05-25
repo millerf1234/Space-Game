@@ -1,0 +1,6 @@
+Disclaimer (of sorts) ---   I did not make any of these models. Also, my obj loader is pretty lame at the moment and chokes
+on multiple-part models. Thus, to trick my loader into thinking the models are one piece, I have copied and pasted all the of
+position vertices to the top of the file. This seems to allow the files to be loaded. 
+
+"space_ship2.obj" is really the only model this code was meant to work with, the other two are there just for testing out the 
+collision boxes (which are functional but not perfect on the largest models).  
