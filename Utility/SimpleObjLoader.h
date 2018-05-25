@@ -62,8 +62,8 @@ public:
     Model model;
     float ** positions;
     float **texels;
-    float ** normals;
-    int ** faces;
+    float **normals;
+    int **faces;
     
     bool isLoaded;
     

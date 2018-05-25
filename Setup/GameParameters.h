@@ -35,7 +35,7 @@ static constexpr float PI = 3.1415927f;
 //-----------------------------------------------------------------------------
 //                       OPEN FULL SCREEN OR WINDOWED
 //-----------------------------------------------------------------------------
-static const bool USE_FULLSCREEN = true;
+static const bool USE_FULLSCREEN = false;
 
 
 //-----------------------------------------------------------------------------
@@ -50,6 +50,8 @@ static constexpr bool PRINT_WEAPON_SPAWN_POINT_COORDS = false; //More debug stuf
 static constexpr bool PRINT_WEAPON_SPAWN_ANGLES = false; //Mostly for debug
 
 static constexpr bool DRAW_COLLISION_DETAILS = false;
+
+static constexpr bool DRAW_MODELS = true;
 
 static constexpr bool PRINT_PLAYER_DAMAGE_MESSAGES = true; //Print a message each time a player takes damage
 
@@ -138,7 +140,7 @@ static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 
 //static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/17.0f; //So 30 frames to rotate 90 degrees
 
 
-static constexpr float STARTING_PLAYER_HEALTH = 1000.0f; //Tweak as needed
+static constexpr float STARTING_PLAYER_HEALTH = 1.0f; //Tweak as needed
 static constexpr float STARTING_PLAYER_SHIELDS = 4.0f; //Tweak as needed (if this gets implemented...)
 static constexpr float STARTING_PLAYER_ENERGY = 25.0f; //Tweak as needed (if this ever gets implemented)
 static constexpr float STARTING_PLAYER_FUEL = 100.0f; //Tweak freely, as this will most likely never be implemented
@@ -191,7 +193,7 @@ static constexpr float PLAYER_THREE_RED = 0.2f; //Red amount on a 0.0f to 1.0f s
 static constexpr float PLAYER_THREE_GREEN = 1.0f; //Green amount
 static constexpr float PLAYER_THREE_BLUE = 0.25f; //Blue amount
 
-static constexpr float PLAYER_ENGINE_FLAME_SIZE_INCREASE_FROM_VELOCITY = 1.2f;
+static constexpr float PLAYER_ENGINE_FLAME_SIZE_INCREASE_FROM_VELOCITY = 1.4f; //1.2f is a good value
 
 static constexpr bool DRAW_LINES_PLAYER_MODELS = true;
 
@@ -207,14 +209,14 @@ static constexpr bool LASER_COLOR_MATCH_PLAYER_COLOR = true;
 //Kinetic
 static constexpr float PROJECTILE_SIZE = 6.0f; //Larger number means smaller. I would say about 4.0f
 //For velocity calculation of Kinetic see KineticWeaponManager.cpp around line 210
-static constexpr float KINETIC_SPEED_FACTOR = 1.75f; //1.75f is good value, formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
+static constexpr float KINETIC_SPEED_FACTOR = 1.95f; //1.75f is good value, formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
 
 static constexpr int PLAYER_KINETIC_AMMO = 500000; //Give a lot until I add picking up ammo
 static constexpr float KINETIC_WEP_DAMAGE = 0.005f;
 
-static constexpr float KINETIC_VELOCITY_IMPACT = 0.05f;
+static constexpr float KINETIC_VELOCITY_IMPACT = 0.04f;
 
-constexpr int KINTETIC_PROJECTILES_FIRE_BURST_SIZE = 4; 
+constexpr int KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN = 7;
 //Hexagon Bomb
 //static constexpr
 
@@ -223,7 +225,7 @@ constexpr int KINTETIC_PROJECTILES_FIRE_BURST_SIZE = 4;
 //-----------------------------------------------------------------------------
 //   SYSTEM PARAETERS   (Graphics Settings)
 //-----------------------------------------------------------------------------
-static constexpr bool RUNNING_ON_MAC_MAC = true; //Does some overrides that are optimized specifically for my laptop
+static constexpr bool RUNNING_ON_MY_MAC = true; //Does some overrides that are optimized specifically for my laptop
 
 static const int DEFAULT_AA_SAMPLES = 2; //This is for global anti-aliasing done by GLFW (NOT SURE THIS DOES ANYTHING?)
 static const bool USE_VSYNC = true; //Should VSync be off/on

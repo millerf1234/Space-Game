@@ -126,10 +126,11 @@ void WeaponOverseer::processWeaponTrackers() {
     //I hacked this together quickly to get it so players can only shoot so much so often.
     
     //Parameters
-    constexpr int COOLDOWN_TIMER_IN_FRAMES = 8;
-    constexpr int SHOTS_BEFORE_COOLDOWN = 4;
+    constexpr int COOLDOWN_TIMER_IN_FRAMES = 7;  //4  or 14  or 30
+    constexpr int SHOTS_BEFORE_COOLDOWN = KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN;
     
-    //This is really NOT the way to implement this because its confusing and is bad design
+    //This is really NOT the way to implement this because its confusing and is
+    //bad design
     //(I should replace this with a better solution if I ever get time)
     static short player1ShotsFired = 0;
     static short player1ShotsCooldownTimer = 0;
@@ -158,9 +159,9 @@ void WeaponOverseer::processWeaponTrackers() {
         //get the weapon's tracker
         WeaponTracker * currentWT = this->wepTrackers[i];
         
-        
         if (i == 0) {
             if (player1OnCooldown) {
+                player1ShotsFired = 0;
                 continue;
             }
             else {
@@ -168,14 +169,17 @@ void WeaponOverseer::processWeaponTrackers() {
                     player1ShotsFired++;
                     player1ShotsCooldownTimer = 0;
                     if (player1ShotsFired > SHOTS_BEFORE_COOLDOWN) {
-                        currentWT->resetWeaponsFired();
+                        currentWT->resetWeaponsFired(); //Do this to turn off the kinetic-fired flag
                         player1OnCooldown = true;
+                        currentWT->goToNextWeaponSpawnPoint();
                     }
                     else {
                         this->kineticWepManager->spawnNewKineticInstance(currentWT);
                     }
                 }
                 else {
+                    //Should move to the next spawn point here
+                    currentWT->goToNextWeaponSpawnPoint();
                     if (player1ShotsFired > 0) {
                         player1ShotsFired--;
                     }
@@ -185,6 +189,7 @@ void WeaponOverseer::processWeaponTrackers() {
         
         if (i == 1) {
             if (player2OnCooldown) {
+                player2ShotsFired = 0;
                 continue;
             }
             else {
@@ -194,12 +199,15 @@ void WeaponOverseer::processWeaponTrackers() {
                     if (player2ShotsFired > SHOTS_BEFORE_COOLDOWN) {
                         currentWT->resetWeaponsFired();
                         player2OnCooldown = true;
+                        currentWT->goToNextWeaponSpawnPoint();
                     }
                     else {
                         this->kineticWepManager->spawnNewKineticInstance(currentWT);
                     }
                 }
                 else {
+                    //Should move to the next spawn point here
+                    currentWT->goToNextWeaponSpawnPoint();
                     if (player2ShotsFired > 0) {
                         player2ShotsFired--;
                     }

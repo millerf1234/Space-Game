@@ -121,6 +121,7 @@
 		9E3DD992206E214900B2ED86 /* AnotherHubblePic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = AnotherHubblePic.jpg; sourceTree = "<group>"; };
 		9E8FF847204DDD29006E2392 /* CollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionBox.cpp; sourceTree = "<group>"; };
 		9E8FF848204DDD29006E2392 /* CollisionBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionBox.h; sourceTree = "<group>"; };
+		9EC022A920B79D25009785F3 /* space_ship211.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = space_ship211.obj; sourceTree = "<group>"; };
 		9EC84C3C205B9C3D00FC93B2 /* Cool_Picture_of_the_moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cool_Picture_of_the_moon.jpg; path = ../../../../Documents/Cool_Picture_of_the_moon.jpg; sourceTree = "<group>"; };
 		9EC84C3D205C6F6B00FC93B2 /* KineticWeaponManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = KineticWeaponManager.cpp; sourceTree = "<group>"; };
 		9EC84C3E205C6F6B00FC93B2 /* KineticWeaponManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KineticWeaponManager.h; sourceTree = "<group>"; };
@@ -335,6 +336,7 @@
 		9E10D5CD2032CD4F00F0F724 /* ObjFiles */ = {
 			isa = PBXGroup;
 			children = (
+				9EC022A920B79D25009785F3 /* space_ship211.obj */,
 				9E10D5DC2033826300F0F724 /* space_ship2.obj */,
 				9ECC0B602096803D00AD89F0 /* space_ship2.scn */,
 				9E10D5DB2033823200F0F724 /* space_ship21.obj */,

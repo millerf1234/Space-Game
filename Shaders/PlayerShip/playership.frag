@@ -71,10 +71,10 @@ void main() {
 float damageColorChange = damage / maxHealth ;
 void main() {
     
-    color = vec4( (red + damageColorChange * (damageColorChange * (1.0f - red)),
-                   green + (damageColorChange * damageColorChange *(1.0f - green)),
-                   blue + (damageColorChange * (1.0f - blue)),
-                   exp(damage - 1.0f)) );
+    color = vec4( red +  damageColorChange * (damageColorChange * (1.0f - red)),
+                  green + (damageColorChange * damageColorChange * (1.0f - green)),
+                  blue + (damageColorChange * (1.0f - blue)),
+                  1.0f );//exp(damage - 1.0f)  );//1.0f );//exp(damage - 1.0f)) );
 }
 
 

@@ -973,7 +973,9 @@ void Generator::doDrawPlayerShipInstance(int i) {
     glUniform1f(pul.ulocPDamage, STARTING_PLAYER_HEALTH - player->health); //Subtract actual player health from expected health to get damage
     
     //Draw the player body (using shader in shadderArray[0]
-    glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
+    if (DRAW_MODELS) {
+        glDrawElements(GL_TRIANGLES, this->numberOfElements, GL_UNSIGNED_INT, 0);
+    }
     
     //Set up to Draw Lines
     shaderArray[1]->use();
@@ -1063,9 +1065,11 @@ void Generator::doDrawPlayerShipInstance(int i) {
     glad_glEnable(GL_DITHER); //Does something
     glad_glEnable(GL_LINE_SMOOTH); //Makes the lines smooth //Don't use, see:https://www.khronos.org/opengl/wiki/Multisampling  (history section)
     glad_glEnable(GL_MULTISAMPLE); //Turns on additional anti-aliasing
-    if (DRAW_LINES_PLAYER_MODELS) { //I probably can move this check out so that setting up for lines doesn't happen if false
-        //Draw the lines:
-        glDrawElements(GL_LINES, sizeof(GLuint) * this->numberOfElements*2, GL_UNSIGNED_INT, 0);
+    if (DRAW_MODELS) {
+        if (DRAW_LINES_PLAYER_MODELS) { //I probably can move this check out so that setting up for lines doesn't happen if false
+            //Draw the lines:
+            glDrawElements(GL_LINES, sizeof(GLuint) * this->numberOfElements*2, GL_UNSIGNED_INT, 0);
+        }
     }
     
     //Now convert the lines back into triangles:
@@ -1425,36 +1429,38 @@ void Generator::drawKineticInstance(Kinetic * kin) {
     //Set any kinetic-specific parameters...
     //std::cout << "Draw KineticInstance was called by the code!\n";
     
-    switch (kin->getModelVersion()) {
-        default:
-        case 0:
-            glDrawArrays(GL_TRIANGLES, 0,  KINETIC_PROJECTILE_VERSION0_VERTS_COUNT / 3);
-            break;
-        case 1:
-            //Change the size of the data being buffered
-            glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION2_VERTSSTART, vertices, GL_STREAM_DRAW);
-            glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION1_VERTSSTART, KINETIC_PROJECTILE_VERSION1_VERTS_COUNT / 3);
-            break;
-        case 2:
-             glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION3_VERTSSTART, vertices, GL_STREAM_DRAW);
-           glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION2_VERTSSTART, KINETIC_PROJECTILE_VERSION2_VERTS_COUNT / 3);
-            break;
-        case 3:
-             glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION4_VERTSSTART, vertices, GL_STREAM_DRAW);
-            glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION3_VERTSSTART, KINETIC_PROJECTILE_VERSION3_VERTS_COUNT / 3);
-            break;
-        case 4:
-             glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION5_VERTSSTART, vertices, GL_STREAM_DRAW);
-            glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION4_VERTSSTART, KINETIC_PROJECTILE_VERSION4_VERTS_COUNT / 3);
-            break;
-        case 5:
-            glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION6_VERTSSTART, vertices, GL_STREAM_DRAW);
-            glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION5_VERTSSTART, KINETIC_PROJECTILE_VERSION5_VERTS_COUNT / 3);
-            break;
-        case 6:
-             glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION2_VERTSSTART + KINETIC_PROJECTILE_VERSION6_VERTS_COUNT, vertices, GL_STREAM_DRAW);
-            glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION6_VERTSSTART, KINETIC_PROJECTILE_VERSION6_VERTS_COUNT / 3) ;
-            break;
+    if (DRAW_MODELS) {
+        switch (kin->getModelVersion()) {
+            default:
+            case 0:
+                glDrawArrays(GL_TRIANGLES, 0,  KINETIC_PROJECTILE_VERSION0_VERTS_COUNT / 3);
+                break;
+            case 1:
+                //Change the size of the data being buffered
+                glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION2_VERTSSTART, vertices, GL_STREAM_DRAW);
+                glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION1_VERTSSTART, KINETIC_PROJECTILE_VERSION1_VERTS_COUNT / 3);
+                break;
+            case 2:
+                glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION3_VERTSSTART, vertices, GL_STREAM_DRAW);
+                glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION2_VERTSSTART, KINETIC_PROJECTILE_VERSION2_VERTS_COUNT / 3);
+                break;
+            case 3:
+                glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION4_VERTSSTART, vertices, GL_STREAM_DRAW);
+                glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION3_VERTSSTART, KINETIC_PROJECTILE_VERSION3_VERTS_COUNT / 3);
+                break;
+            case 4:
+                glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION5_VERTSSTART, vertices, GL_STREAM_DRAW);
+                glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION4_VERTSSTART, KINETIC_PROJECTILE_VERSION4_VERTS_COUNT / 3);
+                break;
+            case 5:
+                glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION6_VERTSSTART, vertices, GL_STREAM_DRAW);
+                glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION5_VERTSSTART, KINETIC_PROJECTILE_VERSION5_VERTS_COUNT / 3);
+                break;
+            case 6:
+                glBufferData(GL_ARRAY_BUFFER, KINETIC_PROJECTILE_VERSION2_VERTSSTART + KINETIC_PROJECTILE_VERSION6_VERTS_COUNT, vertices, GL_STREAM_DRAW);
+                glDrawArrays(GL_TRIANGLES, KINETIC_PROJECTILE_VERSION6_VERTSSTART, KINETIC_PROJECTILE_VERSION6_VERTS_COUNT / 3) ;
+                break;
+        }
     }
     //Draw the collision box as well if drawCollisionDetails is true
     if (DRAW_COLLISION_DETAILS) {
@@ -1480,7 +1486,7 @@ void Generator::drawKineticInstance(Kinetic * kin) {
         
         glDrawArrays(GL_LINE_LOOP, 0, 8);
         
-        //Put the vertices back
+        //Put the vertices back to how they were before drawing collisions
         for (int i = 0; i < verticesToReplace; ++i) {
             vertices[i] = tempFirstVerticesBackup[i];
         }

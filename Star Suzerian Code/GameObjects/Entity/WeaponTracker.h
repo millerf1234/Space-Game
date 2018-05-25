@@ -117,12 +117,12 @@ public:
 //            wepSpawnPosition.z = weaponSpawnPoints[nextSpawnPoint].z;
             
             
-            if (this->numKineticSpawnedAtSpawnPoint > KINTETIC_PROJECTILES_FIRE_BURST_SIZE) {
+            if (this->numKineticSpawnedAtSpawnPoint >= KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN) {
                 this->numKineticSpawnedAtSpawnPoint = 0;
                 nextSpawnPoint = (nextSpawnPoint + 1) % weaponSpawnPointsCount; //cycle through the spawn points
             }
             else {
-                this->numKineticSpawnedAtSpawnPoint++;
+                ++(this->numKineticSpawnedAtSpawnPoint);
             }
             
             //rotateWeaponSpawnPoint(wepSpawnPosition); //Rotations happen elsewhere now
@@ -179,6 +179,14 @@ public:
     void setThetaX(float thetaX) {this->thetaX = thetaX;}
     void setThetaZ(float thetaZ) {this->thetaZ = thetaZ;}
     void setInstanceZoomAmount(float zoom) {this->instanceZoomAmount = zoom;}
+    
+    
+    void goToNextWeaponSpawnPoint() {
+         if (this->weaponSpawnPoints != nullptr) {
+             this->numKineticSpawnedAtSpawnPoint = 0;
+             nextSpawnPoint = (nextSpawnPoint + 1) % weaponSpawnPointsCount;
+         }
+    }
     
     //Set weapons that were fired
     void setKineticWasFired() {this->kineticWasFired = true;}

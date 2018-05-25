@@ -190,7 +190,7 @@ void GLFW_Init::detectDisplayResolution(int displayNum, int& width, int& height,
     }
     //Make sure mode isn't nullptr for some reason
     if (mode != nullptr) {
-        if (RUNNING_ON_MAC_MAC && width == 1680 && height == 1050) {
+        if (RUNNING_ON_MY_MAC && width == 1680 && height == 1050) {
             if (PRINT_DEBUG_MESSAGES) {
                 std::cout << "\nDEBUG::Detected that game is running on my laptop's screen.\nDEBUG::Overriding display resolution to use full resoultion of retina display!" << std::endl;
             }
