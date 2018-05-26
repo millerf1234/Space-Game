@@ -89,7 +89,7 @@ static constexpr GLfloat KINETIC_PROJECTILE_VERSION1_VERTS[] = {
      0.0f,  3.0f,  0.0f, //triangle 3
      0.0f,  0.0f,  3.0f,
      0.0f,  3.0f,  0.0f,
-     0.0f, -3.0f, -0.0f, // triangle 4
+     0.0f, -3.0f,  0.0f, // triangle 4
      0.0f,  0.0f, -3.0f,
      0.0f,  3.0f,  0.0f,
      0.0f,  0.0f,  3.0f, //triangle 5

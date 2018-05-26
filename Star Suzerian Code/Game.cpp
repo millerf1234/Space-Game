@@ -374,7 +374,9 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
         
         //Check to see if player died
         if (player->health <= 0.0f) {
-            std::cout << "\nPlayer " << player->playerNumber << " died!\n";
+            std::cout << "\nPlayer " << player->playerNumber << " died! ";
+            std::cout << "Player has died " << player->deaths + 1 << " times!\n";
+            //Need the + 1 because the player death hasn't been processed at this point
             player->shouldDieFlag = true;
             player->health = 1000.0f;
         }

@@ -404,6 +404,8 @@ void PlayerManager::processInput() {
     for (int i = 0; i < generator->getInstanceCount(); ++i) {
         PlayerEntity * player = static_cast<PlayerEntity *>(players[i]);
         
+        if (player->isDead) { break;} //No need to process input from dead players
+        
         //NOTE! rollThreshold is just for drawing engine flames, it is not an actual limit on rolling
         float rollThreshold = 0.5f * (PI / 2.0f); //Used in turnLeft and turnRight to check if rolled past threshhold
         
@@ -702,6 +704,7 @@ void PlayerManager::processPlayerDeaths() {
         if ((player->shouldDieFlag)) {
             player->shouldDieFlag = false;
             player->isDead = true;
+            player->deaths += 1;
             player->framesUntilRespawn = max(FRAMES_BETWEEN_PLAYER_RESPAWN, 2);
         }
         if (player->isDead) { //Decrement the respawn counter on all dead players

@@ -326,6 +326,8 @@ public:
     float fuel;
     int playerNumber;
     
+    int deaths;
+    
     bool shouldDieFlag, isDead;
     int framesUntilRespawn;
    // int rocketCount;
@@ -388,6 +390,7 @@ public:
         for (int i = 0; i < PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES; ++i) {
             translationHistory[i] = nullptr;
         }
+        deaths = 0;
     }
     
     virtual ~PlayerEntity() {

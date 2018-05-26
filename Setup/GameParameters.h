@@ -214,11 +214,11 @@ static constexpr float PROJECTILE_SIZE = 6.0f; //Larger number means smaller. I 
 static constexpr float KINETIC_SPEED_FACTOR = 1.95f; //1.75f is good value, formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
 
 static constexpr int PLAYER_KINETIC_AMMO = 600000; //Give a lot until I add picking up ammo
-static constexpr float KINETIC_WEP_DAMAGE = 0.005f;
+static constexpr float KINETIC_WEP_DAMAGE = 0.01f;
 
 static constexpr float KINETIC_VELOCITY_IMPACT = 0.04f; //0.04
 
-constexpr int KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN = 8; //7-9
+constexpr int KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN = 5; //5-9
 //Hexagon Bomb
 //static constexpr
 
