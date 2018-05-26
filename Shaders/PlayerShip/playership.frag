@@ -40,7 +40,7 @@ void main() {
     
     //Flash parameters:
     float linearFlashSpeedIncrease = 25.0f;
-    float exponentialFlashSpeedIncrease = 2.0f;
+    float exponentialFlashSpeedIncrease = 1.0f;
     
     
     float speedIncrease = pow((linearFlashSpeedIncrease * time), exponentialFlashSpeedIncrease);

@@ -140,6 +140,8 @@ static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 
 //static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/17.0f; //So 30 frames to rotate 90 degrees
 
 
+static constexpr int FRAMES_BETWEEN_PLAYER_RESPAWN = 180; //3 sec is ~180 frames
+
 static constexpr float STARTING_PLAYER_HEALTH = 1.0f; //Tweak as needed
 static constexpr float STARTING_PLAYER_SHIELDS = 4.0f; //Tweak as needed (if this gets implemented...)
 static constexpr float STARTING_PLAYER_ENERGY = 25.0f; //Tweak as needed (if this ever gets implemented)

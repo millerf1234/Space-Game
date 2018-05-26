@@ -325,6 +325,9 @@ public:
     float energy;
     float fuel;
     int playerNumber;
+    
+    bool shouldDieFlag, isDead;
+    int framesUntilRespawn;
    // int rocketCount;
   ///  int maxRockets;
     
@@ -352,6 +355,7 @@ public:
 //            std::cout << "DEBUG::OOPS! IT looks like the wrong PlayerInstance constructor was called";
 //        }
 //            rear = nullptr;
+//            shouldDieFlah = false;
 //            xRot = yRot = zRot = nullptr;
 //
 //    }
@@ -362,6 +366,9 @@ public:
         }
         this->playerNumber = playerNumber;
         this->type = PLAYERENTITY;
+        shouldDieFlag = false;
+        isDead = false;
+        framesUntilRespawn = 0;
         health = STARTING_PLAYER_HEALTH;
         shields = STARTING_PLAYER_SHIELDS;
         energy = STARTING_PLAYER_ENERGY;
@@ -370,14 +377,14 @@ public:
         //maxRockets = STARTING_PLAYER_ROCKET_COUNT_MAX;
         red = green = blue = 0.75f; //Setting all 3 equal will give a shade of gray (A good default color)
         rollAmount = 0.0f;
-        currentAnimationFrame = maxAnimationFrame = 0;
+        currentAnimationFrame = maxAnimationFrame = 0; 
         rear = new aiVector3D(0.0f, 0.0f, PLAYER_ENGINE_FLAME_REAR_POSITION);
         forward = new aiVector3D(0.0f, 0.0f, 1.0f);
         xRot = new Quaternion(1.0f, 0.0f, 0.0f);
         yRot = new Quaternion(0.0f, 1.0f, 0.0f);
         zRot = new Quaternion(0.0f, 0.0f, 1.0f);
         translationHistory = new aiVector3D* [PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES];
-        //the values in translation history will be set in PlayerManager inside initializeFromTemplate() [unless I move it]
+        //the values in translation history will be allocated in PlayerManager inside initializeFromTemplate() [unless I move it]
         for (int i = 0; i < PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES; ++i) {
             translationHistory[i] = nullptr;
         }
@@ -475,6 +482,16 @@ public:
         this->wepTracker->resetWeaponsFired();
         matchWepTrackerWithInstData();
         this->wepTracker->setEarlyThetaZ(rollAmount); //
+    }
+    
+    void resetMovementInformation() {
+        accelerate = false;
+        decelerate = false;
+        turnLeft = false;
+        turnRight = false;
+        rollLeft = false;
+        rollRight = false;
+        shoot = false;
     }
     
 };

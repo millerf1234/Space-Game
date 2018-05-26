@@ -171,6 +171,55 @@ void PlayerManager::drawInstances() {
     generator->drawInstances();
 }
 
+void PlayerManager::initializePlayer(PlayerEntity * player) {
+    player->zoom = GAME_SCALE;
+    player->thetaX = PI / 2.0f; //Set starting x rotation
+    player->resetMovementInformation();
+    player->rollAmount = 0.0f;
+    player->shields = STARTING_PLAYER_SHIELDS;
+    
+    for (int i = 0; i < PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES; ++i) {
+        player->translationHistory[i]->x = 0.0f;
+        player->translationHistory[i]->y = 0.0f;
+        player->translationHistory[i]->z = -0.5f;
+    }
+    
+    //Have player 1 spawn at player 1's spawn position
+    if (player->playerNumber == 1) {
+        if (MOON_DRIFTER_MODE) {
+            //Set moonDrifter spawn orientation for player 1
+            player->thetaZ = mdPLAYER1SPAWNROTATION;
+            //Then set the moodDrifter spawn points
+            player->position.x = mdPLAYER1SPAWNXOFFSET;
+            player->position.y = mdPLAYER1SPAWNYOFFSET;
+        }
+        else { //battle mode
+            player->thetaZ = PI / 2.0f; //Set this to pi/2 to get player1 oriented the correct way at start for battle mode
+            player->position.x = PLAYER1_STARTOFFSET_X;
+            player->position.y = PLAYER1_STARTOFFSET_Y;
+        }
+    }
+    else if ( player->playerNumber == 2 ) {
+        if (MOON_DRIFTER_MODE) { //MOON DRIFTER MODE!
+            //Set moonDrifter spawn orientation for player 2
+            player->thetaZ = mdPLAYER2SPAWNROTATION;
+            //then set moonDrifter spawns
+            player->position.x = mdPLAYER2SPAWNXOFFSET;
+            player->position.y = mdPLAYER2SPAWNYOFFSET;
+        }
+        else { //battle mode
+            player->thetaZ = -PI / 2.0f; //Set this to -pi/2 to get player2 oriented the correct way at start
+            player->position.x = PLAYER2_STARTOFFSET_X;
+            player->position.y = PLAYER2_STARTOFFSET_Y;
+        }
+    }
+    else {
+        player->thetaZ = -PI / 4.0f;
+        player->position.y = -0.9f * YLIMIT; //Gotta have players spawn somewhere... (NOTE I USE THE SCREEN LIMITS HERE JUST TO SPAWN THE EXTRA PLAYERS NEAR THE EDGE OF THE SCREEN!)
+        player->position.x = -0.9f * XLIMIT + 5.0f * ((float)( (player->playerNumber) - 3)); //Make it so players don't spawn on top of eachother
+    }
+}
+
 void PlayerManager::initializeFromTemplate() {
     generator->initializeFromTemplate(*initTemplate); //Sets generator up based off the initialization template
     generator->shouldGenerateEntities = true; //Set this to true for player manager
@@ -181,7 +230,7 @@ void PlayerManager::initializeFromTemplate() {
         generator->generateSingle();
     }
     
-    //Remove this 'if MAX_PLAYERS' statement once I have comepltely rewritten this part
+    //Remove this 'if MAX_PLAYERS' statement once I have completely rewritten this part
     if (MAX_PLAYERS) {
         Instance ** players = generator->getArrayOfInstances();
         if (PRINT_DEBUG_MESSAGES) {
@@ -193,66 +242,38 @@ void PlayerManager::initializeFromTemplate() {
         for (int i = 0; i < MAX_PLAYERS; ++i) {
             //For more info on static_cast, see: https://stackoverflow.com/questions/28002/regular-cast-vs-static-cast-vs-dynamic-cast
             PlayerEntity * p = static_cast<PlayerEntity*>(players[i]);
-            p->zoom = GAME_SCALE;
-            p->thetaX = PI / 2.0f; //Set starting x rotation
             p->playerNumber = i+1; //So player 1 get assigned playerNumber 1, player 2 gets playerNumber 2, etc...
             p->type = PLAYERENTITY;
-            p->accelerate = p->decelerate = p->turnLeft = p->turnRight = p->rollLeft = p->rollRight = p->shoot = false;
+            
             //Set up the array of engineTranslationHistory that make engine flames grow/shrink dynamically with movement
             for (int i = 0; i < PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES; ++i) {
                 p->translationHistory[i] = new aiVector3D(0.0f, 0.0f, -0.5f);
             }
+            
+            //Initialize player needs to have translationHistory vectors allocated to work properly
+            initializePlayer(p); //Initialize player is a function that sets up a player. It is called on player respawn as well
             
             //Set Player_Specific parameters based off position in array
             if (i == 0) { //i.e. if p is player 1
                 p->red = PLAYER_ONE_RED;
                 p->green = PLAYER_ONE_GREEN;
                 p->blue = PLAYER_ONE_BLUE;
-                if (MOON_DRIFTER_MODE) {
-                    //Set moonDrifter spawn orientation for player 1
-                    p->thetaZ = mdPLAYER1SPAWNROTATION;
-                    //Then set the moodDrifter spawn points
-                    p->position.x += mdPLAYER1SPAWNXOFFSET;
-                    p->position.y += mdPLAYER1SPAWNYOFFSET;
-                }
-                else { //battle mode
-                    p->thetaZ = PI / 2.0f; //Set this to pi/2 to get player1 oriented the correct way at start for battle mode
-                    p->position.x += PLAYER1_STARTOFFSET_X;
-                    p->position.y += PLAYER1_STARTOFFSET_Y;
-                }
-                
             }
             else if (i == 1) { //if p is player 2
                 p->red = PLAYER_TWO_RED;
                 p->green = PLAYER_TWO_GREEN;
                 p->blue = PLAYER_TWO_BLUE;
-                if (MOON_DRIFTER_MODE) { //MOON DRIFTER MODE!`
-                    //Set moonDrifter spawn orientation for player 2
-                    p->thetaZ = mdPLAYER2SPAWNROTATION;
-                    //then set moonDrifter spawns
-                    p->position.x += mdPLAYER2SPAWNXOFFSET;
-                    p->position.y += mdPLAYER2SPAWNYOFFSET;
-                }
-                else { //battle mode
-                    p->thetaZ = -PI / 2.0f; //Set this to -pi/2 to get player2 oriented the correct way at start
-                    p->position.x += PLAYER2_STARTOFFSET_X;
-                    p->position.y += PLAYER2_STARTOFFSET_Y;
-
-                }
             }
             else if (i == 2) { //Battle mode only below here (and not fully implemented either)
                 p->red = PLAYER_THREE_RED;
                 p->green = PLAYER_THREE_GREEN;
                 p->blue = PLAYER_THREE_BLUE;
-                p->thetaZ = -PI / 4.0f;
             }
             else { //Make every player beyond first 3 be white until I actually implement controls for this many players
                 p->red = 1.0f;
                 p->green = 1.0f;
                 p->blue = 1.0f;
                 std::cout << "\nWarning! This is more players than have been implemented in the PlayerManager class.\nThere might be some collision issues going forward if more than 4 players\n";
-                p->position.y = -0.9f * YLIMIT; //Gotta have players spawn somewhere... (NOTE I USE THE SCREEN LIMITS HERE JUST TO SPAWN THE EXTRA PLAYERS NEAR THE EDGE OF THE SCREEN!)
-                p->position.x = -0.9f * XLIMIT + 5.0f * ((float)(i-3)); //Make it so players don't spawn on top of eachother
             }
             //Set collisionBox data
             aiVector2D position = aiVector2D(p->position.x, p->position.y);
@@ -607,6 +628,9 @@ void PlayerManager::processCollisions() {
     
     PlayerEntity * p1 = static_cast<PlayerEntity *>(players[0]);
     PlayerEntity * p2 = static_cast<PlayerEntity *>(players[1]);
+    if (p1->isDead || p2->isDead) { //Don't do collisions if a player is dead
+        return;
+    }
     //See if player1 hit player2 (or if player2 hit player1)
     if (p1->colBox->isOverlapping(*(p2->colBox)) || p2->colBox->isOverlapping(*(p1->colBox))) {
         //p1->colBox->moveApartAlongAxisBetweenMidpoints(*(p2->colBox));
@@ -671,9 +695,85 @@ void PlayerManager::generateInitializationTemplate() {
     
 }
 
+void PlayerManager::processPlayerDeaths() {
+    Instance ** players = generator->getArrayOfInstances();
+    for (int i = 0; i < generator->getInstanceCount(); i++) {
+        PlayerEntity * player = static_cast<PlayerEntity *>( players[i] );
+        if ((player->shouldDieFlag)) {
+            player->shouldDieFlag = false;
+            player->isDead = true;
+            player->framesUntilRespawn = max(FRAMES_BETWEEN_PLAYER_RESPAWN, 2);
+        }
+        if (player->isDead) { //Decrement the respawn counter on all dead players
+            //set player's velocity to 0
+            player->velocity.x = 0.0f;
+            player->velocity.y = 0.0f;
+            player->framesUntilRespawn -= 1;
+            if (player->framesUntilRespawn <= 0) {
+                processPlayerRespawn(player, i);
+            }
+        }
+    }
+}
+
+void PlayerManager::processPlayerRespawn(PlayerEntity * player, int playerInstanceNumber) {
+    //Reset player's attibutes and flags
+    player->isDead = false;
+    player->framesUntilRespawn = 0;
+    player->health = STARTING_PLAYER_HEALTH;
+    player->velocity.x = 0.0f;
+    player->velocity.y = 0.0f;
+    
+    initializePlayer(player); //Resets the player
+    
+    //Gather information on the location of all players to prevent spawn overlapping
+    aiVector3D playerPositions[generator->getInstanceCount()];
+    Instance ** playerInstances = generator->getArrayOfInstances();
+    
+    bool validSpawnPoint = true;
+    do {
+        player->colBox->setMidpointTo(aiVector2D(player->position.x, player->position.y));
+        player->rollAmount = 0;
+        player->colBox->changeRotationAt(0, player->rollAmount);
+        player->colBox->changeRotationAt(1, player->thetaX);
+        player->colBox->changeRotationAt(2, player->thetaZ);
+        
+    //Check this players' position against the positions of the other players
+        for (int i = 0; i < generator->getInstanceCount(); i++) {
+            if ( i == playerInstanceNumber ) { break; }
+            PlayerEntity * otherPlayer = static_cast<PlayerEntity *>(playerInstances[i]);
+            if (otherPlayer->isDead) { break; }
+            if (otherPlayer->colBox->isOverlapping(*(player->colBox))) {
+                validSpawnPoint = false;
+            }
+        }
+        if (!validSpawnPoint) { //Move the spawn point if it isn't valid
+            player->position.x = player->position.x / 2.0f;
+            player->position.y = player->position.y / 2.0f;
+            if (player->position.x < 5.0f) {
+                player->position.x = XLIMIT - 2.0f;
+            }
+            if (player->position.y < 3.0f) {
+                player->position.y = -YLIMIT + 2.0f;
+            }
+        }
+    } while (!validSpawnPoint);
+    
+    //player->colBox->setMidpointTo(aiVector2D(player->position.x, player->position.y));
+    
+    //Reset to rotations as well
+
+    //player->colBox->changeRotationAt(3, player->thetaY);
+}
+
                                                                                                         
-//Returns the larger of the two floats
-float PlayerManager::max(const float& x1, const float& x2) {
+//Returns the larger of the two floats  (i really should replace this with a templated function)
+float PlayerManager::max(const float& x1, const float& x2) const {
+    //return the larger
+    if (x1 >= x2) {return x1;}
+    else {return x2;}
+}
+int PlayerManager::max(const int x1, const int x2) const {
     //return the larger
     if (x1 >= x2) {return x1;}
     else {return x2;}

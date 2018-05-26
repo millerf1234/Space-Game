@@ -67,13 +67,8 @@ public:
     int getNumberOfPlayerInstances() const {return (this->generator->getInstanceCount());}
     Instance** getPlayerInstances() const {return (this->generator->getArrayOfInstances());}
     
-    //aiVector3D getCenterWeaponLaunchpoint();
-    //aiVector3D * getSideWeaponLaunchPoints();
+    void processPlayerDeaths();
     
-    //void givePlayerDamage(PlayerEntity * pInst, float damage) {
-        //Check to make sure pInst is a valid playerInstance managed by this manager
-        //Instance ** activeInstances = this->generator->getArrayOfInstances();
-    //}
     
 protected:
     virtual void initializeFromTemplate() override;
@@ -81,7 +76,12 @@ private:
     void generateInitializationTemplate();
     void processInput();
     
-    float max(const float&, const float&);
+    void processPlayerRespawn(PlayerEntity * player, int playerInstanceNumber);
+    
+    void initializePlayer(PlayerEntity * player);
+    
+    float max(const float&, const float&) const;
+    int max(const int, const int) const;
     
     
 };

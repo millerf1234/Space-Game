@@ -242,9 +242,9 @@ bool Game::launch() {
         
         std::vector<WeaponInstance *> allActiveWeaponInstances;
         wepOverseer.getAllActiveWeaponInstances(allActiveWeaponInstances); //Have weaponOverseer fill the vector will all active weapon instances
-        if (allActiveWeaponInstances.size() > 0) {  //Check to make sure there actually exist active weapon instances
-            processInterEntityEvents(playerManager, allActiveWeaponInstances); //Check to see if entities of different types are running into eachother
-        }
+        
+        processInterEntityEvents(playerManager, allActiveWeaponInstances); //Handle inter-entity events (such as player death and player-weapon collision)
+        
         //Not sure yet if this next line should be inside the 'if' statement right before this line, or outside 'if' statement
         wepOverseer.deleteFlaggedWeaponInstances(); //Delete any flagged weapon instances (they probably were flagged in Game.processInterEntityEvents() )
         
@@ -300,9 +300,12 @@ bool Game::launch() {
     return true;
 }
 
-
 void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponInstance*> activeWepInstances) {
-    if (activeWepInstances.size() == 0) {return;}
+    if (activeWepInstances.size() == 0) {
+        //If there are no active weapons instances, then just do the logic for dead players and move on
+        pManag->processPlayerDeaths();
+        return;
+    }
     int playerInstanceCount = pManag->getNumberOfPlayerInstances();
     if (playerInstanceCount == 0) {
         std::cout << "\n!DEBUG::OOPS! There are no player instances for some reason...!\n";
@@ -321,9 +324,9 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
         std::vector<WeaponInstance*>::iterator wepIter = activeWepInstances.begin();
         for (; wepIter != activeWepInstances.end(); wepIter++) {
             //Check to make sure the weapon has existed for long enough to have left the collision box of the ship that fired it
-            
             if ((*wepIter)->timeAlive < 2.0f * TIME_TICK_RATE )  {
-                continue;
+                //continue; //Continue will cause the outer loop to continue...
+                break; //break causes the inner loop to continue
             }
             WeaponType wt = (*wepIter)->getWeaponType();
             switch (wt) {
@@ -333,7 +336,7 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
                     Kinetic * kWepInst = static_cast<Kinetic*>((*wepIter));
                     CollisionBox * kineticColBox = kWepInst->colBox;
                     //Check to see if the weapon's collisionBox and the player's collisionBox are overlapping
-                    if (kineticColBox->isOverlapping(*playersColBox) ){
+                    if (kineticColBox->isOverlapping(*playersColBox) && !(player->isDead) ){
                         //Do damage to player
                         player->health -= kWepInst->damage;
                         //Print the player's damage amount!
@@ -350,7 +353,8 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
                         player->velocity += velocityShift;
                         player->position = player->position + aiVector3D((velocityShift * 2.0f).x, (velocityShift * 2.0f).y, 0.0f);
                         
-                        //player->wepTracker->  //No health in weapon tracker? What about shield?
+                        //Have kinetic do damage to shields?
+                        
                         //Mark the Kinetic instance for destruction
                         kWepInst->shouldBeDestroyed = true;
                     }
@@ -367,5 +371,15 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
                     break;
             }
         }
+        
+        //Check to see if player died
+        if (player->health <= 0.0f) {
+            std::cout << "\nPlayer " << player->playerNumber << " died!\n";
+            player->shouldDieFlag = true;
+            player->health = 1000.0f;
+        }
+        
+        pManag->processPlayerDeaths();
+        
     }
 }

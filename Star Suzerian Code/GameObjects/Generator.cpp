@@ -963,6 +963,9 @@ void Generator::doDrawPlayerShipInstance(int i) {
     //this function.
     
     PlayerEntity * player = static_cast<PlayerEntity*>(instances[i]);
+    if (player->isDead) {
+        return; //Don't draw anything
+    }
     
     //Get playerBody specific uniforms (see shader code for what uniforms are in use for each program)
     glUniform1f(pul.ulocRed, player->red);
@@ -1026,6 +1029,7 @@ void Generator::doDrawPlayerShipInstance(int i) {
 //        }
 //
     }
+    /*
     //Repeat some more debug code (delete all this later plz)
     bool playersColliding = false;
     for (int otherPlayerIndx = 0; otherPlayerIndx < this->getInstanceCount(); ++otherPlayerIndx) {
@@ -1035,6 +1039,7 @@ void Generator::doDrawPlayerShipInstance(int i) {
             //goto COLLISION_DETECTED2; //I guess 'break' could work too
         }
     }
+     */
 //COLLISION_DETECTED2:
     //if (playersColliding) {
         //std::cout << "\nDEBUG::Collision Detected beween players!\n";
