@@ -723,6 +723,8 @@ void PlayerManager::processPlayerRespawn(PlayerEntity * player, int playerInstan
     player->health = STARTING_PLAYER_HEALTH;
     player->velocity.x = 0.0f;
     player->velocity.y = 0.0f;
+    AmmoCount deadPlayersAmmo = player->wepTracker->getAmmoCount();  //reset player ammo
+    deadPlayersAmmo.kinetic = PLAYER_KINETIC_AMMO;
     
     initializePlayer(player); //Resets the player
     
