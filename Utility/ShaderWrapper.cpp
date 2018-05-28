@@ -629,7 +629,7 @@ void ShaderWrapper::turnOffVertexLayout(vertLayoutFormat vlf) {
         glDisableVertexAttribArray(*(this->texAttrib));
     }
     else {
-        std::cout << "Extra Warning! You are attempting to turn off a vertex layout\n";
+        std::cout << "\nExtra Warning! You are attempting to turn off a vertex layout\n";
         std::cout << "that due to programmer laziness has not yet been implemented!" << std::endl;
         std::cout << "Please implement this format before you try to turn it off!" << std::endl;
     }

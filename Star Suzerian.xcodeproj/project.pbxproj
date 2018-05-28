@@ -32,6 +32,7 @@
 		9E10D5EE20360AE500F0F724 /* ObjectGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */; };
 		9E3DD990206D7C8100B2ED86 /* CollisionCircle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */; };
 		9E8FF849204DDD29006E2392 /* CollisionBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8FF847204DDD29006E2392 /* CollisionBox.cpp */; };
+		9EAFCECF20B9FDB900D12A9F /* DeathAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCECD20B9FDB900D12A9F /* DeathAnimation.cpp */; };
 		9EC84C3F205C6F6B00FC93B2 /* KineticWeaponManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EC84C3D205C6F6B00FC93B2 /* KineticWeaponManager.cpp */; };
 		9ECC63872044C51300F7B703 /* RocketManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ECC63852044C51300F7B703 /* RocketManager.cpp */; };
 		9ECC638B204640B600F7B703 /* RectangularCuboid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ECC6389204640B600F7B703 /* RectangularCuboid.cpp */; };
@@ -121,6 +122,8 @@
 		9E3DD992206E214900B2ED86 /* AnotherHubblePic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = AnotherHubblePic.jpg; sourceTree = "<group>"; };
 		9E8FF847204DDD29006E2392 /* CollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionBox.cpp; sourceTree = "<group>"; };
 		9E8FF848204DDD29006E2392 /* CollisionBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionBox.h; sourceTree = "<group>"; };
+		9EAFCECD20B9FDB900D12A9F /* DeathAnimation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DeathAnimation.cpp; path = GameObjects/DeathAnimation.cpp; sourceTree = "<group>"; };
+		9EAFCECE20B9FDB900D12A9F /* DeathAnimation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DeathAnimation.h; path = GameObjects/DeathAnimation.h; sourceTree = "<group>"; };
 		9EC022A920B79D25009785F3 /* space_ship211.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = space_ship211.obj; sourceTree = "<group>"; };
 		9EC84C3C205B9C3D00FC93B2 /* Cool_Picture_of_the_moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cool_Picture_of_the_moon.jpg; path = ../../../../Documents/Cool_Picture_of_the_moon.jpg; sourceTree = "<group>"; };
 		9EC84C3D205C6F6B00FC93B2 /* KineticWeaponManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = KineticWeaponManager.cpp; sourceTree = "<group>"; };
@@ -238,8 +241,8 @@
 				9E10D599203234CC00F0F724 /* main.cpp */,
 				9E10D5C92032CC0100F0F724 /* Game.cpp */,
 				9E10D5CA2032CC0100F0F724 /* Game.h */,
-				9E00AD95206651B700FEF9C2 /* Particle.cpp */,
-				9E00AD96206651B700FEF9C2 /* Particle.h */,
+				9EAFCECD20B9FDB900D12A9F /* DeathAnimation.cpp */,
+				9EAFCECE20B9FDB900D12A9F /* DeathAnimation.h */,
 			);
 			path = "Star Suzerian Code";
 			sourceTree = "<group>";
@@ -347,6 +350,8 @@
 		9E10D5CE2032CD6E00F0F724 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				9E00AD95206651B700FEF9C2 /* Particle.cpp */,
+				9E00AD96206651B700FEF9C2 /* Particle.h */,
 				9EFA4CA820533D5200308177 /* Math */,
 				9ECC63902047B63C00F7B703 /* 3D_Collision */,
 				9ECC638C2046A6A200F7B703 /* 2D_Collision */,
@@ -589,6 +594,7 @@
 				9E10D5D92032CEDC00F0F724 /* ShaderWrapper.cpp in Sources */,
 				9E10D5DA2032CEDC00F0F724 /* Quaternion.cpp in Sources */,
 				9E10D59A203234CC00F0F724 /* main.cpp in Sources */,
+				9EAFCECF20B9FDB900D12A9F /* DeathAnimation.cpp in Sources */,
 				9E10D5B4203237BB00F0F724 /* glad.c in Sources */,
 				9ECC638B204640B600F7B703 /* RectangularCuboid.cpp in Sources */,
 				9ECC63932047B65700F7B703 /* CollisionSphere.cpp in Sources */,

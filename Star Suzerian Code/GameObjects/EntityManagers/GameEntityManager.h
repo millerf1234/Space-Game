@@ -28,6 +28,8 @@ public:
     bool requiresAIInput;
     bool hasSpecialization() {return (this->specType != specializationType::NOSPECIALIZATION);}
     
+    specializationType getSpecType() const {return this->specType;} //I never use this function
+    
     void ageObjects();
     virtual void doUpkeep() {;}
     virtual void handleInput() {;}
@@ -35,7 +37,8 @@ public:
     virtual void processCollisions() {;}
     virtual void drawInstances() {;}
     
-    
+    Instance** getInstances() {return this->generator->getArrayOfInstances();}
+    int getNumberOfInstances() {return this->generator->getInstanceCount();}
     
 //    virtual void deleteInstance(const int& instID);
 //    virtual void deleteInstance(Instance *);

@@ -1700,6 +1700,7 @@ void CollisionBox::calculateSelfAfterTranslations() {
             //
             //
             else if (corners2D[0].x == corners2D[2].x && corners2D[0].y == corners2D[2].y) {
+                std::cout << "\nA collision box was ill-formed, even after correction!\n";
                 //Find the distance between corners 1 and 3
                 //Note that we know the x coord of 1 and 3 has to be the same
                 ////Reason: cor2D[2].x <= cor2D[1].x <= cor2D[0].x  and   cor2D[2].x <= cor2D[3].x <= cor2D[0].x

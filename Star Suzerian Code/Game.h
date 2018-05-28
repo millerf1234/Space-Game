@@ -50,6 +50,7 @@
 #include "PlayerManager.h"
 #include "Stage.h" //I replaced Background.h with Stage.h
 #include "GameParameters.h" //Get gameplay-affecting constants
+#include "DeathAnimation.h"
 
 static const char * INDENT = "        ";
 
@@ -109,8 +110,10 @@ private:
     
     
     void initializeWeaponsManager(); //
+    
+    void captureGameState(DeathAnimation::GameStateInfoForDeathAnimation *);
 
-    void doZoomIn(unsigned long long framesToHold); //The most important function
+    //void doZoomIn(unsigned long long framesToHold); //The most important function
 };
 
 

@@ -10,6 +10,7 @@
 
 
 
+
 //Constructor
 Game::Game(MonitorData & mPtr) {
     //Make the rotation quaternions (4th parameter is starting theta)
@@ -59,11 +60,16 @@ Game::~Game() { //std::cout << "\nDEBUG::Game destructor was called...\n";
     //Delete game entities in the gameEntityManager array
     std::vector<GameEntityManager *>::iterator iter;
     for (iter = gEntities.begin(); iter != gEntities.end(); ++iter) {
+        //if ((*iter)->getSpecType() == STAGE) { continue; }
         if (*iter != nullptr) {
             delete (*iter);
             (*iter) = nullptr;
         }
     }
+//    if (this->stage != nullptr) {
+//        delete this->stage;
+//        this->stage = nullptr;
+//    }
     
 }
 
@@ -76,7 +82,11 @@ void Game::loadGameObjects() {
     //Load the stages first
     std::cout << std::endl << std::endl << INDENT << "Loading Stage...\n";
     //for (int i = 0; i < NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD; ++i) {
-        gEntities.push_back(new Stage);
+    Stage * levelOne = new Stage();
+    this->stage = levelOne;
+    gEntities.push_back(levelOne);
+    
+    
         std::cout << INDENT << "Level " << /*i*/0+1 << " loaded..." << std::endl;
     //}
     //Since I am no longer doing the loop, do:
@@ -378,10 +388,28 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
             std::cout << "Player has died " << player->deaths + 1 << " times!\n";
             //Need the + 1 because the player death hasn't been processed at this point
             player->shouldDieFlag = true;
-            player->health = 1000.0f;
+           
+            if (PLAY_DEATH_ANIMATION) {
+                //Record the game state in a struct
+                DeathAnimation::GameStateInfoForDeathAnimation * gameStateAtPlayersDeath = new DeathAnimation::GameStateInfoForDeathAnimation;
+                captureGameState(gameStateAtPlayersDeath);
+              
+                DeathAnimation::playDeathAnimation(gameStateAtPlayersDeath, player);
+                
+                //Clean up memory used in capturing game state
+                delete gameStateAtPlayersDeath;
+                gameStateAtPlayersDeath = nullptr;
+            }
+            
+            pManag->processPlayerDeaths(); //Have player manager process the player's death
         }
-        
-        pManag->processPlayerDeaths();
-        
     }
+}
+
+void Game::captureGameState(DeathAnimation::GameStateInfoForDeathAnimation * state) {
+    state->stage = this->stage;
+    state->playerManager = this->playerManager;
+    state->weaponOverseer = &(this->wepOverseer);
+    state->gEntities = this->gEntities;
+    state->mWindow = this->mWindow;
 }

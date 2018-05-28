@@ -188,13 +188,13 @@ void PlayerManager::initializePlayer(PlayerEntity * player) {
     if (player->playerNumber == 1) {
         if (MOON_DRIFTER_MODE) {
             //Set moonDrifter spawn orientation for player 1
-            player->thetaZ = mdPLAYER1SPAWNROTATION;
+            player->thetaZ = mdPLAYER1SPAWNROTATION + 0.001f;
             //Then set the moodDrifter spawn points
             player->position.x = mdPLAYER1SPAWNXOFFSET;
             player->position.y = mdPLAYER1SPAWNYOFFSET;
         }
         else { //battle mode
-            player->thetaZ = PI / 2.0f; //Set this to pi/2 to get player1 oriented the correct way at start for battle mode
+            player->thetaZ = PI / 2.0f + 0.001f; //Set this to pi/2 to get player1 oriented the correct way at start for battle mode
             player->position.x = PLAYER1_STARTOFFSET_X;
             player->position.y = PLAYER1_STARTOFFSET_Y;
         }
@@ -202,19 +202,19 @@ void PlayerManager::initializePlayer(PlayerEntity * player) {
     else if ( player->playerNumber == 2 ) {
         if (MOON_DRIFTER_MODE) { //MOON DRIFTER MODE!
             //Set moonDrifter spawn orientation for player 2
-            player->thetaZ = mdPLAYER2SPAWNROTATION;
+            player->thetaZ = mdPLAYER2SPAWNROTATION + 0.001f;;
             //then set moonDrifter spawns
             player->position.x = mdPLAYER2SPAWNXOFFSET;
             player->position.y = mdPLAYER2SPAWNYOFFSET;
         }
         else { //battle mode
-            player->thetaZ = -PI / 2.0f; //Set this to -pi/2 to get player2 oriented the correct way at start
+            player->thetaZ = -PI / 2.0f + 0.001f;; //Set this to -pi/2 to get player2 oriented the correct way at start
             player->position.x = PLAYER2_STARTOFFSET_X;
             player->position.y = PLAYER2_STARTOFFSET_Y;
         }
     }
     else {
-        player->thetaZ = -PI / 4.0f;
+        player->thetaZ = -PI / 4.0f + 0.001f;
         player->position.y = -0.9f * YLIMIT; //Gotta have players spawn somewhere... (NOTE I USE THE SCREEN LIMITS HERE JUST TO SPAWN THE EXTRA PLAYERS NEAR THE EDGE OF THE SCREEN!)
         player->position.x = -0.9f * XLIMIT + 5.0f * ((float)( (player->playerNumber) - 3)); //Make it so players don't spawn on top of eachother
     }
@@ -404,7 +404,7 @@ void PlayerManager::processInput() {
     for (int i = 0; i < generator->getInstanceCount(); ++i) {
         PlayerEntity * player = static_cast<PlayerEntity *>(players[i]);
         
-        if (player->isDead) { break;} //No need to process input from dead players
+        if (player->isDead) { continue;} //No need to process input from dead players
         
         //NOTE! rollThreshold is just for drawing engine flames, it is not an actual limit on rolling
         float rollThreshold = 0.5f * (PI / 2.0f); //Used in turnLeft and turnRight to check if rolled past threshhold
@@ -705,6 +705,7 @@ void PlayerManager::processPlayerDeaths() {
             player->shouldDieFlag = false;
             player->isDead = true;
             player->deaths += 1;
+            player->health = 100.0f; //(float)FRAMES_BETWEEN_PLAYER_RESPAWN; //Don't rely on FRAMES_BETWEEN_PLAYER_RESPAWN being positive. 100.0f was chosen randomly
             player->framesUntilRespawn = max(FRAMES_BETWEEN_PLAYER_RESPAWN, 2);
         }
         if (player->isDead) { //Decrement the respawn counter on all dead players
@@ -735,8 +736,11 @@ void PlayerManager::processPlayerRespawn(PlayerEntity * player, int playerInstan
     aiVector3D playerPositions[generator->getInstanceCount()];
     Instance ** playerInstances = generator->getArrayOfInstances();
     
+    static int loopTimeoutCounter;
     bool validSpawnPoint = true;
+    loopTimeoutCounter = 0; //reset before entering loop
     do {
+        loopTimeoutCounter++;
         player->colBox->setMidpointTo(aiVector2D(player->position.x, player->position.y));
         player->rollAmount = 0;
         player->colBox->changeRotationAt(0, player->rollAmount);
@@ -762,7 +766,7 @@ void PlayerManager::processPlayerRespawn(PlayerEntity * player, int playerInstan
                 player->position.y = -YLIMIT + 2.0f;
             }
         }
-    } while (!validSpawnPoint);
+    } while (!validSpawnPoint && (loopTimeoutCounter < 100));
     
     //player->colBox->setMidpointTo(aiVector2D(player->position.x, player->position.y));
     

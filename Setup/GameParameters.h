@@ -49,9 +49,11 @@ static constexpr bool PRINT_DESTRUCTOR_CALLS = false; //For debug
 static constexpr bool PRINT_WEAPON_SPAWN_POINT_COORDS = false; //More debug stuff
 static constexpr bool PRINT_WEAPON_SPAWN_ANGLES = false; //Mostly for debug
 
-static constexpr bool DRAW_COLLISION_DETAILS = false;
+static constexpr bool DRAW_COLLISION_DETAILS = true;
 
 static constexpr bool DRAW_MODELS = true;
+
+static constexpr bool PLAY_DEATH_ANIMATION = true;
 
 static constexpr bool PRINT_PLAYER_DAMAGE_MESSAGES = true; //Print a message each time a player takes damage
 
@@ -59,7 +61,7 @@ static constexpr bool PRINT_PLAYER_DAMAGE_MESSAGES = true; //Print a message eac
 //-----------------------------------------------------------------------------
 // Gamemode types
 //-----------------------------------------------------------------------------
-static constexpr bool MOON_DRIFTER_MODE = true;
+static constexpr bool MOON_DRIFTER_MODE = false;
 //Battle mode by default
 
 //-----------------------------------------------------------------------------
@@ -216,7 +218,7 @@ static constexpr float KINETIC_SPEED_FACTOR = 1.95f; //1.75f is good value, form
 static constexpr int PLAYER_KINETIC_AMMO = 600000; //Give a lot until I add picking up ammo
 static constexpr float KINETIC_WEP_DAMAGE = 0.01f;
 
-static constexpr float KINETIC_VELOCITY_IMPACT = 0.04f; //0.04
+static constexpr float KINETIC_VELOCITY_IMPACT = 0.0f;//0.04f; //0.04
 
 constexpr int KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN = 5; //5-9
 //Hexagon Bomb
