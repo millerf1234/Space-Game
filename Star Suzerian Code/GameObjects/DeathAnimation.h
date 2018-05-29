@@ -20,6 +20,7 @@
 #include "PlayerManager.h"
 #include "WeaponOverseer.h"
 #include "Stage.h"
+#include "PlayerParticle.h"
 
 namespace DeathAnimation {
 typedef struct GameStateInfoForDeathAnimation {

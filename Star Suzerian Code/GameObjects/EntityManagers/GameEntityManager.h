@@ -28,6 +28,25 @@ public:
     bool requiresAIInput;
     bool hasSpecialization() {return (this->specType != specializationType::NOSPECIALIZATION);}
     
+    SimpleObjLoader * getModelData() {
+        if (!(this->hasGenerator)) {
+            if (PRINT_DEBUG_WARNING_MESSAGES) {
+                std::cout << "\nDEBUG::WARNING! getModelData called from EntityManager that does not yet have\n";
+                std::cout << "      a generator! A nullptr is being returned!\n";
+            }
+            return nullptr;
+        }
+        if (!(this->generator->hasModel())) {
+            if (PRINT_DEBUG_WARNING_MESSAGES) {
+                std::cout << "\nDEBUG::WARNING! getModelData called from EntityManager that has a generator that\n";
+                std::cout << "      does not have a model!   !!!A nullptr is being returned!!!\n";
+            }
+            return nullptr;
+        }
+        
+        return this->generator->getModel();
+    }
+    
     specializationType getSpecType() const {return this->specType;} //I never use this function
     
     void ageObjects();

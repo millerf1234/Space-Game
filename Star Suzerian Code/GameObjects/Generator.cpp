@@ -768,14 +768,14 @@ void Generator::drawInstances() {
         }
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        if (specialization != STAGE) {
+       // if (specialization != STAGE) {
             glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, this->vertices, GL_STREAM_DRAW);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, this->elements, GL_STREAM_DRAW);
-        }
-        else {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, this->vertices, GL_STATIC_DRAW);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, this->elements, GL_STATIC_DRAW);
-        }
+       // }
+        //else { //Do static_draw with stage because it's data will not be updated frequently (at all) //Actually I thought about it more and this is not true/shouldn't matter
+       //     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, this->vertices, GL_STATIC_DRAW);
+      //      glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, this->elements, GL_STATIC_DRAW);
+       // }
         
         //Set Uniforms for this instance
         glUniform1f(ulocTime, instances[i]->timeAlive);
@@ -798,7 +798,7 @@ void Generator::drawInstances() {
             doDrawWeaponInstance(i);
         }
         else if (specialization == specializationType::STAGE) {
-            if (CENTER_AND_FULLSCREEN_IMAGE) {
+            if (STAGE_POSITION_CENTER_AND_FULLSCREEN_IMAGE) {
                 float zoomAmount = 1.105f - 0.0005f * instances[i]->timeAlive;
                 zoomAmount = (zoomAmount > 1.05f ? zoomAmount : 1.05f);
                 glUniform1f(ulocZoom, zoomAmount);

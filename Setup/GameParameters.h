@@ -3,6 +3,7 @@
 //
 //
 //  Edited continuously up through 3/20/2018 as needed with added functionality
+//                     Actually make that through 5/30/2018 
 //  Created by Forrest Miller on 2/14/18.
 //
 
@@ -10,7 +11,6 @@
 //(On Mac) To TEST KEYBOARD INPUT FUNCTIONALITY, OPEN CONSOLE AND TYPE:
 //  open -a KeyboardViewer
 //-----------------------------------------------------------------------------
-
 
 #ifndef GameParameters_h
 #define GameParameters_h
@@ -29,13 +29,13 @@ static constexpr float PI = 3.1415927f;
 
 //NOTE!  IN Generator under the function./ delete element, I set the value in the seperate array of element ID's that I track
 //       to some bogus large negative number to represent that that instance was deleted, this way I am not constantly
-//       resizing the array... wait...
+//       resizing the array... wait... what?
 
 
 //-----------------------------------------------------------------------------
 //                       OPEN FULL SCREEN OR WINDOWED
 //-----------------------------------------------------------------------------
-static const bool USE_FULLSCREEN = true;
+static constexpr bool USE_FULLSCREEN = true;
 
 
 //-----------------------------------------------------------------------------
@@ -45,17 +45,24 @@ static constexpr bool PRINT_DEBUG_WARNING_MESSAGES = true;
 static constexpr bool PRINT_DEBUG_MESSAGES = false; //Turn off if not in debug mode
 static constexpr bool PRINT_FRAME_PROCESS_TIME_INFORMATION = false; //Prints the process time for the frame to the console  (question: How does out-of-order execution optimization affect the timing functions? Are they always guarenteed to execute at the point they appear in the code?)
 static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a test (it looks like my laptop refuses to allow MSAA)
-static constexpr bool PRINT_DESTRUCTOR_CALLS = false; //For debug
+static constexpr bool PRINT_DESTRUCTOR_CALLS = false; //For debug (doesn't print every destructor call)
 static constexpr bool PRINT_WEAPON_SPAWN_POINT_COORDS = false; //More debug stuff
 static constexpr bool PRINT_WEAPON_SPAWN_ANGLES = false; //Mostly for debug
 
-static constexpr bool DRAW_COLLISION_DETAILS = true;
+
+//-----------------------------------------------------------------------------
+// Game Message (Non-Debug) Toggle(s)
+//-----------------------------------------------------------------------------
+static constexpr bool PRINT_PLAYER_DAMAGE_MESSAGES = true; //Print a message each time a player takes damage
+
+//-----------------------------------------------------------------------------
+// Draw Options
+//-----------------------------------------------------------------------------
+static constexpr bool DRAW_COLLISION_DETAILS = false;
 
 static constexpr bool DRAW_MODELS = true;
 
 static constexpr bool PLAY_DEATH_ANIMATION = true;
-
-static constexpr bool PRINT_PLAYER_DAMAGE_MESSAGES = true; //Print a message each time a player takes damage
 
 
 //-----------------------------------------------------------------------------
@@ -111,7 +118,7 @@ constexpr float mdOUTERZONE_UPPERTHETA = PI / 7.0f;
 // ZOOM-IN PARAMETERS
 // (Most Important!!!  Edit With Care!!!)
 //-----------------------------------------------------------------------------
-//Implement the zoom in at some point!
+//Implement the zoom in at some point! Once a win condition has been implemented
 static constexpr int FRAMES_TO_HOLD = 500;
 static constexpr float STARTING_ZOOM = 50.0f;
 static constexpr float ENDING_ZOOM = 5.0f; //This is probably way to large a change
@@ -119,22 +126,21 @@ static constexpr float ENDING_ZOOM = 5.0f; //This is probably way to large a cha
 //-----------------------------------------------------------------------------
 //   GAME PARAMETERS
 //-----------------------------------------------------------------------------
-
-//Faster Gameplay
+////Faster Gameplay
 //static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.045f;
 //static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 1.00f;
 ////Rotation speed values are radians per frame
 //static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/90.0f;//This means 95 frames to do full rotation (i.e. about 2 seconds)
 //static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/25.0f; //So 30 frames to rotate 90 degrees
 
-//Fast Gameplay
+//Fast Gameplay (Normal)
 static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.03225f; //Was 0.035f when game developed  //was also 0.032f for a while
 static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.9367f; //Was 0.95f //Was also 0.93f
 //Rotation speed values are radians per frame                 // 100.0f for rotation turning was old value
 static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/90.0f;//This means 95 frames to do full rotation (i.e. about 2 seconds)
 static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 frames to rotate 90 degrees
 
-//Slower Gameplay (comment Fast Gameplay and uncomment these)
+////Slower Gameplay (comment Fast Gameplay and uncomment these)
 //static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.015f; //Was 0.015f
 //static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.45f; //Was 0.45f
 ////Rotation speed values are radians per frame
@@ -316,7 +322,7 @@ const std::string KINETIC_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projec
 //   Texture Image Locations    //see: http://img-resize.com/   to resize images
 //-----------------------------------------------------------------------------
 
-static constexpr bool CENTER_AND_FULLSCREEN_IMAGE = false;
+static constexpr bool STAGE_POSITION_CENTER_AND_FULLSCREEN_IMAGE = false;
 
 static constexpr int NUMBER_OF_BACKGROUND_TEXTURES_TO_LOAD = 1; //Increase this as more backgrounds are added
 

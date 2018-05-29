@@ -3,6 +3,9 @@
 //  overall design is so I do some weird things to make it work. I myself cringe looking
 //  at this code. Spare yourself the pain...
 //
+//  UPDATE: Actually I refactored it bit, so it's not quite as terrible as it was initially.
+//          That being said, it still is not great...
+//
 //  DeathAnimation.cpp
 //
 //  Created by Forrest Miller on 5/26/18.  (Note this is almost 2 months after I did most
@@ -14,37 +17,72 @@
 namespace DeathAnimation {
     static constexpr int DEATH_ANIMATION_TOTAL_FRAMES = 420;
     static constexpr int DEATH_SCENE_PART_ONE_FRAMES = 60;
-    static constexpr int DEATH_SCENE_PART_TWO_FRAMES = 180;
-    static const aiVector2D PLAYER_COLBOX_SHIFT = aiVector2D(1000.0f, 1000.0f);
-    
-    
-    //Structs
-    typedef struct GameStateOnEnteringFunction {
-        aiVector3D alivePlayerPosition;
-        float alivePlayerThetaX, alivePlayerThetaY, alivePlayerThetaZ;
-        bool bothPlayersDead;
-        int indexOfAlivePlayer;
-        std::vector<aiVector2D> projectilePositions;
-    } GameState;
-    
-    
-    typedef struct GameStateOnEnteringFunction2 {
-        
-    } GameState2;
+    static constexpr int DEATH_SCENE_PART_TWO_FRAMES = 120;
+    static constexpr int DEATH_SCENE_PART_TWO_CUTOFF =
+                                DEATH_SCENE_PART_ONE_FRAMES + DEATH_SCENE_PART_TWO_FRAMES;
+    static const aiVector2D PLAYER_COLBOX_OFFSCREEN_SHIFT = aiVector2D(1000.0f, 1000.0f);//1000 was chosen arbitrarily
     
     typedef struct PlayerStateToRecord {
-        
+        //Fields
+        aiVector3D position;
+        float thetaX, thetaY, thetaZ;
+        //Constructor
+        PlayerStateToRecord() {
+            position.x = position.y = position.z = 0.0f;
+            thetaX = thetaY = thetaZ = 0.0f;
+        }
+        //2 member functions
+        void recordPlayer(PlayerEntity * player) {
+            this->position = player->position;
+            this->thetaX   = player->thetaX;
+            this->thetaY   = player->thetaY;
+            this->thetaZ   = player->thetaZ;
+            //Shift the player's collision boxes as well so it is not on the screen
+            player->colBox->translate(PLAYER_COLBOX_OFFSCREEN_SHIFT);
+        }
+        void resetPlayer(PlayerEntity * player) {
+            player->position = this->position;
+            player->thetaX = this->thetaX;
+            player->thetaY = this->thetaY;
+            player->thetaZ = this->thetaZ;
+            //Reset player's collision box
+            aiVector2D translation = PLAYER_COLBOX_OFFSCREEN_SHIFT;
+            translation.x *= -1.0f;
+            translation.y *= -1.0f;
+            player->colBox->translate(translation);
+        }
     } RecordedPlayerState;
+    
+    typedef struct GameStateOnEnteringFunction {
+        //Field
+        RecordedPlayerState * playerStates; //arrayOfRecordedStates
+        //Constructor
+        GameStateOnEnteringFunction() { playerStates = nullptr; }
+        //2 member functions
+        void recordPlayerStates(PlayerManager * pMan) {
+            playerStates = new RecordedPlayerState [pMan->getNumberOfPlayerInstances()];
+            Instance ** pInstances = pMan->getInstances();
+            for (int i = 0; i < pMan->getNumberOfPlayerInstances(); i++) {
+                playerStates[i].recordPlayer(static_cast<PlayerEntity *> (pInstances[i]));
+            }
+        }
+        void resetPlayerStates(PlayerManager * pMan) {
+            if (playerStates == nullptr) { return; } //recordPlayerStates was never called
+            Instance ** pInstances = pMan->getInstances();
+            for (int i = 0; i < pMan->getNumberOfPlayerInstances(); i++) {
+                playerStates[i].resetPlayer(static_cast<PlayerEntity *> (pInstances[i]));
+            }
+            //Release memory
+            delete [] playerStates;
+            playerStates = nullptr;
+        }
+    } GameState;
     
     //Helper Function prototypes
     void recordGameState(GameStateInfoForDeathAnimation * gState, GameState & stateToRecord);
     void resetGameState(GameStateInfoForDeathAnimation * gState, GameState & recordedState);
     void resetStage(Stage *);
-    void recordPlayerInstances(PlayerManager * playerManager, GameState & stateToRecord);
-    void resetPlayerInstances(PlayerManager * playerManager, GameState & stateToRecord);
-    float calculateRotationStep(float min, float max);
-    
-    
+    float getRandomInRange(float min, float max);
     
     
     //Actual Function:
@@ -52,17 +90,14 @@ namespace DeathAnimation {
         if (PRINT_DEBUG_MESSAGES) {
             std::cout << "\nDEBUG::Playing Player Death Animation...\n";
         }
-        GameState recordedState;
-        recordedState.bothPlayersDead = true;
-        recordedState.indexOfAlivePlayer = -1;
-        recordGameState(gState, recordedState);
         
+        GameState recordedGameState;
+        recordGameState(gState, recordedGameState);
         
-        float xStep = calculateRotationStep(3.14159f, 3.14159f*2.0f);
-        float yStep = calculateRotationStep(0.0f, 0.5f * 3.14159f);
-        float zStep = calculateRotationStep(3.14159f * 2.0f, 3.14159f * 5.5f);
-        
-        std::cout << "\nxStep is " << xStep << "\nyStep is " << yStep << "\nzStep is " << zStep;
+        static float pi = 3.14159f;
+        float xStep = getRandomInRange(1.0f * pi, 2.00f * pi) / DEATH_SCENE_PART_TWO_FRAMES;
+        float yStep = getRandomInRange(   0.0f  , 0.75f * pi) / DEATH_SCENE_PART_TWO_FRAMES;
+        float zStep = getRandomInRange(2.0f * pi, 5.50f * pi) / DEATH_SCENE_PART_TWO_FRAMES;
         
         //Get the player who died's position
         aiVector2D deadPlayerScreenCoord(player->position.x, player->position.y);
@@ -82,15 +117,16 @@ namespace DeathAnimation {
                 for (; entityManagerIterator < gState->gEntities.end(); ++entityManagerIterator) {
                     Instance ** instances = (*entityManagerIterator)->getInstances();
                     for (int j = 0; j < (*entityManagerIterator)->getNumberOfInstances(); j++) {
-                        instances[j]->position.x += deadPlayerScreenCoord.x / 60.0f;
-                        instances[j]->position.y += deadPlayerScreenCoord.y / 60.0f;
+                        instances[j]->position.x -= deadPlayerScreenCoord.x / 60.0f;
+                        instances[j]->position.y -= deadPlayerScreenCoord.y / 60.0f;
                     }
                 }
-                player->position.x -= deadPlayerScreenCoord.x / 30.0f;
-                player->position.y -= deadPlayerScreenCoord.y / 30.0f;
+                //player->position.x -= deadPlayerScreenCoord.x / 30.0f;
+                //player->position.y -= deadPlayerScreenCoord.y / 30.0f;
                 
                 player->zoom = (deadPlayersStartingZoom -
-                                ( (deadPlayersStartingZoom - 15.0f) * ((float)i) / DEATH_SCENE_PART_ONE_FRAMES));
+                                ( (deadPlayersStartingZoom - 14.0f) * ((float)i) / DEATH_SCENE_PART_ONE_FRAMES));
+                player->thetaZ += 0.075f;
             }
             
             //------------------------------------------------------------------
@@ -98,8 +134,8 @@ namespace DeathAnimation {
             //        DEATH ANIMATION PART 2
             //
             //------------------------------------------------------------------
-            else if (i < DEATH_SCENE_PART_TWO_FRAMES) {
-                rotationSpeedIncreaser += ((1.0f / DEATH_SCENE_PART_TWO_FRAMES) *
+            else if (i < DEATH_SCENE_PART_TWO_CUTOFF) {
+                rotationSpeedIncreaser += ((1.0f / DEATH_SCENE_PART_TWO_CUTOFF) *
                                            (1.0f + pow(rotationSpeedIncreaser, 2.0f)));
                 //player->xRot->changeTheta(player->xRot->getTheta() + xStep);
                 //player->yRot->changeTheta(player->yRot->getTheta() + yStep);
@@ -115,7 +151,7 @@ namespace DeathAnimation {
             //
             //------------------------------------------------------------------
             else {
-                drawStage = false; //Don't draw the stage beyond part 1
+                drawStage = false; //Don't draw the stage beyond this point
                 
                 
             }
@@ -123,8 +159,8 @@ namespace DeathAnimation {
             //Draw the 'scene'
             std::vector<GameEntityManager*>::iterator entityDrawIterator = gState->gEntities.begin();
             for (; entityDrawIterator < gState->gEntities.end(); ++entityDrawIterator) {
-                bool iteratorIsForStage = ( !(*entityDrawIterator)->requiresUserInput ||
-                                           (!(*entityDrawIterator)->requiresAIInput) ); //I am recognizing Stage by knowing Stage doesn't require input while all other entities do
+                //bool iteratorIsForStage = ( !(*entityDrawIterator)->requiresUserInput ||
+                //                           (!(*entityDrawIterator)->requiresAIInput) ); //I am recognizing Stage by knowing Stage doesn't require input while all other entities do
                 
                 
                 //if (iteratorIsForStage && !drawStage) {break;} //This line currently doesn't work as intended!
@@ -139,8 +175,7 @@ namespace DeathAnimation {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
         
-        
-        resetGameState(gState, recordedState);
+        resetGameState(gState, recordedGameState);
         if (PRINT_DEBUG_MESSAGES || true) {
             std::cout << "\nDEBUG::Finished Playing Player Death Animation...\n";
         }
@@ -148,91 +183,39 @@ namespace DeathAnimation {
     
     
     void recordGameState(GameStateInfoForDeathAnimation * gState, GameState & stateToRecord) {
-        
-        //Don't need to record stage because I know the fixed points to always move it back to
-        
-        recordPlayerInstances(gState->playerManager, stateToRecord);
-        
-        
-        
+        //No recording is needed for stage since it will always return to a fixed location
+        stateToRecord.recordPlayerStates(gState->playerManager);
+        //Weapon instances are not drawn during death animation, so no need to record them
     }
     
     void resetGameState(GameStateInfoForDeathAnimation * gState, GameState & recordedState) {
-        
         resetStage(gState->stage);
-        resetPlayerInstances(gState->playerManager, recordedState);
-        
-        
+        recordedState.resetPlayerStates(gState->playerManager);
     }
     
     void resetStage(Stage * stage) {
         aiVector3D * stagePosition = &(stage->getInstances()[0]->position);
-        if (CENTER_AND_FULLSCREEN_IMAGE) {
+        stagePosition->x = stagePosition->y = 0.0f;
+
+        //I'm going to save this code below because this is how it should be done,
+        //but actually the way I am offseting stage is a calculation performed
+        // within the drawing logic...
+        /*
+        aiVector3D * stagePosition = &(stage->getInstances()[0]->position);
+        if (STAGE_POSITION_CENTER_AND_FULLSCREEN_IMAGE) {
             stagePosition->x = stagePosition->y = stagePosition->z = 0.0f;
         }
         else {
             stagePosition->x = 0.5f;
             stagePosition->y = stagePosition->z = 0.0f;
-        }
+        } */
     }
     
-    void recordPlayerInstances(PlayerManager * playerManager, GameState & stateToRecord) {
-        Instance ** playerInstances = playerManager->getInstances();
-        for (int i = 0; i < playerManager->getNumberOfPlayerInstances(); i++) {
-            PlayerEntity * player = static_cast<PlayerEntity *>(playerInstances[i]);
-            if (player->isDead) {
-                continue; //or could be break;
-            }
-            stateToRecord.indexOfAlivePlayer = i;
-            stateToRecord.bothPlayersDead = false;
-            stateToRecord.alivePlayerPosition = player->position;
-            stateToRecord.alivePlayerThetaX = player->thetaX;
-            stateToRecord.alivePlayerThetaY = player->thetaY;
-            stateToRecord.alivePlayerThetaZ = player->thetaZ;
-        }
-        
-        //Shift the player's collision boxes as well so they are not on the screen
-        for (int i = 0; i < playerManager->getNumberOfPlayerInstances(); i++) {
-            playerInstances[i]->colBox->translate(PLAYER_COLBOX_SHIFT);
-        }
-        
-        
-    }
-    
-    void resetPlayerInstances(PlayerManager * playerManager, GameState & stateToRecord) {
-        
-        Instance ** playerInstances = playerManager->getInstances();
-        
-        //Reset the collision boxes for each player to be where they were when the death animation started
-        aiVector2D translation = PLAYER_COLBOX_SHIFT;
-        translation.x *= -1.0f;
-        translation.y *= -1.0f;
-        for (int i = 0; i < playerManager->getNumberOfPlayerInstances(); i++) {
-            playerInstances[i]->colBox->translate(translation);
-        }
-        
-        
-        if (stateToRecord.bothPlayersDead) {
-            return;
-        }
-        
-        
-        playerInstances[stateToRecord.indexOfAlivePlayer]->position = stateToRecord.alivePlayerPosition;
-        
-        playerInstances[stateToRecord.indexOfAlivePlayer]->thetaX = stateToRecord.alivePlayerThetaX;
-        playerInstances[stateToRecord.indexOfAlivePlayer]->thetaY = stateToRecord.alivePlayerThetaY;
-        playerInstances[stateToRecord.indexOfAlivePlayer]->thetaZ = stateToRecord.alivePlayerThetaZ;
-        
-    }
-    
-    float calculateRotationStep(float min, float max) {
+    float getRandomInRange(float min, float max) {
         auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-        static std::mt19937 mt_rand(seed);
-        //static std::mt19937 mt_rand((unsigned)time(0u));  //Use a static random num generator
-        auto real_rand = std::bind(std::uniform_real_distribution<double>(min, max),
-                                   mt_rand);
-        float angle = real_rand();
-        return (angle / (DEATH_SCENE_PART_TWO_FRAMES));
+        static std::mt19937 mt_rand((unsigned int)seed);
+        auto real_rand = std::bind(std::uniform_real_distribution<double>(min, max), mt_rand);
+        return real_rand();
     }
     
 } //namespace DeathAnimation

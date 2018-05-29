@@ -33,6 +33,11 @@
 		9E3DD990206D7C8100B2ED86 /* CollisionCircle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */; };
 		9E8FF849204DDD29006E2392 /* CollisionBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8FF847204DDD29006E2392 /* CollisionBox.cpp */; };
 		9EAFCECF20B9FDB900D12A9F /* DeathAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCECD20B9FDB900D12A9F /* DeathAnimation.cpp */; };
+		9EAFCED320BD44D500D12A9F /* Interpolator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCED120BD44D500D12A9F /* Interpolator.cpp */; };
+		9EAFCED620BD48C300D12A9F /* MeshTriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCED420BD48C300D12A9F /* MeshTriangle.cpp */; };
+		9EAFCEDA20BDDC6C00D12A9F /* PlayerParticlePoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCED820BDDC6C00D12A9F /* PlayerParticlePoint.cpp */; };
+		9EAFCEDD20BDDC8400D12A9F /* PlayerParticleTriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCEDB20BDDC8400D12A9F /* PlayerParticleTriangle.cpp */; };
+		9EAFCEE020BDE23100D12A9F /* PlayerParticleManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCEDE20BDE23100D12A9F /* PlayerParticleManager.cpp */; };
 		9EC84C3F205C6F6B00FC93B2 /* KineticWeaponManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EC84C3D205C6F6B00FC93B2 /* KineticWeaponManager.cpp */; };
 		9ECC63872044C51300F7B703 /* RocketManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ECC63852044C51300F7B703 /* RocketManager.cpp */; };
 		9ECC638B204640B600F7B703 /* RectangularCuboid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ECC6389204640B600F7B703 /* RectangularCuboid.cpp */; };
@@ -60,8 +65,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9E00AD95206651B700FEF9C2 /* Particle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Particle.cpp; path = Utility/Particle.cpp; sourceTree = SOURCE_ROOT; };
-		9E00AD96206651B700FEF9C2 /* Particle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Particle.h; path = Utility/Particle.h; sourceTree = SOURCE_ROOT; };
+		9E00AD95206651B700FEF9C2 /* Particle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Particle.cpp; path = Utility/Experimental_Or_Unfinished/Particle.cpp; sourceTree = SOURCE_ROOT; };
+		9E00AD96206651B700FEF9C2 /* Particle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Particle.h; path = Utility/Experimental_Or_Unfinished/Particle.h; sourceTree = SOURCE_ROOT; };
 		9E0754E3203AD391009B6215 /* playership.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playership.frag; sourceTree = "<group>"; };
 		9E0754E4203AD3A4009B6215 /* playership.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playership.vert; sourceTree = "<group>"; };
 		9E0754E6203AD3C8009B6215 /* engineEffect.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = engineEffect.vert; sourceTree = "<group>"; };
@@ -124,6 +129,19 @@
 		9E8FF848204DDD29006E2392 /* CollisionBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionBox.h; sourceTree = "<group>"; };
 		9EAFCECD20B9FDB900D12A9F /* DeathAnimation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DeathAnimation.cpp; path = GameObjects/DeathAnimation.cpp; sourceTree = "<group>"; };
 		9EAFCECE20B9FDB900D12A9F /* DeathAnimation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DeathAnimation.h; path = GameObjects/DeathAnimation.h; sourceTree = "<group>"; };
+		9EAFCED020BCBDB300D12A9F /* PlayerParticle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticle.h; sourceTree = "<group>"; };
+		9EAFCED120BD44D500D12A9F /* Interpolator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Interpolator.cpp; sourceTree = "<group>"; };
+		9EAFCED220BD44D500D12A9F /* Interpolator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Interpolator.h; sourceTree = "<group>"; };
+		9EAFCED420BD48C300D12A9F /* MeshTriangle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MeshTriangle.cpp; sourceTree = "<group>"; };
+		9EAFCED520BD48C300D12A9F /* MeshTriangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MeshTriangle.h; sourceTree = "<group>"; };
+		9EAFCED820BDDC6C00D12A9F /* PlayerParticlePoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerParticlePoint.cpp; sourceTree = "<group>"; };
+		9EAFCED920BDDC6C00D12A9F /* PlayerParticlePoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticlePoint.h; sourceTree = "<group>"; };
+		9EAFCEDB20BDDC8400D12A9F /* PlayerParticleTriangle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerParticleTriangle.cpp; sourceTree = "<group>"; };
+		9EAFCEDC20BDDC8400D12A9F /* PlayerParticleTriangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticleTriangle.h; sourceTree = "<group>"; };
+		9EAFCEDE20BDE23100D12A9F /* PlayerParticleManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerParticleManager.cpp; sourceTree = "<group>"; };
+		9EAFCEDF20BDE23100D12A9F /* PlayerParticleManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticleManager.h; sourceTree = "<group>"; };
+		9EAFCEE120BDF16E00D12A9F /* playerParticle.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = playerParticle.vert; path = Shaders/playerParticle.vert; sourceTree = SOURCE_ROOT; };
+		9EAFCEE220BDF19000D12A9F /* playerParticle.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playerParticle.frag; sourceTree = "<group>"; };
 		9EC022A920B79D25009785F3 /* space_ship211.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = space_ship211.obj; sourceTree = "<group>"; };
 		9EC84C3C205B9C3D00FC93B2 /* Cool_Picture_of_the_moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cool_Picture_of_the_moon.jpg; path = ../../../../Documents/Cool_Picture_of_the_moon.jpg; sourceTree = "<group>"; };
 		9EC84C3D205C6F6B00FC93B2 /* KineticWeaponManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = KineticWeaponManager.cpp; sourceTree = "<group>"; };
@@ -194,6 +212,10 @@
 		9E0754EE203B8B3A009B6215 /* Experimental_Or_Unfinished */ = {
 			isa = PBXGroup;
 			children = (
+				9E00AD95206651B700FEF9C2 /* Particle.cpp */,
+				9E00AD96206651B700FEF9C2 /* Particle.h */,
+				9EAFCED420BD48C300D12A9F /* MeshTriangle.cpp */,
+				9EAFCED520BD48C300D12A9F /* MeshTriangle.h */,
 				9E0754EF203B8B58009B6215 /* QuickHull.cpp */,
 				9E0754F0203B8B58009B6215 /* QuickHull.h */,
 				9ECC6389204640B600F7B703 /* RectangularCuboid.cpp */,
@@ -332,6 +354,8 @@
 				9E0754E5203AD3AE009B6215 /* PlayerShip */,
 				9ED772152036EBD500D569A4 /* background.vert */,
 				9ED772162036EBE700D569A4 /* background.frag */,
+				9EAFCEE120BDF16E00D12A9F /* playerParticle.vert */,
+				9EAFCEE220BDF19000D12A9F /* playerParticle.frag */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -350,8 +374,6 @@
 		9E10D5CE2032CD6E00F0F724 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				9E00AD95206651B700FEF9C2 /* Particle.cpp */,
-				9E00AD96206651B700FEF9C2 /* Particle.h */,
 				9EFA4CA820533D5200308177 /* Math */,
 				9ECC63902047B63C00F7B703 /* 3D_Collision */,
 				9ECC638C2046A6A200F7B703 /* 2D_Collision */,
@@ -369,6 +391,7 @@
 		9E10D5E020338FD000F0F724 /* GameObjects */ = {
 			isa = PBXGroup;
 			children = (
+				9EAFCED720BDDC2B00D12A9F /* Particle */,
 				9EFA4C9F2051D7F500308177 /* Unfinished_or_Not_Used */,
 				9EFA4CA42051E69200308177 /* EntityManagers */,
 				9EFA4CBF2059A6B400308177 /* Entity */,
@@ -386,6 +409,20 @@
 				9EFA4CAA20533D7000308177 /* VectorOps.h */,
 			);
 			path = IncompleteOrBuggyMath;
+			sourceTree = "<group>";
+		};
+		9EAFCED720BDDC2B00D12A9F /* Particle */ = {
+			isa = PBXGroup;
+			children = (
+				9EAFCED020BCBDB300D12A9F /* PlayerParticle.h */,
+				9EAFCED820BDDC6C00D12A9F /* PlayerParticlePoint.cpp */,
+				9EAFCED920BDDC6C00D12A9F /* PlayerParticlePoint.h */,
+				9EAFCEDB20BDDC8400D12A9F /* PlayerParticleTriangle.cpp */,
+				9EAFCEDC20BDDC8400D12A9F /* PlayerParticleTriangle.h */,
+				9EAFCEDE20BDE23100D12A9F /* PlayerParticleManager.cpp */,
+				9EAFCEDF20BDE23100D12A9F /* PlayerParticleManager.h */,
+			);
+			path = Particle;
 			sourceTree = "<group>";
 		};
 		9ECC638C2046A6A200F7B703 /* 2D_Collision */ = {
@@ -492,6 +529,8 @@
 				9E10D5D52032CEDB00F0F724 /* NGon.h */,
 				9E10D5D42032CEDB00F0F724 /* Quaternion.cpp */,
 				9E10D5D62032CEDC00F0F724 /* Quaternion.h */,
+				9EAFCED120BD44D500D12A9F /* Interpolator.cpp */,
+				9EAFCED220BD44D500D12A9F /* Interpolator.h */,
 			);
 			path = Math;
 			sourceTree = "<group>";
@@ -588,14 +627,19 @@
 				9ECC638F2046A6C000F7B703 /* CollisionRectangle.cpp in Sources */,
 				9E00AD97206651B700FEF9C2 /* Particle.cpp in Sources */,
 				9E10D5CB2032CC0100F0F724 /* Game.cpp in Sources */,
+				9EAFCEE020BDE23100D12A9F /* PlayerParticleManager.cpp in Sources */,
+				9EAFCEDD20BDDC8400D12A9F /* PlayerParticleTriangle.cpp in Sources */,
 				9E10D5E320338FF000F0F724 /* PlayerManager.cpp in Sources */,
 				9ED772142036CE1600D569A4 /* TextureWrapper.cpp in Sources */,
 				9E10D5D82032CEDC00F0F724 /* NGon.cpp in Sources */,
+				9EAFCEDA20BDDC6C00D12A9F /* PlayerParticlePoint.cpp in Sources */,
 				9E10D5D92032CEDC00F0F724 /* ShaderWrapper.cpp in Sources */,
 				9E10D5DA2032CEDC00F0F724 /* Quaternion.cpp in Sources */,
+				9EAFCED620BD48C300D12A9F /* MeshTriangle.cpp in Sources */,
 				9E10D59A203234CC00F0F724 /* main.cpp in Sources */,
 				9EAFCECF20B9FDB900D12A9F /* DeathAnimation.cpp in Sources */,
 				9E10D5B4203237BB00F0F724 /* glad.c in Sources */,
+				9EAFCED320BD44D500D12A9F /* Interpolator.cpp in Sources */,
 				9ECC638B204640B600F7B703 /* RectangularCuboid.cpp in Sources */,
 				9ECC63932047B65700F7B703 /* CollisionSphere.cpp in Sources */,
 				9ED7721D2039516500D569A4 /* Stage.cpp in Sources */,

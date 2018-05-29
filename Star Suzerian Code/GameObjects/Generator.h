@@ -64,7 +64,7 @@
 //Note:
 //specializationType is assigned to individual instances to identify them
 //specializationType is assigned to a GameEntityManager-derived class
-enum specializationType {PLAYER, WEAPON, STAGE, NOSPECIALIZATION};
+enum specializationType {PLAYER, WEAPON, STAGE, PARTICLE, NOSPECIALIZATION};
 
 //The idea here is to have this large class called Generator that
 typedef struct InitializationTemplate{
@@ -210,6 +210,13 @@ public:
     
     void removeInstance(const int & instantID); 
     void removeInstance(Instance *);
+    
+    
+    //I am adding a function to retrieve the loaded model from this generator so that it can be used for
+    //calculations
+    SimpleObjLoader * getModel() {
+        return (this->hasModel() ? (this->modelLoader) : (nullptr) );
+    }
 };
 
 #endif /* Generator_h */

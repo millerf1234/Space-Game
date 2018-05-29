@@ -204,7 +204,7 @@ bool Game::launch() {
                     goto unpause;
                 }
                 else {
-                    std::this_thread::sleep_for(std::chrono::nanoseconds(3333333)); //Sleep for a small amount of a second before checking again if unpaused.
+                    std::this_thread::sleep_for(std::chrono::nanoseconds(33333333)); //Sleep for a small amount of a second before checking again if unpaused.
                 }
             }
         }
@@ -291,7 +291,7 @@ bool Game::launch() {
         //----------------------------------------------------------------------
         // Flip buffers and get ready for the next frame
         //----------------------------------------------------------------------
-        glfwSwapBuffers(mWindow);
+        glfwSwapBuffers(mWindow); //this basically means present the frame buffer and aquire the next frame buffer to render the next frame into
         glfwPollEvents();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Reset depth/color buffer bits
         ++frameNumber;
@@ -301,8 +301,13 @@ bool Game::launch() {
         }
     }
     
-    std::cout << "\nGame Exiting! Thanks for playing!" << std::endl; //Player Healths:\n"; //todo.. Implement a message that announces a winner
+    std::cout << "\nGame Exiting! Thanks for playing!" << std::endl;
     
+    Instance ** pInstances = playerManager->getInstances();
+    PlayerEntity * player1 = static_cast<PlayerEntity *> (pInstances[0]);
+    PlayerEntity * player2 = static_cast<PlayerEntity *> (pInstances[1]);
+    std::cout << "Player 1 Deaths: " << player1->deaths << std::endl;
+    std::cout << "Player 2 Deaths: " << player2->deaths << std::endl;
     
     if (PRINT_DEBUG_MESSAGES) {
         std::cout << "\nDEBUG::Exiting Game Loop!" << std::endl;
@@ -400,9 +405,8 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
                 delete gameStateAtPlayersDeath;
                 gameStateAtPlayersDeath = nullptr;
             }
-            
-            pManag->processPlayerDeaths(); //Have player manager process the player's death
         }
+        pManag->processPlayerDeaths(); //Have player manager process the player's death
     }
 }
 

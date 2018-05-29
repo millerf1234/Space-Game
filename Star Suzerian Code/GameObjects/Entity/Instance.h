@@ -27,11 +27,11 @@ enum WeaponType {HEXAGON_BOMB, LASER, ROCKET, HOMINGROCKET, KINETIC, UNINITIALIZ
 //                              Hierarchy
 //
 // top            +---------------------+
-//                |     Renderable      |
+//                |     Renderable      |                                           *[will probably be implemented as]
 //                |         -Position   |
-//                |         -Velocity   |    ------------------>  Particles
-//                |         -Time Alive |
-//                |         -Zoom       |
+//                |         -Velocity   |    ------------------>  Particles  (particles are (see *)
+//                |         -Time Alive |                          single primitives, and include
+//                |         -Zoom       |                          can be points or triangles)
 //                +---------------------+
 //                           |
 //                           |
@@ -74,6 +74,9 @@ enum WeaponType {HEXAGON_BOMB, LASER, ROCKET, HOMINGROCKET, KINETIC, UNINITIALIZ
 //                                                                          |            |
 //                                                                          |            |
 //                                                                          +------------+
+//
+//
+//
 //------------------------------------------------------------------------------
 
 
@@ -100,7 +103,7 @@ public:
     aiVector3D * forward; //Moving to have this be on all instances
     //float zoom;
     float thetaX, thetaY, thetaZ; //Euler Rotation Angles
-    float mass; //Might use this to make missle/projectile strikes affect player velocity
+    //float mass; //Might use this to make missle/projectile strikes affect player velocity
     
     //float timeAlive;
     InstanceType type;
@@ -114,7 +117,7 @@ public:
     Instance() {//Construct an anonymous instance
         this->identifierNumber = -1;
         this->type = BASIC;
-        this->mass = 1.0f;
+        //this->mass = 1.0f;
         this->velocity.x = this->velocity.y = 0.0f;
         this->forward = nullptr;
         this->colBox = nullptr;
@@ -124,7 +127,7 @@ public:
     Instance(int id) { //Construct an instance that has an ID number
         this->identifierNumber = id;
         this->type = BASIC;
-        this->mass = 1.0f;
+        //this->mass = 1.0f;
         velocity.x = velocity.y = 0.0f;
         this->forward = nullptr;
         this->colBox = nullptr;

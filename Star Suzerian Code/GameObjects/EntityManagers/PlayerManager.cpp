@@ -12,6 +12,7 @@ PlayerManager::PlayerManager() : GameEntityManager() {
     this->hasGenerator = true;
     this->hasCollision = true;
     this->requiresUserInput = true; //Player controlled characters require user input
+    this->requiresAIInput = false; //AI's currently will not be controlling players
     //Set specialization type
     this->specType = specializationType::PLAYER;
     //Set-up the initialization template

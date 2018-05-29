@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <cmath>
+#include <sys/resource.h>
 
 #include <unistd.h> //Only use on unix systems
 
@@ -14,6 +15,9 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     
     char * dir = getcwd(NULL, 0); // Platform-dependent, Not Necessarily Portable. This is more to help me figure out where to load files from by getting the directory where the executable will be looking for files.
     printf("Current dir: %s\n\n", dir);
+    // struct rlimit old;  //see: http://www.inf.udec.cl/~leo/Malloc_tutorial.pdf
+    //rlimit * test = &old;
+    //printf("Amount of available heap memory is: %d\n\n", getrlimit(2, test));
     
     std::cout << "Process Started... \n";
     
