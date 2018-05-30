@@ -10,21 +10,21 @@
 #include <stdio.h>
 #include "PlayerParticle.h"
 
-enum vertexWinding{CLOCKWISE, COUNTER_CLOCKWISE, UNSPECIFIED};
+enum vertexWinding{CLOCKWISE, COUNTER_CLOCKWISE, UNSPECIFIED_WINDING};
 
-class PlayerParticleTriangle : public PlayerParticle {
-public:
-    
-    virtual ~PlayerParticleTriangle() override;
-    
-    Quaternion * rollAxis; //To make triangle roll
-    float angularVelocity; //The step to change rollAxis by 
-    
-private:
-    aiVector3D offsets[3];
-    
-    
-};
+//class PlayerParticleTriangle : public PlayerParticle {
+//public:
+//    
+//    virtual ~PlayerParticleTriangle() override;
+//    
+//    Quaternion * rollAxis; //To make triangle roll
+//    float angularVelocity; //The step to change rollAxis by 
+//    
+//private:
+//    aiVector3D offsets[3];
+//    
+//    
+//};
 
 
 #endif // PLAYER_PARTICLE_TRIANGLE

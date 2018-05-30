@@ -5,10 +5,6 @@
 //
 
 
-//NOTE: The default primitive for a player particle will be a point, so triangles
-//      will need to be marked as triangles (which they should handle on their own)
-//      This means a triangle can be made to act as a point primitive set at it's midpoint
-
 #ifndef PLAYER_PARTICLE
 #define PLAYER_PARTICLE
 
@@ -16,7 +12,7 @@
 
 #include "MeshTriangle.h"
 
-enum ParticlePrimitive {POINT, TRIANGLE};
+enum ParticlePrimitive {POINT, TRIANGLE, UNSPECIFIED};
 
 class PlayerParticle : public Renderable {
 public:
@@ -27,7 +23,8 @@ public:
     float blue;
     
     PlayerParticle() = delete;
-    PlayerParticle(float xPos, float yPos, float zPos, float xVel, float yVel, float zVel, float zoom = 1.0f) {
+    PlayerParticle(float xPos, float yPos, float zPos, float xVel, float yVel,
+                   float zVel, float zoom = 1.0f) : Renderable() {
         this->position.x = xPos;
         this->position.y = yPos;
         this->position.z = zPos;
@@ -39,7 +36,7 @@ public:
         initialize(zoom);
     }
     
-    PlayerParticle(aiVector3D position, float xVel, float yVel, float zVel, float zoom = 1.0f) {
+    PlayerParticle(aiVector3D position, float xVel, float yVel, float zVel, float zoom = 1.0f) : Renderable() {
         this->position = position;
         
         this->velocity.x = xVel;
@@ -49,7 +46,7 @@ public:
         initialize(zoom);
     }
     
-    PlayerParticle(float xPos, float yPos, float zPos, aiVector2D velocity, float zVel, float zoom = 1.0f) {
+    PlayerParticle(float xPos, float yPos, float zPos, aiVector2D velocity, float zVel, float zoom = 1.0f) : Renderable() {
         this->position.x = xPos;
         this->position.y = yPos;
         this->position.z = zPos;
@@ -60,14 +57,14 @@ public:
         initialize(zoom);
     }
     
-    PlayerParticle(aiVector3D position, aiVector2D velocity, float zVel, float zoom = 1.0f) {
+    PlayerParticle(aiVector3D position, aiVector2D velocity, float zVel, float zoom = 1.0f) : Renderable() {
         this->position = position;
         this->velocity = velocity;
         this->zVel = zVel;
         initialize(zoom);
     }
     
-    virtual ~PlayerParticle() override;
+    virtual ~PlayerParticle() override {;}
 
     void setColor(float red, float green, float blue) {
         this->red = red;
@@ -75,13 +72,16 @@ public:
         this->blue = blue;
     }
     
-    virtual int getNumberOfVerts() = 0; //To be overwritten by subclasses
+    virtual int getNumberOfVerts() = 0;// {return 0;} //To be overwritten by subclasses
+    virtual int getVertSize() = 0;// {return 0;}
+    
+    
     
 private:
     void initialize(float zoom) {
         this->timeAlive = 0.0f;
         this->zoom = zoom;
-        this->particlePrimitive = POINT;
+        this->particlePrimitive = UNSPECIFIED;
         
         red = green = blue = 0.25f;
     }

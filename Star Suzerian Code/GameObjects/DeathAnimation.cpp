@@ -86,7 +86,7 @@ namespace DeathAnimation {
     
     
     //Actual Function:
-    void playDeathAnimation(GameStateInfoForDeathAnimation * gState, PlayerEntity * player) {
+    void playDeathAnimation(GameStateInfoForDeathAnimation * gState, PlayerEntity * player, PlayerParticleManager * playerParticles) {
         if (PRINT_DEBUG_MESSAGES) {
             std::cout << "\nDEBUG::Playing Player Death Animation...\n";
         }
@@ -153,7 +153,15 @@ namespace DeathAnimation {
             else {
                 drawStage = false; //Don't draw the stage beyond this point
                 
-                
+                if (i % 5 == 0) {
+                    playerParticles->particalizePlayer(player, gState->playerManager->getModelData(), true, 25u, false);
+                }
+                playerParticles->doUpkeep();
+                playerParticles->doUpkeep();
+                playerParticles->doUpkeep();
+                playerParticles->doUpkeep();
+                playerParticles->doUpkeep();
+                playerParticles->doUpkeep();
             }
             
             //Draw the 'scene'
@@ -167,6 +175,8 @@ namespace DeathAnimation {
                 
                 (*entityDrawIterator)->drawInstances();
             }
+            playerParticles->drawInstances(); //Draw the player particles
+            
             //Draw weapon instances as well
             //gState->weaponOverseer->drawInstances();
             
@@ -176,6 +186,11 @@ namespace DeathAnimation {
         }
         
         resetGameState(gState, recordedGameState);
+        
+        //Apply the dead player's velocity on entering the animation to each particle  (maybe attach an identifier to each collection of particles so velocity is only applied to the most recently create ones)
+        //Have a function in PlayerParticleManager that handles adding a velocity to each particle? 
+        
+        
         if (PRINT_DEBUG_MESSAGES || true) {
             std::cout << "\nDEBUG::Finished Playing Player Death Animation...\n";
         }

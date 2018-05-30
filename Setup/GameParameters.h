@@ -35,7 +35,7 @@ static constexpr float PI = 3.1415927f;
 //-----------------------------------------------------------------------------
 //                       OPEN FULL SCREEN OR WINDOWED
 //-----------------------------------------------------------------------------
-static constexpr bool USE_FULLSCREEN = true;
+static constexpr bool USE_FULLSCREEN = false;
 
 
 //-----------------------------------------------------------------------------
@@ -312,6 +312,9 @@ const std::string PLAYERSHIP_LINE_FRAG = "/Users/forrestmiller/Desktop/xcode_tes
 const std::string PLAYERSHIP_ENGINE_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/PlayerShip/engineEffect.vert";
 const std::string PLAYERSHIP_ENGINE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/PlayerShip/engineEffect.frag";
 
+//Player Ship Particle (after death debris) Shaders
+const std::string PLAYER_PARTICLE_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/playerParticle.vert";
+const std::string PLAYER_PARTICLE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/playerParticle.frag";
 
 //Weapon shaders
 //Kinetic

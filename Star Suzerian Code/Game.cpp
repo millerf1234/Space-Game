@@ -23,6 +23,8 @@ Game::Game(MonitorData & mPtr) {
     counter = 0.0f; //Set game clock to 0
     p1Score = p2Score = frameNumber = frameUnpaused = 0ull;
     this->mWindow = mPtr.activeMonitor; //Set window to the active window
+    
+    playerParticleManager = nullptr;
     std::cout << "Done" << std::endl;
     
     //Some debug code for testing (Delete this eventually)
@@ -71,6 +73,11 @@ Game::~Game() { //std::cout << "\nDEBUG::Game destructor was called...\n";
 //        this->stage = nullptr;
 //    }
     
+    
+    if (playerParticleManager != nullptr) {
+        delete playerParticleManager;
+        playerParticleManager = nullptr;
+    }
 }
 
 void Game::playIntroMovie() {  }
@@ -96,6 +103,10 @@ void Game::loadGameObjects() {
     //Then load weapons next (i.e. initiailize them, but don't actually spawn any yet...) Just get them ready for drawing.
     std::cout << std::endl << INDENT << "Loading Weapons...\n";
     wepOverseer.initializeWeapons();
+    
+    std::cout << "\n" << INDENT << "Loading Particle effects...\n";
+    playerParticleManager = new PlayerParticleManager;
+    std::cout << INDENT << "  Particle Effects loaded!\n";
     
     //Then load all parts required for a PLAYER object
     std::cout << std::endl << INDENT << "Loading Player...\n";
@@ -241,6 +252,8 @@ bool Game::launch() {
         }
         wepOverseer.doUpkeep();
         
+        playerParticleManager->doUpkeep(); //Do upkeep on the particles
+        
         entityLogicIterator = gEntities.begin(); //Reset the iterator to the beginning of the vector
         //Loop through all the gameEntities and process any collisions that occured after all object's movement has been computed
         for (; entityLogicIterator < gEntities.end(); ++entityLogicIterator) {
@@ -282,6 +295,9 @@ bool Game::launch() {
         }
         //Draw weapon instances as well
         wepOverseer.drawInstances();
+        
+        //Draw particles
+        playerParticleManager->drawInstances();
         
         //glad_glDisable(GL_MULTISAMPLE);
         //
@@ -399,7 +415,7 @@ void Game::processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponIn
                 DeathAnimation::GameStateInfoForDeathAnimation * gameStateAtPlayersDeath = new DeathAnimation::GameStateInfoForDeathAnimation;
                 captureGameState(gameStateAtPlayersDeath);
               
-                DeathAnimation::playDeathAnimation(gameStateAtPlayersDeath, player);
+                DeathAnimation::playDeathAnimation(gameStateAtPlayersDeath, player, playerParticleManager);
                 
                 //Clean up memory used in capturing game state
                 delete gameStateAtPlayersDeath;

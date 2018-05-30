@@ -34,7 +34,7 @@ Generator::Generator() {
     this->modelLoader = nullptr;
     this->instances = nullptr;
     this->activeInstances = 0;
-    this->shouldGenerateEntities = false;
+   // this->shouldGenerateEntities = false;
     
     //Set specialization type for this generator
     specialization  = specializationType::NOSPECIALIZATION; //No extra data by default

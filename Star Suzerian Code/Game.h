@@ -48,6 +48,7 @@
 #include "WeaponOverseer.h"
 //#include "RocketManager.h"
 #include "PlayerManager.h"
+#include "PlayerParticleManager.h"
 #include "Stage.h" //I replaced Background.h with Stage.h
 #include "GameParameters.h" //Get gameplay-affecting constants
 #include "DeathAnimation.h"
@@ -86,6 +87,7 @@ private:
     
     Stage * stage;
     PlayerManager * playerManager;
+    PlayerParticleManager * playerParticleManager;
     
     
    // BackGroundGenerator *background;

@@ -83,6 +83,7 @@ enum WeaponType {HEXAGON_BOMB, LASER, ROCKET, HOMINGROCKET, KINETIC, UNINITIALIZ
 
 class Renderable {
 public:
+    //Renderable() {;}
     virtual ~Renderable() {
         if (PRINT_DESTRUCTOR_CALLS) {std::cout << "\nDEBUG:Renderable destructor called!";}
     }

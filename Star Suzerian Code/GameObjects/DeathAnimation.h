@@ -20,7 +20,8 @@
 #include "PlayerManager.h"
 #include "WeaponOverseer.h"
 #include "Stage.h"
-#include "PlayerParticle.h"
+//#include "PlayerParticle.h" //comes with the manager
+#include "PlayerParticleManager.h"
 
 namespace DeathAnimation {
 typedef struct GameStateInfoForDeathAnimation {
@@ -32,7 +33,7 @@ typedef struct GameStateInfoForDeathAnimation {
     GLFWwindow * mWindow; //Need this to handle rendering within the death animation
 } GameStateInfoForDeathAnimation;
 
-void playDeathAnimation(GameStateInfoForDeathAnimation *, PlayerEntity *);
+void playDeathAnimation(GameStateInfoForDeathAnimation *, PlayerEntity *, PlayerParticleManager *);
 
 } //Namespace DeathAnimation
 

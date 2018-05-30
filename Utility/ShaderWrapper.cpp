@@ -495,6 +495,40 @@ void ShaderWrapper::setVAOExternally(GLuint value) {
     vaoWasSetExternally = true;
 }
 
+
+//I am putting in this function quickly to do exactly what I want it to. Right now it only works on a VERT3 input layout
+bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vbo) {
+    if (!this->isLinked) {
+        std::cout << "\nError! Need to finish the link step before specifing vertex layout format!\n";
+        return false;
+    }
+    if (!(this->vaoWasSetExternally)) { //Generate a VAO for this shader
+        this->VAO = new GLuint;
+        glGenVertexArrays(1, this->VAO);
+        glBindVertexArray(*(this->VAO));
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    
+    if (vlf != VERT3) {
+        std::cout << "\nOOPS! This vertex format is not yet supported by this shaderWrapper object.\nTry layout with an ebo included!\n";
+        return false;
+    }
+    
+    //if vlf is VERT3:
+    this->posAttrib = new GLint;
+    *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
+    glEnableVertexAttribArray(*(this->posAttrib));
+    if (PRINT_DEBUG_MESSAGES) {
+        std::cout << "\nposAttrib is " << this->vertexAttribName << " and was assigned to offset " << *(this->posAttrib) << " in the data."  << std::endl;
+    }
+    glVertexAttribPointer(*(this->posAttrib), 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
+    
+    this->vertLayoutSet = true;
+    this->isReady = true;
+    
+    return true;
+}
+
 bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, GLuint& elemData) {
     if (!this->isLinked) {
         std::cout << "\nError! Need to finish the link step before specifing vertex layout format!\n";
