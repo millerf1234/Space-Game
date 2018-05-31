@@ -68,24 +68,24 @@ void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Entity * entity) {
     }
     
     //Print a debug message:
-    std::cout << "\nWeaponTracker attached to Instance " << entity->getID() << ".\n";
+    std::cout << "\nWeaponTracker attached to Instance ID " << entity->getID() << ".\n";
     if (entity->type == InstanceType::PLAYERENTITY) {
         PlayerEntity * pTemp = static_cast<PlayerEntity *>(entity);
-        std::cout << "Instance " << entity->getID() << " is Player " << pTemp->playerNumber << std::endl;
+        std::cout << "Instance ID " << entity->getID() << " is Player " << pTemp->playerNumber << std::endl;
     }
     
     //Else check to see if this WeaponOverseer already has weaponTrackers in existance
     if (this->wepTrackers != nullptr) {
         //Need to make a bigger array to hold the additional weaponTracker
-        WeaponTracker ** temp = new WeaponTracker* [numWepTrackers + 1];
+        WeaponTracker ** newWepTrackrArray = new WeaponTracker* [numWepTrackers + 1];
         //copy all of the weaponTrackers in the old array over
         for (int i = 0; i < numWepTrackers ; i++) {
-            temp[i] = wepTrackers[i];
+            newWepTrackrArray[i] = wepTrackers[i];
         }
         
         //Delete the no-longer-needed array
         delete [] wepTrackers;
-        wepTrackers = temp; //Set the tracked array to be the new array
+        wepTrackers = newWepTrackrArray; //Set the tracked array to be the new array
         
         wepTrackers[numWepTrackers] = new WeaponTracker;
         
@@ -110,16 +110,17 @@ void WeaponOverseer::generateAndAttachWeaponTrackerToInstance(Entity * entity) {
 void WeaponOverseer::processWeaponTrackers() {
     if (this->numWepTrackers == 0) {return;}
     
-    /*
-    //Without checking for time between firing just do the following (7) lines:
-    for (int i = 0; i < numWepTrackers; ++i) {
-        WeaponTracker * currentWT = this->wepTrackers[i];
-        //Check events on the currentWT
-        if (currentWT->getKineticWasFired()) {
-            this->kineticWepManager->spawnNewKineticInstance(currentWT);
+    if (!LIMIT_PLAYER_WEAPON_FIRE_RATE) {
+        //Without checking for time between firing just do the following (7) lines:
+        for (int i = 0; i < numWepTrackers; ++i) {
+            WeaponTracker * currentWT = this->wepTrackers[i];
+            //Check events on the currentWT
+            if (currentWT->getKineticWasFired()) {
+                this->kineticWepManager->spawnNewKineticInstance(currentWT);
+            }
         }
+        return; 
     }
-    */
      
     
     //To check for time between firing (This code really should be done somewhere else)...

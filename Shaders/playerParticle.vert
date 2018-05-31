@@ -9,6 +9,7 @@ uniform float red;
 uniform float green;
 uniform float blue;
 uniform float zoom;
+uniform float pointSize;
 
 
 //out vec4 colorShift;
@@ -19,7 +20,7 @@ mat3 aspectRatioMatrix = mat3(1.0f,       0.0f     , 0.0f,
 
 void main()
 {
-    gl_PointSize = 20.0f;
+    gl_PointSize = pointSize; // 1.0f;
     //vec3 pos = position.xyz;
     vec3 pos = position;
     

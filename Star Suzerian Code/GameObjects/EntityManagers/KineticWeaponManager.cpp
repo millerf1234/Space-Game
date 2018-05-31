@@ -193,8 +193,8 @@ void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
     worldSpaceLaunchPointOffset = zRot.computeRotation(worldSpaceLaunchPointOffset);
     
     aiVector2D worldSpaceLaunchPointOffset2D = aiVector2D(worldSpaceLaunchPointOffset.x, worldSpaceLaunchPointOffset.y);
-    //This hopefully will set the collisionBox to the correct midpoint
-    newKinInst->collisionBoxMidpoint = wepTracker->getPosition() + worldSpaceLaunchPointOffset2D;
+    
+    newKinInst->collisionBoxMidpoint = wepTracker->getPosition() + worldSpaceLaunchPointOffset2D; //Player's midpoint + weapon launch offset
     newKinInst->colBox->setMidpointTo(newKinInst->collisionBoxMidpoint);
     newKinInst->position = aiVector3D(newKinInst->collisionBoxMidpoint.x, newKinInst->collisionBoxMidpoint.y, 0.0f);
     
@@ -234,7 +234,6 @@ void KineticWeaponManager::doUpkeep() {
             //Debug code 
             if (k->colBox == nullptr) {
                 std::cout << "Something is wrong!\n\n";
-                
                 return;
             }
             

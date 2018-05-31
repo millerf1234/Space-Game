@@ -14,6 +14,8 @@
 
 #include "DeathAnimation.h"
 
+using namespace MathFunc;
+
 namespace DeathAnimation {
     static constexpr int DEATH_ANIMATION_TOTAL_FRAMES = 420;
     static constexpr int DEATH_SCENE_PART_ONE_FRAMES = 60;
@@ -82,7 +84,8 @@ namespace DeathAnimation {
     void recordGameState(GameStateInfoForDeathAnimation * gState, GameState & stateToRecord);
     void resetGameState(GameStateInfoForDeathAnimation * gState, GameState & recordedState);
     void resetStage(Stage *);
-    float getRandomInRange(float min, float max);
+    void translatePlayerParticles(PlayerParticleManager * particleManag, PlayerEntity * deadPlayer);
+    //float getRandomInRange(float min, float max); //I moved this to be in a math-funcion file
     
     
     //Actual Function:
@@ -128,7 +131,9 @@ namespace DeathAnimation {
                                 ( (deadPlayersStartingZoom - 14.0f) * ((float)i) / DEATH_SCENE_PART_ONE_FRAMES));
                 player->thetaZ += 0.075f;
             }
-            
+            else if (i == DEATH_SCENE_PART_ONE_FRAMES) {
+                player->position.x = player->position.y = 0.0f; //Reset position to help with cancellation error
+            }
             //------------------------------------------------------------------
             //
             //        DEATH ANIMATION PART 2
@@ -153,14 +158,11 @@ namespace DeathAnimation {
             else {
                 drawStage = false; //Don't draw the stage beyond this point
                 
-                if (i % 5 == 0) {
+                if (i % FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVE == 0 &&
+                    (i < DEATH_SCENE_PART_TWO_CUTOFF + EXPLOSION_PARTICLE_FRAMES_CUTOFF)) {
                     playerParticles->particalizePlayer(player, gState->playerManager->getModelData(), true, 25u, false);
                 }
-                playerParticles->doUpkeep();
-                playerParticles->doUpkeep();
-                playerParticles->doUpkeep();
-                playerParticles->doUpkeep();
-                playerParticles->doUpkeep();
+                
                 playerParticles->doUpkeep();
             }
             
@@ -185,7 +187,10 @@ namespace DeathAnimation {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
         
+        
+        
         resetGameState(gState, recordedGameState);
+        translatePlayerParticles(playerParticles, player); 
         
         //Apply the dead player's velocity on entering the animation to each particle  (maybe attach an identifier to each collection of particles so velocity is only applied to the most recently create ones)
         //Have a function in PlayerParticleManager that handles adding a velocity to each particle? 
@@ -209,6 +214,7 @@ namespace DeathAnimation {
     }
     
     void resetStage(Stage * stage) {
+        
         aiVector3D * stagePosition = &(stage->getInstances()[0]->position);
         stagePosition->x = stagePosition->y = 0.0f;
 
@@ -225,12 +231,19 @@ namespace DeathAnimation {
             stagePosition->y = stagePosition->z = 0.0f;
         } */
     }
-    
-    float getRandomInRange(float min, float max) {
-        auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-        static std::mt19937 mt_rand((unsigned int)seed);
-        auto real_rand = std::bind(std::uniform_real_distribution<double>(min, max), mt_rand);
-        return real_rand();
+    void translatePlayerParticles(PlayerParticleManager * particleManag, PlayerEntity * deadPlayer) {
+        aiVector2D translation;
+        translation.x = deadPlayer->position.x;
+        translation.y = deadPlayer->position.y;
+        particleManag->translateParticles(translation);
+        
     }
+    
+//    float getRandomInRange(float min, float max) {
+//        auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+//        static std::mt19937 mt_rand((unsigned int)seed);
+//        auto real_rand = std::bind(std::uniform_real_distribution<double>(min, max), mt_rand);
+//        return real_rand();
+//    }
     
 } //namespace DeathAnimation

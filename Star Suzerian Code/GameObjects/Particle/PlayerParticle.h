@@ -12,9 +12,11 @@
 
 #include "MeshTriangle.h"
 
-enum ParticlePrimitive {POINT, TRIANGLE, UNSPECIFIED};
+enum class ParticlePrimitive {POINT, EXPLOSION, TRIANGLE, UNSPECIFIED};
 
 class PlayerParticle : public Renderable {
+private:
+    bool shouldBeDestructedFlag;
 public:
     ParticlePrimitive particlePrimitive;
     float zVel;
@@ -75,13 +77,22 @@ public:
     virtual int getNumberOfVerts() = 0;// {return 0;} //To be overwritten by subclasses
     virtual int getVertSize() = 0;// {return 0;}
     
+    void flagForDescruction() {
+        this->shouldBeDestructedFlag = true;
+    }
+    
+    bool checkIfFlaggedForDestruction() const {
+        return this->shouldBeDestructedFlag;
+    }
     
     
 private:
     void initialize(float zoom) {
         this->timeAlive = 0.0f;
         this->zoom = zoom;
-        this->particlePrimitive = UNSPECIFIED;
+        this->particlePrimitive = ParticlePrimitive::UNSPECIFIED;
+        
+        this->shouldBeDestructedFlag = false;
         
         red = green = blue = 0.25f;
     }

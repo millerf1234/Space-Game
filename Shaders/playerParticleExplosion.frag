@@ -1,12 +1,9 @@
+//This frag shader should use the same vert shader as playerParticle.frag (i.e. it should use playerParticle.vert)
+
 
 #version 410 core
 
-//in vec4 pos;
-
 uniform float time;
-uniform float red;
-uniform float green;
-uniform float blue;
 
 out vec4 color;
 
@@ -24,28 +21,3 @@ void main() {
     
     
 }
-
-
-
-
-
-
-//
-//#version 410 core
-//
-//in vec3 pos;
-//uniform float time;
-//uniform float zoom;
-//uniform float red;
-//uniform float green;
-//uniform float blue;
-//out vec4 color;
-//
-//
-//void main() {
-//
-//    color = vec4(red, green, blue, 1.0f);
-//
-//
-//}
-

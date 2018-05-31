@@ -30,12 +30,12 @@
 		9E10D5E62034BEBD00F0F724 /* Background.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E42034BEBD00F0F724 /* Background.cpp */; };
 		9E10D5EA2035485000F0F724 /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E82035485000F0F724 /* Object.cpp */; };
 		9E10D5EE20360AE500F0F724 /* ObjectGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */; };
+		9E130C1B20BFD54D00A00570 /* MathFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E130C1920BFD54D00A00570 /* MathFunctions.cpp */; };
 		9E3DD990206D7C8100B2ED86 /* CollisionCircle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */; };
 		9E8FF849204DDD29006E2392 /* CollisionBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8FF847204DDD29006E2392 /* CollisionBox.cpp */; };
 		9EAFCECF20B9FDB900D12A9F /* DeathAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCECD20B9FDB900D12A9F /* DeathAnimation.cpp */; };
 		9EAFCED320BD44D500D12A9F /* Interpolator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCED120BD44D500D12A9F /* Interpolator.cpp */; };
 		9EAFCED620BD48C300D12A9F /* MeshTriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCED420BD48C300D12A9F /* MeshTriangle.cpp */; };
-		9EAFCEDA20BDDC6C00D12A9F /* PlayerParticlePoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCED820BDDC6C00D12A9F /* PlayerParticlePoint.cpp */; };
 		9EAFCEDD20BDDC8400D12A9F /* PlayerParticleTriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCEDB20BDDC8400D12A9F /* PlayerParticleTriangle.cpp */; };
 		9EAFCEE020BDE23100D12A9F /* PlayerParticleManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCEDE20BDE23100D12A9F /* PlayerParticleManager.cpp */; };
 		9EC84C3F205C6F6B00FC93B2 /* KineticWeaponManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EC84C3D205C6F6B00FC93B2 /* KineticWeaponManager.cpp */; };
@@ -121,6 +121,10 @@
 		9E10D5E92035485000F0F724 /* Object.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
 		9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectGenerator.cpp; sourceTree = "<group>"; };
 		9E10D5ED20360AE500F0F724 /* ObjectGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectGenerator.h; sourceTree = "<group>"; };
+		9E130C1620BF3F7700A00570 /* PlayerParticleExplosion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticleExplosion.h; sourceTree = "<group>"; };
+		9E130C1720BF402E00A00570 /* playerParticleExplosion.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playerParticleExplosion.frag; sourceTree = "<group>"; };
+		9E130C1920BFD54D00A00570 /* MathFunctions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MathFunctions.cpp; sourceTree = "<group>"; };
+		9E130C1A20BFD54D00A00570 /* MathFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MathFunctions.h; sourceTree = "<group>"; };
 		9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionCircle.cpp; sourceTree = "<group>"; };
 		9E3DD98F206D7C8100B2ED86 /* CollisionCircle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionCircle.h; sourceTree = "<group>"; };
 		9E3DD991206E1FC900B2ED86 /* JupiterPicture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = JupiterPicture.jpg; sourceTree = "<group>"; };
@@ -134,7 +138,6 @@
 		9EAFCED220BD44D500D12A9F /* Interpolator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Interpolator.h; sourceTree = "<group>"; };
 		9EAFCED420BD48C300D12A9F /* MeshTriangle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MeshTriangle.cpp; sourceTree = "<group>"; };
 		9EAFCED520BD48C300D12A9F /* MeshTriangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MeshTriangle.h; sourceTree = "<group>"; };
-		9EAFCED820BDDC6C00D12A9F /* PlayerParticlePoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerParticlePoint.cpp; sourceTree = "<group>"; };
 		9EAFCED920BDDC6C00D12A9F /* PlayerParticlePoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticlePoint.h; sourceTree = "<group>"; };
 		9EAFCEDB20BDDC8400D12A9F /* PlayerParticleTriangle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerParticleTriangle.cpp; sourceTree = "<group>"; };
 		9EAFCEDC20BDDC8400D12A9F /* PlayerParticleTriangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticleTriangle.h; sourceTree = "<group>"; };
@@ -356,6 +359,7 @@
 				9ED772162036EBE700D569A4 /* background.frag */,
 				9EAFCEE120BDF16E00D12A9F /* playerParticle.vert */,
 				9EAFCEE220BDF19000D12A9F /* playerParticle.frag */,
+				9E130C1720BF402E00A00570 /* playerParticleExplosion.frag */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -415,8 +419,8 @@
 			isa = PBXGroup;
 			children = (
 				9EAFCED020BCBDB300D12A9F /* PlayerParticle.h */,
-				9EAFCED820BDDC6C00D12A9F /* PlayerParticlePoint.cpp */,
 				9EAFCED920BDDC6C00D12A9F /* PlayerParticlePoint.h */,
+				9E130C1620BF3F7700A00570 /* PlayerParticleExplosion.h */,
 				9EAFCEDB20BDDC8400D12A9F /* PlayerParticleTriangle.cpp */,
 				9EAFCEDC20BDDC8400D12A9F /* PlayerParticleTriangle.h */,
 				9EAFCEDE20BDE23100D12A9F /* PlayerParticleManager.cpp */,
@@ -531,6 +535,8 @@
 				9E10D5D62032CEDC00F0F724 /* Quaternion.h */,
 				9EAFCED120BD44D500D12A9F /* Interpolator.cpp */,
 				9EAFCED220BD44D500D12A9F /* Interpolator.h */,
+				9E130C1920BFD54D00A00570 /* MathFunctions.cpp */,
+				9E130C1A20BFD54D00A00570 /* MathFunctions.h */,
 			);
 			path = Math;
 			sourceTree = "<group>";
@@ -632,7 +638,6 @@
 				9E10D5E320338FF000F0F724 /* PlayerManager.cpp in Sources */,
 				9ED772142036CE1600D569A4 /* TextureWrapper.cpp in Sources */,
 				9E10D5D82032CEDC00F0F724 /* NGon.cpp in Sources */,
-				9EAFCEDA20BDDC6C00D12A9F /* PlayerParticlePoint.cpp in Sources */,
 				9E10D5D92032CEDC00F0F724 /* ShaderWrapper.cpp in Sources */,
 				9E10D5DA2032CEDC00F0F724 /* Quaternion.cpp in Sources */,
 				9EAFCED620BD48C300D12A9F /* MeshTriangle.cpp in Sources */,
@@ -643,6 +648,7 @@
 				9ECC638B204640B600F7B703 /* RectangularCuboid.cpp in Sources */,
 				9ECC63932047B65700F7B703 /* CollisionSphere.cpp in Sources */,
 				9ED7721D2039516500D569A4 /* Stage.cpp in Sources */,
+				9E130C1B20BFD54D00A00570 /* MathFunctions.cpp in Sources */,
 				9E10D5E62034BEBD00F0F724 /* Background.cpp in Sources */,
 				9E3DD990206D7C8100B2ED86 /* CollisionCircle.cpp in Sources */,
 			);

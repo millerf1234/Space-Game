@@ -17,9 +17,8 @@
 
 //Put all this in a namespace?
 #include <string>
-//#include "VectorOps.h" //I seem to be having problems with this getting included in multiple places,
-//so by placing it here I should be safe since this class has no need to include other classes and is
-//included almost everywhere
+
+
 
 //To update github repository, do the following two (1 {only need second}) lines while in the main project folder:
 //     git remote add origin https://github.com/millerf1234/Space-Game.git
@@ -35,7 +34,7 @@ static constexpr float PI = 3.1415927f;
 //-----------------------------------------------------------------------------
 //                       OPEN FULL SCREEN OR WINDOWED
 //-----------------------------------------------------------------------------
-static constexpr bool USE_FULLSCREEN = false;
+static constexpr bool USE_FULLSCREEN = true;
 
 
 //-----------------------------------------------------------------------------
@@ -48,6 +47,7 @@ static constexpr bool PRINT_MSAA_INFO_FROM_GPU_DRIVER = false; //This is just a 
 static constexpr bool PRINT_DESTRUCTOR_CALLS = false; //For debug (doesn't print every destructor call)
 static constexpr bool PRINT_WEAPON_SPAWN_POINT_COORDS = false; //More debug stuff
 static constexpr bool PRINT_WEAPON_SPAWN_ANGLES = false; //Mostly for debug
+static constexpr bool PRINT_PLAYER_PARTICLES_DRAW_COUNTS = true;
 
 
 //-----------------------------------------------------------------------------
@@ -66,10 +66,12 @@ static constexpr bool PLAY_DEATH_ANIMATION = true;
 
 
 //-----------------------------------------------------------------------------
-// Gamemode types
+// Gamemode types/Options
 //-----------------------------------------------------------------------------
 static constexpr bool MOON_DRIFTER_MODE = false;
 //Battle mode by default
+
+static constexpr bool LIMIT_PLAYER_WEAPON_FIRE_RATE = true;
 
 //-----------------------------------------------------------------------------
 // Moondrifter constants
@@ -105,8 +107,6 @@ constexpr float mdOUTERZONE_CENTER_Y = 0.0f;
 constexpr float mdOUTERZONE_STARTRADIUS = 30.0F;
 constexpr float mdOUTERZONE_LOWERTHETA = - PI / 7.0f;
 constexpr float mdOUTERZONE_UPPERTHETA = PI / 7.0f;
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -259,6 +259,13 @@ static constexpr int COLLISION_SAMPLE_POINTS = 10; //Must be multiple of 2, shou
 //Don't change this next value from -2.94231f
 constexpr float PLAYER_ENGINE_FLAME_REAR_POSITION = -2.94231f;
 
+static constexpr int PLAYER_EXPLOSION_PARTICLES_PER_WAVE = 900;
+static constexpr int FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVE = 1;
+static constexpr int EXPLOSION_PARTICLE_FRAMES_CUTOFF = 10;
+static constexpr float EXPLOSION_PARTICLE_POINT_SIZE = 1.95f;
+static constexpr float PLAYER_PARTICLE_POINT_SIZE = 0.95f;
+
+static constexpr int FRAMES_TO_KEEP_PLAYER_EXPLOSION_AROUND = 460; //540;
 
 /*
 //-----------------------------------------------------------------------------
@@ -314,7 +321,9 @@ const std::string PLAYERSHIP_ENGINE_FRAG = "/Users/forrestmiller/Desktop/xcode_t
 
 //Player Ship Particle (after death debris) Shaders
 const std::string PLAYER_PARTICLE_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/playerParticle.vert";
-const std::string PLAYER_PARTICLE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/playerParticle.frag";
+const std::string PLAYER_PARTICLE_POINT_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/playerParticle.frag";
+const std::string PLAYER_PARTICLE_EXPLOSION_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/playerParticleExplosion.frag";
+
 
 //Weapon shaders
 //Kinetic
