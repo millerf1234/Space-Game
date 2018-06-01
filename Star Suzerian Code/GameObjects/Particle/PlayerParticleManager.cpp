@@ -291,8 +291,16 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
     
     //rotation.changeTheta(2.0f * PI / ((float)subdivisions));
     
+    static bool modify = false;
+    
+    float velocityMultiple1 = 0.856f;  //0.856f;
+    float velocityMultiple2 = 0.651f;  //0.651f;
+    float velocityMultiple3 = 0.52f;   // 0.52f;
+    float velocityMultiple4 = 0.40f;   //0.40f;
+    float velocityMultiple5 = 0.299f;  //0.299f;
+    
     for (int i = 0; i < subdivisions; i++) {
-        //Need to have each instance provide velocity through uniform?
+        
         
         //rotation.changeTheta(MathFunc::getRandomInRange(2.0f*PI / ((float)subdivisions), 3.14159f));
         velocity = rotation.computeRotation(velocity);
@@ -306,11 +314,24 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
         playerParticles.push_back(ppp);
         
         if (MULTIPLE_EXPLOSION_PARTICLES_PER_CALL) {
-            float velocityMultiple1 = 0.856f;  //0.856f;
-            float velocityMultiple2 = 0.651f;  //0.651f;
-            float velocityMultiple3 = 0.52f;   // 0.52f;
-            float velocityMultiple4 = 0.40f;   //0.40f;
-            float velocityMultiple5 = 0.299f;  //0.299f;
+//            float velocityMultiple1 = 0.856f;  //0.856f;
+//            float velocityMultiple2 = 0.651f;  //0.651f;
+//            float velocityMultiple3 = 0.52f;   // 0.52f;
+//            float velocityMultiple4 = 0.40f;   //0.40f;
+//            float velocityMultiple5 = 0.299f;  //0.299f;
+            
+            if (modify) {
+                float velocityIncrease = 1.10f;
+                velocityMultiple1 *= velocityIncrease; //*= 1.05f;
+                velocityMultiple2 *= velocityIncrease; //*= 1.05f;
+                velocityMultiple3 *= velocityIncrease; //*= 1.05f;
+                velocityMultiple4 *= velocityIncrease; //*= 1.05f;
+                velocityMultiple5 *= velocityIncrease; //*= 1.05f;
+                modify = false;
+            }
+            else {
+                modify = true;
+            }
             
             //Multiple 1
             ppp = new PlayerParticleExplosion(midpoint, velocityMultiple1 * velocity.x, velocityMultiple1 * velocity.y, velocity.z);

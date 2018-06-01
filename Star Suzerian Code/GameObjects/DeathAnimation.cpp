@@ -166,7 +166,7 @@ namespace DeathAnimation {
                     (i < DEATH_SCENE_PART_TWO_CUTOFF + EXPLOSION_PARTICLE_FRAMES_CUTOFF)) {
                     playerParticles->particalizePlayer(player, gState->playerManager->getModelData(), true, 25u, false);
                     Quaternion * temp = playerParticles->getTheExplosionRotationQuaternionSoThatItCanBeMessedWith();
-                    temp->changeTheta(temp->getTheta() + PI / 7.842375f);
+                    temp->changeTheta(temp->getTheta() + PI / (7.5f/11.0f) + 0.0067f); //1.342375f); //PI / 7.842375
                 }
                 
                 player->zoom = pow(player->zoom, 1.05f);
