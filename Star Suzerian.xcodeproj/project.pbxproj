@@ -131,6 +131,7 @@
 		9E3DD992206E214900B2ED86 /* AnotherHubblePic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = AnotherHubblePic.jpg; sourceTree = "<group>"; };
 		9E8FF847204DDD29006E2392 /* CollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionBox.cpp; sourceTree = "<group>"; };
 		9E8FF848204DDD29006E2392 /* CollisionBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionBox.h; sourceTree = "<group>"; };
+		9EAD50D220C1C60400D1D153 /* GameConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameConstants.h; sourceTree = "<group>"; };
 		9EAFCECD20B9FDB900D12A9F /* DeathAnimation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DeathAnimation.cpp; path = GameObjects/DeathAnimation.cpp; sourceTree = "<group>"; };
 		9EAFCECE20B9FDB900D12A9F /* DeathAnimation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DeathAnimation.h; path = GameObjects/DeathAnimation.h; sourceTree = "<group>"; };
 		9EAFCED020BCBDB300D12A9F /* PlayerParticle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticle.h; sourceTree = "<group>"; };
@@ -346,6 +347,7 @@
 				9E10D5C620324B8D00F0F724 /* GLFW_Init.cpp */,
 				9E10D5C720324B8D00F0F724 /* GLFW_Init.h */,
 				9E10D5E72034BF5E00F0F724 /* GameParameters.h */,
+				9EAD50D220C1C60400D1D153 /* GameConstants.h */,
 			);
 			path = Setup;
 			sourceTree = "<group>";

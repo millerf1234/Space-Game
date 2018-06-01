@@ -7,7 +7,9 @@
 #include "PlayerParticleManager.h"
 
 
-static Quaternion rotation(0.0f, 0.0f, 1.0f, 0.0f);
+static Quaternion rotation(0.0f, 0.0f, 1.0f, (2.0f * PI / PLAYER_EXPLOSION_PARTICLES_PER_WAVE));
+static Quaternion rotationForOvalPattern(0.0f, 0.0f, 1.0f, PI/4.0f); //Hmm not sure if I really want this...
+
 
 static GLuint particleVBO = 0u;
 
@@ -282,11 +284,12 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
 //    std::cout << "\n\nPlayer's position is: " << player->position.x << " " << player->position.y << std::endl;
     
     
-    aiVector3D velocity(0.0f, 0.5f * (0.01f / TIME_TICK_RATE), 0.0f);
+    aiVector3D velocity(0.0f, 0.6f * (0.01f / TIME_TICK_RATE), 0.0f);
     //aiVector3D randomlyScaledVelocity;
     
     int subdivisions = PLAYER_EXPLOSION_PARTICLES_PER_WAVE; //60;
-    rotation.changeTheta(2.0f * PI / ((float)subdivisions));
+    
+    //rotation.changeTheta(2.0f * PI / ((float)subdivisions));
     
     for (int i = 0; i < subdivisions; i++) {
         //Need to have each instance provide velocity through uniform?
@@ -302,9 +305,73 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
         //PlayerParticlePoint * ppp = new PlayerParticlePoint(midpoint, velocity, 75.0f);
         playerParticles.push_back(ppp);
         
+        if (MULTIPLE_EXPLOSION_PARTICLES_PER_CALL) {
+            float velocityMultiple1 = 0.856f;  //0.856f;
+            float velocityMultiple2 = 0.651f;  //0.651f;
+            float velocityMultiple3 = 0.52f;   // 0.52f;
+            float velocityMultiple4 = 0.40f;   //0.40f;
+            float velocityMultiple5 = 0.299f;  //0.299f;
+            
+            //Multiple 1
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple1 * velocity.x, velocityMultiple1 * velocity.y, velocity.z);
+            playerParticles.push_back(ppp);
+            
+            //Multiple 2
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple2 * velocity.x, velocityMultiple2 * velocity.y, velocity.z);
+            playerParticles.push_back(ppp);
+            
+            //Multiple 3
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple3 * velocity.x, velocityMultiple3 * velocity.y, velocity.z);
+            playerParticles.push_back(ppp);
+            
+            //Multiple 4
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple4 * velocity.x, velocityMultiple4 * velocity.y, velocity.z);
+            playerParticles.push_back(ppp);
+            
+            //Multiple 5
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple5 * velocity.x, velocityMultiple5 * velocity.y, velocity.z);
+            playerParticles.push_back(ppp);
+            
+            /*
+            //Ovals 1
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple3 * velocity.y, velocityMultiple1 * velocity.x, velocity.z);
+            playerParticles.push_back(ppp);
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple1 * velocity.x, velocityMultiple3 * velocity.y, velocity.z);
+            playerParticles.push_back(ppp);
+            
+            aiVector3D rotatedVelocity = rotationForOvalPattern.computeRotation(velocity);
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple3 * rotatedVelocity.y, velocityMultiple1 * rotatedVelocity.x, 0.0f);
+            playerParticles.push_back(ppp);
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple1 * rotatedVelocity.x, velocityMultiple3 * rotatedVelocity.y, 0.0f);
+            playerParticles.push_back(ppp);
+            
+            */
+            
+            
+//            ppp = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, 0.5f * velocity.y, 0.5 * velocity.x, velocity.z);
+//            playerParticles.push_back(ppp);
+//
+//            ppp = new PlayerParticleExplosion(midpoint, 0.35f * velocity.y, 0.35f * velocity.x, velocity.z);
+//            playerParticles.push_back(ppp);
+//
+//            ppp = new PlayerParticleExplosion(midpoint, 0.25f * velocity.y, 0.25f * velocity.x, velocity.z);
+//            playerParticles.push_back(ppp);
+            
+            
+        }
+        
     }
     
 }
+
+Quaternion * PlayerParticleManager::getTheExplosionRotationQuaternionSoThatItCanBeMessedWith() const {
+    return &rotation;
+}
+
+void PlayerParticleManager::resetTheExplosionRotationQuaternionAfterItHasBeenMessedWith() {
+    rotation.changeTheta( (2.0f * PI) / PLAYER_EXPLOSION_PARTICLES_PER_WAVE);
+}
+
 
 void PlayerParticleManager::deleteAllPlayerParticles() {
     if (this->getNumberOfParticles() < 1) {

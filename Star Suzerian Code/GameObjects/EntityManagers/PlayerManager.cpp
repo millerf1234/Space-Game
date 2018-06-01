@@ -123,8 +123,9 @@ void PlayerManager::handleInput(GLFWwindow* mWindow) {
              if (printMovementDebugMessages && PRINT_DEBUG_MESSAGES) {
                  std::cout << "Player1 shooting" << std::endl;
              }
+            //aiVector2D forward2D(p1->forward->x, p1->forward->y);
+            //p1->velocity = p1->velocity - (forward2D * KINETIC_VELOCITY_LAUNCH_IMPULSE);
         }
-        
         //Player 2 input
         if (glfwGetKey(mWindow, GLFW_KEY_UP) == GLFW_PRESS) {
             p2->accelerate = true;
@@ -146,6 +147,8 @@ void PlayerManager::handleInput(GLFWwindow* mWindow) {
         }
         if (glfwGetKey(mWindow, '.') == GLFW_PRESS) {
             p2->shoot = true;
+            //aiVector2D forward2D(p2->forward->x, p2->forward->y);
+            //p2->velocity = p2->velocity - (forward2D * KINETIC_VELOCITY_LAUNCH_IMPULSE);
         }
         //Pushing both ',' and KEY_RIGHT while holding KEY_UP cancel eachother out...
 //        glfwPollEvents(); //Hmm seems to be an issue with GLFW!

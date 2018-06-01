@@ -52,7 +52,7 @@ void main()
     pos = earlyRotationMatrixZ * pos;
     pos = rotationMatrixX * pos;
     pos = rotationMatrixZ * pos;
-   // pos = rotationMatrixY * pos;
+   // pos = rotationMatrixY * pos; //The y rotation currently will always be 0
     
     //Translate:
     pos.x += xTrans;

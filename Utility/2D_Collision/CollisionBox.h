@@ -1,6 +1,7 @@
 //  This class is very similar to the CollisionRectangle class (in fact they
 //  share probably around 90% of the same code), except this class bounds
-//  models more tightly by being axis-aligned.
+//  models more tightly by being Object-Aligned (I really want to say 'Object Oriented'
+//  but that unfortunatly already means something different).
 //
 //  This class is intended for processing collsions for a 3D model that is
 //  restricted to always exist within a 2D plane. The idea is for the box to always

@@ -1,3 +1,5 @@
+//NOTE! This class is currently not in use anywhere in the Spaceship game. It is a functional class though...
+
 //  This is a class for generating polygons. Can be used to construct any polygon (shape with 3 or more sides, with each side of equal length)
 //  Functionality has been included to increment/decrement the number of sides on the polygon
 //

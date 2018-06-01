@@ -27,11 +27,13 @@ namespace DeathAnimation {
     typedef struct PlayerStateToRecord {
         //Fields
         aiVector3D position;
+        float zoom;
         float thetaX, thetaY, thetaZ;
         //Constructor
         PlayerStateToRecord() {
             position.x = position.y = position.z = 0.0f;
             thetaX = thetaY = thetaZ = 0.0f;
+            zoom = 1.0f;
         }
         //2 member functions
         void recordPlayer(PlayerEntity * player) {
@@ -39,6 +41,7 @@ namespace DeathAnimation {
             this->thetaX   = player->thetaX;
             this->thetaY   = player->thetaY;
             this->thetaZ   = player->thetaZ;
+            this->zoom     = player->zoom;
             //Shift the player's collision boxes as well so it is not on the screen
             player->colBox->translate(PLAYER_COLBOX_OFFSCREEN_SHIFT);
         }
@@ -47,6 +50,7 @@ namespace DeathAnimation {
             player->thetaX = this->thetaX;
             player->thetaY = this->thetaY;
             player->thetaZ = this->thetaZ;
+            player->zoom =   this->zoom;
             //Reset player's collision box
             aiVector2D translation = PLAYER_COLBOX_OFFSCREEN_SHIFT;
             translation.x *= -1.0f;
@@ -161,8 +165,11 @@ namespace DeathAnimation {
                 if (i % FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVE == 0 &&
                     (i < DEATH_SCENE_PART_TWO_CUTOFF + EXPLOSION_PARTICLE_FRAMES_CUTOFF)) {
                     playerParticles->particalizePlayer(player, gState->playerManager->getModelData(), true, 25u, false);
+                    Quaternion * temp = playerParticles->getTheExplosionRotationQuaternionSoThatItCanBeMessedWith();
+                    temp->changeTheta(temp->getTheta() + PI / 7.842375f);
                 }
                 
+                player->zoom = pow(player->zoom, 1.05f);
                 playerParticles->doUpkeep();
             }
             
@@ -188,7 +195,7 @@ namespace DeathAnimation {
         }
         
         
-        
+        playerParticles->resetTheExplosionRotationQuaternionAfterItHasBeenMessedWith();
         resetGameState(gState, recordedGameState);
         translatePlayerParticles(playerParticles, player); 
         
@@ -231,6 +238,8 @@ namespace DeathAnimation {
             stagePosition->y = stagePosition->z = 0.0f;
         } */
     }
+    
+    //Translate the player particles so that the explosion gets recentered to be at the position where the player died instead of the center of the screen
     void translatePlayerParticles(PlayerParticleManager * particleManag, PlayerEntity * deadPlayer) {
         aiVector2D translation;
         translation.x = deadPlayer->position.x;

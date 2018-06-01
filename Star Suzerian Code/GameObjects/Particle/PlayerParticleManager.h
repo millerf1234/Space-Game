@@ -76,6 +76,9 @@ public:
     
     void deleteAllPlayerParticles();
     
+    Quaternion * getTheExplosionRotationQuaternionSoThatItCanBeMessedWith() const;
+    void resetTheExplosionRotationQuaternionAfterItHasBeenMessedWith();
+    
     void translateParticles(aiVector2D translation);
     
 private: //Private Member Functions

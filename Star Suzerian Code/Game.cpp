@@ -145,9 +145,9 @@ void Game::loadGameObjects() {
 //        //this->levels[i] = new Stage(i);
 //        std::cout << INDENT << "    Level " << i+1 << " loaded..." << std::endl;
 //    }
-    ////initializeFromTemplate should be called by Stage constructor
-    ////this->levels[0]->generator->initializeFromTemplate(<#const InitializationTemplate &#>)
-    ////Generate a first level
+    //initializeFromTemplate should be called by Stage constructor
+    //this->levels[0]->generator->initializeFromTemplate(<#const InitializationTemplate &#>)
+    //Generate a first level
     //levels[0]->generator->generateSingle();
     
     
@@ -163,9 +163,9 @@ void Game::loadGameObjects() {
 
 bool Game::launch() {
 
-    ////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////    GAME LOOP     ///////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////// //
+    // /////////////////////////    GAME LOOP     ///////////////////////////// //
+    // //////////////////////////////////////////////////////////////////////// //
     
     while (glfwWindowShouldClose(mWindow) == false) {
         

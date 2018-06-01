@@ -913,7 +913,7 @@ aiVector2D CollisionBox::getVectorFromMidpointToPoint(const aiVector2D & point) 
     if (this->midpoint == point) {
         if (printDebugWarnings) {
             std::cout << "\nDEBUG::Warning! getVectorFromMidpointToPoint called "
-                         "with midpoint and point\nare equal!\n";
+                         "with midpoint and point\nequal to same coordinates!\n";
         }
         return aiVector2D(0.0001f, 0.00001f);
     }
