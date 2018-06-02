@@ -293,11 +293,14 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
     
     static bool modify = false;
     
-    float velocityMultiple1 = 0.856f;  //0.856f;
-    float velocityMultiple2 = 0.651f;  //0.651f;
+    float velocityMultiple1 = 0.836f;  //0.856f;
+    float velocityMultiple2 = 0.641f;  //0.651f;
     float velocityMultiple3 = 0.52f;   // 0.52f;
     float velocityMultiple4 = 0.40f;   //0.40f;
-    float velocityMultiple5 = 0.299f;  //0.299f;
+    float velocityMultiple5 = 0.199f;  //0.299f;
+    
+    float velocityMultiple6 = 0.9077f;
+    float velocityMultiple7 = 0.0211f;
     
     for (int i = 0; i < subdivisions; i++) {
         
@@ -309,6 +312,7 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
         
         //velocity = velocity * randVel;
         //PlayerParticleExplosion * ppp = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, randomlyScaledVelocity.x, randomlyScaledVelocity.y, velocity.z, 75.0f);
+        ///Note that there is a function to delete playerParticles from the vector, which is where the 'delete' to match this 'new' is located
         PlayerParticleExplosion * ppp = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x, velocity.y, velocity.z, 75.0f);
         //PlayerParticlePoint * ppp = new PlayerParticlePoint(midpoint, velocity, 75.0f);
         playerParticles.push_back(ppp);
@@ -321,17 +325,20 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
 //            float velocityMultiple5 = 0.299f;  //0.299f;
             
             if (modify) {
-                float velocityIncrease = 1.10f;
+                float velocityIncrease = 1.019;//1.0095f;
                 velocityMultiple1 *= velocityIncrease; //*= 1.05f;
                 velocityMultiple2 *= velocityIncrease; //*= 1.05f;
                 velocityMultiple3 *= velocityIncrease; //*= 1.05f;
                 velocityMultiple4 *= velocityIncrease; //*= 1.05f;
-                velocityMultiple5 *= velocityIncrease; //*= 1.05f;
+                velocityMultiple5 *= (velocityIncrease + 0.09f); //*= 1.05f;
+                velocityMultiple6 *= velocityIncrease;
+                velocityMultiple7 *= velocityIncrease;
                 modify = false;
             }
             else {
                 modify = true;
             }
+            
             
             //Multiple 1
             ppp = new PlayerParticleExplosion(midpoint, velocityMultiple1 * velocity.x, velocityMultiple1 * velocity.y, velocity.z);
@@ -351,6 +358,14 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
             
             //Multiple 5
             ppp = new PlayerParticleExplosion(midpoint, velocityMultiple5 * velocity.x, velocityMultiple5 * velocity.y, velocity.z);
+            playerParticles.push_back(ppp);
+            
+            //Multiple 6
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple6 * velocity.x, velocityMultiple6 * velocity.y, velocity.z);
+            playerParticles.push_back(ppp);
+            
+            //Multiple 7
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple7 * velocity.x, velocityMultiple7 * velocity.y, velocity.z);
             playerParticles.push_back(ppp);
             
             /*
@@ -486,14 +501,15 @@ bool initializeForDrawingTriangle() {
 void PlayerParticleManager::destroyParticlesFlaggedForDestruction() {
     if (this->getNumberOfParticles() > 0) {
         std::vector<PlayerParticle *> particlesToPreserve;
+        particlesToPreserve.reserve(this->getNumberOfParticles());
         std::vector<PlayerParticle *>::iterator iter = playerParticles.begin();
-        for ( ; iter != playerParticles.end(); iter++) {
+        for ( ; iter != playerParticles.end(); iter++) { ///Delete particles flagged for destruction
             if ( (*iter)->checkIfFlaggedForDestruction()) {
                 delete (*iter);
                 (*iter) = nullptr;
             }
             else {
-                particlesToPreserve.push_back((*iter));
+                particlesToPreserve.push_back((*iter)); ///Preserve particles not flagged for destruction
             }
         }
         
@@ -501,7 +517,7 @@ void PlayerParticleManager::destroyParticlesFlaggedForDestruction() {
         
         if (particlesToPreserve.size() > 0) { //If any particles were preserved
             this->playerParticles.reserve(particlesToPreserve.size());
-            particlesToPreserve.swap(this->playerParticles);
+            particlesToPreserve.swap(this->playerParticles); //Swap the contents of the vectors
         }
     }
 }

@@ -34,7 +34,7 @@
 //-----------------------------------------------------------------------------
 //                       OPEN FULL SCREEN OR WINDOWED
 //-----------------------------------------------------------------------------
-static constexpr bool USE_FULLSCREEN = false;
+static constexpr bool USE_FULLSCREEN = true;
 
 
 //-----------------------------------------------------------------------------
@@ -222,7 +222,7 @@ static constexpr float PROJECTILE_SIZE = 6.0f; //Larger number means smaller. I 
 static constexpr float KINETIC_SPEED_FACTOR = 1.95f; //1.75f is good value, formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
 
 static constexpr int PLAYER_KINETIC_AMMO = 600000; //Give a lot until I add picking up ammo
-static constexpr float KINETIC_WEP_DAMAGE = 0.01f;
+static constexpr float KINETIC_WEP_DAMAGE = 1.0f; //0.01f;
 
 static constexpr float KINETIC_VELOCITY_IMPACT = 0.04f;//0.04f; //0.04
 //static constexpr float KINETIC_VELOCITY_LAUNCH_IMPULSE = 1.0f;
@@ -252,9 +252,9 @@ static constexpr float PLAYER_LINE_COLOR_BOOST_FACTOR = 1.5f; //Increases the co
 static constexpr int COLLISION_SAMPLE_POINTS = 10; //Must be multiple of 2, should be 10 or greater
 
 
-static constexpr int PLAYER_EXPLOSION_PARTICLES_PER_WAVE = 243;
-static constexpr int FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVE = 4;  //1 or 2?
-static constexpr int EXPLOSION_PARTICLE_FRAMES_CUTOFF = 90;//50; //Divide by frames between explosion wave to get the number of waves that will be generated
+static constexpr int PLAYER_EXPLOSION_PARTICLES_PER_WAVE = 310; //143
+static constexpr int FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVE = 19;  //1 or 2?
+static constexpr int EXPLOSION_PARTICLE_FRAMES_CUTOFF = 190;//50; //Divide by frames between explosion wave to get the number of waves that will be generated
 static constexpr float EXPLOSION_PARTICLE_POINT_SIZE = 2.95f;
 static constexpr float PLAYER_PARTICLE_POINT_SIZE = 0.95f;
 

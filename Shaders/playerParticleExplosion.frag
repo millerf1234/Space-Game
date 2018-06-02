@@ -16,7 +16,7 @@ void main() {
     red = max(0.6, red * abs(sin(time)));
     green = min(red, 0.75 * green);
     
-    color = vec4(red, green, 0.1f, 1.0f);
+    color = vec4(red + 1.0/(pow((gl_FragCoord.x / 20.0f), 2.0f) + pow((gl_FragCoord.y / 20.0f), 2.0f)), green, 0.1f, 1.0f);
     //color = vec4(red + 0.15 * sin(time), green, blue, 1.0f);
     
 }

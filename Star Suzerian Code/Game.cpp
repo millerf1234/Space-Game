@@ -167,6 +167,7 @@ bool Game::launch() {
     // /////////////////////////    GAME LOOP     ///////////////////////////// //
     // //////////////////////////////////////////////////////////////////////// //
     
+    //FPS Counter? see: http://www.opengl-tutorial.org/miscellaneous/an-fps-counter/
     while (glfwWindowShouldClose(mWindow) == false) {
         
         auto frameBegin = std::chrono::high_resolution_clock::now();
@@ -194,7 +195,7 @@ bool Game::launch() {
         }
         //Check to see if game should pause (pausing causes control to remain inside this block until an unpause occurs)
         //Need to put a delay so unpausing doesn't cause pausing on the next few frames
-        //Ask "if enough frames have passed since the game was last unpaused and the unpause key is being pressed..."
+        //"if enough frames have passed since the game was last unpaused" and "is the unpause key is being pressed..."
         if (frameNumber >= (frameUnpaused + 10ull) && glfwGetKey(mWindow, GLFW_KEY_SPACE) == GLFW_PRESS) {
             auto begin = std::chrono::high_resolution_clock::now();  //Time Measurement
             auto end = std::chrono::high_resolution_clock::now(); //Note that time measurement is in nanoseconds
@@ -208,11 +209,11 @@ bool Game::launch() {
             while (true) { //Infinite loop of checking if unpaused key get's pressed
                 glfwPollEvents();
                 if (glfwGetKey(mWindow, GLFW_KEY_SPACE) == GLFW_PRESS) {
-                    goto unpause;
+                    goto unpause;  ///Will Jump to 'unpause' (see below)
                 }
                 else if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
                     glfwSetWindowShouldClose(mWindow, true);
-                    goto unpause;
+                    goto unpause; ///Will jump to 'unpause' (see below) and will set the game loop to exit
                 }
                 else {
                     std::this_thread::sleep_for(std::chrono::nanoseconds(33333333)); //Sleep for a small amount of a second before checking again if unpaused.
@@ -221,7 +222,7 @@ bool Game::launch() {
         }
         //Need some way for unpausing to work. How about this:
         if (false) {
-            unpause: std::cout << "Game Unpaused!" << std::endl;
+            unpause: std::cout << "Game Unpaused!" << std::endl; ///Both exits from the pause loop will go to here
             frameUnpaused = frameNumber;
         }
         
