@@ -252,7 +252,7 @@ static constexpr float PLAYER_LINE_COLOR_BOOST_FACTOR = 1.5f; //Increases the co
 static constexpr int COLLISION_SAMPLE_POINTS = 10; //Must be multiple of 2, should be 10 or greater
 
 
-static constexpr int PLAYER_EXPLOSION_PARTICLES_PER_WAVE = 310; //143
+static constexpr int PLAYER_EXPLOSION_PARTICLES_PER_WAVE = 7100;//310; //143
 static constexpr int FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVE = 19;  //1 or 2?
 static constexpr int EXPLOSION_PARTICLE_FRAMES_CUTOFF = 190;//50; //Divide by frames between explosion wave to get the number of waves that will be generated
 static constexpr float EXPLOSION_PARTICLE_POINT_SIZE = 2.95f;

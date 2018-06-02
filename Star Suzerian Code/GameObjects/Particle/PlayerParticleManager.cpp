@@ -302,6 +302,8 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
     float velocityMultiple6 = 0.9077f;
     float velocityMultiple7 = 0.0211f;
     
+    float velocityMultiple8 = 3.0f;
+    
     for (int i = 0; i < subdivisions; i++) {
         
         
@@ -313,9 +315,10 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
         //velocity = velocity * randVel;
         //PlayerParticleExplosion * ppp = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, randomlyScaledVelocity.x, randomlyScaledVelocity.y, velocity.z, 75.0f);
         ///Note that there is a function to delete playerParticles from the vector, which is where the 'delete' to match this 'new' is located
-        PlayerParticleExplosion * ppp = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x, velocity.y, velocity.z, 75.0f);
+        PlayerParticleExplosion * ppp = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, MathFunc::getRandomInRange(1.0f, 3.0f) * velocity.x, MathFunc::getRandomInRange(0.5f, 3.5f)*velocity.y, velocity.z, 75.0f);
         //PlayerParticlePoint * ppp = new PlayerParticlePoint(midpoint, velocity, 75.0f);
         playerParticles.push_back(ppp);
+        //delete ppp;
         
         if (MULTIPLE_EXPLOSION_PARTICLES_PER_CALL) {
 //            float velocityMultiple1 = 0.856f;  //0.856f;
@@ -368,7 +371,11 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
             ppp = new PlayerParticleExplosion(midpoint, velocityMultiple7 * velocity.x, velocityMultiple7 * velocity.y, velocity.z);
             playerParticles.push_back(ppp);
             
-            /*
+            
+            //Multiple 8
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple8 * velocity.x, velocityMultiple8 * velocity.y, velocity.z);
+            playerParticles.push_back(ppp);
+            
             //Ovals 1
             ppp = new PlayerParticleExplosion(midpoint, velocityMultiple3 * velocity.y, velocityMultiple1 * velocity.x, velocity.z);
             playerParticles.push_back(ppp);
@@ -381,7 +388,7 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
             ppp = new PlayerParticleExplosion(midpoint, velocityMultiple1 * rotatedVelocity.x, velocityMultiple3 * rotatedVelocity.y, 0.0f);
             playerParticles.push_back(ppp);
             
-            */
+            
             
             
 //            ppp = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, 0.5f * velocity.y, 0.5 * velocity.x, velocity.z);
