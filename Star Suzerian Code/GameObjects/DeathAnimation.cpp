@@ -171,7 +171,7 @@ namespace DeathAnimation {
                     particleRotationQuaternion->changeTheta(particleRotationQuaternion->getTheta() + PI / (7.5f/11.0f) + 0.0067f); //1.342375f); //PI / 7.842375
                 }
                 
-                player->zoom = pow(player->zoom, 1.04f); //1.05f);
+                player->zoom = pow(player->zoom, 1.06f); //1.05f);
                 //playerParticles->doUpkeep(); //Move this to happen every loop iteration
             }
             

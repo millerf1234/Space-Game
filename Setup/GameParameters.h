@@ -252,8 +252,8 @@ static constexpr int COLLISION_SAMPLE_POINTS = 10; //Must be multiple of 2, shou
 //-----------------------------------------------------------------------------
 
 ///Explosion Particle Parameters
-static constexpr float INITIAL_PARTICLE_VELOCITY = 0.25f; //don't make this 0.0f
-static const float VELOCITY_MULTIPLES[] = {
+static constexpr float INITIAL_PARTICLE_VELOCITY = 0.25f; //don't make this 0.0f //unused
+static const float VELOCITY_MULTIPLES[] = { //Unused
     0.9007f,
     0.836f,
     0.764f,
@@ -264,16 +264,16 @@ static const float VELOCITY_MULTIPLES[] = {
     0.199f,
     0.0211f
 };
-static constexpr float VELOCITY_INCREASE = 1.081f;
-static const float EXPLOSION_WAVE_ANGLE_CHANGE = 0.3f;//sin(0.00009f);// + sin(0.0f);// 3.14159f * (7.0f / 11.0f);
+//static constexpr float VELOCITY_INCREASE = 1.081f;
+//static const float EXPLOSION_WAVE_ANGLE_CHANGE = 0.3f;//sin(0.00009f);// + sin(0.0f);// 3.14159f * (7.0f / 11.0f);
 
-static constexpr int PLAYER_EXPLOSION_PARTICLES_PER_WAVE = 907;//310; //143
-static constexpr int FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVES = 6;  //1 or 2?
-static constexpr int EXPLOSION_PARTICLE_FRAMES_CUTOFF = 6*18+1;
-static constexpr float EXPLOSION_PARTICLE_POINT_SIZE = 2.95f; //2.95f or so
+static constexpr int PLAYER_EXPLOSION_PARTICLES_PER_WAVE = 907;//907;//310; //143
+static constexpr int FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVES = 5; //5-6 seems good  //6?  //1 or 2?
+static constexpr int EXPLOSION_PARTICLE_FRAMES_CUTOFF = 6*18+3;  //6*18+1
+static constexpr float EXPLOSION_PARTICLE_POINT_SIZE = 1.95f; //2.95f or so
 static constexpr float PLAYER_PARTICLE_POINT_SIZE = 0.95f;
 
-static constexpr int FRAMES_TO_KEEP_PLAYER_EXPLOSION_AROUND = 405; //405-540  Starts counting as soon as particles are spawned
+static constexpr int FRAMES_TO_KEEP_PLAYER_EXPLOSION_AROUND = 505; //405; //405-540  Starts counting as soon as particles are spawned
 
 
 #endif // GAME_PARAMETERS

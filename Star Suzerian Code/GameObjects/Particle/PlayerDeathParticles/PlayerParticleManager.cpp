@@ -841,6 +841,7 @@ void PlayerParticleManager::doUpkeep() {
     }
     std::vector<PlayerParticle*>::iterator iter = playerParticles.begin();
     for ( ; iter != playerParticles.end(); iter++) {
+        //(*iter)->velocity.x += MathFunc::getRandomInRange(-0.11f, 0.11f); //Adding this slows the loop way down. Probably changes how the compiler is able to optimize
         (*iter)->position.x += (*iter)->velocity.x;
         (*iter)->position.y += (*iter)->velocity.y;
         (*iter)->position.z += (*iter)->zVel;
@@ -1003,8 +1004,8 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
     
     for (int i = 0; i < subdivisions; i++) {
         
-        float randomScaler = MathFunc::getRandomInRange(0.85f, 10.55f);
-        std::cout << "\nRandom is: " << randomScaler;
+        float randomScalar = MathFunc::getRandomInRange(0.65f, 11.1f);     //(0.85f, 10.55f);
+        std::cout << "\nRandom is: " << randomScalar;
         
         //rotation.changeTheta(MathFunc::getRandomInRange(2.0f*PI / ((float)subdivisions), 3.14159f));
         velocity = rotation.computeRotation(velocity);
@@ -1013,17 +1014,50 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
         
         //velocity = velocity * randVel;
         //PlayerParticleExplosion * ppp = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, randomlyScaledVelocity.x, randomlyScaledVelocity.y, velocity.z, 75.0f);
-        PlayerParticleExplosion * pppRight = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x + randomScaler, velocity.y * randomScaler, velocity.z, 75.0f);
+        
+        //////////////////////////////////////////////////////////////////////////////////////////
+        ///   Explosion Particle Creation
+        //////////////////////////////////////////////////////////////////////////////////////////
+        ///Right
+        //PlayerParticleExplosion * pppRight = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x + randomScalar, velocity.y * randomScalar + MathFunc::getRandomInRange(0.2f, 0.4f) * randomScalar, velocity.z, 75.0f);
+        PlayerParticleExplosion * pppRight = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x + randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
         playerParticles.push_back(pppRight);
         
-         PlayerParticleExplosion * pppLeft = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x - randomScaler, velocity.y * randomScaler, velocity.z, 75.0f);
+        ///Left
+        PlayerParticleExplosion * pppLeft = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x - randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
         //PlayerParticlePoint * ppp = new PlayerParticlePoint(midpoint, velocity, 75.0f);
         playerParticles.push_back(pppLeft);
         
-        PlayerParticleExplosion * pppUp = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x * randomScaler, velocity.y + randomScaler, velocity.z, 75.0f);
+        ///Up
+        PlayerParticleExplosion * pppUp = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x * randomScalar, velocity.y + randomScalar, velocity.z, 75.0f);
         playerParticles.push_back(pppUp);
         
+        ///Down
+        PlayerParticleExplosion * pppDown = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x * randomScalar, velocity.y - randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppDown);
         
+        ///UpRight
+        PlayerParticleExplosion * pppUpRight = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, (velocity.x * randomScalar) + randomScalar, (velocity.y * randomScalar) + randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppUpRight);
+        
+        ///DownRight
+        PlayerParticleExplosion * pppDownRight = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, (velocity.x * randomScalar) + randomScalar, (velocity.y * randomScalar) - randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppDownRight);
+        
+        ///UpLeft
+        PlayerParticleExplosion * pppUpLeft = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, (velocity.x * randomScalar) - randomScalar, (velocity.y * randomScalar) + randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppUpLeft);
+        
+        ///DownLeft
+        PlayerParticleExplosion * pppDownLeft = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, (velocity.x * randomScalar) - randomScalar, (velocity.y * randomScalar) - randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppDownLeft);
+        
+        ///Everywhere  (cuz why not?)
+        PlayerParticleExplosion * pppAll = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x * randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppAll);
+        //////////////////////////////////////////////////////////////////////////////////////////
+        
+        /*  //Need to uncomment a '}' down below if going to undo this comment
         if (true) {
             //            float velocityMultiple1 = 0.856f;  //0.856f;
             //            float velocityMultiple2 = 0.651f;  //0.651f;
@@ -1033,11 +1067,11 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
             
             if (modify) {
                 float velocityIncrease = 1.19f;
-                velocityMultiple1 *= velocityIncrease; //*= 1.05f;
-                velocityMultiple2 *= velocityIncrease; //*= 1.05f;
-                velocityMultiple3 *= velocityIncrease; //*= 1.05f;
-                velocityMultiple4 *= velocityIncrease; //*= 1.05f;
-                velocityMultiple5 *= velocityIncrease; //*= 1.05f;
+                velocityMultiple1 *= velocityIncrease; // *= 1.05f;
+                velocityMultiple2 *= velocityIncrease; // *= 1.05f;
+                velocityMultiple3 *= velocityIncrease; // *= 1.05f;
+                velocityMultiple4 *= velocityIncrease; // *= 1.05f;
+                velocityMultiple5 *= velocityIncrease; // *= 1.05f;
                 modify = false;
             }
             else {
@@ -1050,7 +1084,7 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
             playerParticles.push_back(ppp);
             
             //Multiple 2
-            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple2 * velocity.x * randomScaler, velocityMultiple2 * velocity.y * randomScaler, velocity.z);
+            ppp = new PlayerParticleExplosion(midpoint, velocityMultiple2 * velocity.x * randomScaler, velocityMultiple2 * velocity.y * randomScaler, velocity.z, 75.0f);
             playerParticles.push_back(ppp);
             
             //Multiple 3
@@ -1060,11 +1094,11 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
             //Multiple 4
             ppp = new PlayerParticleExplosion(midpoint, velocityMultiple4 * velocity.x * randomScaler, velocityMultiple4 * velocity.y * randomScaler, velocity.z);
             playerParticles.push_back(ppp);
-            
+             
             //Multiple 5
             ppp = new PlayerParticleExplosion(midpoint, velocityMultiple5 * velocity.x * randomScaler, velocityMultiple5 * velocity.y * randomScaler, velocity.z);
             playerParticles.push_back(ppp);
-            
+             */
             /*
              //Ovals 1
              ppp = new PlayerParticleExplosion(midpoint, velocityMultiple3 * velocity.y, velocityMultiple1 * velocity.x, velocity.z);
@@ -1091,7 +1125,7 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
             //            playerParticles.push_back(ppp);
             
             
-        }
+        //}
         
     }
     
