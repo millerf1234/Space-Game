@@ -162,12 +162,13 @@ namespace DeathAnimation {
             else {
                 drawStage = false; //Don't draw the stage beyond this point
                 
-                if (i % FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVE == 0 &&
+                if (i % FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVES == 0 &&
                     (i < DEATH_SCENE_PART_TWO_CUTOFF + EXPLOSION_PARTICLE_FRAMES_CUTOFF)) {
                     playerParticles->particalizePlayer(player, gState->playerManager->getModelData(), true, 25u, false);
-                    Quaternion * temp = playerParticles->getTheExplosionRotationQuaternionSoThatItCanBeMessedWith();
-                    temp->changeTheta(temp->getTheta() + sin(2.913f) + sin(5.0f));
-                    //temp->changeTheta(temp->getTheta() + PI / (7.5f/11.0f) + 0.0067f); //1.342375f); //PI / 7.842375
+                    Quaternion * particleRotationQuaternion = playerParticles-> getTheExplosionRotationQuaternionSoThatItCanBeMessedWith();
+                    //particleRotationQuaternion->changeTheta(particleRotationQuaternion->getTheta() + EXPLOSION_WAVE_ANGLE_CHANGE);
+                    //particleRotationQuaternion->changeTheta(particleRotationQuaternion->getTheta() + sin(2.913f) + sin(5.0f));
+                    particleRotationQuaternion->changeTheta(particleRotationQuaternion->getTheta() + PI / (7.5f/11.0f) + 0.0067f); //1.342375f); //PI / 7.842375
                 }
                 
                 player->zoom = pow(player->zoom, 1.04f); //1.05f);

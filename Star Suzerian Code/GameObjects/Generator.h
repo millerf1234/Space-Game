@@ -64,7 +64,7 @@
 //Note:
 //specializationType is assigned to individual instances to identify them
 //specializationType is assigned to a GameEntityManager-derived class
-enum specializationType {PLAYER, WEAPON, STAGE, PARTICLE, NOSPECIALIZATION};
+enum specializationType {PLAYER, WEAPON, STAGE, NOSPECIALIZATION};
 
 //The idea here is to have this large class called Generator that
 typedef struct InitializationTemplate{

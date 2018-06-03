@@ -1,22 +1,16 @@
 //  This is a file that just contains constants which affect all of the game parameters.
 //  GameParameters.h
 //
-//
-//  Edited continuously up through 3/20/2018 as needed with added functionality
-//                     Actually make that through 5/30/2018 
 //  Created by Forrest Miller on 2/14/18.
-//
+//  Too many edits/changes to track...
 
-//-----------------------------------------------------------------------------
-//(On Mac) To TEST KEYBOARD INPUT FUNCTIONALITY, OPEN CONSOLE AND TYPE:
-//  open -a KeyboardViewer
-//-----------------------------------------------------------------------------
 
 #ifndef GAME_PARAMETERS
 #define GAME_PARAMETERS
 
-//Put all this in a namespace?
+//Put all this in a namespace? (oops to late)
 #include <string>
+#include <cmath>
 #include "GameConstants.h"  //Only include GameConstants.h once per project, ideally in this file
 
 
@@ -28,7 +22,7 @@
 
 //NOTE!  IN Generator under the function./ delete element, I set the value in the seperate array of element ID's that I track
 //       to some bogus large negative number to represent that that instance was deleted, this way I am not constantly
-//       resizing the array... wait... what?
+//       resizing the array... wait... what? (see the constant WAS_DELETED)
 
 
 //-----------------------------------------------------------------------------
@@ -149,9 +143,9 @@ static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 
 
 //Suggested to leave scale at 75.0f. Changing GAME_SCALE will cause all models to be resized (except for the background)
 static constexpr float GAME_SCALE = 75.0f; //Larger numbers means smaller player size
-static constexpr int PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES = 18; //~15 is a good value
+static constexpr int PLAYER_ENGINE_FLAME_TRANSLATION_DELAY_FRAMES = 14; //~15 is a good value
 
-static constexpr int FRAMES_BETWEEN_PLAYER_RESPAWN = 180; //3 sec is ~180 frames
+static constexpr int FRAMES_BETWEEN_PLAYER_RESPAWN = 180; //3 sec is ~180 frames. This does not count the player death animation frames
 
 static constexpr float STARTING_PLAYER_HEALTH = 1.0f; //Tweak as needed
 static constexpr float STARTING_PLAYER_SHIELDS = 4.0f; //Tweak as needed (if this gets implemented...)
@@ -173,7 +167,8 @@ static constexpr float PLAYER2_STARTOFFSET_Y = -40.5f * (GAME_SCALE / 75.0f);
 //I think I hardcoded in starting offsets for players beyond player 2, but currently controls are only implemented for 2 players...
 
 
-//Edge of screen limits for player movement: (Suggested to leave these at 74.0f, 45.0f and change GAME_SCALE instead)
+///Edge of screen limits for player movement:
+//(Suggested to leave these at 74.0f, 45.0f and change GAME_SCALE instead)
 static constexpr float XLIMIT = 74.0f*(GAME_SCALE/75.0f); //Divide by 75 to scale screen limits with changes to GAME_ENTITY_SCALE
 static constexpr float YLIMIT = 45.0f*(GAME_SCALE/75.0f); //Divide by 75 to scale screen limits with changes to GAME_ENTITY_SCALE;
 
@@ -187,7 +182,7 @@ static const bool curserVisible = false; //Experimental still... (i.e. it doesn'
 //Game was written with an expected base TIME_TICK_RATE of 0.01f
 constexpr float TIME_TICK_RATE = 0.01f; //Time step per loop iteration, tweak wisely...
 
-//Player COLORS
+///Player COLORS
 //Player 1     (0.7f red, 0.48f green, 0.15f blue) is what I have been going with
 static constexpr float PLAYER_ONE_RED = 0.7f; //Red amount on a 0.0f to 1.0f scale
 static constexpr float PLAYER_ONE_GREEN = 0.48f; //Green amount
@@ -203,7 +198,7 @@ static constexpr float PLAYER_THREE_RED = 0.2f; //Red amount on a 0.0f to 1.0f s
 static constexpr float PLAYER_THREE_GREEN = 1.0f; //Green amount
 static constexpr float PLAYER_THREE_BLUE = 0.25f; //Blue amount
 
-static constexpr float PLAYER_ENGINE_FLAME_SIZE_INCREASE_FROM_VELOCITY = 1.6f; //1.2f is a good value
+static constexpr float PLAYER_ENGINE_FLAME_SIZE_INCREASE_FROM_VELOCITY = 1.5f; //1.2f is a good value
 
 static constexpr bool DRAW_LINES_PLAYER_MODELS = true;
 
@@ -248,19 +243,37 @@ static const int CUSTOM_DISPLAY_HEIGHT = 2160; //1080
 static constexpr float PLAYER_LINE_COLOR_BOOST_FACTOR = 1.5f; //Increases the color of the outline of the player ship models (from the base color of their body colors)
 
 
-//Collision Sample points currently unused because my advanced collision algorithm never worked correctly
+///Collision Sample points currently unused because my advanced collision algorithm never worked correctly (well... Actually my simple collision algorithm worked much better than I thought so I stopped working on the advanced version. This constant is still here because I might decide to actually finish the advanced version one day)
 static constexpr int COLLISION_SAMPLE_POINTS = 10; //Must be multiple of 2, should be 10 or greater
 
 
-static constexpr int PLAYER_EXPLOSION_PARTICLES_PER_WAVE = 7100;//310; //143
-static constexpr int FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVE = 19;  //1 or 2?
-static constexpr int EXPLOSION_PARTICLE_FRAMES_CUTOFF = 190;//50; //Divide by frames between explosion wave to get the number of waves that will be generated
-static constexpr float EXPLOSION_PARTICLE_POINT_SIZE = 2.95f;
+//-----------------------------------------------------------------------------
+//   PLAYER DEATH PARAMETERS
+//-----------------------------------------------------------------------------
+
+///Explosion Particle Parameters
+static constexpr float INITIAL_PARTICLE_VELOCITY = 0.25f; //don't make this 0.0f
+static const float VELOCITY_MULTIPLES[] = {
+    0.9007f,
+    0.836f,
+    0.764f,
+    0.641f,
+    0.523f,
+    0.401f,
+    0.318f,
+    0.199f,
+    0.0211f
+};
+static constexpr float VELOCITY_INCREASE = 1.081f;
+static const float EXPLOSION_WAVE_ANGLE_CHANGE = 0.3f;//sin(0.00009f);// + sin(0.0f);// 3.14159f * (7.0f / 11.0f);
+
+static constexpr int PLAYER_EXPLOSION_PARTICLES_PER_WAVE = 907;//310; //143
+static constexpr int FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVES = 6;  //1 or 2?
+static constexpr int EXPLOSION_PARTICLE_FRAMES_CUTOFF = 6*18+1;
+static constexpr float EXPLOSION_PARTICLE_POINT_SIZE = 2.95f; //2.95f or so
 static constexpr float PLAYER_PARTICLE_POINT_SIZE = 0.95f;
 
-static constexpr bool MULTIPLE_EXPLOSION_PARTICLES_PER_CALL = true;
-
-static constexpr int FRAMES_TO_KEEP_PLAYER_EXPLOSION_AROUND = 405; //540;
+static constexpr int FRAMES_TO_KEEP_PLAYER_EXPLOSION_AROUND = 405; //405-540  Starts counting as soon as particles are spawned
 
 
 #endif // GAME_PARAMETERS

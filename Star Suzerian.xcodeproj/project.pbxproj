@@ -132,6 +132,7 @@
 		9E8FF847204DDD29006E2392 /* CollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionBox.cpp; sourceTree = "<group>"; };
 		9E8FF848204DDD29006E2392 /* CollisionBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionBox.h; sourceTree = "<group>"; };
 		9EAD50D220C1C60400D1D153 /* GameConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameConstants.h; sourceTree = "<group>"; };
+		9EAD50D520C323F400D1D153 /* ProjectNotes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ProjectNotes.rtf; sourceTree = "<group>"; };
 		9EAFCECD20B9FDB900D12A9F /* DeathAnimation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DeathAnimation.cpp; path = GameObjects/DeathAnimation.cpp; sourceTree = "<group>"; };
 		9EAFCECE20B9FDB900D12A9F /* DeathAnimation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DeathAnimation.h; path = GameObjects/DeathAnimation.h; sourceTree = "<group>"; };
 		9EAFCED020BCBDB300D12A9F /* PlayerParticle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticle.h; sourceTree = "<group>"; };
@@ -240,6 +241,7 @@
 		9E10D58D203234CC00F0F724 = {
 			isa = PBXGroup;
 			children = (
+				9EAD50D420C323AD00D1D153 /* Notes */,
 				9ED7720E2036B32F00D569A4 /* ShaderImages */,
 				9E10D5CD2032CD4F00F0F724 /* ObjFiles */,
 				9E10D5CC2032CD3600F0F724 /* Shaders */,
@@ -417,7 +419,7 @@
 			path = IncompleteOrBuggyMath;
 			sourceTree = "<group>";
 		};
-		9EAFCED720BDDC2B00D12A9F /* Particle */ = {
+		9EAD50D320C3236500D1D153 /* PlayerDeathParticles */ = {
 			isa = PBXGroup;
 			children = (
 				9EAFCED020BCBDB300D12A9F /* PlayerParticle.h */,
@@ -427,6 +429,22 @@
 				9EAFCEDC20BDDC8400D12A9F /* PlayerParticleTriangle.h */,
 				9EAFCEDE20BDE23100D12A9F /* PlayerParticleManager.cpp */,
 				9EAFCEDF20BDE23100D12A9F /* PlayerParticleManager.h */,
+			);
+			path = PlayerDeathParticles;
+			sourceTree = "<group>";
+		};
+		9EAD50D420C323AD00D1D153 /* Notes */ = {
+			isa = PBXGroup;
+			children = (
+				9EAD50D520C323F400D1D153 /* ProjectNotes.rtf */,
+			);
+			path = Notes;
+			sourceTree = "<group>";
+		};
+		9EAFCED720BDDC2B00D12A9F /* Particle */ = {
+			isa = PBXGroup;
+			children = (
+				9EAD50D320C3236500D1D153 /* PlayerDeathParticles */,
 			);
 			path = Particle;
 			sourceTree = "<group>";
@@ -770,7 +788,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

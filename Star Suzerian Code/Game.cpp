@@ -162,6 +162,21 @@ void Game::loadGameObjects() {
 
 
 bool Game::launch() {
+    
+    //-------  MSAA NOT WORKING TEST? ---------------------
+    //see: https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_fsaa/opengl_fsaa.html
+    //glad_glEnable(GL_MULTISAMPLE);  //See also: https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing
+    
+    //Gonna stick in some MSAA test code from OpenGL cookbook page 192
+    if (PRINT_MSAA_INFO_FROM_GPU_DRIVER) {
+        GLint bufs, samples;
+        glad_glGetIntegerv(GL_SAMPLE_BUFFERS, &bufs);
+        glad_glGetIntegerv(GL_SAMPLES, &samples);
+        printf("\nMSAA Information: buffers available = %d, samples = %d\n", bufs, samples);
+    }
+    //--------End of MSAA TEST CODE ------------------------
+    
+    
 
     // //////////////////////////////////////////////////////////////////////// //
     // /////////////////////////    GAME LOOP     ///////////////////////////// //
@@ -277,18 +292,7 @@ bool Game::launch() {
         //  Draw
         //----------------------------------------------------------------------
        
-        //-------  MSAA NOT WORKING TEST? ---------------------
-        //see: https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_fsaa/opengl_fsaa.html
-        //glad_glEnable(GL_MULTISAMPLE);  //See also: https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing
-    
-        //Gonna stick in some MSAA test code from OpenGL cookbook page 192
-        if (PRINT_MSAA_INFO_FROM_GPU_DRIVER) {
-            GLint bufs, samples;
-            glad_glGetIntegerv(GL_SAMPLE_BUFFERS, &bufs);
-            glad_glGetIntegerv(GL_SAMPLES, &samples);
-            printf("\nMSAA Information: buffers available = %d, samples = %d\n", bufs, samples);
-        }
-        //--------End of MSAA TEST CODE ------------------------
+        
         
         std::vector<GameEntityManager*>::iterator entityDrawIterator = gEntities.begin();
         for (; entityDrawIterator < gEntities.end(); ++entityDrawIterator) {

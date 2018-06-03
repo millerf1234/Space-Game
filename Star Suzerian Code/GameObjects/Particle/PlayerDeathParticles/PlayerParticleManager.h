@@ -92,8 +92,13 @@ private: //Private Member Functions
     
     void fillParticleVectors();
     
-    //The constructVertexBuffer... function is to allow for only 1 call to glBufferData
+    //The constructVertexBuffer... function is to allow for only 1 call to glBufferData (instead of having to call it multiple times per frame)
     void constructVertexBufferFromParticleVectors(GLfloat *, int&, int&);
+    
+    
+    void generateExplosionParticles(const aiVector3D&);
+    void spawnExplosionParticle(const aiVector3D&, const aiVector3D&, float magnitude);
+    
     
     void drawPointParticles(int);
     void drawExplosionParticles(int, int);
