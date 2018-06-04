@@ -15,7 +15,12 @@ namespace MathFunc {
         return real_rand();
     }
     
-    
+    int getRandomInRange(int min, int max) {
+        auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        std::mt19937 mt_rand((unsigned int)seed);
+        auto int_rand = std::bind(std::uniform_real_distribution<int>(min, max), mt_rand);
+        return int_rand();
+    }
     
     
     

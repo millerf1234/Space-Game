@@ -994,21 +994,58 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
     
     //rotation.changeTheta(2.0f * PI / ((float)subdivisions));
     
-    static bool modify = false;
+//    static bool modify = false;
+//
+//    float velocityMultiple1 = 0.856f;  //0.856f;
+//    float velocityMultiple2 = 0.651f;  //0.651f;
+//    float velocityMultiple3 = 0.52f;   // 0.52f;
+//    float velocityMultiple4 = 0.40f;   //0.40f;
+//    float velocityMultiple5 = 0.299f;  //0.299f;
     
-    float velocityMultiple1 = 0.856f;  //0.856f;
-    float velocityMultiple2 = 0.651f;  //0.651f;
-    float velocityMultiple3 = 0.52f;   // 0.52f;
-    float velocityMultiple4 = 0.40f;   //0.40f;
-    float velocityMultiple5 = 0.299f;  //0.299f;
+   // Quaternion randomExtraRotation(0.0f, 0.0f, 1.0f, MathFunc::getRandomInRange(0.0f, PI / 2.0f));
     
+    
+    ////////////////////////////////////////////////////////////////////////////
+    ///     EXPLOSION VARIATION PARAMETERS     (THIS FACILITATES A RANDOM EXPLOSION EFFECT)
+    ////////////////////////////////////////////////////////////////////////////
+    //Variables
+    static constexpr int NUMBER_OF_EFFECTS = 4;
+    int effectToDo = MathFunc::getRandomInRange(1, NUMBER_OF_EFFECTS);
+    float effectMin, effectMax;
+    
+    //Logic to set up effect
+    if (effectToDo == 1) {
+        effectMin = 0.01f;
+        effectMax = 0.25f;
+    }
+    else if (effectToDo == 2) {
+        effectMin = 0.65f;
+        effectMax = 11.1f;
+    }
+    else if (effectToDo == 3) {
+        effectMin = 0.85f;
+        effectMax = 1.25f;
+    }
+    else {
+        effectMin = effectMax = 1.8f;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
+    
+    ////////////////////////////////////////////////////////////////////////////
+    ///   ACTUAL CODE FOR THE EXPLOSION
+    ////////////////////////////////////////////////////////////////////////////
     for (int i = 0; i < subdivisions; i++) {
         
-        float randomScalar = MathFunc::getRandomInRange(0.65f, 11.1f);     //(0.85f, 10.55f);
-        std::cout << "\nRandom is: " << randomScalar;
+        float randomScalar = MathFunc::getRandomInRange(effectMin, effectMax); //(0.01f, 0.95f); //(0.65f, 11.1f);     //(0.85f, 10.55f);
+        //std::cout << "\nRandom is: " << randomScalar;
+        
+        
+        
         
         //rotation.changeTheta(MathFunc::getRandomInRange(2.0f*PI / ((float)subdivisions), 3.14159f));
         velocity = rotation.computeRotation(velocity);
+        
         //        randomlyScaledVelocity.x = velocity.x * MathFunc::getRandomInRange(0.01f, 0.95f);
         //        randomlyScaledVelocity.y = velocity.y * MathFunc::getRandomInRange(0.01, 0.95f);
         
@@ -1021,6 +1058,7 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
         ///Right
         //PlayerParticleExplosion * pppRight = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x + randomScalar, velocity.y * randomScalar + MathFunc::getRandomInRange(0.2f, 0.4f) * randomScalar, velocity.z, 75.0f);
         PlayerParticleExplosion * pppRight = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x + randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
+        
         playerParticles.push_back(pppRight);
         
         ///Left
@@ -1056,6 +1094,14 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
         PlayerParticleExplosion * pppAll = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x * randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
         playerParticles.push_back(pppAll);
         //////////////////////////////////////////////////////////////////////////////////////////
+        
+//        //Make explosion rotate sorta (turn down number of particles if doing this)
+//        std::vector<PlayerParticle *>::iterator iter = playerParticles.begin();
+//        for ( ; iter != playerParticles.end(); iter++) {
+//            aiVector3D particleVelocity((*iter)->velocity.x, (*iter)->velocity.y, 0.0f);
+//            particleVelocity = randomExtraRotation.computeRotation(particleVelocity);
+//            (*iter)->velocity = aiVector2D(particleVelocity.x, particleVelocity.y);
+//        }
         
         /*  //Need to uncomment a '}' down below if going to undo this comment
         if (true) {

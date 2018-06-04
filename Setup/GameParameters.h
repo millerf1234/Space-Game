@@ -217,7 +217,7 @@ static constexpr float PROJECTILE_SIZE = 6.0f; //Larger number means smaller. I 
 static constexpr float KINETIC_SPEED_FACTOR = 1.95f; //1.75f is good value, formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
 
 static constexpr int PLAYER_KINETIC_AMMO = 600000; //Give a lot until I add picking up ammo
-static constexpr float KINETIC_WEP_DAMAGE = 1.0f; //0.01f;
+static constexpr float KINETIC_WEP_DAMAGE = 0.05f; //0.01f;
 
 static constexpr float KINETIC_VELOCITY_IMPACT = 0.04f;//0.04f; //0.04
 //static constexpr float KINETIC_VELOCITY_LAUNCH_IMPULSE = 1.0f;
@@ -252,24 +252,24 @@ static constexpr int COLLISION_SAMPLE_POINTS = 10; //Must be multiple of 2, shou
 //-----------------------------------------------------------------------------
 
 ///Explosion Particle Parameters
-static constexpr float INITIAL_PARTICLE_VELOCITY = 0.25f; //don't make this 0.0f //unused
-static const float VELOCITY_MULTIPLES[] = { //Unused
-    0.9007f,
-    0.836f,
-    0.764f,
-    0.641f,
-    0.523f,
-    0.401f,
-    0.318f,
-    0.199f,
-    0.0211f
-};
+//static constexpr float INITIAL_PARTICLE_VELOCITY = 0.05f; //don't make this 0.0f //unused
+//static const float VELOCITY_MULTIPLES[] = { //Unused
+//    0.9007f,
+//    0.836f,
+//    0.764f,
+//    0.641f,
+//    0.523f,
+//    0.401f,
+//    0.318f,
+//    0.199f,
+//    0.0211f
+//};
 //static constexpr float VELOCITY_INCREASE = 1.081f;
 //static const float EXPLOSION_WAVE_ANGLE_CHANGE = 0.3f;//sin(0.00009f);// + sin(0.0f);// 3.14159f * (7.0f / 11.0f);
 
-static constexpr int PLAYER_EXPLOSION_PARTICLES_PER_WAVE = 907;//907;//310; //143
+static constexpr int PLAYER_EXPLOSION_PARTICLES_PER_WAVE = 907; //907;//310; //143
 static constexpr int FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVES = 5; //5-6 seems good  //6?  //1 or 2?
-static constexpr int EXPLOSION_PARTICLE_FRAMES_CUTOFF = 6*18+3;  //6*18+1
+static constexpr int EXPLOSION_PARTICLE_FRAMES_CUTOFF = 8*18+3;  //6*18+1
 static constexpr float EXPLOSION_PARTICLE_POINT_SIZE = 1.95f; //2.95f or so
 static constexpr float PLAYER_PARTICLE_POINT_SIZE = 0.95f;
 
