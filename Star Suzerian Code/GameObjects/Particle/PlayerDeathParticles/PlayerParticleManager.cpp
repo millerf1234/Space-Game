@@ -1249,8 +1249,7 @@ bool PlayerParticleManager::initializeForDrawingExplosion() {
         std::cout << "\nError attaching PlayerParticle vert shader to Explosion program!\n";
         return false;
     }
-    if (!playerParticleExplosionShader->attachFrag(
-                                                   (char *)PLAYER_PARTICLE_EXPLOSION_FRAG.c_str())) {
+    if (!playerParticleExplosionShader->attachFrag((char *)PLAYER_PARTICLE_EXPLOSION_FRAG.c_str())) {
         std::cout << "\nError attaching PlayerParticle Explosion frag shader!\n";
         return false;
     }

@@ -127,27 +127,27 @@ static const char * ROCKET_MODEL_FILE_PATH = "/Users/forrestmiller/Desktop/xcode
 ////////////////////////////////////////////////////////////////////////////////
 
 //Background shaders
-const std::string BACKGROUND_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/background.vert";
-const std::string BACKGROUND_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/background.frag";
+const std::string BACKGROUND_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/background.vert";
+const std::string BACKGROUND_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/background.frag";
 
 //Player Ship Shaders
-const std::string PLAYERSHIP_BODY_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/PlayerShip/playership.vert";
-const std::string PLAYERSHIP_BODY_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/PlayerShip/playership.frag";
+const std::string PLAYERSHIP_BODY_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/PlayerShip/playership.vert";
+const std::string PLAYERSHIP_BODY_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/PlayerShip/playership.frag";
 const std::string PLAYERSHIP_LINE_VERT = PLAYERSHIP_BODY_VERT; //Use same vert shader to keep aligned
-const std::string PLAYERSHIP_LINE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/PlayerShip/playershipLine.frag";
-const std::string PLAYERSHIP_ENGINE_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/PlayerShip/engineEffect.vert";
-const std::string PLAYERSHIP_ENGINE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/PlayerShip/engineEffect.frag";
+const std::string PLAYERSHIP_LINE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/PlayerShip/playershipLine.frag";
+const std::string PLAYERSHIP_ENGINE_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/PlayerShip/engineEffect.vert";
+const std::string PLAYERSHIP_ENGINE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/PlayerShip/engineEffect.frag";
 
 //Player Ship Particle (after death debris) Shaders
-const std::string PLAYER_PARTICLE_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/playerParticle.vert";
-const std::string PLAYER_PARTICLE_POINT_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/playerParticle.frag";
-const std::string PLAYER_PARTICLE_EXPLOSION_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/playerParticleExplosion.frag";
+const std::string PLAYER_PARTICLE_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/playerParticle.vert";
+const std::string PLAYER_PARTICLE_POINT_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/playerParticle.frag";
+const std::string PLAYER_PARTICLE_EXPLOSION_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/playerParticleExplosion.frag";
 
 
 //Weapon shaders
 //Kinetic
-const std::string KINETIC_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/Weapons/kinetic.vert";
-const std::string KINETIC_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/Shaders/Weapons/kinetic.frag";
+const std::string KINETIC_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/Weapons/kinetic.vert";
+const std::string KINETIC_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/Weapons/kinetic.frag";
 
 ////////////////////////////////////////////////////////////////////////////////
 ///   Texture Image Locations  //see:http://img-resize.com/ to resize images ///

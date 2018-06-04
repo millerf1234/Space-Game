@@ -127,12 +127,12 @@
 		9E130C1A20BFD54D00A00570 /* MathFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MathFunctions.h; sourceTree = "<group>"; };
 		9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionCircle.cpp; sourceTree = "<group>"; };
 		9E3DD98F206D7C8100B2ED86 /* CollisionCircle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionCircle.h; sourceTree = "<group>"; };
-		9E3DD991206E1FC900B2ED86 /* JupiterPicture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = JupiterPicture.jpg; sourceTree = "<group>"; };
-		9E3DD992206E214900B2ED86 /* AnotherHubblePic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = AnotherHubblePic.jpg; sourceTree = "<group>"; };
 		9E8FF847204DDD29006E2392 /* CollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionBox.cpp; sourceTree = "<group>"; };
 		9E8FF848204DDD29006E2392 /* CollisionBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionBox.h; sourceTree = "<group>"; };
 		9EAD50D220C1C60400D1D153 /* GameConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameConstants.h; sourceTree = "<group>"; };
 		9EAD50D520C323F400D1D153 /* ProjectNotes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ProjectNotes.rtf; sourceTree = "<group>"; };
+		9EAD50D620C5D26800D1D153 /* playerParticle.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = playerParticle.vert; sourceTree = "<group>"; };
+		9EAD50D920C5D32100D1D153 /* Cool_Picture_of_the_moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Cool_Picture_of_the_moon.jpg; sourceTree = "<group>"; };
 		9EAFCECD20B9FDB900D12A9F /* DeathAnimation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DeathAnimation.cpp; path = GameObjects/DeathAnimation.cpp; sourceTree = "<group>"; };
 		9EAFCECE20B9FDB900D12A9F /* DeathAnimation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DeathAnimation.h; path = GameObjects/DeathAnimation.h; sourceTree = "<group>"; };
 		9EAFCED020BCBDB300D12A9F /* PlayerParticle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticle.h; sourceTree = "<group>"; };
@@ -145,7 +145,6 @@
 		9EAFCEDC20BDDC8400D12A9F /* PlayerParticleTriangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticleTriangle.h; sourceTree = "<group>"; };
 		9EAFCEDE20BDE23100D12A9F /* PlayerParticleManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerParticleManager.cpp; sourceTree = "<group>"; };
 		9EAFCEDF20BDE23100D12A9F /* PlayerParticleManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticleManager.h; sourceTree = "<group>"; };
-		9EAFCEE120BDF16E00D12A9F /* playerParticle.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = playerParticle.vert; path = Shaders/playerParticle.vert; sourceTree = SOURCE_ROOT; };
 		9EAFCEE220BDF19000D12A9F /* playerParticle.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playerParticle.frag; sourceTree = "<group>"; };
 		9EC022A920B79D25009785F3 /* space_ship211.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = space_ship211.obj; sourceTree = "<group>"; };
 		9EC84C3C205B9C3D00FC93B2 /* Cool_Picture_of_the_moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cool_Picture_of_the_moon.jpg; path = ../../../../Documents/Cool_Picture_of_the_moon.jpg; sourceTree = "<group>"; };
@@ -160,7 +159,6 @@
 		9ECC638E2046A6C000F7B703 /* CollisionRectangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionRectangle.h; sourceTree = "<group>"; };
 		9ECC63912047B65700F7B703 /* CollisionSphere.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionSphere.cpp; sourceTree = "<group>"; };
 		9ECC63922047B65700F7B703 /* CollisionSphere.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionSphere.h; sourceTree = "<group>"; };
-		9ED7720F2036B3D600D569A4 /* Cool_Picture_of_the_moon_915_609.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cool_Picture_of_the_moon_915_609.jpg; path = "../../../../../../../../Desktop/xcode_test_projects/Star Suzerian/ShaderImages/Cool_Picture_of_the_moon_915_609.jpg"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9ED772112036B3D600D569A4 /* CalibrationPicture_915_609.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = CalibrationPicture_915_609.jpg; sourceTree = "<group>"; };
 		9ED772122036CE1600D569A4 /* TextureWrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TextureWrapper.cpp; sourceTree = "<group>"; };
 		9ED772132036CE1600D569A4 /* TextureWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureWrapper.h; sourceTree = "<group>"; };
@@ -244,7 +242,7 @@
 				9EAD50D420C323AD00D1D153 /* Notes */,
 				9ED7720E2036B32F00D569A4 /* ShaderImages */,
 				9E10D5CD2032CD4F00F0F724 /* ObjFiles */,
-				9E10D5CC2032CD3600F0F724 /* Shaders */,
+				9E10D5CC2032CD3600F0F724 /* GLSL_Shaders */,
 				9E10D5C5203243BA00F0F724 /* Setup */,
 				9E10D5CE2032CD6E00F0F724 /* Utility */,
 				9E10D5C22032427500F0F724 /* Third Party Code */,
@@ -354,18 +352,18 @@
 			path = Setup;
 			sourceTree = "<group>";
 		};
-		9E10D5CC2032CD3600F0F724 /* Shaders */ = {
+		9E10D5CC2032CD3600F0F724 /* GLSL_Shaders */ = {
 			isa = PBXGroup;
 			children = (
 				9EFA4CC12059A7E200308177 /* Weapons */,
 				9E0754E5203AD3AE009B6215 /* PlayerShip */,
 				9ED772152036EBD500D569A4 /* background.vert */,
 				9ED772162036EBE700D569A4 /* background.frag */,
-				9EAFCEE120BDF16E00D12A9F /* playerParticle.vert */,
+				9EAD50D620C5D26800D1D153 /* playerParticle.vert */,
 				9EAFCEE220BDF19000D12A9F /* playerParticle.frag */,
 				9E130C1720BF402E00A00570 /* playerParticleExplosion.frag */,
 			);
-			path = Shaders;
+			path = GLSL_Shaders;
 			sourceTree = "<group>";
 		};
 		9E10D5CD2032CD4F00F0F724 /* ObjFiles */ = {
@@ -441,6 +439,25 @@
 			path = Notes;
 			sourceTree = "<group>";
 		};
+		9EAD50D720C5D2CB00D1D153 /* ExtraTestImages */ = {
+			isa = PBXGroup;
+			children = (
+				9E0754F5203B9E4E009B6215 /* Mibra_mine.jpg */,
+			);
+			path = ExtraTestImages;
+			sourceTree = "<group>";
+		};
+		9EAD50D820C5D30F00D1D153 /* StageBackgrounds */ = {
+			isa = PBXGroup;
+			children = (
+				9EAD50D920C5D32100D1D153 /* Cool_Picture_of_the_moon.jpg */,
+				9ED772112036B3D600D569A4 /* CalibrationPicture_915_609.jpg */,
+				9E0754F8203CFCDC009B6215 /* Antarticata.jpg */,
+				9E0754FA203D0EC2009B6215 /* ID_008.jpg */,
+			);
+			path = StageBackgrounds;
+			sourceTree = "<group>";
+		};
 		9EAFCED720BDDC2B00D12A9F /* Particle */ = {
 			isa = PBXGroup;
 			children = (
@@ -476,14 +493,9 @@
 		9ED7720E2036B32F00D569A4 /* ShaderImages */ = {
 			isa = PBXGroup;
 			children = (
-				9ED7720F2036B3D600D569A4 /* Cool_Picture_of_the_moon_915_609.jpg */,
 				9EC84C3C205B9C3D00FC93B2 /* Cool_Picture_of_the_moon.jpg */,
-				9E3DD991206E1FC900B2ED86 /* JupiterPicture.jpg */,
-				9E3DD992206E214900B2ED86 /* AnotherHubblePic.jpg */,
-				9ED772112036B3D600D569A4 /* CalibrationPicture_915_609.jpg */,
-				9E0754F5203B9E4E009B6215 /* Mibra_mine.jpg */,
-				9E0754F8203CFCDC009B6215 /* Antarticata.jpg */,
-				9E0754FA203D0EC2009B6215 /* ID_008.jpg */,
+				9EAD50D820C5D30F00D1D153 /* StageBackgrounds */,
+				9EAD50D720C5D2CB00D1D153 /* ExtraTestImages */,
 			);
 			path = ShaderImages;
 			sourceTree = "<group>";
