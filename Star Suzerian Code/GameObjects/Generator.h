@@ -58,6 +58,7 @@
 //#include "PlayerManager.h" //lots of circular includes I got. Oh well...
 #include "Instance.h"
 #include "Kinetic.h"
+#include "MathFunctions.h"
 
 //constexpr int FILEPATH_BUFFER = 512;
 

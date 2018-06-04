@@ -208,6 +208,13 @@ bool Game::launch() {
             glfwSetWindowShouldClose(mWindow, true); //This tells the render loop that this iteration will be its last
             continue; //Run the next loop iteration (which should close the program)
         }
+        
+        ///Toggling collision details never worked properly...
+        //Check to see if should toggle drawing collision details
+        //if (glfwGetKey(mWindow, GLFW_KEY_0) == GLFW_PRESS) {
+          //  TOGGLE_DRAW_COLLISION_DETAILS = !TOGGLE_DRAW_COLLISION_DETAILS;
+        //}
+        
         //Check to see if game should pause (pausing causes control to remain inside this block until an unpause occurs)
         //Need to put a delay so unpausing doesn't cause pausing on the next few frames
         //"if enough frames have passed since the game was last unpaused" and "is the unpause key is being pressed..."

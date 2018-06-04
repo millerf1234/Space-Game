@@ -133,9 +133,17 @@ namespace DeathAnimation {
                 
                 player->zoom = (deadPlayersStartingZoom -
                                 ( (deadPlayersStartingZoom - 14.0f) * ((float)i) / DEATH_SCENE_PART_ONE_FRAMES));
-                player->thetaZ += 0.075f;
+                player->thetaZ += 0.095f;
             }
-            else if (i == DEATH_SCENE_PART_ONE_FRAMES) {
+            else if (i == DEATH_SCENE_PART_ONE_FRAMES) { //End of part 1 animation
+                std::vector<GameEntityManager*>::iterator entityManagerIterator = gState->gEntities.begin();
+                for (; entityManagerIterator < gState->gEntities.end(); ++entityManagerIterator) {
+                    Instance ** instances = (*entityManagerIterator)->getInstances();
+                    for (int j = 0; j < (*entityManagerIterator)->getNumberOfInstances(); j++) {
+                        instances[j]->position.x += 1000.0f;
+                        instances[j]->position.y += 1000.0f;
+                    }
+                }
                 player->position.x = player->position.y = 0.0f; //Reset position to help with cancellation error
             }
             //------------------------------------------------------------------
@@ -143,6 +151,7 @@ namespace DeathAnimation {
             //        DEATH ANIMATION PART 2
             //
             //------------------------------------------------------------------
+            
             else if (i < DEATH_SCENE_PART_TWO_CUTOFF) {
                 rotationSpeedIncreaser += ((1.0f / DEATH_SCENE_PART_TWO_CUTOFF) *
                                            (1.0f + pow(rotationSpeedIncreaser, 2.0f)));

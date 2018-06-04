@@ -1009,13 +1009,13 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
     ///     EXPLOSION VARIATION PARAMETERS     (THIS FACILITATES A RANDOM EXPLOSION EFFECT)
     ////////////////////////////////////////////////////////////////////////////
     //Variables
-    static constexpr int NUMBER_OF_EFFECTS = 4;
-    int effectToDo = MathFunc::getRandomInRange(1, NUMBER_OF_EFFECTS);
+    static constexpr int NUMBER_OF_EFFECTS = 6;
+    int effectToDo = MathFunc::getRandomInRange(1, NUMBER_OF_EFFECTS); //I think the interval here will include 1 and will exclude NUMBER_OF_EFFECTS
     float effectMin, effectMax;
     
     //Logic to set up effect
     if (effectToDo == 1) {
-        effectMin = 0.01f;
+        effectMin = 0.05f;
         effectMax = 0.25f;
     }
     else if (effectToDo == 2) {
@@ -1026,8 +1026,12 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
         effectMin = 0.85f;
         effectMax = 1.25f;
     }
+    else if (effectToDo == 4) {
+        effectMin = 1.65f;
+        effectMax = 1.85f;
+    }
     else {
-        effectMin = effectMax = 1.8f;
+        effectMin = effectMax = 2.8f;
     }
     ////////////////////////////////////////////////////////////////////////////
     
@@ -1266,7 +1270,7 @@ bool PlayerParticleManager::initializeForDrawingExplosion() {
         return false;
     }
     
-    shaderDataExplosion.setUniformLocationsForExplosion(playerParticlePointShader->getID());
+    shaderDataExplosion.setUniformLocationsForExplosion(playerParticleExplosionShader->getID());
     return true;
 }
 

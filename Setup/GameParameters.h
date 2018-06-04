@@ -53,6 +53,7 @@ static constexpr bool PRINT_PLAYER_DAMAGE_MESSAGES = true; //Print a message eac
 // Draw Options
 //-----------------------------------------------------------------------------
 static constexpr bool DRAW_COLLISION_DETAILS = false;
+//static bool TOGGLE_DRAW_COLLISION_DETAILS = DRAW_COLLISION_DETAILS; //Didn't work?
 
 static constexpr bool DRAW_MODELS = true;
 
@@ -131,7 +132,7 @@ static constexpr float ENDING_ZOOM = 5.0f; //This is probably way to large a cha
 static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.03225f; //Was 0.035f when game developed  //was also 0.032f for a while
 static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.9367f; //Was 0.95f //Was also 0.93f
 //Rotation speed values are radians per frame                 // 100.0f for rotation turning was old value
-static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/90.0f;//This means 95 frames to do full rotation (i.e. about 2 seconds)
+static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/90.0f;//This means 90 frames to do full rotation (i.e. around 1.5 seconds)
 static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 frames to rotate 90 degrees
 
 ////Slower Gameplay (comment Fast Gameplay and uncomment these)
@@ -217,7 +218,7 @@ static constexpr float PROJECTILE_SIZE = 6.0f; //Larger number means smaller. I 
 static constexpr float KINETIC_SPEED_FACTOR = 1.95f; //1.75f is good value, formula is (playerShip'sSpeed) + KINETIC_SPEED_FACTOR * PLAYER_MAX_SPEED
 
 static constexpr int PLAYER_KINETIC_AMMO = 600000; //Give a lot until I add picking up ammo
-static constexpr float KINETIC_WEP_DAMAGE = 0.05f; //0.01f;
+static constexpr float KINETIC_WEP_DAMAGE = 0.025f; //0.01f;
 
 static constexpr float KINETIC_VELOCITY_IMPACT = 0.04f;//0.04f; //0.04
 //static constexpr float KINETIC_VELOCITY_LAUNCH_IMPULSE = 1.0f;
