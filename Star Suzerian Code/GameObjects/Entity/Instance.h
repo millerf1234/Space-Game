@@ -445,20 +445,32 @@ public:
             }
         }
         //Actually start configuring the WeaponsTracker now:
-        aiVector3D playerWepSpawnPoints[7];
+        aiVector3D playerWepSpawnPoints[8];
         float weaponZSpawnCoord = 3.01f; //max positive model Z is 3.85924
         float weaponXSpawnCoordOuter = 2.0f; //max positive model X is 2.4450891
         float weaponXSpawnCoordInner = 0.5f;
         
-        //old way
-        playerWepSpawnPoints[0] = aiVector3D(-weaponXSpawnCoordOuter, 0.2f, weaponZSpawnCoord); //Outer left side
-        playerWepSpawnPoints[1] = aiVector3D(-weaponXSpawnCoordInner, -0.2f, weaponZSpawnCoord); //Inner left side
-        playerWepSpawnPoints[2] = aiVector3D(weaponXSpawnCoordOuter, 0.2f, weaponZSpawnCoord); //Outer right side
-        playerWepSpawnPoints[3] = aiVector3D(weaponXSpawnCoordInner, -0.2f, weaponZSpawnCoord); //Inner right side
-        playerWepSpawnPoints[4] = aiVector3D(weaponXSpawnCoordOuter, 0.25f, weaponZSpawnCoord); //Extra inner?
-        playerWepSpawnPoints[5] = aiVector3D(-weaponXSpawnCoordInner, -0.35f, weaponZSpawnCoord);
+        //Outer left side
+        playerWepSpawnPoints[0] = aiVector3D(-weaponXSpawnCoordOuter, 0.2f, weaponZSpawnCoord);
+        //Inner left side
+        playerWepSpawnPoints[1] = aiVector3D(-weaponXSpawnCoordInner, -0.2f, weaponZSpawnCoord);
+        //Outer right side
+        playerWepSpawnPoints[2] = aiVector3D(weaponXSpawnCoordOuter, 0.2f, weaponZSpawnCoord);
+         //Inner right side
+        playerWepSpawnPoints[3] = aiVector3D(weaponXSpawnCoordInner, -0.2f, weaponZSpawnCoord);
+        //Center bottom
+        playerWepSpawnPoints[4] = aiVector3D(0.0f, -0.45f, weaponZSpawnCoord);
+        //Center top
+        playerWepSpawnPoints[5] = aiVector3D(0.0f,  0.45f, weaponZSpawnCoord);
         
-        playerWepSpawnPoints[6] = aiVector3D(0.0f, -0.45f, weaponZSpawnCoord);
+        //Outer Left side
+        playerWepSpawnPoints[6] = aiVector3D(-weaponXSpawnCoordOuter, 0.35f, weaponZSpawnCoord);
+        //Outer Right side
+        playerWepSpawnPoints[7] = aiVector3D( weaponXSpawnCoordOuter, 0.35f, weaponZSpawnCoord);
+        
+        
+        
+        
         
         this->wepTracker->setNewWeaponSpawnpoints(playerWepSpawnPoints, 7);
         

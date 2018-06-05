@@ -78,7 +78,7 @@ static constexpr GLfloat KINETIC_PROJECTILE_VERSION1_VERTS[] = {
     */
     
     
-    //This isn't working right...
+    //This isn't working right (like I envisioned)... But it works for now
     //x        y        z
      0.0f,  3.0f,  0.0f, //t1
      3.0f,  0.0f,  0.0f,

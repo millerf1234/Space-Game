@@ -101,6 +101,7 @@ CollisionBox::CollisionBox(float * data, int dataPoints) {
         originalMajorsFromModel.x = maxPosX;
         xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
         originalMinorsFromModel.x = maxNegX;
+        (maxPosX == abs(maxNegX)) ? xAxisSymmetry = true : xAxisSymmetry = false;
     }
     else {
         //use negative as major
@@ -108,68 +109,35 @@ CollisionBox::CollisionBox(float * data, int dataPoints) {
         originalMajorsFromModel.x = maxNegX;
         xAxisMinor = aiVector3D(maxPosX, 0.0f, 0.0f);
         originalMinorsFromModel.x = maxPosX;
+        xAxisSymmetry = false;
     }
-//    
-//    //Along the x axis:
-//    if (maxPosX == abs(maxNegX)) {
-//        //use positive as major
-//        xAxisMajor = aiVector3D(maxPosX, 0.0f, 0.0f);
-//        originalMajorsFromModel.x = maxPosX;
-//        xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
-//        originalMinorsFromModel.x = maxNegX;
-//    }
-//    else if (maxPosX > abs(maxNegX)) { //Else if positive x values have larger max then neg x values
-//        //use positive as major
-//        xAxisMajor = aiVector3D(maxPosX, 0.0f, 0.0f);
-//        originalMajorsFromModel.x = maxPosX;
-//        xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
-//        originalMinorsFromModel.x = maxNegX;
-//    }
-//    else { //else negative x must have contained overall larger values
-//        //use negative as major
-//        xAxisMajor = aiVector3D(maxNegX, 0.0f, 0.0f);
-//        originalMajorsFromModel.x = maxNegX;
-//        xAxisMinor = aiVector3D(maxPosX, 0.0f, 0.0f);
-//        originalMinorsFromModel.x = maxPosX;
-//    }
     
-    //Along the y axis:
-    if (maxPosY == abs(maxNegY)) {
+    ///Along the y axis:
+    if (maxPosY >= abs(maxNegY)) {
         //use positive as major
         yAxisMajor = aiVector3D(0.0f, maxPosY, 0.0f);
         originalMajorsFromModel.y = maxPosY;
         yAxisMinor = aiVector3D(0.0f, maxNegY, 0.0f);
         originalMinorsFromModel.y = maxNegY;
+        (maxPosY == abs(maxNegY)) ? yAxisSymmetry = true : yAxisSymmetry = false;
     }
-    else if (maxPosY > abs(maxNegY)) { //Else if positive Y values have larger max then negative Y values
-        //use positive as major
-        yAxisMajor = aiVector3D(0.0f, maxPosY, 0.0f);
-        originalMajorsFromModel.y = maxPosY;
-        yAxisMinor = aiVector3D(0.0f, maxNegY, 0.0f);
-        originalMinorsFromModel.y = maxNegY;
-    }
-    else { //else negative y must have contained overall larger values
+    else { //else negative y must have an overall larger value
         //use negative as major
         yAxisMajor = aiVector3D(0.0f, maxNegY, 0.0f);
         originalMajorsFromModel.y = maxNegY;
         yAxisMinor = aiVector3D(0.0f, maxPosY, 0.0f);
         originalMinorsFromModel.y = maxPosY;
+        yAxisSymmetry = false;
     }
     
     //Along the z axis:
-    if (maxPosZ == abs(maxNegZ)) { //If the largest distance is equal in both directions
+    if (maxPosZ >= abs(maxNegZ)) { //If the largest distance is equal in both directions
         //use positive as major
         zAxisMajor = aiVector3D(0.0f, 0.0f, maxPosZ);
         originalMajorsFromModel.z = maxPosZ;
         zAxisMinor = aiVector3D(0.0f, 0.0f, maxNegZ);
         originalMinorsFromModel.z = maxNegZ;
-    }
-    else if (maxPosZ > abs(maxNegZ)) { //Else if positive Z values have larger max then negative Z values
-        //use positive as major
-        zAxisMajor = aiVector3D(0.0f, 0.0f, maxPosZ);
-        originalMajorsFromModel.z = maxPosZ;
-        zAxisMinor = aiVector3D(0.0f, 0.0f, maxNegZ);
-        originalMinorsFromModel.z = maxNegZ;
+        (maxPosZ == abs(maxNegZ)) ? zAxisSymmetry = true : zAxisSymmetry = false;
     }
     else { //else negative z must have contained overall larger values
         //use negative as major
@@ -177,6 +145,7 @@ CollisionBox::CollisionBox(float * data, int dataPoints) {
         originalMajorsFromModel.z = maxNegZ;
         zAxisMinor = aiVector3D(0.0f, 0.0f, maxPosZ);
         originalMinorsFromModel.z = maxPosZ;
+        zAxisSymmetry = false;
     }
     this->hasModelData = true;
     
@@ -219,7 +188,7 @@ CollisionBox::CollisionBox(aiVector3D * data, int numberOfVectors) {
     
     //Figure out which direction along each basis axis will be major and which will be minor
     //Along the x axis:
-    if (maxPosX == abs(maxNegX)) {
+    if (maxPosX >= abs(maxNegX)) {
         //use positive as major
         xAxisMajor = aiVector3D(maxPosX, 0.0f, 0.0f);
         originalMajorsFromModel.x = maxPosX;
