@@ -92,29 +92,46 @@ CollisionBox::CollisionBox(float * data, int dataPoints) {
     maxNegZ = getMaxFromArrayNegativeOnly(zDataPoints, dataPoints / 3);
     
     
-    //Figure out which direction along each basis axis will be major and which will be minor
-    //Along the x axis:
-    if (maxPosX == abs(maxNegX)) {
+    ///Figure out which direction along each basis axis will be major and which will be minor
+    
+    ///Along the x axis:
+    if (maxPosX >= abs(maxNegX)) {
         //use positive as major
         xAxisMajor = aiVector3D(maxPosX, 0.0f, 0.0f);
         originalMajorsFromModel.x = maxPosX;
         xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
         originalMinorsFromModel.x = maxNegX;
     }
-    else if (maxPosX > abs(maxNegX)) { //Else if positive x values have larger max then neg x values
-        //use positive as major
-        xAxisMajor = aiVector3D(maxPosX, 0.0f, 0.0f);
-        originalMajorsFromModel.x = maxPosX;
-        xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
-        originalMinorsFromModel.x = maxNegX;
-    }
-    else { //else negative x must have contained overall larger values
+    else {
         //use negative as major
         xAxisMajor = aiVector3D(maxNegX, 0.0f, 0.0f);
         originalMajorsFromModel.x = maxNegX;
         xAxisMinor = aiVector3D(maxPosX, 0.0f, 0.0f);
         originalMinorsFromModel.x = maxPosX;
     }
+//    
+//    //Along the x axis:
+//    if (maxPosX == abs(maxNegX)) {
+//        //use positive as major
+//        xAxisMajor = aiVector3D(maxPosX, 0.0f, 0.0f);
+//        originalMajorsFromModel.x = maxPosX;
+//        xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
+//        originalMinorsFromModel.x = maxNegX;
+//    }
+//    else if (maxPosX > abs(maxNegX)) { //Else if positive x values have larger max then neg x values
+//        //use positive as major
+//        xAxisMajor = aiVector3D(maxPosX, 0.0f, 0.0f);
+//        originalMajorsFromModel.x = maxPosX;
+//        xAxisMinor = aiVector3D(maxNegX, 0.0f, 0.0f);
+//        originalMinorsFromModel.x = maxNegX;
+//    }
+//    else { //else negative x must have contained overall larger values
+//        //use negative as major
+//        xAxisMajor = aiVector3D(maxNegX, 0.0f, 0.0f);
+//        originalMajorsFromModel.x = maxNegX;
+//        xAxisMinor = aiVector3D(maxPosX, 0.0f, 0.0f);
+//        originalMinorsFromModel.x = maxPosX;
+//    }
     
     //Along the y axis:
     if (maxPosY == abs(maxNegY)) {

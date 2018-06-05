@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9E00AD97206651B700FEF9C2 /* Particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E00AD95206651B700FEF9C2 /* Particle.cpp */; };
+		9E00C26620C5E380004CB70A /* ModelContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E00C26420C5E380004CB70A /* ModelContainer.cpp */; };
+		9E00C26B20C5E4BF004CB70A /* LoadObjFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E00C26920C5E4BF004CB70A /* LoadObjFile.cpp */; };
 		9E0754ED203B892C009B6215 /* GameEntityManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E0754EB203B892C009B6215 /* GameEntityManager.cpp */; };
 		9E0754F1203B8B58009B6215 /* QuickHull.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E0754EF203B8B58009B6215 /* QuickHull.cpp */; };
 		9E10D59A203234CC00F0F724 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D599203234CC00F0F724 /* main.cpp */; };
@@ -67,6 +69,10 @@
 /* Begin PBXFileReference section */
 		9E00AD95206651B700FEF9C2 /* Particle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Particle.cpp; path = Utility/Experimental_Or_Unfinished/Particle.cpp; sourceTree = SOURCE_ROOT; };
 		9E00AD96206651B700FEF9C2 /* Particle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Particle.h; path = Utility/Experimental_Or_Unfinished/Particle.h; sourceTree = SOURCE_ROOT; };
+		9E00C26420C5E380004CB70A /* ModelContainer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ModelContainer.cpp; sourceTree = "<group>"; };
+		9E00C26520C5E380004CB70A /* ModelContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelContainer.h; sourceTree = "<group>"; };
+		9E00C26920C5E4BF004CB70A /* LoadObjFile.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LoadObjFile.cpp; sourceTree = "<group>"; };
+		9E00C26A20C5E4BF004CB70A /* LoadObjFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoadObjFile.h; sourceTree = "<group>"; };
 		9E0754E3203AD391009B6215 /* playership.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playership.frag; sourceTree = "<group>"; };
 		9E0754E4203AD3A4009B6215 /* playership.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playership.vert; sourceTree = "<group>"; };
 		9E0754E6203AD3C8009B6215 /* engineEffect.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = engineEffect.vert; sourceTree = "<group>"; };
@@ -146,7 +152,7 @@
 		9EAFCEDE20BDE23100D12A9F /* PlayerParticleManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerParticleManager.cpp; sourceTree = "<group>"; };
 		9EAFCEDF20BDE23100D12A9F /* PlayerParticleManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerParticleManager.h; sourceTree = "<group>"; };
 		9EAFCEE220BDF19000D12A9F /* playerParticle.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playerParticle.frag; sourceTree = "<group>"; };
-		9EC022A920B79D25009785F3 /* space_ship211.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = space_ship211.obj; sourceTree = "<group>"; };
+		9EC022A920B79D25009785F3 /* space_ship212.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = space_ship212.obj; sourceTree = "<group>"; };
 		9EC84C3C205B9C3D00FC93B2 /* Cool_Picture_of_the_moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cool_Picture_of_the_moon.jpg; path = ../../../../Documents/Cool_Picture_of_the_moon.jpg; sourceTree = "<group>"; };
 		9EC84C3D205C6F6B00FC93B2 /* KineticWeaponManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = KineticWeaponManager.cpp; sourceTree = "<group>"; };
 		9EC84C3E205C6F6B00FC93B2 /* KineticWeaponManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KineticWeaponManager.h; sourceTree = "<group>"; };
@@ -200,6 +206,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9E00C26720C5E3E5004CB70A /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				9E00C26420C5E380004CB70A /* ModelContainer.cpp */,
+				9E00C26520C5E380004CB70A /* ModelContainer.h */,
+				9E00C26920C5E4BF004CB70A /* LoadObjFile.cpp */,
+				9E00C26A20C5E4BF004CB70A /* LoadObjFile.h */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		9E0754E5203AD3AE009B6215 /* PlayerShip */ = {
 			isa = PBXGroup;
 			children = (
@@ -369,7 +386,7 @@
 		9E10D5CD2032CD4F00F0F724 /* ObjFiles */ = {
 			isa = PBXGroup;
 			children = (
-				9EC022A920B79D25009785F3 /* space_ship211.obj */,
+				9EC022A920B79D25009785F3 /* space_ship212.obj */,
 				9E10D5DC2033826300F0F724 /* space_ship2.obj */,
 				9ECC0B602096803D00AD89F0 /* space_ship2.scn */,
 				9E10D5DB2033823200F0F724 /* space_ship21.obj */,
@@ -380,6 +397,7 @@
 		9E10D5CE2032CD6E00F0F724 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				9E00C26720C5E3E5004CB70A /* Model */,
 				9EFA4CA820533D5200308177 /* Math */,
 				9ECC63902047B63C00F7B703 /* 3D_Collision */,
 				9ECC638C2046A6A200F7B703 /* 2D_Collision */,
@@ -657,11 +675,13 @@
 				9E10D5D72032CEDC00F0F724 /* SimpleObjLoader.cpp in Sources */,
 				9E10D5EE20360AE500F0F724 /* ObjectGenerator.cpp in Sources */,
 				9EFA4CA32051D9B000308177 /* WeaponOverseer.cpp in Sources */,
+				9E00C26B20C5E4BF004CB70A /* LoadObjFile.cpp in Sources */,
 				9E0754ED203B892C009B6215 /* GameEntityManager.cpp in Sources */,
 				9E10D5EA2035485000F0F724 /* Object.cpp in Sources */,
 				9EC84C3F205C6F6B00FC93B2 /* KineticWeaponManager.cpp in Sources */,
 				9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */,
 				9ECC63872044C51300F7B703 /* RocketManager.cpp in Sources */,
+				9E00C26620C5E380004CB70A /* ModelContainer.cpp in Sources */,
 				9ECC638F2046A6C000F7B703 /* CollisionRectangle.cpp in Sources */,
 				9E00AD97206651B700FEF9C2 /* Particle.cpp in Sources */,
 				9E10D5CB2032CC0100F0F724 /* Game.cpp in Sources */,
@@ -800,7 +820,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_UNROLL_LOOPS = YES;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

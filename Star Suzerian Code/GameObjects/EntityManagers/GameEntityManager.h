@@ -28,6 +28,19 @@ public:
     bool requiresAIInput;
     bool hasSpecialization() {return (this->specType != specializationType::NOSPECIALIZATION);}
     
+    void setGeneratorDrawCollision(bool val) {
+        if (this->hasGenerator){
+            this->generator->setDrawCollisionDetails(val);
+        }
+    }
+    
+    bool getGeneratorDrawCollision() const {
+        if (this->hasGenerator) {
+            return this->generator->getDrawCollisionDetails();
+        }
+        return false;
+    }
+    
     SimpleObjLoader * getModelData() {
         if (!(this->hasGenerator)) {
             if (PRINT_DEBUG_WARNING_MESSAGES) {

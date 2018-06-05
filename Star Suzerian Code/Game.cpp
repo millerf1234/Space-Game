@@ -8,9 +8,6 @@
 
 #include "Game.h"
 
-
-
-
 //Constructor
 Game::Game(MonitorData & mPtr) {
     //Make the rotation quaternions (4th parameter is starting theta)
@@ -210,10 +207,28 @@ bool Game::launch() {
         }
         
         ///Toggling collision details never worked properly...
-        //Check to see if should toggle drawing collision details
-        //if (glfwGetKey(mWindow, GLFW_KEY_0) == GLFW_PRESS) {
-          //  TOGGLE_DRAW_COLLISION_DETAILS = !TOGGLE_DRAW_COLLISION_DETAILS;
-        //}
+        // //Check to see if should toggle drawing collision details
+        static unsigned long long frameThatInputWasLastDetected = 0ull; 
+        if (glfwGetKey(mWindow, GLFW_KEY_0) == GLFW_PRESS) {
+            if ( !( (frameNumber - frameThatInputWasLastDetected) < 15ull) ) {
+                //Need to get access to a generator class so that I can toggle
+                //it's static variable telling all generators whether or not to
+                //draw collision details
+                //Going to get the generator from Stage
+                gEntities[0]->setGeneratorDrawCollision(!(gEntities[0]->getGeneratorDrawCollision()));
+                //gEntities[0]->ge
+//                if (TOGGLE_DRAW_COLLISION_DETAILS) {
+//                    TOGGLE_DRAW_COLLISION_DETAILS = false;
+//                }
+//                else {
+//                    TOGGLE_DRAW_COLLISION_DETAILS = true;
+//                }
+                //TOGGLE_DRAW_COLLISION_DETAILS = !TOGGLE_DRAW_COLLISION_DETAILS;
+                std::cout << "Drawing CollisionDetails now set to: " << TOGGLE_DRAW_COLLISION_DETAILS;
+                std::cout << "\n";
+                frameThatInputWasLastDetected = frameNumber;
+            }
+        }
         
         //Check to see if game should pause (pausing causes control to remain inside this block until an unpause occurs)
         //Need to put a delay so unpausing doesn't cause pausing on the next few frames
@@ -244,6 +259,7 @@ bool Game::launch() {
         }
         //Need some way for unpausing to work. How about this:
         if (false) {
+            ///THE go to statements above just go to here. It's not that bad!
             unpause: std::cout << "Game Unpaused!" << std::endl; ///Both exits from the pause loop will go to here
             frameUnpaused = frameNumber;
         }
@@ -323,9 +339,62 @@ bool Game::launch() {
         glfwPollEvents();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Reset depth/color buffer bits
         ++frameNumber;
-        if (PRINT_FRAME_PROCESS_TIME_INFORMATION) { //Might want to add more frame-time information then just process time / frame
-            auto frameEnd = std::chrono::high_resolution_clock::now(); //Note that time measurement is in nanoseconds
-            std::cout << "\nFrame " << frameNumber << " processed in " << std::chrono::duration_cast<std::chrono::nanoseconds>(frameEnd-frameBegin).count()  << " nanoseconds.";
+        
+        //---------------------------------------------------------------------
+        // Print out frame process time statistics
+        //---------------------------------------------------------------------
+        auto frameEnd = std::chrono::high_resolution_clock::now(); //Note that time measurement is in nanoseconds
+        ///Frame Process Time Per Frame
+        if (PRINT_FRAME_PROCESS_TIME_INFORMATION_PER_FRAME) { //Might want to add more frame-time information then just process time / frame
+            static std::ostringstream frameTimesPrintoutBuffer;
+            frameTimesPrintoutBuffer << "\nFrame " << frameNumber << " processed in " << std::chrono::duration_cast<std::chrono::nanoseconds>(frameEnd-frameBegin).count()  << " nanoseconds.";
+            
+            if (frameNumber % 60ull == 0) {
+                std::cout << frameTimesPrintoutBuffer.str() << std::endl;
+                //frameTimesPrintoutBuffer.flush(); //This doesn't actually empty the ostringstream
+                //But this does:
+                std::ostringstream().swap(frameTimesPrintoutBuffer); //This resets the OSS by constructing a new OSS and then swapping it with our frameTimesPrintoutBuffer OSS.
+            }
+        }
+        ///Frame Process Time Per Interval
+        if (PRINT_FRAME_PROCESS_TIME_INFORMATION_PER_INTERVAL) {
+            //The following static variables are used to store frame-statistics
+            static long double totalProcessingTime = 0.0l; //This only will be set once since it is static
+            static long double minProcessingTime = std::numeric_limits<double>::infinity(); //or '= NAN'
+            
+            static long double maxProcessingTime = 0.0l;
+            
+            //Record the statistics
+            long double frameProcessTime =(long double)//Calculate the time spent on the most recent frame
+                                            (std::chrono::duration_cast<std::chrono::nanoseconds> (frameEnd - frameBegin).count());
+            
+            totalProcessingTime += frameProcessTime;
+            if (frameProcessTime < minProcessingTime)
+                minProcessingTime = frameProcessTime;
+            if (frameProcessTime > maxProcessingTime)
+                maxProcessingTime = frameProcessTime;
+            
+            
+            if ((frameNumber % PRINT_FRAME_PROCESS_TIME_INFORMATION_INTERVAL_LENGTH) == 0ull) {
+                ///Change value from nanosecond to milliseconds
+                totalProcessingTime /= (long double)(1e6); //1 millisecond = 1e6 nanoseconds
+                maxProcessingTime /= (long double)(1e6);
+                minProcessingTime /= (long double)(1e6);
+                
+                fprintf(stderr, "\nFrame Statistic Information for the past %llu frames:\n",
+                                           PRINT_FRAME_PROCESS_TIME_INFORMATION_INTERVAL_LENGTH);
+                fprintf(stderr, "    Total Processing Time:   %08.2LF milliseconds\n",   totalProcessingTime); //'%LF' is 'long float'
+                fprintf(stderr, "    Maximum Processing Time: %08.2LF milliseconds\n", maxProcessingTime);
+                fprintf(stderr, "    Minimum Processing Time: %08.2LF milliseconds\n", minProcessingTime);
+                fprintf(stderr, "    Average Processing Time: %08.2LF milliseconds\n", totalProcessingTime / ( static_cast<long double> ( PRINT_FRAME_PROCESS_TIME_INFORMATION_INTERVAL_LENGTH)));
+                fprintf(stderr, "        Total Frames since program launch: %llu\n", frameNumber);
+                
+                //Reset the statistics to prepare for the next interval
+                totalProcessingTime = 0.0L;
+                minProcessingTime = std::numeric_limits<double>::infinity();
+                maxProcessingTime = 0.0L;
+            
+            }
         }
     }
     

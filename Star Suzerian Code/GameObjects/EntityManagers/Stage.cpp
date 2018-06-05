@@ -18,9 +18,11 @@ Stage::Stage() : GameEntityManager() {
     //GameEntity's constructor will set everything to 0 or Nullptr
     this->initTemplate = new InitializationTemplate;
     this->generator = new Generator();
+    //this->generator->setDrawCollisionDetails(DRAW_COLLISION_DETAILS);//Set the stage to default draw collision behavior //NOPE! Static variable will be set where it is declared in Generator.cpp
     this->hasGenerator = true;
     this->hasCollision = false;
     this->stageNumber = ++numberOfStages;
+    
     
     //Have the stage initialize it's generator from it's template
     generateInitializationTemplate(); //Generate the initialization template for Stage

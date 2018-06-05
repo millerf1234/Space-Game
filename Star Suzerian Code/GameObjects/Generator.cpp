@@ -11,6 +11,8 @@
 static constexpr int WAS_DELETED = -1000; //Used to represent deleted instances
 static constexpr int MAX_TRACKED_INSTANCES_LIST_SIZE = 20000; //Maximum limit on renderable objects per frame
 
+static bool drawCollisionDetails = DRAW_COLLISION_DETAILS;
+
 //Set static variable
 int Generator::nextObjID = 1; //Starts out at 1
 
@@ -47,6 +49,7 @@ Generator::Generator() {
     pul.ulocTimeEngineSide = pul.ulocZoomEngineSide = pul.ulocXTransEngineSide = pul.ulocYTransEngineSide = pul.ulocZTransEngineSide = pul.ulocThetaXEngineSide = pul.ulocThetaYEngineSide = pul.ulocThetaZEngineSide = -1;
     pul.ulocPDamage = pul.ulocPHealthMax = -1;
     pul.ulocRoll = pul.ulocPlayerRoll_Line = pul.ulocPlayerRollEngineSide = -1;
+    
     
 //    this->drawTriangles = true;
 //    this->drawLines = false;
@@ -108,6 +111,14 @@ Generator::~Generator() { //Delete any memory being claimed by this generator
         delete [] instances; //Delete the array of instances
     }
 }
+
+void Generator::setDrawCollisionDetails(bool drawCollision) {
+    drawCollisionDetails = drawCollision;
+}
+bool Generator::getDrawCollisionDetails() const {
+    return drawCollisionDetails;
+}
+
 
 void Generator::initializeFromTemplate(const InitializationTemplate& t) {
     if (this->wasInitialized) {
@@ -580,41 +591,7 @@ void Generator::doUpkeep() {
     }
 }
 
-//NOTICE:: setSpecialization is now deprecated and should not be used at all
-void Generator::setSpecialization(specializationType expansionType) {
-    //I now set an expansion type within the initializerTemplate, so the generator knows its type much earlier on in its setup process. As such, I moved the glGetUniformLocation calls to be all next to each other near the end of the function initializeFromTemplate(). So the generic calls are made first then uniform locations are set based off the type, which is known since it was given as part of the intializer template.
-    //TL,DR: This function's functionality has been moved to within initializeFromTemplate()
-//    //Don't change specialization type if instances have already been generated
-//    if (this->activeInstances > 0) {
-//        std::cout << "\nDEBUG::OOPS! Unable to set expansion type once instances have been generated!";
-//        return;
-//    }
-//    //Don't change specialization type if a specialization type has already been specified
-//    if (this->specialization != NOSPECIALIZATION) {
-//        std::cout << "\nDEBUG::OOPS! SpecializationExpansion type has already been set for this generator, unable to change once set!\n";
-//        return;
-//    }
-//    if (expansionType == specializationType::PLAYER) {
-//        //Set the Uniform Locations for the player type
-//        this->specialization = expansionType;
-//        GLuint shaderID = shaderArray[0]->getID();
-//        ulocRed = glGetUniformLocation(shaderID, "red");
-//        ulocGreen = glGetUniformLocation(shaderID, "green");
-//        ulocBlue = glGetUniformLocation(shaderID, "blue");
-//
-//        std::cout << "\nDEBUG:\n        ulocRed = " << ulocRed;
-//        std::cout << "\n        ulocGreen = " << ulocGreen;
-//        std::cout << "\n        ulocBlue = " << ulocBlue;
-//
-//        //Add another shader for Engine Shaders? Or just have the template passed to generator know to
-//        //create multiple shaders. Both will work...
-//
-//    }
-//    else if (expansionType == specializationType::WEAPON) {
-//        //Set the Uniform Locations for the player type
-//        this->specialization  = expansionType;
-//    }
-}
+
 
 void Generator::generateSingle() {
     if (!this->readyToGenerate()) {
@@ -635,7 +612,7 @@ void Generator::generateSingle() {
     }
     
     int newInstanceIndex = activeInstances - 1;
-    //Create an instance based off generator type (note that special types will have their values set correctly by their constructors (at least in theory they will)
+    //Create an instance based off generator type (note that special types will have their values set correctly by their constructors) (at least in theory they will)
     if (specialization == specializationType::PLAYER) {//Generate a player instance
         instances[newInstanceIndex] = new PlayerEntity(nextObjID);
         instances[newInstanceIndex]->type = PLAYERENTITY;
@@ -676,10 +653,15 @@ void Generator::generateSingle() {
         instances[newInstanceIndex]->thetaY = distribution(generator);
         */
         
-        //Method 3 (That actually works)
+        /*
+        ////Method 3 (That actually works)
         newInstance->thetaZ = MathFunc::getRandomInRange(0.0f, PI);
         newInstance->thetaX = MathFunc::getRandomInRange(0.0f, PI);
         newInstance->thetaY = MathFunc::getRandomInRange(0.0f, PI);
+        */
+        
+        ///Method 4 (No random spawn angle)
+        newInstance->thetaZ = newInstance->thetaX = newInstance->thetaY = 0.0f;
         
         
         if (PRINT_WEAPON_SPAWN_ANGLES) {
@@ -777,7 +759,8 @@ void Generator::drawInstances() {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
        // if (specialization != STAGE) {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, this->vertices, GL_STREAM_DRAW);
+        ///This glBufferData call currently does not set the size correctly. It should be set off the number of positions (for the array buffer), not the number of vertices. Or maybe it should. Investigate this if ever get time...
+            glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices, this->vertices, GL_STREAM_DRAW);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, this->elements, GL_STREAM_DRAW);
        // }
         //else { //Do static_draw with stage because it's data will not be updated frequently (at all) //Actually I thought about it more and this is not true/shouldn't matter
@@ -807,7 +790,7 @@ void Generator::drawInstances() {
         }
         else if (specialization == specializationType::STAGE) {
             if (STAGE_POSITION_CENTER_AND_FULLSCREEN_IMAGE) {
-                float zoomAmount = 1.105f - 0.0005f * instances[i]->timeAlive;
+                float zoomAmount = 1.175f - 0.0005f * instances[i]->timeAlive;
                 zoomAmount = (zoomAmount > 1.05f ? zoomAmount : 1.05f);
                 glUniform1f(ulocZoom, zoomAmount);
                 glUniform1f(ulocXTrans, -0.5f);
@@ -842,6 +825,7 @@ void Generator::drawInstances() {
 }
 
 //Note that this function will not be efficient if called in a loop to delete a bunch of instances
+//Thus particle effects have their own creation/deletion logic
 void Generator::removeInstance(const int & instanceID) {
     //Check to make sure instanceID matches an instance generated by this generator
     std::vector<int>::iterator iter;
@@ -1014,6 +998,7 @@ void Generator::doDrawPlayerShipInstance(int i) {
         std::cout << std::endl;
     }
     
+        ////I could never get these collisions to work well... Skip past this commented out code
 //    if (PRINT_DEBUG_MESSAGES) {
 //        bool playersColliding = false;
 //        for (int otherPlayerIndx = 0; otherPlayerIndx < this->getInstanceCount(); ++otherPlayerIndx) {
@@ -1055,21 +1040,7 @@ void Generator::doDrawPlayerShipInstance(int i) {
     //----------------------------------------------------
     //std::cout << "\nDEBUG::ColBox area is: " << player->colBox->getQuadrilateralArea() << std::endl;
     
-    
-    
-    //Debug code:
-    //            for (int i = 0; i < 18; ++i) {
-    //                std::cout << "\nElements[" << i << "] = " << elements[i];
-    //            }
-    convertTrianglesIntoLines(); //This line NOT debug code
-    //            std::cout << "\nConverting...";
-    //            for (int i = 0; i < 36; ++i) {
-    //                std::cout << "\nElements[" << i << "] = " << elements[i];
-    //            }
-    //            std::cout << std::endl << std::endl;
-    //std::cout << "\n    DEBUG::sizeof(elements) = " << sizeof(elements) << std::endl;
-    //End debug code
-    
+    convertTrianglesIntoLines();
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, elements, GL_STREAM_DRAW);
     //glBufferData(GL_ELEMENT_ARRAY_BUFFER, numberOfElements*2, elements, GL_STATIC_DRAW);
     //glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STATIC_DRAW);
@@ -1089,73 +1060,74 @@ void Generator::doDrawPlayerShipInstance(int i) {
     convertLinesIntoTriangles();
     
     //if (TOGGLE_DRAW_COLLISION_DETAILS || DRAW_COLLISION_DETAILS) {
-    if (DRAW_COLLISION_DETAILS) {
+    //if (DRAW_COLLISION_DETAILS) {
+    if (getDrawCollisionDetails()) {
         int verticesToReplace = 108;
-    //Draw the collision box now
-    GLfloat tempFirstVerticesBackup [verticesToReplace];
-    for (int i = 0; i < verticesToReplace; ++i) {
-        tempFirstVerticesBackup[i] = vertices[i];
-    }
+        //Draw the collision box now
+        GLfloat tempFirstVerticesBackup [verticesToReplace];
+        for (int i = 0; i < verticesToReplace; ++i) {
+            tempFirstVerticesBackup[i] = vertices[i];
+        }
         
-//        //ALL DEBUG CODE: ------------------------------------
-//        //Draw a point at the center of the screen
-//        vertices[0] = 0.0f;
-//        vertices[1] = 0.0f;
-//        vertices[2] = -0.9f;
-//        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
-//        glDrawArrays(GL_POINT, 0, 1);
-//        aiVector2D temp(0.0f, 0.0f);
-//        player->colBox->setMidpointTo(temp);
-//        //------------------------------------------------------------
+        //        //ALL DEBUG CODE: ------------------------------------
+        //        //Draw a point at the center of the screen
+        //        vertices[0] = 0.0f;
+        //        vertices[1] = 0.0f;
+        //        vertices[2] = -0.9f;
+        //        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
+        //        glDrawArrays(GL_POINT, 0, 1);
+        //        aiVector2D temp(0.0f, 0.0f);
+        //        player->colBox->setMidpointTo(temp);
+        //        //------------------------------------------------------------
         
         
         
-    player->colBox->getRectCornersLines3D(vertices);
-    
+        player->colBox->getRectCornersLines3D(vertices);
+        
         
         
         //Debug test to see if the point (0,0) is within a collisionBox
-    //std::cout << "\nDEBUG::Is within for (0.0, 0.0) is: " << player->colBox->isWithin(0.0f, 0.0f) << "\n\n";
+        //std::cout << "\nDEBUG::Is within for (0.0, 0.0) is: " << player->colBox->isWithin(0.0f, 0.0f) << "\n\n";
         
         
-       
-    
-//    if ((int)instances[i]->timeAlive % 4 == 0) {
-////    if (PRINT_DEBUG_MESSAGES) {
-////        std::cout << "\nDEBUG::First vertices: \n";
-////        for (int i = 0; i < 24; ++i) {
-////            std::cout << vertices[i] <<" ";
-////        }
-////    }
-//    }
+        
+        
+        //    if ((int)instances[i]->timeAlive % 4 == 0) {
+        ////    if (PRINT_DEBUG_MESSAGES) {
+        ////        std::cout << "\nDEBUG::First vertices: \n";
+        ////        for (int i = 0; i < 24; ++i) {
+        ////            std::cout << vertices[i] <<" ";
+        ////        }
+        ////    }
+        //    }
         
         //see: https://www.khronos.org/opengl/wiki/Vertex_Specification_Best_Practices
-    glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
-    
-    glUniform1f(pul.ulocZoom_Line, 1.0f);
-    glUniform1f(pul.ulocXTrans_Line, 0.0f);
-    glUniform1f(pul.ulocYTrans_Line, 0.0f);
-    glUniform1f(pul.ulocZTrans_Line, 0.0f);
-    glUniform1f(pul.ulocPlayerRoll_Line, 0.0f);
-    glUniform1f(pul.ulocThetaX_Line, 0.0f);
-    glUniform1f(pul.ulocThetaY_Line, 0.0f);
-    glUniform1f(pul.ulocThetaZ_Line, 0.0f);
-    glUniform1f(pul.ulocRed_Line, 0.0f);
-    glUniform1f(pul.ulocGreen_Line, 1.0f);
-    glUniform1f(pul.ulocBlue_Line, 0.6f);
-    
+        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
+        
+        glUniform1f(pul.ulocZoom_Line, 1.0f);
+        glUniform1f(pul.ulocXTrans_Line, 0.0f);
+        glUniform1f(pul.ulocYTrans_Line, 0.0f);
+        glUniform1f(pul.ulocZTrans_Line, 0.0f);
+        glUniform1f(pul.ulocPlayerRoll_Line, 0.0f);
+        glUniform1f(pul.ulocThetaX_Line, 0.0f);
+        glUniform1f(pul.ulocThetaY_Line, 0.0f);
+        glUniform1f(pul.ulocThetaZ_Line, 0.0f);
+        glUniform1f(pul.ulocRed_Line, 0.0f);
+        glUniform1f(pul.ulocGreen_Line, 1.0f);
+        glUniform1f(pul.ulocBlue_Line, 0.6f);
+        
         
         //Draw the 2D collision box
-    glDrawArrays(GL_LINE_LOOP, 0, 8); //Just draw arrays here, no need to mess with an element buffer
-    
-//        //Draw the collision box axes (plural of axis)
-//        player->colBox->getRotatedMajorMinor3D(vertices);
-//        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
-//        glDrawArrays(GL_LINE_LOOP, 0, 12);
-
+        glDrawArrays(GL_LINE_LOOP, 0, 8); //Just draw arrays here, no need to mess with an element buffer
+        
+        //        //Draw the collision box axes (plural of axis)
+        //        player->colBox->getRotatedMajorMinor3D(vertices);
+        //        glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
+        //        glDrawArrays(GL_LINE_LOOP, 0, 12);
+        
         glad_glDisable(GL_LINE_SMOOTH);
         
-        //Draw the 3D collision box around the player model 
+        //Draw the 3D collision box around the player model
         glUniform1f(pul.ulocRed_Line, 0.3f);
         glUniform1f(pul.ulocGreen_Line, 0.3f);
         glUniform1f(pul.ulocBlue_Line, 0.95f);
@@ -1163,14 +1135,14 @@ void Generator::doDrawPlayerShipInstance(int i) {
         glBufferData(GL_ARRAY_BUFFER, numberOfVertices*2, vertices, GL_STREAM_DRAW);
         glDrawArrays(GL_LINE_STRIP, 0, 36);
         
-    glad_glEnable(GL_LINE_SMOOTH);
-    
-    
-    //Put vertices back to normal
-    for (int i = 0; i < verticesToReplace; ++i) {
-        vertices[i] = tempFirstVerticesBackup[i];
-    }
-    
+        glad_glEnable(GL_LINE_SMOOTH);
+        
+        
+        //Put vertices back to normal
+        for (int i = 0; i < verticesToReplace; ++i) {
+            vertices[i] = tempFirstVerticesBackup[i];
+        }
+        
     } //End draw collision details check
     
     
@@ -1250,7 +1222,7 @@ void Generator::doDrawPlayerShipInstance(int i) {
     elements[15] = 52;
     
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements*2, elements, GL_STREAM_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices*2, vertices, GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices, vertices, GL_STREAM_DRAW);
     
     glDrawElements(GL_TRIANGLE_FAN, 16, GL_UNSIGNED_INT, 0);
     
@@ -1478,7 +1450,7 @@ void Generator::drawKineticInstance(Kinetic * kin) {
     }
     //Draw the collision box as well if drawCollisionDetails is true
     //if (DRAW_COLLISION_DETAILS || TOGGLE_DRAW_COLLISION_DETAILS) {
-    if (DRAW_COLLISION_DETAILS) {
+    if (getDrawCollisionDetails()) {
         int verticesToReplace = 24;
         
         GLfloat tempFirstVerticesBackup [verticesToReplace];

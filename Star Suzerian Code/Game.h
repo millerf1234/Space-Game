@@ -38,7 +38,9 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <sstream>
 #include <stdlib.h>
+#include <limits> //Used in frame-process-time calculations
 
 #include "GLFW_Init.h" //Need this for the struct of monitor data passed in to constructor
 #include "Quaternion.h" //Used for doing rotations

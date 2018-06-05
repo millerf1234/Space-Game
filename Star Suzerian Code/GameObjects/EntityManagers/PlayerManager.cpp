@@ -17,8 +17,8 @@ PlayerManager::PlayerManager() : GameEntityManager() {
     this->specType = specializationType::PLAYER;
     //Set-up the initialization template
     this->generateInitializationTemplate();
-//    this->generator->setSpecialization(PLAYER);
-    //this->generator->specialization = specializationType::PLAYER;
+    //    this->generator->setSpecialization(PLAYER);
+    //    this->generator->specialization = specializationType::PLAYER;
     //Initialize the generator from the initialization template
     this->initializeFromTemplate(); //generator->setSpecialization now called inside this function
 }
@@ -456,13 +456,24 @@ void PlayerManager::processInput() {
             if (player->rollAmount < -PI / 2.0f) {
                 player->rollAmount = -PI / 2.0f;
             }
+            /* //If not putting a limit on roll, uncomment this
+            if (player->rollAmount > (2.0f * PI)) {
+                player->rollAmount -= 2.0f * PI;
+            }
+            */
         }
         if (player->rollRight) {
             player->rollAmount += PLAYER_ROTATION_SPEED_ROLLING * TIME_TICK_RATE / 0.01f;
             //if (player->rollAmount > PI / 2.0f + (PLAYER_ROTATION_SPEED_TURNING / 11.0f)) {//This small amount is so that roll angle is never actually exactly 0.0f
+            
             if (player->rollAmount > PI / 2.0f) {
                 player->rollAmount = PI / 2.0f;
             }
+            /* //If not putting a limit on roll, uncomment this
+            if (player->rollAmount < (2.0f * PI)) {
+                player->rollAmount += 2.0f * PI;
+            }
+             */
         }
         
         //Update the rotation quaternions stored within 'player' to represent how the ship is turning

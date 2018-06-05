@@ -111,6 +111,9 @@ private:
     static int nextObjID; //The ID for the next generated object (is static so each object gets own unique ID)
     int activeInstances; //Number of active instances of this object
     
+    
+    
+    
     //Special cases to be called within the drawInstances() function
     void doDrawPlayerShipInstance(int); //This function currently
     void doDrawWeaponInstance(int); //This function draws all instances at onces
@@ -195,6 +198,9 @@ public:
     void setSpecialization(specializationType expansionType);
     
     bool shouldGenerateEntities;
+    
+    void setDrawCollisionDetails(bool drawCollision);
+    bool getDrawCollisionDetails() const; 
     
     //--------------------
     // Instance Controls
