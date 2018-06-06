@@ -18,18 +18,53 @@ mat3 aspectRatioMatrix = mat3(1.0f,       0.0f     , 0.0f,
                               0.0f, 2650.0f/1600.0f, 0.0f,
                               0.0f,       0.0f     , 1.0f );
 
+//mat3 rotationMatrixZ = mat3(    cos(time)    ,     -sin(time)    ,      0.0f          ,
+//                                sin(time)    ,      cos(time)    ,      0.0f          ,
+//                                 0.0f          ,            0.0f          ,      1.0f          );
+
+////Normal main
+//void main()
+//{
+//    gl_PointSize = pointSize; // 1.0f;
+//    //vec3 pos = position.xyz;
+//    vec3 pos = position;
+//
+//    //pos = rotationMatrixZ * rotationMatrixZ * pos;
+//
+//    //Aspect ratio
+//    pos = aspectRatioMatrix * pos;
+//
+//    pos.x += 0.055*sin(time*25.0*sqrt(pow(pos.x, 2.0) + pow(pos.y, 2.0)));
+//    pos.y += 0.055*cos(time*25.0*sqrt(pow(pos.x, 2.0) + pow(pos.y, 2.0)));
+//
+//    //gl_Position = vec4(pos, position.w);
+//    gl_Position = vec4(pos, zoom);
+//
+//}
+
+
+
+
+
+
+///Messing around main
 void main()
 {
     gl_PointSize = pointSize; // 1.0f;
     //vec3 pos = position.xyz;
     vec3 pos = position;
-    
+
+    //pos = rotationMatrixZ * rotationMatrixZ * pos;
+
     //Aspect ratio
     pos = aspectRatioMatrix * pos;
-    
+
+    pos.x += 0.5055*sin(time/5.0)*sqrt(pow(pos.x, 2.0) + pow(pos.y, 2.0));
+    pos.y += 0.5055*cos(time/5.0)*sqrt(pow(pos.x, 2.0) + pow(pos.y, 2.0));
+
     //gl_Position = vec4(pos, position.w);
     gl_Position = vec4(pos, zoom);
-    
+
 }
 
 
