@@ -77,7 +77,7 @@ public:
     virtual int getNumberOfVerts() = 0;// {return 0;} //To be overwritten by subclasses
     virtual int getVertSize() = 0;// {return 0;}
     
-    void flagForDescruction() {
+    void flagForDestruction() {
         this->shouldBeDestructedFlag = true;
     }
     

@@ -76,6 +76,8 @@ public:
     
     void deleteAllPlayerParticles();
     
+    void markPlayerParticlesThatAreBeyondScreenLimitsForDeletion();
+    
     Quaternion * getTheExplosionRotationQuaternionSoThatItCanBeMessedWith() const;
     void resetTheExplosionRotationQuaternionAfterItHasBeenMessedWith();
     

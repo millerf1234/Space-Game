@@ -214,7 +214,17 @@ void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
     }
     
     newKinInst->velocity += wepTracker->getVelocity();
-                             //* KINETIC_SPEED_FACTOR * PLAYER_MOVEMENT_MAX_SPEED;
+    ///We can check to see if ship is going backwards and align shots to shoot straight backwards
+    if (ALIGN_FIRING_IF_FACING_BACKWARDS_WHILE_TRAVELING) {
+        float dotProductOfForwardFacingVectorAndShipVelocity = (forward.x * newKinInst->velocity.x + forward.y * newKinInst->velocity.y);
+        if ( (dotProductOfForwardFacingVectorAndShipVelocity < 0.0f) &&
+            (abs(dotProductOfForwardFacingVectorAndShipVelocity) / (newKinInst->velocity.Length()) ) > 0.85f) {
+            newKinInst->velocity = forward * -1.0f;
+            
+        }
+    }
+    
+    //* KINETIC_SPEED_FACTOR * PLAYER_MOVEMENT_MAX_SPEED;
     newKinInst->velocity *= KINETIC_SPEED_FACTOR * PLAYER_MOVEMENT_MAX_SPEED;
     newKinInst->thetaX = wepTracker->getThetaX();
     newKinInst->thetaY = 0.0f;

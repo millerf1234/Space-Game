@@ -850,11 +850,11 @@ void PlayerParticleManager::doUpkeep() {
         //Mark the explosion objects for desctruction
         if ( (*iter)->particlePrimitive == ParticlePrimitive::EXPLOSION ) {
             if ( (((*iter)->timeAlive) / TIME_TICK_RATE) >= FRAMES_TO_KEEP_PLAYER_EXPLOSION_AROUND) {
-                (*iter)->flagForDescruction();
+                (*iter)->flagForDestruction();
             }
         }
     }
-    
+    markPlayerParticlesThatAreBeyondScreenLimitsForDeletion();
     destroyParticlesFlaggedForDestruction();
 }
 
@@ -1196,10 +1196,22 @@ void PlayerParticleManager::deleteAllPlayerParticles() {
     }
     std::vector<PlayerParticle *>::iterator iter = playerParticles.begin();
     for ( ; iter != playerParticles.end(); iter++) {
-        (*iter)->flagForDescruction();
+        (*iter)->flagForDestruction();
     }
     
     destroyParticlesFlaggedForDestruction();
+}
+
+void PlayerParticleManager::markPlayerParticlesThatAreBeyondScreenLimitsForDeletion() {
+    std::vector<PlayerParticle *>::iterator iter = playerParticles.begin();
+    for ( ; iter != playerParticles.end(); iter++) {
+        if ( abs((*iter)->position.x) > (2.0f * XLIMIT)) {
+            (*iter)->flagForDestruction();
+        }
+        else if (abs((*iter)->position.y) > 2.0f * YLIMIT) {
+            (*iter)->flagForDestruction();
+        }
+    }
 }
 
 void PlayerParticleManager::translateParticles(aiVector2D translation) {
