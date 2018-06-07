@@ -47,12 +47,10 @@ Generator::Generator() {
     pul.ulocTime_Line = pul.ulocZoom_Line = pul.ulocXTrans_Line = pul.ulocYTrans_Line = pul.ulocZTrans_Line = pul.ulocThetaX_Line = pul.ulocThetaY_Line = pul.ulocThetaZ_Line = -1;
     pul.ulocTimeEngine = pul.ulocZoomEngine = pul.ulocXTransEngine = pul.ulocYTransEngine = pul.ulocZTransEngine = pul.ulocThetaXEngine = pul.ulocThetaYEngine = pul.ulocThetaZEngine = -1;
     pul.ulocTimeEngineSide = pul.ulocZoomEngineSide = pul.ulocXTransEngineSide = pul.ulocYTransEngineSide = pul.ulocZTransEngineSide = pul.ulocThetaXEngineSide = pul.ulocThetaYEngineSide = pul.ulocThetaZEngineSide = -1;
+    pul.ulocEngineMainRedinate = pul.ulocEngineMainBlueify =pul.ulocEngineSideRedinate = pul.ulocEngineSideBlueify = -1; //Probably refactor these names eventually...
     pul.ulocPDamage = pul.ulocPHealthMax = -1;
     pul.ulocRoll = pul.ulocPlayerRoll_Line = pul.ulocPlayerRollEngineSide = -1;
     
-    
-//    this->drawTriangles = true;
-//    this->drawLines = false;
 }
 //Destructor
 Generator::~Generator() { //Delete any memory being claimed by this generator
@@ -118,7 +116,6 @@ void Generator::setDrawCollisionDetails(bool drawCollision) {
 bool Generator::getDrawCollisionDetails() const {
     return drawCollisionDetails;
 }
-
 
 void Generator::initializeFromTemplate(const InitializationTemplate& t) {
     if (this->wasInitialized) {
@@ -314,7 +311,8 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     //std::cout << std::endl << "DEBUG:: sizeof(stackVertices) is: " << sizeof(stackVertices) << std::endl;
     
-    //Note that sizeof() behaves differently between Stack and Heap memory
+    //Note that sizeof() behaves differently between Stack and Heap memory. Since I am using dynamic memory,
+    //I can't rely on sizeof() to accuratly give me the size of the full array. Thus I need to track the size seperatly
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numberOfVertices, vertices, GL_STREAM_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numberOfElements, elements, GL_STREAM_DRAW);
     //glBufferData(GL_ARRAY_BUFFER, sizeof(stackVertices), stackVertices, GL_STATIC_DRAW);
@@ -412,27 +410,30 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         
         
         //Add extra shaders for the engine effects to ShaderArray
+        const int INDEX_OF_PLAYER_LINE_SHADER = 1;
+        const int INDEX_OF_PLAYER_MAIN_ENGINE_SHADER = 2;
+        const int INDEX_OF_PLAYER_SIDE_ENGINE_SHADER = 3;
         this->shaderArraySize = 4;
         ShaderWrapper ** temp = new ShaderWrapper * [shaderArraySize];
         temp[0] = this->shaderArray[0]; //ShaderArray was set to size 1, so need to make it bigger
         delete [] this->shaderArray;
         this->shaderArray = temp;
-        this->shaderArray[1] = new ShaderWrapper;
-        this->shaderArray[2] = new ShaderWrapper;
-        this->shaderArray[3] = new ShaderWrapper;
+        this->shaderArray[INDEX_OF_PLAYER_LINE_SHADER] = new ShaderWrapper;
+        this->shaderArray[INDEX_OF_PLAYER_MAIN_ENGINE_SHADER] = new ShaderWrapper;
+        this->shaderArray[INDEX_OF_PLAYER_SIDE_ENGINE_SHADER] = new ShaderWrapper;
 
         //Set up the Line Shader:
         std::cout << "                Creating Outline shader...\n";
-//        this->shaderArray[1] = new ShaderWrapper;
-        this->shaderArray[1]->attachVert((char *)PLAYERSHIP_LINE_VERT.c_str());
-        this->shaderArray[1]->attachFrag((char *)PLAYERSHIP_LINE_FRAG.c_str());
+//        this->shaderArray[INDEX_OF_PLAYER_LINE_SHADER] = new ShaderWrapper;
+        this->shaderArray[INDEX_OF_PLAYER_LINE_SHADER]->attachVert((char *)PLAYERSHIP_LINE_VERT.c_str());
+        this->shaderArray[INDEX_OF_PLAYER_LINE_SHADER]->attachFrag((char *)PLAYERSHIP_LINE_FRAG.c_str());
         
-        this->shaderArray[1]->link();
-        this->shaderArray[1]->setVertexAttribName((char *)t.vertAttribName.c_str()); //Use same name as body shader name
-        this->shaderArray[1]->setVAOExternally(tempVAO); //this way the shaders share the same VAO
-        this->shaderArray[1]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
+        this->shaderArray[INDEX_OF_PLAYER_LINE_SHADER]->link();
+        this->shaderArray[INDEX_OF_PLAYER_LINE_SHADER]->setVertexAttribName((char *)t.vertAttribName.c_str()); //Use same name as body shader name
+        this->shaderArray[INDEX_OF_PLAYER_LINE_SHADER]->setVAOExternally(tempVAO); //this way the shaders share the same VAO
+        this->shaderArray[INDEX_OF_PLAYER_LINE_SHADER]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
         //set uniforms for the line shader:
-        shaderID = shaderArray[1]->getID();
+        shaderID = shaderArray[INDEX_OF_PLAYER_LINE_SHADER]->getID();
         pul.ulocRed_Line = glGetUniformLocation(shaderID, "red");
         pul.ulocGreen_Line = glGetUniformLocation(shaderID, "green");
         pul.ulocBlue_Line = glGetUniformLocation(shaderID, "blue");
@@ -453,24 +454,24 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         std::cout << "ulocBlueLine = " << pul.ulocBlue_Line << std::endl;
         }
         
-        if (shaderArray[1]->checkIfReady()) {
+        if (shaderArray[INDEX_OF_PLAYER_LINE_SHADER]->checkIfReady()) {
             std::cout << "                    Outline shader ready!\n";
         }
         else {
             std::cout << "                    OOPS! For some reason Outline shader is showing not ready...\n";
         }
-        //Set up the main engine shader
-//        this->shaderArray[2] = new ShaderWrapper;
+        ///Set up the main engine shader
+//        this->shaderArray[INDEX_OF_PLAYER_MAIN_ENGINE_SHADER] = new ShaderWrapper;
         std::cout << "                Creating Main Engine shader...\n";
-        this->shaderArray[2]->attachVert((char *)PLAYERSHIP_ENGINE_VERT.c_str());
-        this->shaderArray[2]->attachFrag((char *)PLAYERSHIP_ENGINE_FRAG.c_str());
+        this->shaderArray[INDEX_OF_PLAYER_MAIN_ENGINE_SHADER]->attachVert((char *)PLAYERSHIP_ENGINE_VERT.c_str());
+        this->shaderArray[INDEX_OF_PLAYER_MAIN_ENGINE_SHADER]->attachFrag((char *)PLAYERSHIP_ENGINE_FRAG.c_str());
         
-        this->shaderArray[2]->link();
-        this->shaderArray[2]->setVertexAttribName((char *) "enginePos");
-        this->shaderArray[2]->setVAOExternally(tempVAO);
-        this->shaderArray[2]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
+        this->shaderArray[INDEX_OF_PLAYER_MAIN_ENGINE_SHADER]->link();
+        this->shaderArray[INDEX_OF_PLAYER_MAIN_ENGINE_SHADER]->setVertexAttribName((char *) "enginePos");
+        this->shaderArray[INDEX_OF_PLAYER_MAIN_ENGINE_SHADER]->setVAOExternally(tempVAO);
+        this->shaderArray[INDEX_OF_PLAYER_MAIN_ENGINE_SHADER]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
         //Set uniforms for the main engine
-        shaderID = shaderArray[2]->getID();
+        shaderID = shaderArray[INDEX_OF_PLAYER_MAIN_ENGINE_SHADER]->getID();
         pul.ulocTimeEngine = glGetUniformLocation(shaderID, "time");
         pul.ulocZoomEngine = glGetUniformLocation(shaderID, "zoom");
         pul.ulocXTransEngine = glGetUniformLocation(shaderID, "xTrans");
@@ -479,24 +480,28 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         pul.ulocThetaXEngine = glGetUniformLocation(shaderID, "thetaX");
         pul.ulocThetaYEngine = glGetUniformLocation(shaderID, "thetaY");
         pul.ulocThetaZEngine = glGetUniformLocation(shaderID, "thetaZ");
-        //no ulocPlayerRoll = glGetUniformLocation(shaderID, "earlyThetaZ"); //Because main engine is symmetric about roll axis (I actually later hack this into place so I can use same shader for side and main engines)
-        if (shaderArray[2]->checkIfReady()) {
+        //no ulocPlayerRoll = glGetUniformLocation(shaderID, "earlyThetaZ"); //Because main engine is symmetric about roll axis
+        pul.ulocEngineMainRedinate = glGetUniformLocation(shaderID, "redinate");
+        pul.ulocEngineMainBlueify = glGetUniformLocation(shaderID, "blueify");
+        
+        if (shaderArray[INDEX_OF_PLAYER_MAIN_ENGINE_SHADER]->checkIfReady()) {
             std::cout << "                    Main Engine shader ready!\n";
         }
         else {
             std::cout << "                    OOPS! For some reason Main Engine shader is showing not ready...\n";
         }
         
+        ///Set up the side engine shader
         std::cout << "                Creating Side Engine shader...\n";
-        //        this->shaderArray[3] = new ShaderWrapper;
-        this->shaderArray[3]->attachVert((char *)PLAYERSHIP_ENGINE_VERT.c_str());
-        this->shaderArray[3]->attachFrag((char *)PLAYERSHIP_ENGINE_FRAG.c_str());
+        //        this->shaderArray[INDEX_OF_PLAYER_SIDE_ENGINE_SHADER] = new ShaderWrapper;
+        this->shaderArray[INDEX_OF_PLAYER_SIDE_ENGINE_SHADER]->attachVert((char *)PLAYERSHIP_ENGINE_VERT.c_str());
+        this->shaderArray[INDEX_OF_PLAYER_SIDE_ENGINE_SHADER]->attachFrag((char *)PLAYERSHIP_SIDE_ENGINE_FRAG.c_str());
         
-        this->shaderArray[3]->link();
-        this->shaderArray[3]->setVertexAttribName((char *) "enginePos");
-        this->shaderArray[3]->setVAOExternally(tempVAO);
-        this->shaderArray[3]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
-        shaderID = shaderArray[3]->getID();
+        this->shaderArray[INDEX_OF_PLAYER_SIDE_ENGINE_SHADER]->link();
+        this->shaderArray[INDEX_OF_PLAYER_SIDE_ENGINE_SHADER]->setVertexAttribName((char *) "enginePos");
+        this->shaderArray[INDEX_OF_PLAYER_SIDE_ENGINE_SHADER]->setVAOExternally(tempVAO);
+        this->shaderArray[INDEX_OF_PLAYER_SIDE_ENGINE_SHADER]->specifyVertexLayout(ShaderWrapper::VERT3, vbo, ebo);
+        shaderID = shaderArray[INDEX_OF_PLAYER_SIDE_ENGINE_SHADER]->getID();
         pul.ulocTimeEngineSide = glGetUniformLocation(shaderID, "time");
         pul.ulocZoomEngineSide = glGetUniformLocation(shaderID, "zoom");
         pul.ulocXTransEngineSide = glGetUniformLocation(shaderID, "xTrans");
@@ -507,7 +512,11 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         pul.ulocThetaZEngineSide = glGetUniformLocation(shaderID, "thetaZ");
         pul.ulocPlayerRollEngineSide = glGetUniformLocation(shaderID, "earlyThetaZ");
         
-        if (shaderArray[3]->checkIfReady()) {
+        pul.ulocEngineSideRedinate = glGetUniformLocation(shaderID, "redinate");
+        pul.ulocEngineSideBlueify = glGetUniformLocation(shaderID, "blueify");
+        //std::cout << "\nFound Blueify at location: " << pul.ulocEngineSideBlueify << std::endl;
+        
+        if (shaderArray[INDEX_OF_PLAYER_SIDE_ENGINE_SHADER]->checkIfReady()) {
             std::cout << "                    Side Engine shader ready!\n";
         }
         else {
@@ -1157,6 +1166,8 @@ void Generator::doDrawPlayerShipInstance(int i) {
     glUniform1f(pul.ulocThetaXEngine, instances[i]->thetaX);
     glUniform1f(pul.ulocThetaYEngine, instances[i]->thetaY);
     glUniform1f(pul.ulocThetaZEngine, instances[i]->thetaZ);
+    glUniform1f(pul.ulocEngineMainRedinate, player->red);
+    glUniform1f(pul.ulocEngineMainBlueify, player->blue);
     
     //            if (PRINT_DEBUG_MESSAGES) {
     //                printf("\nAll of these uloc's are for the main Engine uniforms:\nulocTime is %d\nulocZoom is %d\nulocXTrans is %d\nulocYTrans is %d\nulocZTrans is %d\nulocThetaX is %d\nulocThetaY is %d\nulocThetaX is %d\n", ulocTimeEngine, ulocZoomEngine, ulocXTransEngine, ulocYTransEngine, ulocZTransEngine, ulocThetaXEngine, ulocThetaYEngine, ulocThetaZEngine);
@@ -1240,9 +1251,12 @@ void Generator::doDrawPlayerShipInstance(int i) {
     glUniform1f(pul.ulocThetaYEngineSide, player->thetaY);
     glUniform1f(pul.ulocThetaZEngineSide, player->thetaZ);
     glUniform1f(pul.ulocPlayerRollEngineSide, player->rollAmount);
+
+    glUniform1f(pul.ulocEngineSideRedinate, player->red);
+    glUniform1f(pul.ulocEngineSideBlueify, player->blue);
     
     //Draw left engine (gonna keep reusing first 3 positions in vertices)
-    rear.x = -2.00213f; //From model data
+    rear.x = -2.00213f; //From model data for space_ship2.obj  (I did this by hand for just that model)
     rear.y = 0.0f;
     if (player->turnRight) {
         rear.z = -2.91f; //-2.19111 is the most rear side engine z component

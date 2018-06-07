@@ -982,7 +982,7 @@ void PlayerParticleManager::drawInstances() {
 
 void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLoader * modelData, bool parameterizeLines, unsigned int lineDivisionPoints, bool particalizeTriangles) {
     
-    if (parameterizeLines && false) {
+    if (parameterizeLines) {
         std::vector<float> orderedPositions;
         //std::vector<float> * orderedPositionsPtr = &orderedPositions;
         parameterizeModelIntoOrderedVertexListOfTriangles(modelData, orderedPositions);

@@ -140,8 +140,8 @@ namespace DeathAnimation {
                 for (; entityManagerIterator < gState->gEntities.end(); ++entityManagerIterator) {
                     Instance ** instances = (*entityManagerIterator)->getInstances();
                     for (int j = 0; j < (*entityManagerIterator)->getNumberOfInstances(); j++) {
-                        instances[j]->position.x += 1000.0f;
-                        instances[j]->position.y += 1000.0f;
+                        instances[j]->position.x += 1000.0f; //Move the other instances off the screen
+                        //instances[j]->position.y += 1000.0f; //This extra operation is superfluous
                     }
                 }
                 player->position.x = player->position.y = 0.0f; //Reset position to help with cancellation error

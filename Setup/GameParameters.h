@@ -132,10 +132,10 @@ static constexpr float ENDING_ZOOM = 5.0f; //This is probably way to large a cha
 
 //Fast Gameplay (Normal)
 static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.03225f; //Was 0.035f when game developed  //was also 0.032f for a while
-static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.9367f; //Was 0.95f //Was also 0.93f
+static constexpr float PLAYER_MOVEMENT_MAX_SPEED = 0.99931f;//0.9367f; //Was 0.95f //Was also 0.93f
 //Rotation speed values are radians per frame                 // 100.0f for rotation turning was old value
-static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/90.0f;//This means 90 frames to do full rotation (i.e. around 1.5 seconds)
-static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/30.0f; //So 30 frames to rotate 90 degrees
+static constexpr float PLAYER_ROTATION_SPEED_TURNING = (2.0f*PI)/83.0f; //85.0f; 90.0f; //This means 90 frames to do full rotation (i.e. around 1.5 seconds)
+static constexpr float PLAYER_ROTATION_SPEED_ROLLING = (PI/2.0f)/24.0f; //So 30 frames to rotate 90 degrees
 
 ////Slower Gameplay (comment Fast Gameplay and uncomment these)
 //static constexpr float PLAYER_MOVEMEMT_ACCELERATION_LINEAR = 0.015f; //Was 0.015f
@@ -188,8 +188,8 @@ constexpr float TIME_TICK_RATE = 0.01f; //Time step per loop iteration, tweak wi
 ///Player COLORS
 //Player 1     (0.7f red, 0.48f green, 0.15f blue) is what I have been going with
 static constexpr float PLAYER_ONE_RED = 0.7f; //Red amount on a 0.0f to 1.0f scale
-static constexpr float PLAYER_ONE_GREEN = 0.48f; //Green amount
-static constexpr float PLAYER_ONE_BLUE = 0.15f; //Blue amount
+static constexpr float PLAYER_ONE_GREEN = 0.46f; //Green amount
+static constexpr float PLAYER_ONE_BLUE = 0.12f; //Blue amount
 
 //Player 2     (0.3f red, 0.6f green, 0.85f blue) is what I have been going with
 static constexpr float PLAYER_TWO_RED = 0.3f; //Red amount on a 0.0f to 1.0f scale
@@ -201,7 +201,7 @@ static constexpr float PLAYER_THREE_RED = 0.2f; //Red amount on a 0.0f to 1.0f s
 static constexpr float PLAYER_THREE_GREEN = 1.0f; //Green amount
 static constexpr float PLAYER_THREE_BLUE = 0.25f; //Blue amount
 
-static constexpr float PLAYER_ENGINE_FLAME_SIZE_INCREASE_FROM_VELOCITY = 1.5f; //1.2f is a good value
+static constexpr float PLAYER_ENGINE_FLAME_SIZE_INCREASE_FROM_VELOCITY = 1.3f; //1.2f is a good value
 
 static constexpr bool DRAW_LINES_PLAYER_MODELS = true;
 
@@ -225,7 +225,7 @@ static constexpr bool ALIGN_FIRING_IF_FACING_BACKWARDS_WHILE_TRAVELING = false; 
 static constexpr int PLAYER_KINETIC_AMMO = 600000; //Give a lot until I add picking up ammo
 static constexpr float KINETIC_WEP_DAMAGE = 0.01f; //0.01f;
 
-static constexpr float KINETIC_VELOCITY_IMPACT = 0.045f;//0.04f; //0.04
+static constexpr float KINETIC_VELOCITY_IMPACT = 0.082f;//0.045f; //0.04
 //static constexpr float KINETIC_VELOCITY_LAUNCH_IMPULSE = 1.0f;
 
 constexpr int KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN = 5; //5-9

@@ -13,11 +13,8 @@
 
 int main(int argc, const char * argv[]) { //Add command line arg to open in windowed mode?
     
-    char * dir = getcwd(NULL, 0); // Platform-dependent, Not Necessarily Portable. This is more to help me figure out where to load files from by getting the directory where the executable will be looking for files.
+    char * dir = getcwd(NULL, 0); // Platform-dependent, Not Necessarily Portable. This is more to help me figure out where to load files from by getting the directory where the executable will be looking for files. The result of this will vary depending on where the program was launched from.
     printf("Current dir: %s\n\n", dir);
-    // struct rlimit old;  //see: http://www.inf.udec.cl/~leo/Malloc_tutorial.pdf
-    //rlimit * test = &old;
-    //printf("Amount of available heap memory is: %d\n\n", getrlimit(2, test));
     
     std::cout << "Process Started... \n";
     
@@ -73,12 +70,11 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     std::cout << "\n    Loading Game Assets...";
     Game.loadGameObjects();
     std::cout << "    Finished Loading Game Assets.\n" << std::endl;
+    ///As you can see in this next line, I lie... The game clearly has not launched when
+    ///I print out the message saying it has.
     std::cout << "Game Launched." << std::endl << std::endl;
     
-    
-    
-    //Game.playIntroMovie(); //Implement later
-    
+    //Game.playIntroMovie(); //Implement later (when budget is bigger)
     
     Game.launch(); //Launch will return only once the game has concluded its game loop
    

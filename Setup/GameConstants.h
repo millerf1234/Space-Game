@@ -98,7 +98,8 @@ static constexpr float PLAYER_ENGINE_FLAME_REAR_POSITION = -2.94231f;
  const std::string PLAYERSHIP_LINE_VERT = "Desktop/TestBundle/Shaders/PlayerShip/playership.vert";///Note this is the same file as PLAYERSHIP_BODY_VERT
  const std::string PLAYERSHIP_LINE_FRAG = "Desktop/TestBundle/Shaders/PlayerShip/playershipLine.frag";
  const std::string PLAYERSHIP_ENGINE_VERT = "Desktop/TestBundle/Shaders/PlayerShip/engineEffect.vert";
- const std::string PLAYERSHIP_ENGINE_FRAG = "Desktop/TestBundle/Shaders/PlayerShip/engineEffect.frag";
+ const std::string PLAYERSHIP_ENGINE_FRAG = "Desktop/TestBundle/Shaders/PlayerShip/mainEngineEffect.frag";
+ const std::string PLAYERSHIP_SIDE_ENGINE_FRAG = ""; //Update at some point
  const std::string PLAYER_PARTICLE_VERT = "Desktop/TestBundle/Shaders/playerParticle.vert";
  const std::string PLAYER_PARTICLE_POINT_FRAG = "Desktop/TestBundle/Shaders/playerParticle.frag";
  const std::string PLAYER_PARTICLE_EXPLOSION_FRAG = "Desktop/TestBundle/Shaders/playerParticleExplosion.frag";
@@ -136,7 +137,8 @@ const std::string PLAYERSHIP_BODY_FRAG = "/Users/forrestmiller/Desktop/xcode_tes
 const std::string PLAYERSHIP_LINE_VERT = PLAYERSHIP_BODY_VERT; //Use same vert shader to keep aligned
 const std::string PLAYERSHIP_LINE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/PlayerShip/playershipLine.frag";
 const std::string PLAYERSHIP_ENGINE_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/PlayerShip/engineEffect.vert";
-const std::string PLAYERSHIP_ENGINE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/PlayerShip/engineEffect.frag";
+const std::string PLAYERSHIP_ENGINE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/PlayerShip/mainEngineEffect.frag";
+const std::string PLAYERSHIP_SIDE_ENGINE_FRAG = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/PlayerShip/sideEngineEffect.frag";
 
 //Player Ship Particle (after death debris) Shaders
 const std::string PLAYER_PARTICLE_VERT = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/GLSL_Shaders/playerParticle.vert";

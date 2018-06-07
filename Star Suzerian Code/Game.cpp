@@ -307,7 +307,6 @@ bool Game::launch() {
         
         processInterEntityEvents(playerManager, allActiveWeaponInstances); //Handle inter-entity events (such as player death and player-weapon collision)
         
-        //Not sure yet if this next line should be inside the 'if' statement right before this line, or outside 'if' statement
         wepOverseer.deleteFlaggedWeaponInstances(); //Delete any flagged weapon instances (they probably were flagged in Game.processInterEntityEvents() )
         
         
@@ -315,7 +314,6 @@ bool Game::launch() {
         //  Draw
         //----------------------------------------------------------------------
        
-        
         
         std::vector<GameEntityManager*>::iterator entityDrawIterator = gEntities.begin();
         for (; entityDrawIterator < gEntities.end(); ++entityDrawIterator) {
@@ -353,7 +351,7 @@ bool Game::launch() {
                 std::cout << frameTimesPrintoutBuffer.str() << std::endl;
                 //frameTimesPrintoutBuffer.flush(); //This doesn't actually empty the ostringstream
                 //But this does:
-                std::ostringstream().swap(frameTimesPrintoutBuffer); //This resets the OSS by constructing a new OSS and then swapping it with our frameTimesPrintoutBuffer OSS.
+                std::ostringstream().swap(frameTimesPrintoutBuffer); //This resets the frameTimesPrintoutBuffer OSS by constructing a new OSS and then swapping it with our frameTimesPrintoutBuffer OSS.
             }
         }
         ///Frame Process Time Per Interval

@@ -1,4 +1,6 @@
-#version 400 core
+//This shader is intended to be used with both mainEngineEffect.frag and sideEngineEffect.frag shaders
+
+#version 410 core
 
 layout(location = 0) in vec3 enginePos;
 

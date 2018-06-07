@@ -75,7 +75,7 @@
 		9E0754E3203AD391009B6215 /* playership.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playership.frag; sourceTree = "<group>"; };
 		9E0754E4203AD3A4009B6215 /* playership.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playership.vert; sourceTree = "<group>"; };
 		9E0754E6203AD3C8009B6215 /* engineEffect.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = engineEffect.vert; sourceTree = "<group>"; };
-		9E0754E7203AD3F1009B6215 /* engineEffect.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = engineEffect.frag; sourceTree = "<group>"; };
+		9E0754E7203AD3F1009B6215 /* mainEngineEffect.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = mainEngineEffect.frag; sourceTree = "<group>"; };
 		9E0754E8203AD6D9009B6215 /* playershipLine.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playershipLine.frag; sourceTree = "<group>"; };
 		9E0754E9203ADFFE009B6215 /* PlayerData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerData.h; sourceTree = "<group>"; };
 		9E0754EA203AE00D009B6215 /* WeaponData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeaponData.h; sourceTree = "<group>"; };
@@ -130,6 +130,7 @@
 		9E130C1720BF402E00A00570 /* playerParticleExplosion.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = playerParticleExplosion.frag; sourceTree = "<group>"; };
 		9E130C1920BFD54D00A00570 /* MathFunctions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MathFunctions.cpp; sourceTree = "<group>"; };
 		9E130C1A20BFD54D00A00570 /* MathFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MathFunctions.h; sourceTree = "<group>"; };
+		9E2B010720C9D22000C668A2 /* sideEngineEffect.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = sideEngineEffect.frag; sourceTree = "<group>"; };
 		9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionCircle.cpp; sourceTree = "<group>"; };
 		9E3DD98F206D7C8100B2ED86 /* CollisionCircle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionCircle.h; sourceTree = "<group>"; };
 		9E8FF847204DDD29006E2392 /* CollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionBox.cpp; sourceTree = "<group>"; };
@@ -221,7 +222,8 @@
 				9E0754E3203AD391009B6215 /* playership.frag */,
 				9E0754E4203AD3A4009B6215 /* playership.vert */,
 				9E0754E6203AD3C8009B6215 /* engineEffect.vert */,
-				9E0754E7203AD3F1009B6215 /* engineEffect.frag */,
+				9E0754E7203AD3F1009B6215 /* mainEngineEffect.frag */,
+				9E2B010720C9D22000C668A2 /* sideEngineEffect.frag */,
 			);
 			path = PlayerShip;
 			sourceTree = "<group>";

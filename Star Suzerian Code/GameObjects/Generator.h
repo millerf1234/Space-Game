@@ -144,7 +144,8 @@ protected: //temporary for debug
     
     //bool drawTriangles, drawLines; //No longer used
     
-    
+    ///Really I am lame and didn't think to incorperate uniform locations into my shadder wrapper
+    ///when I was first writing this code. So that's why I have this:
     //Player uniform locations (I need extra uniform locations to accomodate the extra shaders):
     typedef struct PlayerUniformLocations {
     GLint ulocRed, ulocGreen, ulocBlue; //Uniform locations for PLAYER rgb (color)
@@ -153,6 +154,8 @@ protected: //temporary for debug
     GLint ulocTimeEngine, ulocZoomEngine, ulocXTransEngine, ulocYTransEngine, ulocZTransEngine, ulocThetaXEngine, ulocThetaYEngine, ulocThetaZEngine;
     GLint ulocTimeEngineSide, ulocZoomEngineSide, ulocXTransEngineSide, ulocYTransEngineSide, ulocZTransEngineSide, ulocThetaXEngineSide, ulocThetaYEngineSide, ulocThetaZEngineSide;
     GLint ulocPDamage, ulocPHealthMax;
+        
+    GLint ulocEngineMainRedinate, ulocEngineMainBlueify, ulocEngineSideRedinate, ulocEngineSideBlueify; //lol these names. Basically these are red/blue tinge factors for making the engines flames unique for each ship color
     GLint ulocRoll, ulocPlayerRoll_Line, ulocPlayerRollEngineSide; //Don't need to track roll for main engine
     } PlayerUniformLocations;
     
@@ -212,7 +215,7 @@ public:
     int getInstanceCount() const {return this->activeInstances;}
     void drawInstances();
     void convertTrianglesIntoLines();
-    void convertLinesIntoTriangles(); //Need a way to toggle shaders?
+    void convertLinesIntoTriangles(); //Need a way to toggle shaders? Nah
     Instance ** getArrayOfInstances() {return instances;}
     
     void removeInstance(const int & instantID); 

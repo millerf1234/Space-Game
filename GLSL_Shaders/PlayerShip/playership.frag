@@ -1,4 +1,4 @@
-#version 400 core
+#version 410 core
 
 in vec3 pos;
 in vec3 normal;
