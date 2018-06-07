@@ -24,6 +24,7 @@
 #include <vector>
 #include "glad.h"
 //#include "stb_image.h"
+#include "GameParameters.h"
 
 enum ImgFormat{JPEG, PNG}; //Might add more image formats in the future
 

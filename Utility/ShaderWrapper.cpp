@@ -485,6 +485,9 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf) {
     return true;
 }
 
+///I wrote this function when I had a typo elsewhere in my shader code that was
+///taking forever to find and I was trying different things to get it to work. Unfortunatly
+///now a large chunk of my project relies on this function heavily./.
 void ShaderWrapper::setVAOExternally(GLuint value) {
     if (this->VAO != nullptr) {
         delete this->VAO;

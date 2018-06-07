@@ -29,10 +29,14 @@ TextWrapr::TextWrapr(const std::string & imageFilePath) {
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
     //           FILTERING
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    if (STAGE_IMAGE_TEXTURE_FILTERING_LINEAR) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
+    else {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
     //           MIPMAP GENERATION
     glGenerateMipmap(GL_TEXTURE_2D);
     
@@ -120,6 +124,7 @@ void TextWrapr::deactivate() {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+///Back before I learned I had to tell OpenGL about GL_UNPACK_ALIGNMENT, none of the images I was trying to load were displaying properly, so I decided to manually try to correct one myself by inserting 'dud' bits into the data. The downside to this was that it would only work for images of one texture size. Thus this code below will take a 915x609 JPEG and will 'fix' it to look almost correct without requiring the use of 'glPixelStorei(GL_UNPACK_ALIGNMENT, 1)'. Of course now this code does nothing, but I am going to keep it around still because it is pretty impressive as far as work arounds go (at least I think so)
 //I wrote this function to fix a texture that is 915x609 pixels, so it gets most
 //of the image lined up. It still isn't perfect.
 void TextWrapr::fixTexture915x609(TextureWrapper * tData) {  //Technically I no longer need this function!

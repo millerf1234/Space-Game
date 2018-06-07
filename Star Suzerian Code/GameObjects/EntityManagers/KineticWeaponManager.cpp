@@ -216,8 +216,11 @@ void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
     newKinInst->velocity += wepTracker->getVelocity();
     ///We can check to see if ship is going backwards and align shots to shoot straight backwards
     if (ALIGN_FIRING_IF_FACING_BACKWARDS_WHILE_TRAVELING) {
+        std::cout << "\nWARNING! Turning on ALIGN_FIRING_IF_FACING_BACKWARDS_WHILE_TRAVELING doesn't work correctly and may cause weird problems!\n";
         float dotProductOfForwardFacingVectorAndShipVelocity = (forward.x * newKinInst->velocity.x + forward.y * newKinInst->velocity.y);
-        if ( (dotProductOfForwardFacingVectorAndShipVelocity < 0.0f) &&
+        //if ( (dotProductOfForwardFacingVectorAndShipVelocity < 0.0f) && //This didn't work
+        if ( ( (MathFunc::sgn(forward.x) != MathFunc::sgn(wepTracker->getVelocity().x) ) &&
+               (MathFunc::sgn(forward.y) != MathFunc::sgn(wepTracker->getVelocity().y) )    ) &&
             (abs(dotProductOfForwardFacingVectorAndShipVelocity) / (newKinInst->velocity.Length()) ) > 0.85f) {
             newKinInst->velocity = forward * -1.0f;
             

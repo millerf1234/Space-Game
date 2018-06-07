@@ -97,14 +97,26 @@ private: //Private Member Functions
     //The constructVertexBuffer... function is to allow for only 1 call to glBufferData (instead of having to call it multiple times per frame)
     void constructVertexBufferFromParticleVectors(GLfloat *, int&, int&);
     
+    void parameterizeModelIntoOrderedVertexListOfTriangles(SimpleObjLoader * modelData,
+                                                           std::vector<float> & vertices);
     
-    void generateExplosionParticles(const aiVector3D&);
-    void spawnExplosionParticle(const aiVector3D&, const aiVector3D&, float magnitude);
+    void placePlayerPointParticlesAlongTriangleEdges(PlayerEntity * player,
+                                                     int lineDivisionPoints,
+                                                     std::vector<PlayerParticle *> & playerParticles,
+                                                    float * orderedModelTrianglePositionData,
+                                                     int trianglePositionDataArraySize);
+    
+    
+    //void generateExplosionParticles(const aiVector3D&);
+    //void spawnExplosionParticle(const aiVector3D&, const aiVector3D&, float magnitude);
     
     
     void drawPointParticles(int);
     void drawExplosionParticles(int, int);
     void drawTriangleParticles(int, int);
+    
+    
+    
     
 };
 

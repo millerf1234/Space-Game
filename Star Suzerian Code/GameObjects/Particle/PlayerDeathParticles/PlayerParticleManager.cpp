@@ -821,6 +821,7 @@ PlayerParticleManager::PlayerParticleManager() {
     //  Same as above....
     //}
     hasValidTriangleParticleShader = false;
+    
 }
 
 PlayerParticleManager::~PlayerParticleManager() {
@@ -979,12 +980,22 @@ void PlayerParticleManager::drawInstances() {
     }
 }
 
-
 void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLoader * modelData, bool parameterizeLines, unsigned int lineDivisionPoints, bool particalizeTriangles) {
+    
+    if (parameterizeLines && false) {
+        std::vector<float> orderedPositions;
+        //std::vector<float> * orderedPositionsPtr = &orderedPositions;
+        parameterizeModelIntoOrderedVertexListOfTriangles(modelData, orderedPositions);
+        std::cout << "\nOrdered Positions size is: " << orderedPositions.size() << "\n";
+        //orderedPositionsPtr = &orderedPositions;
+       // placePlayerPointParticlesAlongTriangleEdges(player, lineDivisionPoints, playerParticles, orderedPositionsPtr);
+        placePlayerPointParticlesAlongTriangleEdges(player, lineDivisionPoints, playerParticles, orderedPositions.data(), (int)orderedPositions.size());
+    }
     
     aiVector3D midpoint = player->position;
     
     //    std::cout << "\n\nPlayer's position is: " << player->position.x << " " << player->position.y << std::endl;
+    
     
     
     aiVector3D velocity(0.0f, 0.6f * (0.01f / TIME_TICK_RATE), 0.0f);
@@ -1009,14 +1020,14 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
     ///     EXPLOSION VARIATION PARAMETERS     (THIS FACILITATES A RANDOM EXPLOSION EFFECT)
     ////////////////////////////////////////////////////////////////////////////
     //Variables
-    static constexpr int NUMBER_OF_EFFECTS = 6;
-    int effectToDo = MathFunc::getRandomInRange(1, NUMBER_OF_EFFECTS); //I think the interval here will include 1 and will exclude NUMBER_OF_EFFECTS
+    static constexpr int NUMBER_OF_EFFECTS = 5;
+    int effectToDo = MathFunc::getRandomInRange(1, (NUMBER_OF_EFFECTS + 1)); //The interval here will include 1 and will exclude (NUMBER_OF_EFFECTS + 1)
     float effectMin, effectMax;
     
     //Logic to set up effect
     if (effectToDo == 1) {
         effectMin = 0.05f;
-        effectMax = 0.25f;
+        effectMax = 0.285f;
     }
     else if (effectToDo == 2) {
         effectMin = 0.65f;
@@ -1024,12 +1035,16 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
     }
     else if (effectToDo == 3) {
         effectMin = 0.85f;
-        effectMax = 1.25f;
+        effectMax = 1.275f;
     }
     else if (effectToDo == 4) {
         effectMin = 1.65f;
         effectMax = 1.85f;
     }
+//    else if (effectToDo == 5) {
+//        effectMin = 3.0f;
+//        effectMax = 5.0f;
+//    }
     else {
         effectMin = effectMax = 2.8f;
     }
@@ -1377,7 +1392,95 @@ void PlayerParticleManager::constructVertexBufferFromParticleVectors(GLfloat * v
         vertData[index++] = (*triangleIter)->position.z;
     }
     
+}
+
+
+///Eventually I should make it so that the model only needs to be parameterized once instead of
+///repeatedly
+//This function takes a loaded model and a vector of floats and fills the vector with the xyz coordinates
+//of the model's triangles in the proper ordering.
+void PlayerParticleManager::parameterizeModelIntoOrderedVertexListOfTriangles(SimpleObjLoader * modelData,
+                                                                              std::vector<float> &
+                                                                              vertices) {
+    if (!(modelData->isLoaded)) { return; }
     
+    vertices.clear();
+    
+    vertices.reserve(modelData->model.faces * 3 * 3); //Three verts per face and three coordinates per vert
+    for (int i = 0; i < modelData->model.faces; i++) {
+        int * face = modelData->faces[i]; //Faces are triangles
+        int  positionIndex = face[0] - 1; ///THE '-1' is VERY VERY important!
+        //std::cout << "\nFace " << i << "Position 1 index is " << positionIndex;
+        vertices.push_back(modelData->positions[positionIndex][0]);
+        vertices.push_back(modelData->positions[positionIndex][1]);
+        vertices.push_back(modelData->positions[positionIndex][2]);
+        positionIndex = face[3] - 1;
+        //std::cout << "\nFace " << i << "Position 2 index is " << positionIndex;
+        vertices.push_back(modelData->positions[positionIndex][0]);
+        vertices.push_back(modelData->positions[positionIndex][1]);
+        vertices.push_back(modelData->positions[positionIndex][2]);
+        positionIndex = face[6] - 1;
+        //std::cout << "\nFace " << i << "Position 3 index is " << positionIndex;
+        vertices.push_back(modelData->positions[positionIndex][0]);
+        vertices.push_back(modelData->positions[positionIndex][1]);
+        vertices.push_back(modelData->positions[positionIndex][2]);
+    }
+}
+
+//void PlayerParticleManager::placePlayerPointParticlesAlongTriangleEdges(PlayerEntity * player,
+//                                                                        int lineDivisionPoints,
+//                                                                        std::vector<PlayerParticle *> &
+//                                                                          playerParticles,
+//                                                                        std::vector<float> *
+//                                                                          orderedModelTrianglePositions) {
+void PlayerParticleManager::placePlayerPointParticlesAlongTriangleEdges(PlayerEntity * player,
+                                                                        int lineDivisionPoints,
+                                                                        std::vector<PlayerParticle *> & playerParticles,
+                                                                        float * orderedModelTrianglePositionData,
+                                                                        int trianglePositionDataArraySize) {
+
+    if (trianglePositionDataArraySize < 9) {
+        if (PRINT_DEBUG_WARNING_MESSAGES) {
+            std::cout << "\nDEBUG::WARNING! placePlayerPointParticlesAlongTrianglesEdges function\n";
+            std::cout << "called to place point particles along the edges of the triangles of this ";
+            std::cout << "model but\nwhen recording this model only " << trianglePositionDataArraySize;
+            std::cout << " xyz coordinates\nwere recorded from this model!\n";
+            std::cout << "Function is returning without spawning any particles!\n";
+        }
+        return;
+    }
+    
+    //So we know we have at least 1 triangle
+    ///!!!!! (why is orderedModelTrianglePositions size equal to 1?) !!!!!
+    int outerLoopIterations = (trianglePositionDataArraySize / 9);
+    ///What wait why is this set to 0?
+    for (int i = 0; i < outerLoopIterations; i++) { //"for each triangle"
+        for (int vertex = 0; vertex < 2; vertex++) {
+            int vertArrayIndex = (9*i)+(3*vertex);
+            aiVector3D startingVert(orderedModelTrianglePositionData[vertArrayIndex],
+                                    orderedModelTrianglePositionData[vertArrayIndex + 1],
+                                    orderedModelTrianglePositionData[vertArrayIndex + 2]);
+            aiVector3D endingVert(orderedModelTrianglePositionData[vertArrayIndex + 3],
+                                  orderedModelTrianglePositionData[vertArrayIndex + 4],
+                                  orderedModelTrianglePositionData[vertArrayIndex + 5]);
+            aiVector3D vectorBetweenStartAndEnd = endingVert - startingVert; //i.e. head minus tail
+            
+            //Now that we have equation for our line, parameterize it and then
+            //step along it while spawning particles at each step
+            
+            for (int stepSize = 0; stepSize < lineDivisionPoints; stepSize++) {
+                aiVector3D pointParticlePosition = startingVert +
+                vectorBetweenStartAndEnd * ((float)stepSize / (float)lineDivisionPoints);
+                
+                PlayerParticlePoint * particle = new PlayerParticlePoint(pointParticlePosition.x, pointParticlePosition.y, pointParticlePosition.z, player->velocity.x, player->velocity.y, 0.0f, 75.0f);
+                playerParticles.push_back(particle);
+            }
+            
+        }
+        
+    }
+    
+
 }
 
 void PlayerParticleManager::drawPointParticles(int numToDraw) {

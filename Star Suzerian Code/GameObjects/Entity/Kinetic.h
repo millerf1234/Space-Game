@@ -52,30 +52,57 @@ static constexpr GLfloat KINETIC_PROJECTILE_VERSION0_VERTS[] = {
     
 };
 
+static constexpr float scale = 3.5f;
 static constexpr GLfloat KINETIC_PROJECTILE_VERSION1_VERTS[] = {
     
     /*
-    //Square Pyrimid
-    //   x        y     z
-        0.0f,  1.0f,   1.0f, //Base
-        0.0f,  1.0f, -1.0f,
-        0.0f, -1.0f,  -1.0f,
-        0.0f,  1.0f,  1.0f,
-        0.0f, -1.0f,  -1.0f,
-        0.0f, -1.0f,   1.0f, //end base
-        0.0f,  1.0f,  1.0f, //vertical triangle 1
-        2.5f,  0.0f,  0.0f,
-        0.0f,  1.0f, -1.0f,
-        0.0f,  1.0f, -1.0f, //vertical triangle 2
-        2.5f,  0.0f,  0.0f,
-        0.0f, -1.0f,  -1.0f,
-        0.0f, -1.0f,  -1.0f, //Vertical triangle 3
-        2.5f,  0.0f,  0.0f,
-        0.0f, -1.0f,   1.0f,
-        0.0f, -1.0f,   1.0f, //vertical triangle 4
-        2.5f,  0.0f,  0.0f,
-        0.0f,  1.0f,  1.0f,
+    //New Idea for Projectile
+    //    x              y              z
+    scale / 3.0f,   scale / 3.0f,  scale / 3.0f,
+    scale / 3.0f,      scale    ,       scale,
+         scale,     scale / 3.0f,       scale,
+   
+    -scale / 3.0f,   scale / 3.0f,  scale / 3.0f,
+    -scale / 3.0f,      scale    ,       scale,
+    -scale,     scale / 3.0f,       scale,
+    
+    scale / 3.0f,   -scale / 3.0f,  scale / 3.0f,
+    scale / 3.0f,      -scale    ,       scale,
+    scale,     -scale / 3.0f,       scale,
+    
+    -scale / 3.0f,   -scale / 3.0f,  scale / 3.0f,
+    -scale / 3.0f,      -scale    ,       scale,
+    -scale,     -scale / 3.0f,       scale,
+    
+    -scale / 3.0f,   -scale / 3.0f,  -scale / 3.0f,
+    -scale / 3.0f,      -scale    ,       -scale,
+    -scale,     -scale / 3.0f,       -scale,
+    
+    scale / 3.0f,   -scale / 3.0f,  -scale / 3.0f,
+    scale / 3.0f,      -scale    ,       -scale,
+    scale,     -scale / 3.0f,       -scale,
     */
+//    //Square Pyrimid
+//    //   x        y     z
+//        0.0f,  1.0f,   1.0f, //Base
+//        0.0f,  1.0f, -1.0f,
+//        0.0f, -1.0f,  -1.0f,
+//        0.0f,  1.0f,  1.0f,
+//        0.0f, -1.0f,  -1.0f,
+//        0.0f, -1.0f,   1.0f, //end base
+//        0.0f,  1.0f,  1.0f, //vertical triangle 1
+//        2.5f,  0.0f,  0.0f,
+//        0.0f,  1.0f, -1.0f,
+//        0.0f,  1.0f, -1.0f, //vertical triangle 2
+//        2.5f,  0.0f,  0.0f,
+//        0.0f, -1.0f,  -1.0f,
+//        0.0f, -1.0f,  -1.0f, //Vertical triangle 3
+//        2.5f,  0.0f,  0.0f,
+//        0.0f, -1.0f,   1.0f,
+//        0.0f, -1.0f,   1.0f, //vertical triangle 4
+//        2.5f,  0.0f,  0.0f,
+//        0.0f,  1.0f,  1.0f,
+    
     
     
     //This isn't working right (like I envisioned)... But it works for now
