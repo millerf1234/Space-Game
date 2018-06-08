@@ -51,6 +51,8 @@ Generator::Generator() {
     pul.ulocPDamage = pul.ulocPHealthMax = -1;
     pul.ulocRoll = pul.ulocPlayerRoll_Line = pul.ulocPlayerRollEngineSide = -1;
     
+    ulocStageAspectRatio = -1;
+    
 }
 //Destructor
 Generator::~Generator() { //Delete any memory being claimed by this generator
@@ -384,7 +386,10 @@ void Generator::initializeFromTemplate(const InitializationTemplate& t) {
         std::cout << "            Loading Stage Model...\n";
         std::cout << "                Model Loaded Succcessfully. Model triangle count: 2" << std::endl;
         std::cout << "            Loading Stage Shader...\n";
-        //Currently STAGE has no unique uniforms that need to be set.
+        
+        //Set the one uniform location for stage
+        ulocStageAspectRatio = glGetUniformLocation(shaderID, "aspectRatio");
+        //std::cout << "\nASPECT RATIO UNIFORM LOCATION SET TO: " << ulocStageAspectRatio << "\n";  //Print a message to make sure a uniform location is actually being grabbed
         std::cout << "                Stage Shader Loaded...\n";
     }
     else if (this->specialization == PLAYER) {
@@ -798,6 +803,7 @@ void Generator::drawInstances() {
             doDrawWeaponInstance(i);
         }
         else if (specialization == specializationType::STAGE) {
+            glUniform1f(ulocStageAspectRatio, STAGE_ASPECT_RATIO);
             if (STAGE_POSITION_CENTER_AND_FULLSCREEN_IMAGE) {
                 float zoomAmount = 1.175f - 0.0005f * instances[i]->timeAlive;
                 zoomAmount = (zoomAmount > 1.05f ? zoomAmount : 1.05f);

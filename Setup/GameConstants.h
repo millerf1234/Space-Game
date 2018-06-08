@@ -163,8 +163,15 @@ static constexpr int LEVEL_TO_LOAD = 1; //The level to load (Note I index valye 
 //~~~~~~~~~~~~~~~~
 //GOOD BACKGROUNDS
 //~~~~~~~~~~~~~~~~
-//Picture of the moon in original dimensions
-static std::string backgroundTextureFP = "/Users/forrestmiller/Documents/Cool_Picture_of_the_moon.jpg";
+///Picture of the moon in original dimensions
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Documents/Cool_Picture_of_the_moon.jpg";
+//static constexpr float STAGE_ASPECT_RATIO = 1500.0f / 1080.0f;
+
+///Picture of Jupiter's pole taken by Juno
+static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/JunoJupiterPoleCropped.jpg";
+static constexpr float STAGE_ASPECT_RATIO = 1700.0f / 1080.0f;
+
+
 
 //Another hubble photo
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/AnotherHubblePic.jpg";

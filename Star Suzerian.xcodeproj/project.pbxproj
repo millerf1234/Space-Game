@@ -131,6 +131,8 @@
 		9E130C1920BFD54D00A00570 /* MathFunctions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MathFunctions.cpp; sourceTree = "<group>"; };
 		9E130C1A20BFD54D00A00570 /* MathFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MathFunctions.h; sourceTree = "<group>"; };
 		9E2B010720C9D22000C668A2 /* sideEngineEffect.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = sideEngineEffect.frag; sourceTree = "<group>"; };
+		9E2B010820CA255300C668A2 /* JunoJupiterPole.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = JunoJupiterPole.jpg; sourceTree = "<group>"; };
+		9E2B010A20CA279A00C668A2 /* JunoJupiterPoleCropped.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = JunoJupiterPoleCropped.jpg; sourceTree = "<group>"; };
 		9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionCircle.cpp; sourceTree = "<group>"; };
 		9E3DD98F206D7C8100B2ED86 /* CollisionCircle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionCircle.h; sourceTree = "<group>"; };
 		9E8FF847204DDD29006E2392 /* CollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionBox.cpp; sourceTree = "<group>"; };
@@ -510,6 +512,8 @@
 		9ED7720E2036B32F00D569A4 /* ShaderImages */ = {
 			isa = PBXGroup;
 			children = (
+				9E2B010A20CA279A00C668A2 /* JunoJupiterPoleCropped.jpg */,
+				9E2B010820CA255300C668A2 /* JunoJupiterPole.jpg */,
 				9EC84C3C205B9C3D00FC93B2 /* Cool_Picture_of_the_moon.jpg */,
 				9EAD50D820C5D30F00D1D153 /* StageBackgrounds */,
 				9EAD50D720C5D2CB00D1D153 /* ExtraTestImages */,

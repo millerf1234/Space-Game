@@ -17,6 +17,8 @@ uniform float thetaX;
 uniform float thetaY;
 uniform float thetaZ;
 
+uniform float aspectRatio;
+
 
 out vec2 pos;
 out vec3 COLR;
@@ -37,10 +39,13 @@ void main()
     temp.z += zTrans;
     
     
-    
     mat3 aspectRatioMatrix = mat3(1.0f,       0.0f     , 0.0f,
-                                  0.0f, 1500.0f/1080.0f /* 3840.0f/2160.0f */, 0.0f,
+                                  0.0f, aspectRatio /* 3840.0f/2160.0f */, 0.0f,       //1500.0f/1080.0f  is good for moon,  1700.0f/1080.0f is good for jupiter
                                   0.0f,       0.0f     , 1.0f );
+    
+//    mat3 aspectRatioMatrix = mat3(1.0f,       0.0f     , 0.0f,
+//                                  0.0f, 1800.0f/1080.0f /* 3840.0f/2160.0f */, 0.0f,       //1500.0f/1080.0f  is good for moon,  1700.0f/1080.0f is good for jupiter
+//                                  0.0f,       0.0f     , 1.0f );
     
     //pos = vec3( aspectRatioMatrix * vec3(position.x, position.y, 0.1f));
     

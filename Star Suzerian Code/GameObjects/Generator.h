@@ -147,6 +147,8 @@ protected: //temporary for debug
     ///Really I am lame and didn't think to incorperate uniform locations into my shadder wrapper
     ///when I was first writing this code. So that's why I have this:
     //Player uniform locations (I need extra uniform locations to accomodate the extra shaders):
+    GLint ulocStageAspectRatio;
+    
     typedef struct PlayerUniformLocations {
     GLint ulocRed, ulocGreen, ulocBlue; //Uniform locations for PLAYER rgb (color)
     GLint ulocRed_Line, ulocGreen_Line, ulocBlue_Line;
