@@ -20,9 +20,10 @@ void main() {
     green1 = min(red1, 0.75 * green1);
     
      // color = vec4(red1, green1, 0.1f, 1.0f);
-    color = vec4(max(red1, red), max(green1, green), max(0.1f, blue), 1.0f);
+    ///////color = vec4(max(red1, red), max(green1, green), max(0.1f, blue), 1.0f); //This was the old way of doing it
     //color = vec4(red + 0.15 * sin(time), green, blue, 1.0f);
     
+    color = vec4(0.25f, 1.0f, 0.25f, 1.0f);
     
 }
 

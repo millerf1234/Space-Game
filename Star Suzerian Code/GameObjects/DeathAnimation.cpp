@@ -173,7 +173,8 @@ namespace DeathAnimation {
                 
                 if (i % FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVES == 0 &&
                     (i < DEATH_SCENE_PART_TWO_CUTOFF + EXPLOSION_PARTICLE_FRAMES_CUTOFF)) {
-                    playerParticles->particalizePlayer(player, gState->playerManager->getModelData(), false, 3u, false);
+                    playerParticles->particalizePlayer(player, gState->playerManager->getModelData(), false, 25u, false);
+                    //playerParticles->createExplosion(player);
                     Quaternion * particleRotationQuaternion = playerParticles-> getTheExplosionRotationQuaternionSoThatItCanBeMessedWith();
                     //particleRotationQuaternion->changeTheta(particleRotationQuaternion->getTheta() + EXPLOSION_WAVE_ANGLE_CHANGE);
                     //particleRotationQuaternion->changeTheta(particleRotationQuaternion->getTheta() + sin(2.913f) + sin(5.0f));

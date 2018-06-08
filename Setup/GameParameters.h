@@ -28,7 +28,7 @@
 //-----------------------------------------------------------------------------
 //                       OPEN FULL SCREEN OR WINDOWED
 //-----------------------------------------------------------------------------
-static constexpr bool USE_FULLSCREEN = true;
+static constexpr bool USE_FULLSCREEN = false;
 
 
 //-----------------------------------------------------------------------------
@@ -223,9 +223,9 @@ static constexpr float KINETIC_SPEED_FACTOR = 1.95f; //2.15f; //1.75f is good va
 static constexpr bool ALIGN_FIRING_IF_FACING_BACKWARDS_WHILE_TRAVELING = false;  //Makes it so facing backwards aligns backwards-fired shots with ships velocity
 
 static constexpr int PLAYER_KINETIC_AMMO = 600000; //Give a lot until I add picking up ammo
-static constexpr float KINETIC_WEP_DAMAGE = 0.01f; //0.01f;
+static constexpr float KINETIC_WEP_DAMAGE = 1.01f; //0.01f;
 
-static constexpr float KINETIC_VELOCITY_IMPACT = 0.082f;//0.045f; //0.04
+static constexpr float KINETIC_VELOCITY_IMPACT = 0.00045f;//0.045f; //0.04
 //static constexpr float KINETIC_VELOCITY_LAUNCH_IMPULSE = 1.0f;
 
 constexpr int KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN = 5; //5-9
@@ -279,7 +279,7 @@ static constexpr int PLAYER_EXPLOSION_PARTICLES_PER_WAVE = 1097;//977;//997; //9
 static constexpr int FRAMES_BETWEEN_PLAYER_EXPLOSION_WAVES = 5; //5-6 seems good  //6?  //1 or 2?
 static constexpr int EXPLOSION_PARTICLE_FRAMES_CUTOFF = 9*18+3;  //6*18+1
 static constexpr float EXPLOSION_PARTICLE_POINT_SIZE = 1.65f;//1.95f; //1.85f; //2.95f or so
-static constexpr float PLAYER_PARTICLE_POINT_SIZE = 0.95f;
+static constexpr float PLAYER_PARTICLE_POINT_SIZE = 1.35f;
 
 static constexpr int FRAMES_TO_KEEP_PLAYER_EXPLOSION_AROUND = 525; //505; //405; //405-540  Starts counting as soon as particles are spawned
 

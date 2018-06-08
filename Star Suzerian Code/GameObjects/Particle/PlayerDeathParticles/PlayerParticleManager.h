@@ -72,6 +72,9 @@ public:
         return playerParticles.data();
     }
     
+    
+    void createExplosion(PlayerEntity * player);
+    
     void particalizePlayer(PlayerEntity * player, SimpleObjLoader * modelData, bool parameterizeLines, unsigned int lineDivisionPoints, bool particalizeTriangles);
     
     void deleteAllPlayerParticles();
@@ -106,6 +109,14 @@ private: //Private Member Functions
                                                     float * orderedModelTrianglePositionData,
                                                      int trianglePositionDataArraySize);
     
+    void spawnParticlesAlongLine(aiVector3D                      startingPoint,
+                                 aiVector3D                      line,
+                                 int                             numberOfSubdivisions,
+                                 PlayerEntity *                  player,
+                                 std::vector<PlayerParticle *> & playerParticles);
+    
+    
+    void generateExplosionParticles(aiVector3D spawnPoint, aiVector3D velocity);
     
     //void generateExplosionParticles(const aiVector3D&);
     //void spawnExplosionParticle(const aiVector3D&, const aiVector3D&, float magnitude);

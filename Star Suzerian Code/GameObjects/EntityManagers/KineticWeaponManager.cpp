@@ -210,7 +210,7 @@ void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
         newKinInst->velocity = newKinInst->velocity.Normalize();
     }
     else { //Velocity was assigned the 0 vector, so must
-        newKinInst->velocity = aiVector2D(0.0f, 1.0f); //Give it a direction
+        newKinInst->velocity = aiVector2D(0.0f, 0.01f); //Give it a direction, but have magnitude be close to 0
     }
     
     newKinInst->velocity += wepTracker->getVelocity();

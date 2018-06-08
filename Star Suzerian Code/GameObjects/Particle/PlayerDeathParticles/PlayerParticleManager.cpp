@@ -980,13 +980,19 @@ void PlayerParticleManager::drawInstances() {
     }
 }
 
+void PlayerParticleManager::createExplosion(PlayerEntity * player) {
+    aiVector3D midpoint = player->position;
+    aiVector3D velocity(0.0f, 0.6f * (0.01f / TIME_TICK_RATE), 0.0f);
+    generateExplosionParticles(midpoint, velocity);
+}
+
 void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLoader * modelData, bool parameterizeLines, unsigned int lineDivisionPoints, bool particalizeTriangles) {
     
-    if (parameterizeLines) {
+    if (parameterizeLines && false) {
         std::vector<float> orderedPositions;
         //std::vector<float> * orderedPositionsPtr = &orderedPositions;
         parameterizeModelIntoOrderedVertexListOfTriangles(modelData, orderedPositions);
-        std::cout << "\nOrdered Positions size is: " << orderedPositions.size() << "\n";
+       // std::cout << "\nOrdered Positions size is: " << orderedPositions.size() << "\n";
         //orderedPositionsPtr = &orderedPositions;
        // placePlayerPointParticlesAlongTriangleEdges(player, lineDivisionPoints, playerParticles, orderedPositionsPtr);
         placePlayerPointParticlesAlongTriangleEdges(player, lineDivisionPoints, playerParticles, orderedPositions.data(), (int)orderedPositions.size());
@@ -1399,9 +1405,8 @@ void PlayerParticleManager::constructVertexBufferFromParticleVectors(GLfloat * v
 ///repeatedly
 //This function takes a loaded model and a vector of floats and fills the vector with the xyz coordinates
 //of the model's triangles in the proper ordering.
-void PlayerParticleManager::parameterizeModelIntoOrderedVertexListOfTriangles(SimpleObjLoader * modelData,
-                                                                              std::vector<float> &
-                                                                              vertices) {
+void PlayerParticleManager::parameterizeModelIntoOrderedVertexListOfTriangles(SimpleObjLoader *     modelData,
+                                                                              std::vector<float> &  vertices) {
     if (!(modelData->isLoaded)) { return; }
     
     vertices.clear();
@@ -1451,36 +1456,205 @@ void PlayerParticleManager::placePlayerPointParticlesAlongTriangleEdges(PlayerEn
     }
     
     //So we know we have at least 1 triangle
-    ///!!!!! (why is orderedModelTrianglePositions size equal to 1?) !!!!!
     int outerLoopIterations = (trianglePositionDataArraySize / 9);
-    ///What wait why is this set to 0?
     for (int i = 0; i < outerLoopIterations; i++) { //"for each triangle"
+        int vertArrayIndex;
         for (int vertex = 0; vertex < 2; vertex++) {
-            int vertArrayIndex = (9*i)+(3*vertex);
+            vertArrayIndex = (9*i)+(3*vertex);
             aiVector3D startingVert(orderedModelTrianglePositionData[vertArrayIndex],
                                     orderedModelTrianglePositionData[vertArrayIndex + 1],
                                     orderedModelTrianglePositionData[vertArrayIndex + 2]);
             aiVector3D endingVert(orderedModelTrianglePositionData[vertArrayIndex + 3],
                                   orderedModelTrianglePositionData[vertArrayIndex + 4],
                                   orderedModelTrianglePositionData[vertArrayIndex + 5]);
+            std::cout << "\nStarting vert is: " << startingVert.x << " " << startingVert.y << " " << startingVert.z << "\n";
+            std::cout << "Ending vert is: " << endingVert.x << " " << endingVert.y << " " << endingVert.z << "\n";
             aiVector3D vectorBetweenStartAndEnd = endingVert - startingVert; //i.e. head minus tail
             
-            //Now that we have equation for our line, parameterize it and then
-            //step along it while spawning particles at each step
+            spawnParticlesAlongLine(startingVert, vectorBetweenStartAndEnd, lineDivisionPoints, player,
+                                    playerParticles);
             
-            for (int stepSize = 0; stepSize < lineDivisionPoints; stepSize++) {
-                aiVector3D pointParticlePosition = startingVert +
-                vectorBetweenStartAndEnd * ((float)stepSize / (float)lineDivisionPoints);
-                
-                PlayerParticlePoint * particle = new PlayerParticlePoint(pointParticlePosition.x, pointParticlePosition.y, pointParticlePosition.z, player->velocity.x, player->velocity.y, 0.0f, 75.0f);
-                playerParticles.push_back(particle);
-            }
+//            //Now that we have equation for our line, parameterize it and then
+//            //step along it while spawning particles at each step
+//
+//            for (int stepSize = 0; stepSize < lineDivisionPoints; stepSize++) {
+//                aiVector3D pointParticlePosition = startingVert +
+//                vectorBetweenStartAndEnd * ((float)stepSize / (float)lineDivisionPoints);
+//
+//                PlayerParticlePoint * particle = new PlayerParticlePoint(pointParticlePosition.x, pointParticlePosition.y, pointParticlePosition.z, player->velocity.x, player->velocity.y, 0.0f, 75.0f);
+//                playerParticles.push_back(particle);
+//            }
             
         }
+        //Need to connect the last leg of the triangle as well (from vertex 3 to vertex 1)
+        vertArrayIndex = 9*i;
+        aiVector3D startingVert(orderedModelTrianglePositionData[vertArrayIndex] + 6,
+                                orderedModelTrianglePositionData[vertArrayIndex + 7],
+                                orderedModelTrianglePositionData[vertArrayIndex + 8]);
+        aiVector3D endingVert(orderedModelTrianglePositionData[vertArrayIndex],
+                              orderedModelTrianglePositionData[vertArrayIndex + 1],
+                              orderedModelTrianglePositionData[vertArrayIndex + 2]);
+        aiVector3D vectorBetweenStartAndEnd = endingVert - startingVert; //i.e. head minus tail
+        
+        spawnParticlesAlongLine(startingVert, vectorBetweenStartAndEnd, lineDivisionPoints, player,
+                                playerParticles);
+//        //Now that we have equation for our line, parameterize it and then
+//        //step along it while spawning particles at each step
+//        for (int stepSize = 0; stepSize < lineDivisionPoints; stepSize++) {
+//            aiVector3D pointParticlePosition = startingVert +
+//            vectorBetweenStartAndEnd * ((float)stepSize / (float)lineDivisionPoints);
+//
+//            PlayerParticlePoint * particle = new PlayerParticlePoint(pointParticlePosition.x, pointParticlePosition.y, pointParticlePosition.z, player->velocity.x, player->velocity.y, 0.0f, 75.0f);
+//            playerParticles.push_back(particle);
+//        }
         
     }
     
+}
 
+
+void PlayerParticleManager::spawnParticlesAlongLine(aiVector3D                      startingPoint,
+                                                    aiVector3D                      line,
+                                                    int                             numberOfSubdivisions,
+                                                    PlayerEntity *                  player,
+                                                    std::vector<PlayerParticle *> & playerParticles) {
+    static Quaternion earlyZRot(0.0f, 0.0f, 1.0f, 0.0f);
+    static Quaternion xRot(1.0f, 0.0f, 0.0f, 0.0f);
+    static Quaternion zRot(0.0f, 0.0f, 1.0f, 0.0f);
+    static Quaternion yRot(0.0f, 1.0f, 0.0f, 0.0f);
+    
+    //Set rotations based off the player instance
+    earlyZRot.changeTheta(player->rollAmount);
+    xRot.changeTheta(player->thetaX);
+    zRot.changeTheta(player->thetaZ);
+    yRot.changeTheta(player->thetaY);
+    //Now that we have equation for our line, parameterize it and then
+    //step along it while spawning particles at each step
+    for (int stepNumber = 1; stepNumber < (numberOfSubdivisions + 1); stepNumber++) {
+        aiVector3D pointParticlePosition = startingPoint +
+        line * ((float)stepNumber / (float(numberOfSubdivisions + 1)));
+        
+        //Rotate the spawn point to match model's orientation on screen
+        pointParticlePosition = earlyZRot.computeRotation(pointParticlePosition);
+        pointParticlePosition = xRot.computeRotation(pointParticlePosition);
+        pointParticlePosition = zRot.computeRotation(pointParticlePosition);
+        pointParticlePosition = yRot.computeRotation(pointParticlePosition);
+        
+//        PlayerParticlePoint * particle = new PlayerParticlePoint(pointParticlePosition.x, pointParticlePosition.y, pointParticlePosition.z, player->velocity.x, player->velocity.y, 0.0f, 75.0f);
+        
+//        PlayerParticlePoint * particle = new PlayerParticlePoint(pointParticlePosition.x, pointParticlePosition.y, pointParticlePosition.z, MathFunc::getRandomInRange(-0.1f, 0.1f), 0.0f, 0.0f, 75.0f);
+        PlayerParticlePoint * particle = new PlayerParticlePoint(pointParticlePosition, pointParticlePosition.x / 10.0f , pointParticlePosition.y / 10.0f, pointParticlePosition.z / 15.0f, 75.0f);
+
+        playerParticles.push_back(particle);
+    }
+    
+    
+}
+
+
+void PlayerParticleManager::generateExplosionParticles(aiVector3D spawnPoint, aiVector3D velocity) {
+    
+    int subdivisions = PLAYER_EXPLOSION_PARTICLES_PER_WAVE;
+    
+    ////////////////////////////////////////////////////////////////////////////
+    ///     EXPLOSION VARIATION PARAMETERS     (THIS FACILITATES A RANDOM EXPLOSION EFFECT)
+    ////////////////////////////////////////////////////////////////////////////
+    //Variables
+    static constexpr int NUMBER_OF_EFFECTS = 5;
+    int effectToDo = MathFunc::getRandomInRange(1, (NUMBER_OF_EFFECTS + 1)); //The interval here will include 1 and will exclude (NUMBER_OF_EFFECTS + 1)
+    float effectMin, effectMax;
+    
+    //Logic to set up effect
+    if (effectToDo == 1) {
+        effectMin = 0.05f;
+        effectMax = 0.285f;
+    }
+    else if (effectToDo == 2) {
+        effectMin = 0.65f;
+        effectMax = 11.1f;
+    }
+    else if (effectToDo == 3) {
+        effectMin = 0.85f;
+        effectMax = 1.275f;
+    }
+    else if (effectToDo == 4) {
+        effectMin = 1.65f;
+        effectMax = 1.85f;
+    }
+    //    else if (effectToDo == 5) {
+    //        effectMin = 3.0f;
+    //        effectMax = 5.0f;
+    //    }
+    else {
+        effectMin = effectMax = 2.8f;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
+    
+    ////////////////////////////////////////////////////////////////////////////
+    ///   ACTUAL CODE FOR THE EXPLOSION
+    ////////////////////////////////////////////////////////////////////////////
+    for (int i = 0; i < subdivisions; i++) {
+        
+        float randomScalar = MathFunc::getRandomInRange(effectMin, effectMax); //(0.01f, 0.95f); //(0.65f, 11.1f);     //(0.85f, 10.55f);
+        //std::cout << "\nRandom is: " << randomScalar;
+        
+        
+        
+        
+        //rotation.changeTheta(MathFunc::getRandomInRange(2.0f*PI / ((float)subdivisions), 3.14159f));
+        velocity = rotation.computeRotation(velocity);
+        
+        //        randomlyScaledVelocity.x = velocity.x * MathFunc::getRandomInRange(0.01f, 0.95f);
+        //        randomlyScaledVelocity.y = velocity.y * MathFunc::getRandomInRange(0.01, 0.95f);
+        
+        //velocity = velocity * randVel;
+        //PlayerParticleExplosion * ppp = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, randomlyScaledVelocity.x, randomlyScaledVelocity.y, velocity.z, 75.0f);
+        
+        //////////////////////////////////////////////////////////////////////////////////////////
+        ///   Explosion Particle Creation
+        //////////////////////////////////////////////////////////////////////////////////////////
+        ///Right
+        //PlayerParticleExplosion * pppRight = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x + randomScalar, velocity.y * randomScalar + MathFunc::getRandomInRange(0.2f, 0.4f) * randomScalar, velocity.z, 75.0f);
+        PlayerParticleExplosion * pppRight = new PlayerParticleExplosion(spawnPoint.x, spawnPoint.y, spawnPoint.z, velocity.x + randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
+        
+        playerParticles.push_back(pppRight);
+        
+        ///Left
+        PlayerParticleExplosion * pppLeft = new PlayerParticleExplosion(spawnPoint.x, spawnPoint.y, spawnPoint.z, velocity.x - randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
+        //PlayerParticlePoint * ppp = new PlayerParticlePoint(midpoint, velocity, 75.0f);
+        playerParticles.push_back(pppLeft);
+        
+        ///Up
+        PlayerParticleExplosion * pppUp = new PlayerParticleExplosion(spawnPoint, velocity.x * randomScalar, velocity.y + randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppUp);
+        
+        ///Down
+        PlayerParticleExplosion * pppDown = new PlayerParticleExplosion(spawnPoint, velocity.x * randomScalar, velocity.y - randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppDown);
+        
+        ///UpRight
+        PlayerParticleExplosion * pppUpRight = new PlayerParticleExplosion(spawnPoint, (velocity.x * randomScalar) + randomScalar, (velocity.y * randomScalar) + randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppUpRight);
+        
+        ///DownRight
+        PlayerParticleExplosion * pppDownRight = new PlayerParticleExplosion(spawnPoint, (velocity.x * randomScalar) + randomScalar, (velocity.y * randomScalar) - randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppDownRight);
+        
+        ///UpLeft
+        PlayerParticleExplosion * pppUpLeft = new PlayerParticleExplosion(spawnPoint, (velocity.x * randomScalar) - randomScalar, (velocity.y * randomScalar) + randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppUpLeft);
+        
+        ///DownLeft
+        PlayerParticleExplosion * pppDownLeft = new PlayerParticleExplosion(spawnPoint, (velocity.x * randomScalar) - randomScalar, (velocity.y * randomScalar) - randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppDownLeft);
+        
+        ///Everywhere  (cuz why not?)
+        PlayerParticleExplosion * pppAll = new PlayerParticleExplosion(spawnPoint, velocity.x * randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
+        playerParticles.push_back(pppAll);
+        //////////////////////////////////////////////////////////////////////////////////////////
+        
+    }
 }
 
 void PlayerParticleManager::drawPointParticles(int numToDraw) {
