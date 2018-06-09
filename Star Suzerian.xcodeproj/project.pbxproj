@@ -821,7 +821,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_UNROLL_LOOPS = NO;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -840,7 +840,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_UNROLL_LOOPS = NO;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

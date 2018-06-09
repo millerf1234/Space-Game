@@ -1026,10 +1026,10 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
     ///     EXPLOSION VARIATION PARAMETERS     (THIS FACILITATES A RANDOM EXPLOSION EFFECT)
     ////////////////////////////////////////////////////////////////////////////
     //Variables
-    static constexpr int NUMBER_OF_EFFECTS = 5;
+    static constexpr int NUMBER_OF_EFFECTS = 6;
     int effectToDo = MathFunc::getRandomInRange(1, (NUMBER_OF_EFFECTS + 1)); //The interval here will include 1 and will exclude (NUMBER_OF_EFFECTS + 1)
     float effectMin, effectMax;
-    
+    effectToDo = 5;
     //Logic to set up effect
     if (effectToDo == 1) {
         effectMin = 0.05f;
@@ -1051,6 +1051,11 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
 //        effectMin = 3.0f;
 //        effectMax = 5.0f;
 //    }
+    else if (effectToDo == 5) {
+        effectMax = rotation.getTheta();
+        effectMin = cos(effectMax) + 0.35f;
+        effectMax = 1.55f * effectMin;
+    }
     else {
         effectMin = effectMax = 2.8f;
     }
@@ -1559,35 +1564,40 @@ void PlayerParticleManager::generateExplosionParticles(aiVector3D spawnPoint, ai
     ////////////////////////////////////////////////////////////////////////////
     ///     EXPLOSION VARIATION PARAMETERS     (THIS FACILITATES A RANDOM EXPLOSION EFFECT)
     ////////////////////////////////////////////////////////////////////////////
-    //Variables
-    static constexpr int NUMBER_OF_EFFECTS = 5;
-    int effectToDo = MathFunc::getRandomInRange(1, (NUMBER_OF_EFFECTS + 1)); //The interval here will include 1 and will exclude (NUMBER_OF_EFFECTS + 1)
-    float effectMin, effectMax;
-    
-    //Logic to set up effect
-    if (effectToDo == 1) {
-        effectMin = 0.05f;
-        effectMax = 0.285f;
-    }
-    else if (effectToDo == 2) {
-        effectMin = 0.65f;
-        effectMax = 11.1f;
-    }
-    else if (effectToDo == 3) {
-        effectMin = 0.85f;
-        effectMax = 1.275f;
-    }
-    else if (effectToDo == 4) {
-        effectMin = 1.65f;
-        effectMax = 1.85f;
-    }
-    //    else if (effectToDo == 5) {
-    //        effectMin = 3.0f;
-    //        effectMax = 5.0f;
-    //    }
-    else {
-        effectMin = effectMax = 2.8f;
-    }
+//    //Variables
+//    static constexpr int NUMBER_OF_EFFECTS = 6;
+//    int effectToDo = MathFunc::getRandomInRange(1, (NUMBER_OF_EFFECTS + 1)); //The interval here will include 1 and will exclude (NUMBER_OF_EFFECTS + 1)
+//    float effectMin, effectMax;
+//
+//    //Logic to set up effect
+//    if (effectToDo == 1) {
+//        effectMin = 0.05f;
+//        effectMax = 0.485f;
+//    }
+//    else if (effectToDo == 2) {
+//        effectMin = 0.45f;
+//        effectMax = 11.1f;
+//    }
+//    else if (effectToDo == 3) {
+//        effectMin = 0.85f;
+//        effectMax = 1.275f;
+//    }
+//    else if (effectToDo == 4) {
+//        effectMin = 1.69f;
+//        effectMax = 1.81f;
+//    }
+//    else if (effectToDo == 5) {
+//        effectMax = rotation.getTheta();
+//        effectMin = cos(effectMax);
+//        effectMax = 1.35f * effectMin;
+//    }
+//    //    else if (effectToDo == 5) {
+//    //        effectMin = 3.0f;
+//    //        effectMax = 5.0f;
+//    //    }
+//    else {
+//        effectMin = effectMax = 2.8f;
+//    }
     ////////////////////////////////////////////////////////////////////////////
     
     
@@ -1596,65 +1606,65 @@ void PlayerParticleManager::generateExplosionParticles(aiVector3D spawnPoint, ai
     ////////////////////////////////////////////////////////////////////////////
     for (int i = 0; i < subdivisions; i++) {
         
-        float randomScalar = MathFunc::getRandomInRange(effectMin, effectMax); //(0.01f, 0.95f); //(0.65f, 11.1f);     //(0.85f, 10.55f);
+       // float randomScalar = MathFunc::getRandomInRange(effectMin, effectMax); //(0.01f, 0.95f); //(0.65f, 11.1f);     //(0.85f, 10.55f);
         //std::cout << "\nRandom is: " << randomScalar;
         
         
         
         
         //rotation.changeTheta(MathFunc::getRandomInRange(2.0f*PI / ((float)subdivisions), 3.14159f));
-        velocity = rotation.computeRotation(velocity);
+      //  velocity = rotation.computeRotation(velocity);
         
         //        randomlyScaledVelocity.x = velocity.x * MathFunc::getRandomInRange(0.01f, 0.95f);
         //        randomlyScaledVelocity.y = velocity.y * MathFunc::getRandomInRange(0.01, 0.95f);
         
         //velocity = velocity * randVel;
         //PlayerParticleExplosion * ppp = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, randomlyScaledVelocity.x, randomlyScaledVelocity.y, velocity.z, 75.0f);
-        
-        //////////////////////////////////////////////////////////////////////////////////////////
-        ///   Explosion Particle Creation
-        //////////////////////////////////////////////////////////////////////////////////////////
-        ///Right
-        //PlayerParticleExplosion * pppRight = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x + randomScalar, velocity.y * randomScalar + MathFunc::getRandomInRange(0.2f, 0.4f) * randomScalar, velocity.z, 75.0f);
-        PlayerParticleExplosion * pppRight = new PlayerParticleExplosion(spawnPoint.x, spawnPoint.y, spawnPoint.z, velocity.x + randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
-        
-        playerParticles.push_back(pppRight);
-        
-        ///Left
-        PlayerParticleExplosion * pppLeft = new PlayerParticleExplosion(spawnPoint.x, spawnPoint.y, spawnPoint.z, velocity.x - randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
-        //PlayerParticlePoint * ppp = new PlayerParticlePoint(midpoint, velocity, 75.0f);
-        playerParticles.push_back(pppLeft);
-        
-        ///Up
-        PlayerParticleExplosion * pppUp = new PlayerParticleExplosion(spawnPoint, velocity.x * randomScalar, velocity.y + randomScalar, velocity.z, 75.0f);
-        playerParticles.push_back(pppUp);
-        
-        ///Down
-        PlayerParticleExplosion * pppDown = new PlayerParticleExplosion(spawnPoint, velocity.x * randomScalar, velocity.y - randomScalar, velocity.z, 75.0f);
-        playerParticles.push_back(pppDown);
-        
-        ///UpRight
-        PlayerParticleExplosion * pppUpRight = new PlayerParticleExplosion(spawnPoint, (velocity.x * randomScalar) + randomScalar, (velocity.y * randomScalar) + randomScalar, velocity.z, 75.0f);
-        playerParticles.push_back(pppUpRight);
-        
-        ///DownRight
-        PlayerParticleExplosion * pppDownRight = new PlayerParticleExplosion(spawnPoint, (velocity.x * randomScalar) + randomScalar, (velocity.y * randomScalar) - randomScalar, velocity.z, 75.0f);
-        playerParticles.push_back(pppDownRight);
-        
-        ///UpLeft
-        PlayerParticleExplosion * pppUpLeft = new PlayerParticleExplosion(spawnPoint, (velocity.x * randomScalar) - randomScalar, (velocity.y * randomScalar) + randomScalar, velocity.z, 75.0f);
-        playerParticles.push_back(pppUpLeft);
-        
-        ///DownLeft
-        PlayerParticleExplosion * pppDownLeft = new PlayerParticleExplosion(spawnPoint, (velocity.x * randomScalar) - randomScalar, (velocity.y * randomScalar) - randomScalar, velocity.z, 75.0f);
-        playerParticles.push_back(pppDownLeft);
-        
-        ///Everywhere  (cuz why not?)
-        PlayerParticleExplosion * pppAll = new PlayerParticleExplosion(spawnPoint, velocity.x * randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
-        playerParticles.push_back(pppAll);
-        //////////////////////////////////////////////////////////////////////////////////////////
-        
-    }
+//
+//        //////////////////////////////////////////////////////////////////////////////////////////
+//        ///   Explosion Particle Creation
+//        //////////////////////////////////////////////////////////////////////////////////////////
+//        ///Right
+//        //PlayerParticleExplosion * pppRight = new PlayerParticleExplosion(midpoint.x, midpoint.y, midpoint.z, velocity.x + randomScalar, velocity.y * randomScalar + MathFunc::getRandomInRange(0.2f, 0.4f) * randomScalar, velocity.z, 75.0f);
+//        PlayerParticleExplosion * pppRight = new PlayerParticleExplosion(spawnPoint.x, spawnPoint.y, spawnPoint.z, velocity.x + randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
+//
+//        playerParticles.push_back(pppRight);
+//
+//        ///Left
+//        PlayerParticleExplosion * pppLeft = new PlayerParticleExplosion(spawnPoint.x, spawnPoint.y, spawnPoint.z, velocity.x - randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
+//        //PlayerParticlePoint * ppp = new PlayerParticlePoint(midpoint, velocity, 75.0f);
+//        playerParticles.push_back(pppLeft);
+//
+//        ///Up
+//        PlayerParticleExplosion * pppUp = new PlayerParticleExplosion(spawnPoint, velocity.x * randomScalar, velocity.y + randomScalar, velocity.z, 75.0f);
+//        playerParticles.push_back(pppUp);
+//
+//        ///Down
+//        PlayerParticleExplosion * pppDown = new PlayerParticleExplosion(spawnPoint, velocity.x * randomScalar, velocity.y - randomScalar, velocity.z, 75.0f);
+//        playerParticles.push_back(pppDown);
+//
+//        ///UpRight
+//        PlayerParticleExplosion * pppUpRight = new PlayerParticleExplosion(spawnPoint, (velocity.x * randomScalar) + randomScalar, (velocity.y * randomScalar) + randomScalar, velocity.z, 75.0f);
+//        playerParticles.push_back(pppUpRight);
+//
+//        ///DownRight
+//        PlayerParticleExplosion * pppDownRight = new PlayerParticleExplosion(spawnPoint, (velocity.x * randomScalar) + randomScalar, (velocity.y * randomScalar) - randomScalar, velocity.z, 75.0f);
+//        playerParticles.push_back(pppDownRight);
+//
+//        ///UpLeft
+//        PlayerParticleExplosion * pppUpLeft = new PlayerParticleExplosion(spawnPoint, (velocity.x * randomScalar) - randomScalar, (velocity.y * randomScalar) + randomScalar, velocity.z, 75.0f);
+//        playerParticles.push_back(pppUpLeft);
+//
+//        ///DownLeft
+//        PlayerParticleExplosion * pppDownLeft = new PlayerParticleExplosion(spawnPoint, (velocity.x * randomScalar) - randomScalar, (velocity.y * randomScalar) - randomScalar, velocity.z, 75.0f);
+//        playerParticles.push_back(pppDownLeft);
+//
+//        ///Everywhere  (cuz why not?)
+//        PlayerParticleExplosion * pppAll = new PlayerParticleExplosion(spawnPoint, velocity.x * randomScalar, velocity.y * randomScalar, velocity.z, 75.0f);
+//        playerParticles.push_back(pppAll);
+//        //////////////////////////////////////////////////////////////////////////////////////////
+//
+   }
 }
 
 void PlayerParticleManager::drawPointParticles(int numToDraw) {
