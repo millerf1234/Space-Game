@@ -15,6 +15,10 @@
 static constexpr float PI = 3.1415927f;
 
 
+//I added this macro late in the projects development so by no means will it remove all
+//parts to the code that are not meant for production, but non the less if building for production
+//then comment out this '#define' statement:
+#define CODE_IS_NOT_PRODUCTION_VERSION
 
 ///Application Constants
 //OPENGL VERSION TO USE (HIGHLY RECCOMENDED THAT THIS NOT BE CHANGED FROM 4.1)
@@ -27,6 +31,7 @@ static const int DEFAULT_OPENGL_VERSION_MINOR = 1;  //x.1
 static constexpr float PLAYER_ENGINE_FLAME_REAR_POSITION = -2.94231f;
 
 
+///Important note on filepaths: https://isocpp.org/wiki/faq/misc-technical-issues#backslashes-in-include-files
 
 ///File Locations
 /*
@@ -164,12 +169,12 @@ static constexpr int LEVEL_TO_LOAD = 1; //The level to load (Note I index valye 
 //GOOD BACKGROUNDS
 //~~~~~~~~~~~~~~~~
 ///Picture of the moon in original dimensions
-//static std::string backgroundTextureFP = "/Users/forrestmiller/Documents/Cool_Picture_of_the_moon.jpg";
-//static constexpr float STAGE_ASPECT_RATIO = 1500.0f / 1080.0f;
+static std::string backgroundTextureFP = "/Users/forrestmiller/Documents/Cool_Picture_of_the_moon.jpg";
+static constexpr float STAGE_ASPECT_RATIO = 1500.0f / 1080.0f;
 
 ///Picture of Jupiter's pole taken by Juno
-static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/JunoJupiterPoleCropped.jpg";
-static constexpr float STAGE_ASPECT_RATIO = 1900.0f / 1080.0f;
+//static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/JunoJupiterPoleCropped.jpg";
+//static constexpr float STAGE_ASPECT_RATIO = 1900.0f / 1080.0f;
 
 
 

@@ -1026,10 +1026,10 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
     ///     EXPLOSION VARIATION PARAMETERS     (THIS FACILITATES A RANDOM EXPLOSION EFFECT)
     ////////////////////////////////////////////////////////////////////////////
     //Variables
-    static constexpr int NUMBER_OF_EFFECTS = 6;
+    static constexpr int NUMBER_OF_EFFECTS = 7;
     int effectToDo = MathFunc::getRandomInRange(1, (NUMBER_OF_EFFECTS + 1)); //The interval here will include 1 and will exclude (NUMBER_OF_EFFECTS + 1)
     float effectMin, effectMax;
-    effectToDo = 5;
+    //effectToDo = 5; //Do this to hardcode in a single effect (Effect 5 by itself is pretty cool)
     //Logic to set up effect
     if (effectToDo == 1) {
         effectMin = 0.05f;
@@ -1053,8 +1053,16 @@ void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLo
 //    }
     else if (effectToDo == 5) {
         effectMax = rotation.getTheta();
-        effectMin = cos(effectMax) + 0.35f;
+        effectMin = cos(effectMax) + 0.35f * sin(effectMax) + 0.25f;
         effectMax = 1.55f * effectMin;
+    }
+    else if (effectToDo == 6) {
+        float temp = rotation.getTheta();
+        effectMin = sqrt((abs(sin(temp)) + abs(cos(temp)) * 2.0f));
+        effectMax = sqrt(floor(sqrt((abs(pow(sin(temp + cos(effectMin)), 6.0f)))))) + 1.30f * effectMin * sin(effectMin);
+        
+        effectMin = MathFunc::getRandomInRange(0.5f, 0.6f) * effectMin;
+        effectMax = MathFunc::getRandomInRange(0.70f, 0.75) * effectMax;
     }
     else {
         effectMin = effectMax = 2.8f;

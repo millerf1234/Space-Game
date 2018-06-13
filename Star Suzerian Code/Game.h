@@ -107,9 +107,9 @@ private:
     
     
     //Private Member Functions
-    void draw();
-    void processUserInput();
-    void doGameLogic(); //Do upkeep for game objects (upkeep)
+    //void draw();
+    //void processUserInput();
+    //void doGameLogic(); //Do upkeep for game objects (upkeep)
     void processInterEntityEvents(PlayerManager * pManag, std::vector<WeaponInstance*> activeWepInstances); //Handle inter-entity instance collision/creation/destruction
     
     

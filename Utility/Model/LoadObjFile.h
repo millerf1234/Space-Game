@@ -2,6 +2,8 @@
 //  However this time around it is implemented just as a function instead of as
 //  an entire object.
 //
+///IMPORTANT NOTE! THIS CLASS IS NO WHERE NEAR FINISHED! DON"T USE THIS CLASS AT ALL UNTIL IT IS FINISHED!
+//
 //  LoadObjFile.h
 //
 //  Created by Forrest Miller on 6/4/18.

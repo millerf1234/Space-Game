@@ -206,7 +206,6 @@ bool Game::launch() {
             continue; //Run the next loop iteration (which should close the program)
         }
         
-        ///Toggling collision details never worked properly...
         // //Check to see if should toggle drawing collision details
         static unsigned long long frameThatInputWasLastDetected = 0ull; 
         if (glfwGetKey(mWindow, GLFW_KEY_0) == GLFW_PRESS) {
@@ -341,59 +340,64 @@ bool Game::launch() {
         //---------------------------------------------------------------------
         // Print out frame process time statistics
         //---------------------------------------------------------------------
-        auto frameEnd = std::chrono::high_resolution_clock::now(); //Note that time measurement is in nanoseconds
-        ///Frame Process Time Per Frame
-        if (PRINT_FRAME_PROCESS_TIME_INFORMATION_PER_FRAME) { //Might want to add more frame-time information then just process time / frame
-            static std::ostringstream frameTimesPrintoutBuffer;
-            frameTimesPrintoutBuffer << "\nFrame " << frameNumber << " processed in " << std::chrono::duration_cast<std::chrono::nanoseconds>(frameEnd-frameBegin).count()  << " nanoseconds.";
-            
-            if (frameNumber % 60ull == 0) {
-                std::cout << frameTimesPrintoutBuffer.str() << std::endl;
-                //frameTimesPrintoutBuffer.flush(); //This doesn't actually empty the ostringstream
-                //But this does:
-                std::ostringstream().swap(frameTimesPrintoutBuffer); //This resets the frameTimesPrintoutBuffer OSS by constructing a new OSS and then swapping it with our frameTimesPrintoutBuffer OSS.
+#ifdef CODE_IS_NOT_PRODUCTION_VERSION
+        if(PRINT_FRAME_PROCESS_TIME_INFORMATION_PER_INTERVAL || PRINT_FRAME_PROCESS_TIME_INFORMATION_PER_FRAME){
+            glFinish(); //Need glFinish() when timing rendering... This function call should be removed for production
+            auto frameEnd = std::chrono::high_resolution_clock::now(); //Note that time measurement is in nanoseconds
+            ///Frame Process Time Per Frame
+            if (PRINT_FRAME_PROCESS_TIME_INFORMATION_PER_FRAME) { //Might want to add more frame-time information then just process time / frame
+                static std::ostringstream frameTimesPrintoutBuffer;
+                frameTimesPrintoutBuffer << "\nFrame " << frameNumber << " processed in " << std::chrono::duration_cast<std::chrono::nanoseconds>(frameEnd-frameBegin).count()  << " nanoseconds.";
+                
+                if (frameNumber % 60ull == 0) {
+                    std::cout << frameTimesPrintoutBuffer.str() << std::endl;
+                    //frameTimesPrintoutBuffer.flush(); //This doesn't actually empty the ostringstream
+                    //But this does:
+                    std::ostringstream().swap(frameTimesPrintoutBuffer); //This resets the frameTimesPrintoutBuffer OSS by constructing a new OSS and then swapping it with our frameTimesPrintoutBuffer OSS.
+                }
+            }
+            ///Frame Process Time Per Interval
+            if (PRINT_FRAME_PROCESS_TIME_INFORMATION_PER_INTERVAL) {
+                //The following static variables are used to store frame-statistics
+                static long double totalProcessingTime = 0.0l; //This only will be set once since it is static
+                static long double minProcessingTime = std::numeric_limits<double>::infinity(); //or '= NAN'
+                
+                static long double maxProcessingTime = 0.0l;
+                
+                //Record the statistics
+                long double frameProcessTime =(long double)//Calculate the time spent on the most recent frame
+                (std::chrono::duration_cast<std::chrono::nanoseconds> (frameEnd - frameBegin).count());
+                
+                totalProcessingTime += frameProcessTime;
+                if (frameProcessTime < minProcessingTime)
+                    minProcessingTime = frameProcessTime;
+                if (frameProcessTime > maxProcessingTime)
+                    maxProcessingTime = frameProcessTime;
+                
+                
+                if ((frameNumber % PRINT_FRAME_PROCESS_TIME_INFORMATION_INTERVAL_LENGTH) == 0ull) {
+                    ///Change value from nanosecond to milliseconds
+                    totalProcessingTime /= (long double)(1e6); //1 millisecond = 1e6 nanoseconds
+                    maxProcessingTime /= (long double)(1e6);
+                    minProcessingTime /= (long double)(1e6);
+                    
+                    fprintf(stderr, "\nFrame Statistic Information for the past %llu frames:\n",
+                            PRINT_FRAME_PROCESS_TIME_INFORMATION_INTERVAL_LENGTH);
+                    fprintf(stderr, "    Total Processing Time:   %08.2LF milliseconds\n",   totalProcessingTime); //'%LF' is 'long float'
+                    fprintf(stderr, "    Maximum Processing Time: %08.2LF milliseconds\n", maxProcessingTime);
+                    fprintf(stderr, "    Minimum Processing Time: %08.2LF milliseconds\n", minProcessingTime);
+                    fprintf(stderr, "    Average Processing Time: %08.2LF milliseconds\n", totalProcessingTime / ( static_cast<long double> ( PRINT_FRAME_PROCESS_TIME_INFORMATION_INTERVAL_LENGTH)));
+                    fprintf(stderr, "        Total Frames since program launch: %llu\n", frameNumber);
+                    
+                    //Reset the statistics to prepare for the next interval
+                    totalProcessingTime = 0.0L;
+                    minProcessingTime = std::numeric_limits<double>::infinity();
+                    maxProcessingTime = 0.0L;
+                    
+                }
             }
         }
-        ///Frame Process Time Per Interval
-        if (PRINT_FRAME_PROCESS_TIME_INFORMATION_PER_INTERVAL) {
-            //The following static variables are used to store frame-statistics
-            static long double totalProcessingTime = 0.0l; //This only will be set once since it is static
-            static long double minProcessingTime = std::numeric_limits<double>::infinity(); //or '= NAN'
-            
-            static long double maxProcessingTime = 0.0l;
-            
-            //Record the statistics
-            long double frameProcessTime =(long double)//Calculate the time spent on the most recent frame
-                                            (std::chrono::duration_cast<std::chrono::nanoseconds> (frameEnd - frameBegin).count());
-            
-            totalProcessingTime += frameProcessTime;
-            if (frameProcessTime < minProcessingTime)
-                minProcessingTime = frameProcessTime;
-            if (frameProcessTime > maxProcessingTime)
-                maxProcessingTime = frameProcessTime;
-            
-            
-            if ((frameNumber % PRINT_FRAME_PROCESS_TIME_INFORMATION_INTERVAL_LENGTH) == 0ull) {
-                ///Change value from nanosecond to milliseconds
-                totalProcessingTime /= (long double)(1e6); //1 millisecond = 1e6 nanoseconds
-                maxProcessingTime /= (long double)(1e6);
-                minProcessingTime /= (long double)(1e6);
-                
-                fprintf(stderr, "\nFrame Statistic Information for the past %llu frames:\n",
-                                           PRINT_FRAME_PROCESS_TIME_INFORMATION_INTERVAL_LENGTH);
-                fprintf(stderr, "    Total Processing Time:   %08.2LF milliseconds\n",   totalProcessingTime); //'%LF' is 'long float'
-                fprintf(stderr, "    Maximum Processing Time: %08.2LF milliseconds\n", maxProcessingTime);
-                fprintf(stderr, "    Minimum Processing Time: %08.2LF milliseconds\n", minProcessingTime);
-                fprintf(stderr, "    Average Processing Time: %08.2LF milliseconds\n", totalProcessingTime / ( static_cast<long double> ( PRINT_FRAME_PROCESS_TIME_INFORMATION_INTERVAL_LENGTH)));
-                fprintf(stderr, "        Total Frames since program launch: %llu\n", frameNumber);
-                
-                //Reset the statistics to prepare for the next interval
-                totalProcessingTime = 0.0L;
-                minProcessingTime = std::numeric_limits<double>::infinity();
-                maxProcessingTime = 0.0L;
-            
-            }
-        }
+#endif //#ifdef CODE_IS_NOT_PRODUCTION_VERSION  
     }
     
     std::cout << "\nGame Exiting! Thanks for playing!" << std::endl;
