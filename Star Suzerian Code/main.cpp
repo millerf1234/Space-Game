@@ -11,7 +11,7 @@
 #include "GLFW_Init.h"
 #include "Game.h" //A wrapper to run the game inside of
 
-#include "ExitFunctions.c"
+
 
 int main(int argc, const char * argv[]) { //Add command line arg to open in windowed mode?
     
