@@ -11,7 +11,6 @@ uniform float blue;
 uniform float zoom;
 uniform float pointSize;
 
-
 //out vec4 colorShift;
 
 mat3 aspectRatioMatrix = mat3(1.0f,       0.0f     , 0.0f,
@@ -20,7 +19,7 @@ mat3 aspectRatioMatrix = mat3(1.0f,       0.0f     , 0.0f,
 
 //mat3 rotationMatrixZ = mat3(    cos(time)    ,     -sin(time)    ,      0.0f          ,
 //                                sin(time)    ,      cos(time)    ,      0.0f          ,
-//                                 0.0f          ,            0.0f          ,      1.0f          );
+//                                 0.0f        ,        0.0f       ,      1.0f          );
 
 ////Normal main
 void main()
@@ -29,7 +28,8 @@ void main()
     //vec3 pos = position.xyz;
     vec3 pos = position;
 
-    //pos = rotationMatrixZ * rotationMatrixZ * pos;
+   // pos = rotationMatrixZ * rotationMatrixZ * pos;
+    
 
     //Aspect ratio
     pos = aspectRatioMatrix * pos;

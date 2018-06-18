@@ -446,22 +446,29 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf) {
     
     
     if (vlf == VERT2) {
-        this->posAttrib = new GLint;
+        this->posAttrib = new GLuint;
         *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
         glEnableVertexAttribArray(*(this->posAttrib));
         glVertexAttribPointer(*(this->posAttrib), 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
     }
     
     else if (vlf == VERT3) {
-        this->posAttrib = new GLint;
+        this->posAttrib = new GLuint;
         *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
         glEnableVertexAttribArray(*(this->posAttrib));
         std::cout << "\nposAttrib is " << *(this->posAttrib) << std::endl;
         glVertexAttribPointer(*(this->posAttrib), 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
     }
+    else if (vlf == VERT4) {
+        this->posAttrib = new GLuint;
+        *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
+        glEnableVertexAttribArray(*(this->posAttrib));
+        std::cout << "\nposAttrib is " << *(this->posAttrib) << std::endl;
+        glVertexAttribPointer(*(this->posAttrib), 4, GL_FLOAT, GL_FALSE, 4*sizeof(float), 0);
+    }
     
     else if (vlf == VERT3TEXEL2) {
-        this->posAttrib = new GLint;
+        this->posAttrib = new GLuint;
         this->texAttrib = new GLint;
         *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
         *(this->texAttrib) = glGetAttribLocation(*programID, this->textureAttribName);
@@ -518,7 +525,7 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vbo) {
     }
     
     //if vlf is VERT3:
-    this->posAttrib = new GLint;
+    this->posAttrib = new GLuint;
     *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
     glEnableVertexAttribArray(*(this->posAttrib));
     if (PRINT_DEBUG_MESSAGES) {
@@ -549,14 +556,14 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elemData);
     
     if (vlf == VERT2) {
-        this->posAttrib = new GLint;
+        this->posAttrib = new GLuint;
         *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
         glEnableVertexAttribArray(*(this->posAttrib));
         glVertexAttribPointer(*(this->posAttrib), 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
     }
     
     else if (vlf == VERT3) {
-        this->posAttrib = new GLint;
+        this->posAttrib = new GLuint;
         *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
         glEnableVertexAttribArray(*(this->posAttrib));
         if (PRINT_DEBUG_MESSAGES) {
@@ -565,8 +572,15 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
         glVertexAttribPointer(*(this->posAttrib), 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
     }
     
+    else if (vlf == VERT4) {
+        this->posAttrib = new GLuint;
+        *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
+        glEnableVertexAttribArray(*(this->posAttrib));
+        glVertexAttribPointer(*(this->posAttrib), 4, GL_FLOAT, GL_FALSE, 4*sizeof(float), 0);
+    }
+    
     else if (vlf == VERT3TEXEL2) {
-        this->posAttrib = new GLint;
+        this->posAttrib = new GLuint;
         this->texAttrib = new GLint;
         *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
         *(this->texAttrib) = glGetAttribLocation(*programID, this->textureAttribName);
@@ -584,7 +598,7 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
         glVertexAttribPointer(*(this->texAttrib), 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)) );
     }
     else if (vlf == VERT3NORML3) {
-        this->posAttrib = new GLint;
+        this->posAttrib = new GLuint;
         this->normAttrib = new GLint;
         *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);
         *(this->normAttrib) = glGetAttribLocation(*programID, this->normalAttribName);
@@ -609,7 +623,7 @@ bool ShaderWrapper::specifyVertexLayout(vertLayoutFormat vlf, GLuint& vertData, 
     else if (vlf == VERT2COLOR3TEXEL2) { //2 vertices, RGB color and 2 Texel coords
         //glBindVertexArray(*(this->VAO));
         //std::cout << "\nDEBUG STATEMENT: USING VERTEX ATTRIB FORMAT VERT2COLOR3TEXEL2";
-        this->posAttrib = new GLint;
+        this->posAttrib = new GLuint;
         this->colAttrib = new GLint;
         this->texAttrib = new GLint;
         *(this->posAttrib) = glGetAttribLocation(*programID, this->vertexAttribName);

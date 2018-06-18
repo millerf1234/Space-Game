@@ -223,9 +223,9 @@ static constexpr float KINETIC_SPEED_FACTOR = 1.95f; //2.15f; //1.75f is good va
 static constexpr bool ALIGN_FIRING_IF_FACING_BACKWARDS_WHILE_TRAVELING = false;  //Makes it so facing backwards aligns backwards-fired shots with ships velocity
 
 static constexpr int PLAYER_KINETIC_AMMO = 600000; //Give a lot until I add picking up ammo
-static constexpr float KINETIC_WEP_DAMAGE = 1.01f; //0.01f;
+static constexpr float KINETIC_WEP_DAMAGE = 0.01f; //0.01f;
 
-static constexpr float KINETIC_VELOCITY_IMPACT = 0.00045f;//0.045f; //0.04
+static constexpr float KINETIC_VELOCITY_IMPACT = 0.0425;//0.00045f;//0.045f; //0.04
 //static constexpr float KINETIC_VELOCITY_LAUNCH_IMPULSE = 1.0f;
 
 constexpr int KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN = 5; //5-9

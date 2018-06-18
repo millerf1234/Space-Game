@@ -11,12 +11,28 @@
 #include "GLFW_Init.h"
 #include "Game.h" //A wrapper to run the game inside of
 
+#include "ExitFunctions.c"
+
 int main(int argc, const char * argv[]) { //Add command line arg to open in windowed mode?
     
     char * dir = getcwd(NULL, 0); // Platform-dependent, Not Necessarily Portable. This is more to help me figure out where to load files from by getting the directory where the executable will be looking for files. The result of this will vary depending on where the program was launched from.
     printf("Current dir: %s\n\n", dir);
     
-    std::cout << "Process Started... \n";
+    std::cout << "\nThis program was compiled using:\n    ";
+#if defined __GNUC__
+    //see: https://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html
+    std::cout << "GNU C/C++ " << __VERSION__  /* << " compiler!"*/ << std::endl;
+#elif defined __llvm__
+#if defined __clang__
+    std::cout << "LLVM CLANG " << LLVM_VERSION_STRING << std::endl;
+#else
+    std::cout << "LLVM with unknown front-end (i.e. front end is not clang)" << std::endl;
+#endif //if defined __llvm__
+#else
+    std::cout << "\"A compiler that I did not include a pre-processor directive for...\"" << std::endl;
+#endif //#ifdef __GNUC__    elif def
+    
+    std::cout << "\n\nProcess Started... \n";
     
     std::cout << "Initializing Window: " << std::endl;
     
@@ -70,14 +86,15 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     std::cout << "\n    Loading Game Assets...";
     Game.loadGameObjects();
     std::cout << "    Finished Loading Game Assets.\n" << std::endl;
+    
     ///As you can see in this next line, I lie... The game clearly has not launched when
     ///I print out the message saying it has.
     std::cout << "Game Launched." << std::endl << std::endl;
     
     //Game.playIntroMovie(); //Implement later (when budget is bigger)
     
-    Game.launch(); //Launch will return only once the game has concluded its game loop
-   
+    Game.launch(); ///Now the game has launched
+    //Launch will return only once the game has concluded its game loop
     windowSetupRoutines.terminate(); //Handle closing the window
     return EXIT_SUCCESS;
 }

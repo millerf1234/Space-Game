@@ -988,7 +988,7 @@ void PlayerParticleManager::createExplosion(PlayerEntity * player) {
 
 void PlayerParticleManager::particalizePlayer(PlayerEntity * player, SimpleObjLoader * modelData, bool parameterizeLines, unsigned int lineDivisionPoints, bool particalizeTriangles) {
     
-    if (parameterizeLines && false) {
+    if (parameterizeLines && false) { //This never worked properly, so it is deactivated by doing the "&& false"
         std::vector<float> orderedPositions;
         //std::vector<float> * orderedPositionsPtr = &orderedPositions;
         parameterizeModelIntoOrderedVertexListOfTriangles(modelData, orderedPositions);

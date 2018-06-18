@@ -101,7 +101,7 @@ namespace DeathAnimation {
         GameState recordedGameState;
         recordGameState(gState, recordedGameState);
         
-        static float pi = 3.14159f;
+        static constexpr float pi = 3.14159f;
         float xStep = getRandomInRange(1.0f * pi, 2.00f * pi) / DEATH_SCENE_PART_TWO_FRAMES;
         float yStep = getRandomInRange(   0.0f  , 0.75f * pi) / DEATH_SCENE_PART_TWO_FRAMES;
         float zStep = getRandomInRange(2.0f * pi, 5.50f * pi) / DEATH_SCENE_PART_TWO_FRAMES;

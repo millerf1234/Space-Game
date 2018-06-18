@@ -174,7 +174,7 @@ static constexpr float STAGE_ASPECT_RATIO = 1500.0f / 1080.0f;
 
 ///Picture of Jupiter's pole taken by Juno
 //static std::string backgroundTextureFP = "/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/ShaderImages/JunoJupiterPoleCropped.jpg";
-//static constexpr float STAGE_ASPECT_RATIO = 1900.0f / 1080.0f;
+//static constexpr float STAGE_ASPECT_RATIO = 1650.0f; //1900.0f / 1080.0f;
 
 
 
