@@ -10,7 +10,7 @@
 constexpr static float FP_TOLERANCE = 0.00001f;
 
 constexpr static float PRINT_COLLISION_DEBUG = true; //= PRINT_DEBUG_MESSAGES;
-constexpr static float PRINT_COLLISION_WARNING = PRINT_DEBUG_WARNING_MESSAGES;
+//constexpr static float PRINT_COLLISION_WARNING = PRINT_DEBUG_WARNING_MESSAGES;
 
 Impact2D::Impact2D() {
     m1 = m2 = coefRest = 1.0f;

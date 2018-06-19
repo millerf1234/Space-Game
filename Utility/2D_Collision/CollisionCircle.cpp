@@ -1,4 +1,4 @@
-//
+/// THIS CLASS IS INCOMPLETE. NEEDS TO BE COMPLETED...
 //  CollisionCircle.cpp
 //
 //  Created by Forrest Miller on 3/29/18.
@@ -245,8 +245,8 @@ void CollisionCircle::moveApartAdvanced(CollisionBox & other) {
     else if (numberOfCornersInside == 0) {
         //see:https://math.stackexchange.com/questions/275529/check-if-line-intersects-with-circles-perimeter
         //Use the algorithm described in the above link
-        float x0 = this->centerPoint.x;
-        float y0 = this->centerPoint.y;
+        //float x0 = this->centerPoint.x;
+        //float y0 = this->centerPoint.y;
         //Check the line from corner 0 to corner 1
     }
 }

@@ -22,7 +22,7 @@ void main() {
     //Alternative Color    Starts Blue/Purlpe and progresses to red/orange
     //color = vec4(red + 1.0/(pow((gl_FragCoord.x / 20.0f), 2.0f) + pow((gl_FragCoord.y / 20.0f), 2.0f)), green, 0.1f + 1.0f / 100.0f * floor(abs(75.0f * cos(0.3f * time))), 1.0f);
     
-    
+    //color = vec4(min(1.0, red + 0.5*red*abs(cos(time * exp(gl_FragCoord.y * log(abs(pow(gl_FragCoord.x, 2.0))))))), min(1.0f, green * abs(sin(red * green / max(0.1, gl_FragCoord.x / (gl_FragCoord.x + gl_FragCoord.y))))), 0.23f + abs(0.83f * sin(time*4.0f)), 1.0f);
 }
 
 

@@ -165,7 +165,7 @@ static constexpr float PLAYER_COLLISION_BOX_TO_MODEL_SCALE_FACTOR = 0.85f; //So 
 ///Player Starting Positions: (these start offsets were calculated with a PlayerSize of 75.0f)
 static constexpr float PLAYER1_STARTOFFSET_X = -65.0f * (GAME_SCALE / 75.0f);
 static constexpr float PLAYER1_STARTOFFSET_Y = 40.0f * (GAME_SCALE / 75.0f);
-static constexpr float PLAYER2_STARTOFFSET_X = 65.0f * (GAME_SCALE / 75.0f);
+static constexpr float PLAYER2_STARTOFFSET_X = 65.1f * (GAME_SCALE / 75.0f);
 static constexpr float PLAYER2_STARTOFFSET_Y = -40.5f * (GAME_SCALE / 75.0f);
 //I think I hardcoded in starting offsets for players beyond player 2, but currently controls are only implemented for 2 players...
 
