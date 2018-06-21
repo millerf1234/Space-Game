@@ -16,7 +16,6 @@
 		9E10D5A22032362600F0F724 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5A12032362600F0F724 /* CoreVideo.framework */; };
 		9E10D5A42032366700F0F724 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5A32032366600F0F724 /* IOKit.framework */; };
 		9E10D5A62032367800F0F724 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5A52032367700F0F724 /* Cocoa.framework */; };
-		9E10D5A82032368600F0F724 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5A72032368600F0F724 /* GLUT.framework */; };
 		9E10D5AA203236A700F0F724 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5A9203236A700F0F724 /* OpenGL.framework */; };
 		9E10D5B4203237BB00F0F724 /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5B3203237BB00F0F724 /* glad.c */; };
 		9E10D5B72032390900F0F724 /* libIrrXML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E10D5B62032390900F0F724 /* libIrrXML.a */; };
@@ -33,6 +32,9 @@
 		9E10D5EA2035485000F0F724 /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5E82035485000F0F724 /* Object.cpp */; };
 		9E10D5EE20360AE500F0F724 /* ObjectGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E10D5EC20360AE500F0F724 /* ObjectGenerator.cpp */; };
 		9E130C1B20BFD54D00A00570 /* MathFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E130C1920BFD54D00A00570 /* MathFunctions.cpp */; };
+		9E3B138B20DACBD60084B67E /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E3B138A20DACBD60084B67E /* OpenAL.framework */; };
+		9E3B138F20DACBF90084B67E /* AudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B138D20DACBF90084B67E /* AudioRenderer.cpp */; };
+		9E3B13AA20DB0D2B0084B67E /* AudioSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B13A820DB0D2B0084B67E /* AudioSource.cpp */; };
 		9E3DD990206D7C8100B2ED86 /* CollisionCircle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */; };
 		9E8FF849204DDD29006E2392 /* CollisionBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8FF847204DDD29006E2392 /* CollisionBox.cpp */; };
 		9EAFCECF20B9FDB900D12A9F /* DeathAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCECD20B9FDB900D12A9F /* DeathAnimation.cpp */; };
@@ -133,6 +135,15 @@
 		9E2B010720C9D22000C668A2 /* sideEngineEffect.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = sideEngineEffect.frag; sourceTree = "<group>"; };
 		9E2B010820CA255300C668A2 /* JunoJupiterPole.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = JunoJupiterPole.jpg; sourceTree = "<group>"; };
 		9E2B010A20CA279A00C668A2 /* JunoJupiterPoleCropped.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = JunoJupiterPoleCropped.jpg; sourceTree = "<group>"; };
+		9E3B138A20DACBD60084B67E /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		9E3B138D20DACBF90084B67E /* AudioRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AudioRenderer.cpp; sourceTree = "<group>"; };
+		9E3B138E20DACBF90084B67E /* AudioRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioRenderer.h; sourceTree = "<group>"; };
+		9E3B139120DACEF40084B67E /* alc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = alc.h; sourceTree = "<group>"; };
+		9E3B139220DACEF40084B67E /* al.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = al.h; sourceTree = "<group>"; };
+		9E3B139320DACEF40084B67E /* MacOSX_OALExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacOSX_OALExtensions.h; sourceTree = "<group>"; };
+		9E3B139420DACEF40084B67E /* OpenAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenAL.h; sourceTree = "<group>"; };
+		9E3B13A820DB0D2B0084B67E /* AudioSource.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AudioSource.cpp; sourceTree = "<group>"; };
+		9E3B13A920DB0D2B0084B67E /* AudioSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioSource.h; sourceTree = "<group>"; };
 		9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionCircle.cpp; sourceTree = "<group>"; };
 		9E3DD98F206D7C8100B2ED86 /* CollisionCircle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionCircle.h; sourceTree = "<group>"; };
 		9E8FF847204DDD29006E2392 /* CollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionBox.cpp; sourceTree = "<group>"; };
@@ -192,8 +203,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E3B138B20DACBD60084B67E /* OpenAL.framework in Frameworks */,
 				9E10D5AA203236A700F0F724 /* OpenGL.framework in Frameworks */,
-				9E10D5A82032368600F0F724 /* GLUT.framework in Frameworks */,
 				9E10D5C02032410600F0F724 /* libGLEW.a in Frameworks */,
 				9E10D5A62032367800F0F724 /* Cocoa.framework in Frameworks */,
 				9E10D5B72032390900F0F724 /* libIrrXML.a in Frameworks */,
@@ -294,6 +305,7 @@
 		9E10D5A02032362600F0F724 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9E3B138A20DACBD60084B67E /* OpenAL.framework */,
 				9E10D5C32032430800F0F724 /* libglfw3.a */,
 				9E10D5BF2032410600F0F724 /* libGLEW.a */,
 				9E10D5B62032390900F0F724 /* libIrrXML.a */,
@@ -398,6 +410,7 @@
 		9E10D5CE2032CD6E00F0F724 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				9E3B138C20DACBDC0084B67E /* Audio */,
 				9E00C26720C5E3E5004CB70A /* Model */,
 				9EFA4CA820533D5200308177 /* Math */,
 				9ECC63902047B63C00F7B703 /* 3D_Collision */,
@@ -426,6 +439,29 @@
 				9EFA4CA22051D9B000308177 /* WeaponOverseer.h */,
 			);
 			path = GameObjects;
+			sourceTree = "<group>";
+		};
+		9E3B138C20DACBDC0084B67E /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				9E3B139020DACED20084B67E /* OpenAL Headers */,
+				9E3B138D20DACBF90084B67E /* AudioRenderer.cpp */,
+				9E3B138E20DACBF90084B67E /* AudioRenderer.h */,
+				9E3B13A820DB0D2B0084B67E /* AudioSource.cpp */,
+				9E3B13A920DB0D2B0084B67E /* AudioSource.h */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		9E3B139020DACED20084B67E /* OpenAL Headers */ = {
+			isa = PBXGroup;
+			children = (
+				9E3B139220DACEF40084B67E /* al.h */,
+				9E3B139120DACEF40084B67E /* alc.h */,
+				9E3B139320DACEF40084B67E /* MacOSX_OALExtensions.h */,
+				9E3B139420DACEF40084B67E /* OpenAL.h */,
+			);
+			path = "OpenAL Headers";
 			sourceTree = "<group>";
 		};
 		9E3DD98D206D7BC200B2ED86 /* IncompleteOrBuggyMath */ = {
@@ -637,7 +673,7 @@
 		9E10D58E203234CC00F0F724 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Forrest Miller";
 				TargetAttributes = {
 					9E10D595203234CC00F0F724 = {
@@ -668,6 +704,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E3B13AA20DB0D2B0084B67E /* AudioSource.cpp in Sources */,
 				9E0754F1203B8B58009B6215 /* QuickHull.cpp in Sources */,
 				9EFA4CA72053366600308177 /* Impact2D.cpp in Sources */,
 				9EF2856E20B33C1000F46DC7 /* BufferFacilitator.cpp in Sources */,
@@ -703,6 +740,7 @@
 				9E130C1B20BFD54D00A00570 /* MathFunctions.cpp in Sources */,
 				9E10D5E62034BEBD00F0F724 /* Background.cpp in Sources */,
 				9E3DD990206D7C8100B2ED86 /* CollisionCircle.cpp in Sources */,
+				9E3B138F20DACBF90084B67E /* AudioRenderer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -723,6 +761,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -730,6 +769,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -778,6 +818,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -785,6 +826,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -821,7 +863,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_UNROLL_LOOPS = NO;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

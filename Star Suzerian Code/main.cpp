@@ -11,9 +11,14 @@
 #include "GLFW_Init.h"
 #include "Game.h" //A wrapper to run the game inside of
 
+#include "AudioRenderer.h"
 
 
 int main(int argc, const char * argv[]) { //Add command line arg to open in windowed mode?
+    
+    ///DEBUG CODE: DELETE AT SOME POINT...
+    //AudioRenderer * test = new AudioRenderer();
+    //delete test;
     
     char * dir = getcwd(NULL, 0); // Platform-dependent, Not Necessarily Portable. This is more to help me figure out where to load files from by getting the directory where the executable will be looking for files. The result of this will vary depending on where the program was launched from.
     printf("Current dir: %s\n\n", dir);
