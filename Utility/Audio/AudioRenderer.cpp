@@ -10,6 +10,10 @@
 
 ///OpenAL docuemntation at: https://www.openal.org/documentation/OpenAL_Programmers_Guide.pdf
 
+///Run audio in a seperate detatched thread? see: http://drdobbs.com/go-parallel/article/showArticle.jhtml?articleID=225700095
+///Or do i need std::async with std::future? see: https://stackoverflow.com/questions/30810305/confusion-about-threads-launched-by-stdasync-with-stdlaunchasync-parameter
+
+
 static constexpr int DEVICE_TO_USE = 1u; ///Change this value to select a different default audio device
 
 static constexpr size_t MAX_DEVICE_NAME_LENGTH = 512u;

@@ -35,6 +35,14 @@
 		9E3B138B20DACBD60084B67E /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E3B138A20DACBD60084B67E /* OpenAL.framework */; };
 		9E3B138F20DACBF90084B67E /* AudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B138D20DACBF90084B67E /* AudioRenderer.cpp */; };
 		9E3B13AA20DB0D2B0084B67E /* AudioSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B13A820DB0D2B0084B67E /* AudioSource.cpp */; };
+		9E3B13AD20DC4A510084B67E /* AudioInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B13AB20DC4A510084B67E /* AudioInterface.cpp */; };
+		9E3B13BA20DC51A40084B67E /* audiodecodercoreaudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B13B720DC51A30084B67E /* audiodecodercoreaudio.cpp */; };
+		9E3B13BB20DC51A40084B67E /* audiodecodermediafoundation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B13B820DC51A40084B67E /* audiodecodermediafoundation.cpp */; };
+		9E3B13BC20DC51A40084B67E /* audiodecoderbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B13B920DC51A40084B67E /* audiodecoderbase.cpp */; };
+		9E3B13BF20DC55870084B67E /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E3B13BD20DC55870084B67E /* CoreAudioKit.framework */; };
+		9E3B13C020DC55870084B67E /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E3B13BE20DC55870084B67E /* CoreAudio.framework */; };
+		9E3B13C220DC5AAD0084B67E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E3B13C120DC5AAD0084B67E /* CoreFoundation.framework */; };
+		9E3B13C420DC5AF60084B67E /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E3B13C320DC5AF50084B67E /* AudioToolbox.framework */; };
 		9E3DD990206D7C8100B2ED86 /* CollisionCircle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */; };
 		9E8FF849204DDD29006E2392 /* CollisionBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8FF847204DDD29006E2392 /* CollisionBox.cpp */; };
 		9EAFCECF20B9FDB900D12A9F /* DeathAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCECD20B9FDB900D12A9F /* DeathAnimation.cpp */; };
@@ -144,6 +152,21 @@
 		9E3B139420DACEF40084B67E /* OpenAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenAL.h; sourceTree = "<group>"; };
 		9E3B13A820DB0D2B0084B67E /* AudioSource.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AudioSource.cpp; sourceTree = "<group>"; };
 		9E3B13A920DB0D2B0084B67E /* AudioSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioSource.h; sourceTree = "<group>"; };
+		9E3B13AB20DC4A510084B67E /* AudioInterface.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AudioInterface.cpp; sourceTree = "<group>"; };
+		9E3B13AC20DC4A510084B67E /* AudioInterface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioInterface.h; sourceTree = "<group>"; };
+		9E3B13AF20DC51770084B67E /* audiodecoderbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audiodecoderbase.h; sourceTree = "<group>"; };
+		9E3B13B020DC51770084B67E /* CAStreamBasicDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAStreamBasicDescription.h; sourceTree = "<group>"; };
+		9E3B13B120DC51770084B67E /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
+		9E3B13B220DC51780084B67E /* audiodecodercoreaudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audiodecodercoreaudio.h; sourceTree = "<group>"; };
+		9E3B13B320DC51780084B67E /* audiodecodermediafoundation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audiodecodermediafoundation.h; sourceTree = "<group>"; };
+		9E3B13B420DC51780084B67E /* audiodecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audiodecoder.h; sourceTree = "<group>"; };
+		9E3B13B720DC51A30084B67E /* audiodecodercoreaudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audiodecodercoreaudio.cpp; sourceTree = "<group>"; };
+		9E3B13B820DC51A40084B67E /* audiodecodermediafoundation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audiodecodermediafoundation.cpp; sourceTree = "<group>"; };
+		9E3B13B920DC51A40084B67E /* audiodecoderbase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audiodecoderbase.cpp; sourceTree = "<group>"; };
+		9E3B13BD20DC55870084B67E /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
+		9E3B13BE20DC55870084B67E /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		9E3B13C120DC5AAD0084B67E /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		9E3B13C320DC5AF50084B67E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionCircle.cpp; sourceTree = "<group>"; };
 		9E3DD98F206D7C8100B2ED86 /* CollisionCircle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionCircle.h; sourceTree = "<group>"; };
 		9E8FF847204DDD29006E2392 /* CollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionBox.cpp; sourceTree = "<group>"; };
@@ -203,6 +226,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E3B13C420DC5AF60084B67E /* AudioToolbox.framework in Frameworks */,
+				9E3B13C220DC5AAD0084B67E /* CoreFoundation.framework in Frameworks */,
+				9E3B13BF20DC55870084B67E /* CoreAudioKit.framework in Frameworks */,
+				9E3B13C020DC55870084B67E /* CoreAudio.framework in Frameworks */,
 				9E3B138B20DACBD60084B67E /* OpenAL.framework in Frameworks */,
 				9E10D5AA203236A700F0F724 /* OpenGL.framework in Frameworks */,
 				9E10D5C02032410600F0F724 /* libGLEW.a in Frameworks */,
@@ -305,6 +332,10 @@
 		9E10D5A02032362600F0F724 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9E3B13C320DC5AF50084B67E /* AudioToolbox.framework */,
+				9E3B13C120DC5AAD0084B67E /* CoreFoundation.framework */,
+				9E3B13BE20DC55870084B67E /* CoreAudio.framework */,
+				9E3B13BD20DC55870084B67E /* CoreAudioKit.framework */,
 				9E3B138A20DACBD60084B67E /* OpenAL.framework */,
 				9E10D5C32032430800F0F724 /* libglfw3.a */,
 				9E10D5BF2032410600F0F724 /* libGLEW.a */,
@@ -444,11 +475,14 @@
 		9E3B138C20DACBDC0084B67E /* Audio */ = {
 			isa = PBXGroup;
 			children = (
+				9E3B13AE20DC51410084B67E /* LibAudioDecoder */,
 				9E3B139020DACED20084B67E /* OpenAL Headers */,
 				9E3B138D20DACBF90084B67E /* AudioRenderer.cpp */,
 				9E3B138E20DACBF90084B67E /* AudioRenderer.h */,
 				9E3B13A820DB0D2B0084B67E /* AudioSource.cpp */,
 				9E3B13A920DB0D2B0084B67E /* AudioSource.h */,
+				9E3B13AB20DC4A510084B67E /* AudioInterface.cpp */,
+				9E3B13AC20DC4A510084B67E /* AudioInterface.h */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -462,6 +496,38 @@
 				9E3B139420DACEF40084B67E /* OpenAL.h */,
 			);
 			path = "OpenAL Headers";
+			sourceTree = "<group>";
+		};
+		9E3B13AE20DC51410084B67E /* LibAudioDecoder */ = {
+			isa = PBXGroup;
+			children = (
+				9E3B13B620DC518E0084B67E /* Source */,
+				9E3B13B520DC517B0084B67E /* Headers */,
+			);
+			path = LibAudioDecoder;
+			sourceTree = "<group>";
+		};
+		9E3B13B520DC517B0084B67E /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				9E3B13B420DC51780084B67E /* audiodecoder.h */,
+				9E3B13AF20DC51770084B67E /* audiodecoderbase.h */,
+				9E3B13B220DC51780084B67E /* audiodecodercoreaudio.h */,
+				9E3B13B320DC51780084B67E /* audiodecodermediafoundation.h */,
+				9E3B13B120DC51770084B67E /* CADebugMacros.h */,
+				9E3B13B020DC51770084B67E /* CAStreamBasicDescription.h */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		9E3B13B620DC518E0084B67E /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				9E3B13B920DC51A40084B67E /* audiodecoderbase.cpp */,
+				9E3B13B720DC51A30084B67E /* audiodecodercoreaudio.cpp */,
+				9E3B13B820DC51A40084B67E /* audiodecodermediafoundation.cpp */,
+			);
+			path = Source;
 			sourceTree = "<group>";
 		};
 		9E3DD98D206D7BC200B2ED86 /* IncompleteOrBuggyMath */ = {
@@ -715,6 +781,7 @@
 				9EFA4CA32051D9B000308177 /* WeaponOverseer.cpp in Sources */,
 				9E00C26B20C5E4BF004CB70A /* LoadObjFile.cpp in Sources */,
 				9E0754ED203B892C009B6215 /* GameEntityManager.cpp in Sources */,
+				9E3B13BC20DC51A40084B67E /* audiodecoderbase.cpp in Sources */,
 				9E10D5EA2035485000F0F724 /* Object.cpp in Sources */,
 				9EC84C3F205C6F6B00FC93B2 /* KineticWeaponManager.cpp in Sources */,
 				9E10D5C820324B8D00F0F724 /* GLFW_Init.cpp in Sources */,
@@ -726,6 +793,7 @@
 				9EAFCEE020BDE23100D12A9F /* PlayerParticleManager.cpp in Sources */,
 				9EAFCEDD20BDDC8400D12A9F /* PlayerParticleTriangle.cpp in Sources */,
 				9E10D5E320338FF000F0F724 /* PlayerManager.cpp in Sources */,
+				9E3B13AD20DC4A510084B67E /* AudioInterface.cpp in Sources */,
 				9ED772142036CE1600D569A4 /* TextureWrapper.cpp in Sources */,
 				9E10D5D82032CEDC00F0F724 /* NGon.cpp in Sources */,
 				9E10D5D92032CEDC00F0F724 /* ShaderWrapper.cpp in Sources */,
@@ -734,6 +802,7 @@
 				9E10D59A203234CC00F0F724 /* main.cpp in Sources */,
 				9EAFCECF20B9FDB900D12A9F /* DeathAnimation.cpp in Sources */,
 				9E10D5B4203237BB00F0F724 /* glad.c in Sources */,
+				9E3B13BB20DC51A40084B67E /* audiodecodermediafoundation.cpp in Sources */,
 				9ECC638B204640B600F7B703 /* RectangularCuboid.cpp in Sources */,
 				9ECC63932047B65700F7B703 /* CollisionSphere.cpp in Sources */,
 				9ED7721D2039516500D569A4 /* Stage.cpp in Sources */,
@@ -741,6 +810,7 @@
 				9E10D5E62034BEBD00F0F724 /* Background.cpp in Sources */,
 				9E3DD990206D7C8100B2ED86 /* CollisionCircle.cpp in Sources */,
 				9E3B138F20DACBF90084B67E /* AudioRenderer.cpp in Sources */,
+				9E3B13BA20DC51A40084B67E /* audiodecodercoreaudio.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

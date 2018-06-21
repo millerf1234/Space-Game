@@ -21,14 +21,19 @@ public:
     AudioSource(const AudioSource & other) = delete;
     AudioSource & operator=(const AudioSource & other) = delete;
     
+    ///Constructors
     AudioSource(ALfloat x, ALfloat y, ALfloat z, bool looping = false);
     AudioSource(ALfloat x, ALfloat y, ALfloat z, ALfloat pitch, ALfloat gain, bool looping = false);
     AudioSource(ALfloat positionX, ALfloat positionY, ALfloat positionZ, ALfloat velocityX, ALfloat velocityY, ALfloat velocityZ, ALfloat pitch, ALfloat gain, bool looping = false);
+    
+    ~AudioSource();
+    
     
 private:
     ALuint source;
     ALuint buffer;
     
+    void initialize(ALfloat positionX, ALfloat positionY, ALfloat positionZ, ALfloat velocityX, ALfloat velocityY, ALfloat velocityZ, ALfloat pitch, ALfloat gain, bool looping = false);
 };
 
 
