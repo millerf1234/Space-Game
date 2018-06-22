@@ -43,10 +43,12 @@ AudioData::AudioData(const char * audioFile) {
     //Note that numSamples won't necessarily be completely accurate
     rawData->reserve(static_cast<size_t>(ceil(numSamples * 1.15))); //1.15 for some extra space
     numberOfSamplesInRawData = decoder->read(numSamples, rawData->data());
+    this->validAudioData = true;
     
     //Debug:
     this->printToScreen();
     std::cout << "\nRead " << numberOfSamplesInRawData << " samples!\n";
+    
 }
 
 AudioData::~AudioData() {

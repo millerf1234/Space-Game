@@ -16,13 +16,23 @@
 
 
 int main(int argc, const char * argv[]) { //Add command line arg to open in windowed mode?
-    
+    /////////////////////////////////////////////////////////////////////////////
     ///DEBUG CODE: DELETE AT SOME POINT...
-    //AudioRenderer * test = new AudioRenderer();
-    //delete test;
-    AudioData * data = new AudioData("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Pulse_gun_05.wav");
+    AudioRenderer * test = new AudioRenderer();
     
+    AudioSource * sound = new AudioSource(0.0f, 0.0f, 0.0f, 3.0f, 3.0f, false);
+    sound->setAudio("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Up-the-shaft-01.wav");
+    sound->playSource();
     
+    //std::cin.get(); //???
+    for (int i = 0; i < 1000; i++) {
+        usleep(5000000);
+        std::cout << "i is: " << i << std::endl;
+        sound->playSource();
+    }
+    delete test;
+    delete sound;
+    /////////////////////////////////////////////////////////////////////////////
     
     char * dir = getcwd(NULL, 0); // Platform-dependent, Not Necessarily Portable. This is more to help me figure out where to load files from by getting the directory where the executable will be looking for files. The result of this will vary depending on where the program was launched from.
     printf("Current dir: %s\n\n", dir);

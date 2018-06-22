@@ -72,6 +72,25 @@ void AudioRenderer::getListenerOrientation(ALfloat * vectorOfSixFloats) {
     }
 }
 
+float AudioRenderer::getListenerGain() {
+    float result = -100.0f;
+    alGetListenerf(AL_GAIN, &result); //alGetListenerfv(AL_GAIN, &result) //returns same thing
+    checkForError();
+    if (result < 0.0f) {
+        std::cout << "\nAn error occured getting the gain!\n";
+    }
+    return result;
+}
+
+void AudioRenderer::setListenerGain(float gain) {
+    if (gain < 0.0f) {
+        std::cout << "\nError! Unable to set the listener's gain to a negative value!\n";
+        std::cout << "A function call was made to set gain to " << gain << " but gain\n";
+        std::cout << "must be a positive value!\n";
+        return;
+    }
+    this->configureListenerGain(gain);
+}
 
 bool AudioRenderer::initialize(bool shouldPrintMessages) {
     if (shouldPrintMessages) {
@@ -80,7 +99,7 @@ bool AudioRenderer::initialize(bool shouldPrintMessages) {
     
     /// Enumerate all of the avaialable audio devices
     if (shouldPrintMessages) {
-        std::cout << "    Enumerating Available Audio Devices...\n";
+        std::cout << "    Enumerating Available Audio Devices...\n  ";
     }
     std::vector<const ALCchar*> devices;
     enumerateAudioDevices(devices);
@@ -97,7 +116,7 @@ bool AudioRenderer::initialize(bool shouldPrintMessages) {
     if (numDetectedDevices == 1) {  ///If only 1 device was detected
         if (shouldPrintMessages) {
             std::cout << "    Only one audio-capable device was detected!\n";
-            std::cout << "      Using device: ";
+            std::cout << "        Using device: ";
             std::cout << devices[0] << std::endl;
         }
         static const ALCchar* empty = "\0";
@@ -145,7 +164,7 @@ bool AudioRenderer::initialize(bool shouldPrintMessages) {
     
     ///Now create a context
     if (shouldPrintMessages) {
-        std::cout << "\n    Creating Audio Language Context!\n";
+        std::cout << "    Creating Audio Language Context!\n";
     }
     if ( !createAudioContext() ) {
         std::cout << "\nError creating Audio Language Context!\n";
@@ -160,18 +179,34 @@ bool AudioRenderer::initialize(bool shouldPrintMessages) {
     }
     
     ///Set up the position for the listener object
-    
     if (shouldPrintMessages) {
-        std::cout << "\n    Setting the position for the listener object...\n";
+        std::cout << "    Creating a listener object...\n";
+        std::cout << "    Setting the position for the listener object...\n";
     }
-    if (!configureListenerPosition()) {
+    if ( !configureListenerPosition() ) {
         std::cout << "\nAn error occured while configuring the listener object's\n";
         std::cout << "position!\n";
         return false;
     }
-    else {
-        std::cout << "    Listener Position successfully matched to static camera position!\n";
+    
+    if (shouldPrintMessages) {
+        std::cout << "    Listener Position successfully matched to\n";
+        std::cout << "    static camera's position!\n";
+        
+        std::cout << "    Setting gain for listener!\n";
     }
+    
+    ///Set the gain for the listener object   (This acts as a 'Master Gain')
+    float defaultGain = 5.0f;
+    if ( !configureListenerGain(defaultGain) ) {
+        std::cout << "\nAn ERROR occured while setting the default listener's gain\n";
+        return false;
+    }
+    
+    if (shouldPrintMessages) {
+        std::cout << "    Listener set-up complete!\n";
+    }
+
     return true;
 }
 
@@ -281,12 +316,20 @@ bool AudioRenderer::configureListenerPosition() {
         return false;
     }
     
+    ///Set the listener's orientation and check for errors
     alListenerfv(AL_ORIENTATION, listenerOrientation);
     if (checkForError() ) {
         std::cout << "\nAn error occured while setting the listener's orientation "
         "in the audio language!\n";
         return false;
     }
+    return true;
+}
+
+bool AudioRenderer::configureListenerGain(float gain) {
+    ///It is assumed that 'gain' has already been checked to make sure it is positive 
+    alListenerf(AL_GAIN, gain);
+    checkForError();
     return true;
 }
 
@@ -341,8 +384,8 @@ void AudioRenderer::parseDevicesIntoVector(std::vector<const ALchar*>& devices) 
     } while (!reachedEndOfList);
 }
 
-void AudioRenderer::printNamesOfEnumeratedDevices(size_t                              numDetectedDevices,
-                                                  const std::vector<const ALCchar*> & devices) const {
+void AudioRenderer::printNamesOfEnumeratedDevices(size_t numDetectedDevices,
+                                                  const std::vector<const ALCchar*>&devices) const {
     if (numDetectedDevices == 0) {
         std::cout << "\nERROR! No Audio Devices were detected on this system!\n";
         return;

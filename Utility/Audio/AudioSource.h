@@ -7,17 +7,18 @@
 //  Copyright © 2018 Forrest Miller. All rights reserved.
 //
 
-
-
-
 #ifndef AudioSource_h
 #define AudioSource_h
 
 #include <iostream>
 #include <vector>
+#include <thread>
 
 #include "OpenAL.h"
 #include "AudioData.h"
+
+//To use AudioSource, must first construct an audio source and then call
+// setAudio() with the audio file path
 
 class AudioSource {
 public:
@@ -34,20 +35,55 @@ public:
     AudioSource(ALuint source, ALuint buffer, ALfloat positionX, ALfloat positionY, ALfloat positionZ, ALfloat velocityX, ALfloat velocityY, ALfloat velocityZ, ALfloat pitch, ALfloat gain, bool looping = false);
     ~AudioSource();
     
+    bool setAudio(const char * filepath);
+    
+    void updatePosition(ALfloat x, ALfloat y, ALfloat z);
+    void getPosition(ALfloat * x, ALfloat * y, ALfloat * z);
     
     ALuint getSource() const {return this->source;}
     ALuint getBuffer() const {return this->buffer;}
+    
+    bool isLooping() const { return this->looping; }
+    
+    bool getIfErrorWasEncountered() const { return this->encounteredError; }
+    
+    void playSource();
+    
+    ///Todo
+    //bool bindAudioFromExistingBuffer(ALuint bufferID);
     
 private:
     ALuint source;
     ALuint buffer;
     
+    bool looping;
+    
     AudioData * audioData;
     bool hasAudioData;
     
-    void initialize(ALfloat positionX, ALfloat positionY, ALfloat positionZ, ALfloat velocityX, ALfloat velocityY, ALfloat velocityZ, ALfloat pitch, ALfloat gain, bool looping = false);
+    bool encounteredError;
+    
+    void initialize(ALuint * source, ALuint * buffer, ALfloat positionX, ALfloat positionY, ALfloat positionZ, ALfloat velocityX, ALfloat velocityY, ALfloat velocityZ, ALfloat pitch, ALfloat gain, bool looping);
+    
+    bool checkForError(); ///Returns false if no error, true if there is an error
+    
+    static inline ALenum convert_to_AL_format(short channels, short samples);
+    
+    static void playSourceThread(ALuint source) {
+        alSourcePlay(source);
+        //checkForError();
+        
+        ALint source_state = static_cast<ALint>(0); ///val doesn't actually do anything
+        
+        alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+        //checkForError();
+        
+        while (source_state == AL_PLAYING) {
+            alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+            usleep(10000);
+            //checkForError();
+        }
+    }
 };
-
-
 
 #endif // AudioSource_h

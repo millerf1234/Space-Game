@@ -42,10 +42,11 @@ public:
     
     void printToScreen();
     
-   
+    ///Seek doesn't do anything currently since the entire audio file is parsed at construction
     bool seek(int sampleIdx); //Skips ahead to sample number index. Index should be in range of sample plz
     
     int getRawDataSampleCount() const { return this->numberOfSamplesInRawData; }
+    ///'SAMPLE' is just an alias for 'float'
     std::vector<SAMPLE>* getRawData() const { return this->rawData; }
     
 private:

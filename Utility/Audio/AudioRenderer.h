@@ -37,10 +37,20 @@ public:
     void getListenerPosition(float & x, float & y, float & z);
     void getListenerVelocity(float & x, float & y, float & z);
     void getListenerOrientation(ALfloat * vectorOfSixFloats);
+    float getListenerGain();
     
-    AudioSource* spawnAudioSource(float x, float y, float z, ALCchar* filepath);//Use this to spawn audio noises
+    void setListenerGain(float gain);
     
+    //AudioSource* spawnAudioSource(float x, float y, float z, ALCchar* filepath);//Use this to spawn audio noises
     
+    ///Idea for interface:
+    /*
+     create audio buffer -- return a handle to reference created buffer
+     create audio source -- a source (position, parameters)
+     
+     
+    
+    */
 private:
     ALCdevice * mDevice;
     ALCcontext * mContext;
@@ -58,6 +68,7 @@ private:
     bool createAudioContext();
     
     bool configureListenerPosition();
+    bool configureListenerGain(float gain);
     
     void parseDevicesIntoVector(std::vector<const ALchar*>&);
     void printNamesOfEnumeratedDevices(size_t, const std::vector<const ALCchar*> &) const;
