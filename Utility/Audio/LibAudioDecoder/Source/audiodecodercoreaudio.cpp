@@ -60,16 +60,16 @@ int AudioDecoderCoreAudio::open() {
 
     //////////////////////////////////////////////////////////////////////////////////////
     /** This code blocks works with OS X 10.5+ only. DO NOT DELETE IT for now. */
-    CFStringRef urlStr = CFStringCreateWithCharacters(0,
+    /*CFStringRef urlStr = CFStringCreateWithCharacters(0,
    				reinterpret_cast<const UniChar *>(
                 //qurlStr.unicode()), qurlStr.size());
-                m_filename.data()), m_filename.size());
+                m_filename.data()), m_filename.size()); */
     
-    /* CFStringRef urlStr = CFStringCreateWithCString(kCFAllocatorDefault,
+     CFStringRef urlStr = CFStringCreateWithCString(kCFAllocatorDefault,
                                                    m_filename.c_str(), 
                                                    kCFStringEncodingUTF8);
                                                    //CFStringGetSystemEncoding());
-     */ ///I switched this block with the top one -- FORREST
+     ///I switched this block with the top one-- Then Switched it back... -- FORREST
     /////////////////////////////////////////////////////////////////////////////////////
     CFURLRef urlRef = CFURLCreateWithFileSystemPath(NULL, urlStr, kCFURLPOSIXPathStyle, false);
     err = ExtAudioFileOpenURL(urlRef, &m_audioFile);

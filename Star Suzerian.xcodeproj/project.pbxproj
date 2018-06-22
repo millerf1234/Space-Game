@@ -43,6 +43,7 @@
 		9E3B13C020DC55870084B67E /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E3B13BE20DC55870084B67E /* CoreAudio.framework */; };
 		9E3B13C220DC5AAD0084B67E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E3B13C120DC5AAD0084B67E /* CoreFoundation.framework */; };
 		9E3B13C420DC5AF60084B67E /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E3B13C320DC5AF50084B67E /* AudioToolbox.framework */; };
+		9E3B13CC20DC632A0084B67E /* AudioData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B13CA20DC632A0084B67E /* AudioData.cpp */; };
 		9E3DD990206D7C8100B2ED86 /* CollisionCircle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */; };
 		9E8FF849204DDD29006E2392 /* CollisionBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8FF847204DDD29006E2392 /* CollisionBox.cpp */; };
 		9EAFCECF20B9FDB900D12A9F /* DeathAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFCECD20B9FDB900D12A9F /* DeathAnimation.cpp */; };
@@ -167,6 +168,11 @@
 		9E3B13BE20DC55870084B67E /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		9E3B13C120DC5AAD0084B67E /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		9E3B13C320DC5AF50084B67E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		9E3B13C620DC5DAF0084B67E /* Up-the-shaft-01.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Up-the-shaft-01.wav"; sourceTree = "<group>"; };
+		9E3B13C720DC5DAF0084B67E /* Pulse_gun_05.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Pulse_gun_05.wav; sourceTree = "<group>"; };
+		9E3B13C820DC5DAF0084B67E /* Cartoon_warp_01.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Cartoon_warp_01.wav; sourceTree = "<group>"; };
+		9E3B13CA20DC632A0084B67E /* AudioData.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AudioData.cpp; sourceTree = "<group>"; };
+		9E3B13CB20DC632A0084B67E /* AudioData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioData.h; sourceTree = "<group>"; };
 		9E3DD98E206D7C8100B2ED86 /* CollisionCircle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionCircle.cpp; sourceTree = "<group>"; };
 		9E3DD98F206D7C8100B2ED86 /* CollisionCircle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionCircle.h; sourceTree = "<group>"; };
 		9E8FF847204DDD29006E2392 /* CollisionBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionBox.cpp; sourceTree = "<group>"; };
@@ -297,6 +303,7 @@
 			children = (
 				9EAD50D420C323AD00D1D153 /* Notes */,
 				9ED7720E2036B32F00D569A4 /* ShaderImages */,
+				9E3B13C920DC5DC00084B67E /* WAV_Files */,
 				9E10D5CD2032CD4F00F0F724 /* ObjFiles */,
 				9E10D5CC2032CD3600F0F724 /* GLSL_Shaders */,
 				9E10D5C5203243BA00F0F724 /* Setup */,
@@ -481,6 +488,8 @@
 				9E3B138E20DACBF90084B67E /* AudioRenderer.h */,
 				9E3B13A820DB0D2B0084B67E /* AudioSource.cpp */,
 				9E3B13A920DB0D2B0084B67E /* AudioSource.h */,
+				9E3B13CA20DC632A0084B67E /* AudioData.cpp */,
+				9E3B13CB20DC632A0084B67E /* AudioData.h */,
 				9E3B13AB20DC4A510084B67E /* AudioInterface.cpp */,
 				9E3B13AC20DC4A510084B67E /* AudioInterface.h */,
 			);
@@ -528,6 +537,16 @@
 				9E3B13B820DC51A40084B67E /* audiodecodermediafoundation.cpp */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		9E3B13C920DC5DC00084B67E /* WAV_Files */ = {
+			isa = PBXGroup;
+			children = (
+				9E3B13C820DC5DAF0084B67E /* Cartoon_warp_01.wav */,
+				9E3B13C720DC5DAF0084B67E /* Pulse_gun_05.wav */,
+				9E3B13C620DC5DAF0084B67E /* Up-the-shaft-01.wav */,
+			);
+			path = WAV_Files;
 			sourceTree = "<group>";
 		};
 		9E3DD98D206D7BC200B2ED86 /* IncompleteOrBuggyMath */ = {
@@ -810,6 +829,7 @@
 				9E10D5E62034BEBD00F0F724 /* Background.cpp in Sources */,
 				9E3DD990206D7C8100B2ED86 /* CollisionCircle.cpp in Sources */,
 				9E3B138F20DACBF90084B67E /* AudioRenderer.cpp in Sources */,
+				9E3B13CC20DC632A0084B67E /* AudioData.cpp in Sources */,
 				9E3B13BA20DC51A40084B67E /* audiodecodercoreaudio.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

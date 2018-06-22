@@ -12,6 +12,7 @@
 #include "Game.h" //A wrapper to run the game inside of
 
 #include "AudioRenderer.h"
+#include "AudioData.h"
 
 
 int main(int argc, const char * argv[]) { //Add command line arg to open in windowed mode?
@@ -19,6 +20,9 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     ///DEBUG CODE: DELETE AT SOME POINT...
     //AudioRenderer * test = new AudioRenderer();
     //delete test;
+    AudioData * data = new AudioData("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Pulse_gun_05.wav");
+    
+    
     
     char * dir = getcwd(NULL, 0); // Platform-dependent, Not Necessarily Portable. This is more to help me figure out where to load files from by getting the directory where the executable will be looking for files. The result of this will vary depending on where the program was launched from.
     printf("Current dir: %s\n\n", dir);
