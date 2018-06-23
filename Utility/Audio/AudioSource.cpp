@@ -108,7 +108,9 @@ bool AudioSource::setAudio(const char * filepath) {
     //alBufferData(buffer, format, data, size, freq);
     //For format, should I use function convert_to_AL_format?
     //I would need to know the sample rate per channel though...
-    alBufferData(this->buffer, AL_FORMAT_STEREO16, this->audioData->getRawData()->data(), this->audioData->getRawDataSampleCount()*4, this->audioData->getSampleRate());
+    alBufferData(this->buffer, AL_FORMAT_MONO16, this->audioData->getRawData()->data(), this->audioData->getRawDataSampleCount()*4, this->audioData->getSampleRate());
+    
+    //alBufferData(this->buffer, AL_FORMAT_STEREO16, this->audioData->getRawData()->data(), this->audioData->getRawDataSampleCount()*4, this->audioData->getSampleRate());
     
     this->encounteredError = (this->encounteredError || checkForError());
     
@@ -118,11 +120,29 @@ bool AudioSource::setAudio(const char * filepath) {
 }
 
 void AudioSource::playSource() {
+    /////This works, but it blocks the rest of the program's execution...
+    //std::thread audio(playSourceThread, this->source);
+    //std::cout << "\nPlaying audio!\n";
+    //audio.join(); ///Hmmm
     
-    std::thread audio(playSourceThread, this->source);
-    std::cout << "\nPlaying audio!\n";
-    audio.join();
+    ///Instead I am going to try to use std::future and std::async
+    std::future<void> test;
+    //test = std::async(std::launch::async, playSourceThread, this->source);
+    test = std::async(std::launch::async, playSourceThread, this->source);
+    std::cout << "\nplaySourceThread function launched asynchronusly!\n";
 }
+
+/*
+void AudioSource::playSource(bool * kill) {
+    if (kill == nullptr) {
+        playSource();
+        return;
+    }
+    else {
+        std::thread audio(playSourceThread, this->source);
+    }
+}
+*/
 
 inline ALenum AudioSource::convert_to_AL_format(short channels, short samples) {
     bool stereo = (channels > 1) ;

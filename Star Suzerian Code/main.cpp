@@ -21,17 +21,40 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     AudioRenderer * test = new AudioRenderer();
     
     AudioSource * sound = new AudioSource(0.0f, 0.0f, 0.0f, 3.0f, 3.0f, false);
+    AudioSource * sound2 = new AudioSource(-0.5f, 0.0f, 0.0f, 3.0f, 3.0f, false);
+    AudioSource * sound3 = new AudioSource(0.5f, 0.0f, 0.0f, 3.0f, 3.0f, false);
+    AudioSource * sound4 = new AudioSource(-0.5f, 0.0f, 0.0f, 3.0f, 3.0f, false);
+    AudioSource * sound5 = new AudioSource(0.5f, 0.0f, 0.0f, 3.0f, 3.0f, false);
     sound->setAudio("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Up-the-shaft-01.wav");
-    sound->playSource();
+    sound2->setAudio("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Pulse_gun_05.wav");
+    sound3->setAudio("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Pulse_gun_05.wav");
+    sound4->setAudio("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Pulse_gun_05.wav");
+    sound5->setAudio("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Pulse_gun_05.wav");
     
+    sound->playSource();
     //std::cin.get(); //???
     for (int i = 0; i < 1000; i++) {
-        usleep(5000000);
+        usleep(5000000); //5 sec
         std::cout << "i is: " << i << std::endl;
-        sound->playSource();
+        if ( (i % 2) == 0) {
+            sound2->playSource();
+            usleep(350000);
+            sound3->playSource();
+            usleep(350000);
+            sound4->playSource();
+            usleep(350000);
+            sound5->playSource();
+        }
+        else {
+            sound->playSource();
+        }
     }
-    delete test;
     delete sound;
+    delete sound2;
+    delete sound3;
+    delete sound4;
+    delete sound5;
+    delete test;
     /////////////////////////////////////////////////////////////////////////////
     
     char * dir = getcwd(NULL, 0); // Platform-dependent, Not Necessarily Portable. This is more to help me figure out where to load files from by getting the directory where the executable will be looking for files. The result of this will vary depending on where the program was launched from.

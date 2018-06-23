@@ -12,7 +12,12 @@
 
 #include <iostream>
 #include <vector>
+
+///For playing sounds:
 #include <thread>
+#include <future>
+#include <chrono>
+
 
 #include "OpenAL.h"
 #include "AudioData.h"
@@ -48,6 +53,7 @@ public:
     bool getIfErrorWasEncountered() const { return this->encounteredError; }
     
     void playSource();
+    //void playSource(bool * kill);
     
     ///Todo
     //bool bindAudioFromExistingBuffer(ALuint bufferID);
@@ -69,21 +75,40 @@ private:
     
     static inline ALenum convert_to_AL_format(short channels, short samples);
     
+    ///This next function is to be run as a seperate thread and basically handles
+    ///ensuring the audio plays
     static void playSourceThread(ALuint source) {
+        
         alSourcePlay(source);
         //checkForError();
         
-        ALint source_state = static_cast<ALint>(0); ///val doesn't actually do anything
         
-        alGetSourcei(source, AL_SOURCE_STATE, &source_state);
-        //checkForError();
+        //ALint source_state = static_cast<ALint>(0); ///val doesn't actually do anything
         
-        while (source_state == AL_PLAYING) {
-            alGetSourcei(source, AL_SOURCE_STATE, &source_state);
-            usleep(10000);
-            //checkForError();
-        }
+        //alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+        ////checkForError();
+        //
+        //while (source_state == AL_PLAYING) {
+            //alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+            //usleep(10000);
+            ////checkForError();
+        //}
+        
     }
 };
+
+
+///UPDATE: Instead of using this function, check out p.246 in Effective Modern C++
+/*
+/////Function I got directly from: https://stackoverflow.com/questions/42041197/c-threads-for-background-loading/42042110#42042110
+/////This Function checks whether an async task which returns a std::future has been completed
+//template<typename R>
+//bool isReady(const std::future<R> &f)
+//{
+//    return f.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
+//}
+ */
+
+
 
 #endif // AudioSource_h
