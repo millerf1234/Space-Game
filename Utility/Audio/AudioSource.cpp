@@ -29,6 +29,8 @@ AudioSource::AudioSource(ALuint source, ALuint buffer, ALfloat positionX, ALfloa
 }
 
 AudioSource::~AudioSource() {
+    alDeleteSources(1, &(this->source));
+    alDeleteBuffers(1, &(this->buffer)); //Need a way for this not to happen if buffer was provided externally
     delete this->audioData;
     this->audioData = nullptr;
 }
@@ -38,7 +40,7 @@ void AudioSource::initialize(ALuint * source, ALuint * buffer, ALfloat positionX
     this->audioData = nullptr;
     this->hasAudioData = false;
     this->encounteredError = false;
-    this->source = 13;
+    this->source = 0;
     
     bool error = false;
     ///Set source
@@ -120,15 +122,15 @@ bool AudioSource::setAudio(const char * filepath) {
 }
 
 void AudioSource::playSource() {
-    /////This works, but it blocks the rest of the program's execution...
-    //std::thread audio(playSourceThread, this->source);
-    //std::cout << "\nPlaying audio!\n";
-    //audio.join(); ///Hmmm
+    ///This works, but it blocks the rest of the program's execution...
+    std::thread audio(playSourceThread, this->source);
+    std::cout << "\nPlaying audio!\n";
+    audio.join(); ///Hmmm
     
-    ///Instead I am going to try to use std::future and std::async
-    std::future<void> test;
-    //test = std::async(std::launch::async, playSourceThread, this->source);
-    test = std::async(std::launch::async, playSourceThread, this->source);
+//    ///Instead I am going to try to use std::future and std::async
+//    std::future<void> test;
+//    //test = std::async(std::launch::async, playSourceThread, this->source);
+//    test = std::async(std::launch::async, playSourceThread, this->source);
     std::cout << "\nplaySourceThread function launched asynchronusly!\n";
 }
 

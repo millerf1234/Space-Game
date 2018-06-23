@@ -78,13 +78,12 @@ private:
     ///This next function is to be run as a seperate thread and basically handles
     ///ensuring the audio plays
     static void playSourceThread(ALuint source) {
-        
         alSourcePlay(source);
         //checkForError();
         
         
+        ///ALL THIS BELOW HERE MAKES THIS FUNCTION BLOCK FROM RETURNING! DON'T DO THIS!
         //ALint source_state = static_cast<ALint>(0); ///val doesn't actually do anything
-        
         //alGetSourcei(source, AL_SOURCE_STATE, &source_state);
         ////checkForError();
         //
@@ -93,7 +92,6 @@ private:
             //usleep(10000);
             ////checkForError();
         //}
-        
     }
 };
 
