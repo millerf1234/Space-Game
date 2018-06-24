@@ -8,6 +8,7 @@
 #define KineticWeaponManager_h
 
 #include <iostream>
+#include <vector>
 //#include "WeaponManager.h"
 #include "Kinetic.h"
 #include "GameEntityManager.h"
@@ -70,7 +71,8 @@ private:
     float max(const float&, const float&);
     
     std::unique_ptr<SoundEffect> kineticFireSound;
-    std::unique_ptr<AudioSource> kineticFireSoundSource;
+    std::vector<std::unique_ptr<AudioSource>> kineticFireSoundSources;
+    //std::unique_ptr<AudioSource> kineticFireSoundSource;
     
 };
 

@@ -25,11 +25,13 @@ KineticWeaponManager::KineticWeaponManager() : GameEntityManager() {
     
     ///Set up the audio effect for kinetic
     kineticFireSound = std::make_unique<SoundEffect>("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Pulse_gun_05.wav");
-    ALfloat kineticFireSoundBufferID = kineticFireSound->getFirstBuffer();
+    //ALfloat kineticFireSoundBufferID = kineticFireSound->getFirstBuffer();
     //kineticFireSoundSource = std::make_unique<AudioSource>(kineticFireSoundBufferID, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3.0f, 3.0f, false);
-    kineticFireSoundSource = std::make_unique<AudioSource>(0.0f, 0.0f, 0.0f, 3.0f, 3.0f, false);
-    kineticFireSoundSource->setAudio("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Pulse_gun_05.wav");
-    
+    for (int i = 0; i < 30; i++) {
+        kineticFireSoundSources.push_back(std::make_unique<AudioSource>(0.0f, 0.0f, 0.0f, 3.0f, 3.0f, false));
+        kineticFireSoundSources[i]->setAudio("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Pulse_gun_05.wav");
+        //kineticFireSoundSources[i]->setAudio("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Cartoon_warp_01.wav");
+    }
     //from stage:
     //GameEntity's constructor will set everything to 0 or Nullptr
     //    this->initTemplate = new InitializationTemplate;
@@ -164,8 +166,12 @@ void KineticWeaponManager::initializeFromTemplate() {
 
 void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
     ///First, play a sound
-    if (!(kineticFireSoundSource->getIfErrorWasEncountered())) {
-        kineticFireSoundSource->playSource();
+    static int nextSource = 0;
+    if (!(kineticFireSoundSources[nextSource]->getIfErrorWasEncountered())) {
+        kineticFireSoundSources[nextSource++]->playSource();
+    }
+    if (nextSource >= 29) {
+        nextSource = 0;
     }
     ///Then spawn the rest of the instance
     int newInstanceIndex = this->generator->getInstanceCount();
@@ -226,17 +232,17 @@ void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
     
     newKinInst->velocity += wepTracker->getVelocity();
     ///We can check to see if ship is going backwards and align shots to shoot straight backwards
-    if (ALIGN_FIRING_IF_FACING_BACKWARDS_WHILE_TRAVELING) {
-        std::cout << "\nWARNING! Turning on ALIGN_FIRING_IF_FACING_BACKWARDS_WHILE_TRAVELING doesn't work correctly and may cause weird problems!\n";
-        float dotProductOfForwardFacingVectorAndShipVelocity = (forward.x * newKinInst->velocity.x + forward.y * newKinInst->velocity.y);
-        //if ( (dotProductOfForwardFacingVectorAndShipVelocity < 0.0f) && //This didn't work
-        if ( ( (MathFunc::sgn(forward.x) != MathFunc::sgn(wepTracker->getVelocity().x) ) &&
-               (MathFunc::sgn(forward.y) != MathFunc::sgn(wepTracker->getVelocity().y) )    ) &&
-            (abs(dotProductOfForwardFacingVectorAndShipVelocity) / (newKinInst->velocity.Length()) ) > 0.85f) {
-            newKinInst->velocity = forward * -1.0f;
-            
-        }
-    }
+//    if (ALIGN_FIRING_IF_FACING_BACKWARDS_WHILE_TRAVELING) {
+//        std::cout << "\nWARNING! Turning on ALIGN_FIRING_IF_FACING_BACKWARDS_WHILE_TRAVELING doesn't work correctly and may cause weird problems!\n";
+//        float dotProductOfForwardFacingVectorAndShipVelocity = (forward.x * newKinInst->velocity.x + forward.y * newKinInst->velocity.y);
+//        //if ( (dotProductOfForwardFacingVectorAndShipVelocity < 0.0f) && //This didn't work
+//        if ( ( (MathFunc::sgn(forward.x) != MathFunc::sgn(wepTracker->getVelocity().x) ) &&
+//               (MathFunc::sgn(forward.y) != MathFunc::sgn(wepTracker->getVelocity().y) )    ) &&
+//            (abs(dotProductOfForwardFacingVectorAndShipVelocity) / (newKinInst->velocity.Length()) ) > 0.85f) {
+//            newKinInst->velocity = forward * -1.0f;
+//            
+//        }
+//    }
     
     //* KINETIC_SPEED_FACTOR * PLAYER_MOVEMENT_MAX_SPEED;
     newKinInst->velocity *= KINETIC_SPEED_FACTOR * PLAYER_MOVEMENT_MAX_SPEED;

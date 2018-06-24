@@ -228,7 +228,7 @@ static constexpr float KINETIC_WEP_DAMAGE = 0.01f; //0.01f;
 static constexpr float KINETIC_VELOCITY_IMPACT = 0.0425;//0.00045f;//0.045f; //0.04
 //static constexpr float KINETIC_VELOCITY_LAUNCH_IMPULSE = 1.0f;
 
-constexpr int KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN = 5; //5-9
+constexpr int KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN = 1;//5 //5-9
 //Hexagon Bomb
 //static constexpr
 

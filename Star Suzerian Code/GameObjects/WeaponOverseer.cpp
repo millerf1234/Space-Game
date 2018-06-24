@@ -127,7 +127,7 @@ void WeaponOverseer::processWeaponTrackers() {
     //I hacked this together quickly to get it so players can only shoot so much so often.
     
     //Parameters
-    constexpr int COOLDOWN_TIMER_IN_FRAMES = 7;  //4  or 14  or 30
+    constexpr int COOLDOWN_TIMER_IN_FRAMES = 5;//7  //4  or 14  or 30
     constexpr int SHOTS_BEFORE_COOLDOWN = KINTETIC_PROJECTILES_BURST_SHOTS_BEFORE_COOLDOWN;
     
     //This is really NOT the way to implement this because its confusing and is
