@@ -13,6 +13,8 @@
 #include "GameEntityManager.h"
 #include "GameParameters.h"
 
+
+
 class KineticWeaponManager : public GameEntityManager {
 public:
     KineticWeaponManager();
@@ -66,6 +68,9 @@ private:
     
     bool isReady;
     float max(const float&, const float&);
+    
+    std::unique_ptr<SoundEffect> kineticFireSound;
+    std::unique_ptr<AudioSource> kineticFireSoundSource;
     
 };
 

@@ -21,8 +21,8 @@ AudioSource::AudioSource(ALfloat positionX, ALfloat positionY, ALfloat positionZ
     this->initialize(nullptr, nullptr, positionX, positionY, positionZ, velocityX, velocityY, velocityZ, zerof, zerof, looping);
 }
 
-AudioSource::AudioSource(ALuint source, ALfloat positionX, ALfloat positionY, ALfloat positionZ, ALfloat velocityX, ALfloat velocityY, ALfloat velocityZ, ALfloat pitch, ALfloat gain, bool looping) {
-    this->initialize(&source, nullptr, positionX, positionY, positionZ, velocityX, velocityY, velocityZ, pitch, gain, looping);
+AudioSource::AudioSource(ALuint buffer, ALfloat positionX, ALfloat positionY, ALfloat positionZ, ALfloat velocityX, ALfloat velocityY, ALfloat velocityZ, ALfloat pitch, ALfloat gain, bool looping) {
+    this->initialize(nullptr, &buffer, positionX, positionY, positionZ, velocityX, velocityY, velocityZ, pitch, gain, looping);
 }
 AudioSource::AudioSource(ALuint source, ALuint buffer, ALfloat positionX, ALfloat positionY, ALfloat positionZ, ALfloat velocityX, ALfloat velocityY, ALfloat velocityZ, ALfloat pitch, ALfloat gain, bool looping) {
     this->initialize(&source, &buffer, positionX, positionY, positionZ, velocityX, velocityY, velocityZ, pitch, gain, looping);
@@ -124,14 +124,23 @@ bool AudioSource::setAudio(const char * filepath) {
 void AudioSource::playSource() {
     ///This works, but it blocks the rest of the program's execution...
     std::thread audio(playSourceThread, this->source);
-    std::cout << "\nPlaying audio!\n";
-    audio.join(); ///Hmmm
+    std::cout << "\nPlaying audio from source: " << this->source << ", Buffer: " << this->buffer << "\n";
+    ///Print out the source's position
+    std::array<ALfloat, 4> posVec = { {0.0f, 0.0f, 0.0f, 0.0f} }; //aggregate initialization
+    //see: https://stackoverflow.com/questions/8192185/using-stdarray-with-initialization-lists
+    this->getPosition(&posVec[0], &posVec[1], &posVec[2]);
+    std::cout << "       Source Position:  \n";
+    std::cout << "           < " << posVec[0] << ", " << posVec[1] << ", " <<
+                 posVec[2] << " >" << std::endl;
+    
+    
+    ///Join the thread
+    audio.join();
     
 //    ///Instead I am going to try to use std::future and std::async
 //    std::future<void> test;
 //    //test = std::async(std::launch::async, playSourceThread, this->source);
 //    test = std::async(std::launch::async, playSourceThread, this->source);
-    std::cout << "\nplaySourceThread function launched asynchronusly!\n";
 }
 
 /*
@@ -146,23 +155,26 @@ void AudioSource::playSource(bool * kill) {
 }
 */
 
-inline ALenum AudioSource::convert_to_AL_format(short channels, short samples) {
-    bool stereo = (channels > 1) ;
-    switch (samples) {
-        case 16:
-            if (stereo)
-                return AL_FORMAT_STEREO16;
-            else
-                return AL_FORMAT_MONO16;
-        case 8:
-            if (stereo)
-                return AL_FORMAT_STEREO8;
-            else
-                return AL_FORMAT_MONO8;
-        default:
-            return -1;
-    }
-}
+///The function convert_to_AL_format could be necessary for a different
+///audio loading library than LibAudioDecoder. LibAudioDecoder (claims it) always
+///produces the same formatted output. I have hardly tested this yet though
+//inline ALenum AudioSource::convert_to_AL_format(short channels, short samples) {
+//    bool stereo = (channels > 1) ;
+//    switch (samples) {
+//        case 16:
+//            if (stereo)
+//                return AL_FORMAT_STEREO16;
+//            else
+//                return AL_FORMAT_MONO16;
+//        case 8:
+//            if (stereo)
+//                return AL_FORMAT_STEREO8;
+//            else
+//                return AL_FORMAT_MONO8;
+//        default:
+//            return -1;
+//    }
+//}
 
 void AudioSource::updatePosition(ALfloat x, ALfloat y, ALfloat z) {
     alSource3f(this->source, AL_POSITION, x, y, z);

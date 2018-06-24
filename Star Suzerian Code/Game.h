@@ -41,6 +41,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <limits> //Used in frame-process-time calculations
+#include <memory>
 
 #include "GLFW_Init.h" //Need this for the struct of monitor data passed in to constructor
 #include "Quaternion.h" //Used for doing rotations
@@ -54,6 +55,7 @@
 #include "Stage.h" //I replaced Background.h with Stage.h
 #include "GameParameters.h" //Get gameplay-affecting constants
 #include "DeathAnimation.h"
+#include "AudioRenderer.h"
 
 static const char * INDENT = "        ";
 
@@ -91,6 +93,7 @@ private:
     PlayerManager * playerManager;
     PlayerParticleManager * playerParticleManager;
     
+    std::unique_ptr<AudioRenderer> audioListenerContext;
     
    // BackGroundGenerator *background;
     

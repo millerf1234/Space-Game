@@ -23,6 +23,13 @@ KineticWeaponManager::KineticWeaponManager() : GameEntityManager() {
     //Configure the generator based off the initialization Template()
     this->initializeFromTemplate();
     
+    ///Set up the audio effect for kinetic
+    kineticFireSound = std::make_unique<SoundEffect>("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Pulse_gun_05.wav");
+    ALfloat kineticFireSoundBufferID = kineticFireSound->getFirstBuffer();
+    //kineticFireSoundSource = std::make_unique<AudioSource>(kineticFireSoundBufferID, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3.0f, 3.0f, false);
+    kineticFireSoundSource = std::make_unique<AudioSource>(0.0f, 0.0f, 0.0f, 3.0f, 3.0f, false);
+    kineticFireSoundSource->setAudio("/Users/forrestmiller/Desktop/xcode_test_projects/Star Suzerian/WAV_Files/Pulse_gun_05.wav");
+    
     //from stage:
     //GameEntity's constructor will set everything to 0 or Nullptr
     //    this->initTemplate = new InitializationTemplate;
@@ -156,7 +163,11 @@ void KineticWeaponManager::initializeFromTemplate() {
 }
 
 void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
-    //if (wepTracker->getframesSinceKineticWasLastFired() == 0) //Do this when I have more time...
+    ///First, play a sound
+    if (!(kineticFireSoundSource->getIfErrorWasEncountered())) {
+        kineticFireSoundSource->playSource();
+    }
+    ///Then spawn the rest of the instance
     int newInstanceIndex = this->generator->getInstanceCount();
     this->generator->generateSingle(); //Have generator create a new instance
     Instance ** insts = this->generator->getArrayOfInstances();
@@ -234,7 +245,9 @@ void KineticWeaponManager::spawnNewKineticInstance(WeaponTracker * wepTracker) {
     newKinInst->thetaZ = wepTracker->getThetaZ();
     newKinInst->earlyThetaZ = wepTracker->getEarlyThetaZ();
     
-    wepTracker->resetWeaponsFired(); //Reset weapons fired after a weapon was fired 
+    wepTracker->resetWeaponsFired(); //Reset weapons fired after a weapon was fired
+    
+    
 }
 
 void KineticWeaponManager::doUpkeep() {

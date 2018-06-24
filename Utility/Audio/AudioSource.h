@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <vector>
+#include <array>
 
 ///For playing sounds:
 #include <thread>
@@ -36,7 +37,7 @@ public:
     AudioSource(ALfloat x, ALfloat y, ALfloat z, ALfloat pitch, ALfloat gain, bool looping = false);
     AudioSource(ALfloat positionX, ALfloat positionY, ALfloat positionZ, ALfloat velocityX, ALfloat velocityY, ALfloat velocityZ, ALfloat pitch, ALfloat gain, bool looping = false);
     ///Pool Constructor (for if multiple sources/buffers were generated at once)
-    AudioSource(ALuint source, ALfloat positionX, ALfloat positionY, ALfloat positionZ, ALfloat velocityX, ALfloat velocityY, ALfloat velocityZ, ALfloat pitch, ALfloat gain, bool looping = false);
+    AudioSource(ALuint buffer, ALfloat positionX, ALfloat positionY, ALfloat positionZ, ALfloat velocityX, ALfloat velocityY, ALfloat velocityZ, ALfloat pitch, ALfloat gain, bool looping = false);
     AudioSource(ALuint source, ALuint buffer, ALfloat positionX, ALfloat positionY, ALfloat positionZ, ALfloat velocityX, ALfloat velocityY, ALfloat velocityZ, ALfloat pitch, ALfloat gain, bool looping = false);
     ~AudioSource();
     
@@ -53,7 +54,7 @@ public:
     bool getIfErrorWasEncountered() const { return this->encounteredError; }
     
     void playSource();
-    //void playSource(bool * kill);
+    //void playSource(bool * kill); //It doesn't work like this...
     
     ///Todo
     //bool bindAudioFromExistingBuffer(ALuint bufferID);

@@ -39,14 +39,15 @@ AudioData::AudioData(const char * audioFile) {
     this->durationInSeconds = decoder->duration();
     
     ///Extract the raw data as samples
-    int tolerance = 44100;
     rawData = new std::vector<SAMPLE>();
-    //Note that numSamples won't necessarily be completely accurate
-    //To accomodate for under-reporting the number of samples, reserve some extra space
+    ///Note that numSamples if guarenteed to be completely accurate.
+    ///To accomodate for under-reporting on the number of samples, we can reserve some extra space in our vector.
+    ///Files above 'tolerance' samples in length will be expanded at a smaller percentage
+    int tolerance = 44100;
     if (numSamples < tolerance) {
         rawData->reserve(static_cast<size_t>(ceil(numSamples * 1.15))); //1.15 for some extra space
     }
-    else { ///If the file is big enough that adding just 5% more space should give enough
+    else { ///If the file is big enough then adding just 5% more space should give enough
         rawData->reserve(static_cast<size_t>(ceil(numSamples * 1.05))); //1.05 for some extra space
     }
     numberOfSamplesInRawData = decoder->read(numSamples, rawData->data());

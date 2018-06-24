@@ -12,6 +12,8 @@
 #include "Generator.h"
 #include "GLFW_Init.h"
 #include "Impact2D.h"
+#include "SoundEffect.h" //For loading sound
+#include "AudioSource.h" //For playing sound
 
 class GameEntityManager {
 protected:

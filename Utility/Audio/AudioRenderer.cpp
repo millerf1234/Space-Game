@@ -293,6 +293,8 @@ bool AudioRenderer::createAudioContext() {
         mIsValid = false;
         return false;
     }
+    auto temp = alGetError();
+    
     return true;
 }
 

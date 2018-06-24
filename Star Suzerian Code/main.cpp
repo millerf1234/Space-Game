@@ -16,6 +16,8 @@
 
 
 int main(int argc, const char * argv[]) { //Add command line arg to open in windowed mode?
+    
+    /*
     /////////////////////////////////////////////////////////////////////////////
     ///DEBUG CODE: DELETE AT SOME POINT...
     AudioRenderer * test = new AudioRenderer();
@@ -33,7 +35,7 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     
     sound->playSource();
     //std::cin.get(); //???
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 2; i++) {
         usleep(5000000); //5 sec
         std::cout << "i is: " << i << std::endl;
         if ( (i % 2) == 0) {
@@ -57,6 +59,7 @@ int main(int argc, const char * argv[]) { //Add command line arg to open in wind
     delete test;
     /////////////////////////////////////////////////////////////////////////////
     
+    */
     char * dir = getcwd(NULL, 0); // Platform-dependent, Not Necessarily Portable. This is more to help me figure out where to load files from by getting the directory where the executable will be looking for files. The result of this will vary depending on where the program was launched from.
     printf("Current dir: %s\n\n", dir);
     

@@ -24,6 +24,9 @@ Game::Game(MonitorData & mPtr) {
     playerParticleManager = nullptr;
     std::cout << "Done" << std::endl;
     
+    std::cout << "Setting Up Audio...\n";
+    audioListenerContext = std::make_unique<AudioRenderer>();
+    std::cout << "Audio Set-Up Complete!\n";
     //Some debug code for testing (Delete this eventually)
 //    //ColloisionBox formation test (Pathological case)
 //    float modelVerts [] = {
