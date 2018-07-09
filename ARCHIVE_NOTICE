@@ -1,0 +1,3 @@
+Notice            July 9, 2018  
+My project in Xcode and the github remote repository got out of sync with each other and as a result there is now a lot of duplicate files   in this project. On top of that, whenever I try to push my commits from my Xcode project, I get a message saying I don't have permission   to push (even pushing from the command line).
+I am planing on archiving this version (which has the history of the project up till this point) and starting/rewriting a newer version elsewhere (which should hopefully show up on github in the next few days). 
